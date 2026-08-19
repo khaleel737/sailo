@@ -74,8 +74,12 @@ export async function subscribeToShop(
    * is the same whatever address was typed.
    */
   const [byIp, byEmail] = await Promise.all([
-    rateLimit(`subscribe-ip:${await callerIp()}`, 8, 600),
-    rateLimit(`subscribe-email:${handle}:${email}`, 2, 3_600),
+    /*
+     * DECISION B — both fail closed. Same shape as the blog newsletter above:
+     * unauthenticated, writes a row, sends mail on the shared quota.
+     */
+    rateLimit(`subscribe-ip:${await callerIp()}`, 8, 600, { onOutage: "closed" }),
+    rateLimit(`subscribe-email:${handle}:${email}`, 2, 3_600, { onOutage: "closed" }),
   ]);
   if (!byIp.allowed) {
     return { done: false, error: t(null).mailing.tooMany };
@@ -171,6 +175,7 @@ export async function confirmSubscription(
    */
   return { done: outcome === "subscribed" || outcome === "refused" };
 }
+
 
 /**
  * The same confirmation, for a list — spec 34's rule 6.

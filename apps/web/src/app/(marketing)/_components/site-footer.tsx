@@ -5,6 +5,8 @@ import type { MarketingDictionary } from "@sailo/i18n/marketing";
 import { getBlogDictionary } from "@sailo/i18n/marketing/blog";
 import type { Locale } from "@sailo/i18n/config";
 import { DEMOS } from "@sailo/marketing/demos";
+import { SOCIALS, type SocialAccount } from "@sailo/marketing/socials";
+import { Facebook, Instagram, LinkedIn, XMark } from "@sailo/design-system/web";
 import { appOrigin, docsUrl } from "@sailo/core/origin";
 import { SailoLogo } from "@/components/brand";
 import { CookieSettingsButton } from "@/components/shared/cookie-settings-button";
@@ -12,6 +14,23 @@ import { measurementId } from "@/lib/google-tag";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { Container } from "@/components/marketing/kit";
 import { NewsletterForm } from "@/components/marketing/newsletter-form";
+
+/**
+ * The mark for each account, kept beside the list rather than in it.
+ *
+ * `@sailo/marketing` is imported by the mailers and the cron jobs, and an icon
+ * table there would put JSX — and with it React — into the dependency graph of
+ * things that render no UI at all.
+ */
+const SOCIAL_ICONS: Record<
+  SocialAccount["id"],
+  (props: { className?: string }) => React.ReactElement
+> = {
+  instagram: Instagram,
+  facebook: Facebook,
+  linkedin: LinkedIn,
+  x: XMark,
+};
 
 /** The marketing footer. */
 
@@ -68,7 +87,58 @@ export function SiteFooter({
             <p className="mt-5 max-w-xs text-[0.875rem] leading-relaxed text-[var(--mute-500)]">
               {m.footer.tagline}
             </p>
-            <div className="mt-6">
+
+            {/*
+              Where to find Sailo, in the identity block rather than the link
+              columns. Those three columns are places on this site; these are
+              four addresses somewhere else, and filing them under "Product"
+              would send a reader looking for pricing to Instagram.
+
+              No heading above them. One would need a dictionary key in 22
+              languages to say what four recognisable marks already say, and a
+              footer earns its quiet by not labelling the obvious.
+
+              Marks only, no wordmarks: at 18px the stroke weight matches the
+              14px link text beside it, so the row reads as one more line of
+              the column instead of a toolbar bolted underneath it.
+            */}
+            <ul className="-ms-2.5 mt-3 flex items-center gap-1">
+              {SOCIALS.map((account) => {
+                const Icon = SOCIAL_ICONS[account.id];
+
+                return (
+                  <li key={account.id}>
+                    <a
+                      href={account.url}
+                      target="_blank"
+                      /*
+                       * `me`, and pointedly not the `nofollow` the blog's
+                       * share row carries. That row points at intent URLs on
+                       * somebody else's domain; these are our own profiles,
+                       * and the claim "this account and this site are the
+                       * same brand" is the entire reason they are here.
+                       */
+                      rel="me noopener noreferrer"
+                      aria-label={account.label}
+                      title={account.label}
+                      /*
+                       * A 44px target around an 18px mark, matching the
+                       * `min-h-11` every other link in this footer commits to
+                       * — and `-ms-2.5` on the row pulls the first mark's
+                       * edge back under the logo, because the padding that
+                       * makes the target tappable would otherwise indent the
+                       * row and break the column's left edge.
+                       */
+                      className="focus-line flex size-11 items-center justify-center rounded-full text-[var(--mute-400)] transition-colors hover:text-[var(--ink)]"
+                    >
+                      <Icon className="size-[1.125rem]" />
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <div className="mt-3">
               <LanguageSwitcher
                 current={locale}
                 align="start"

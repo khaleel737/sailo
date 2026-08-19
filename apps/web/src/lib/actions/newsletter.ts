@@ -84,8 +84,17 @@ export async function subscribeToNewsletter(
    * unknown, never a positive answer.
    */
   const [byIp, byEmail] = await Promise.all([
-    rateLimit(`newsletter-ip:${await callerIp()}`, 8, 600),
-    rateLimit(`newsletter-email:${email}`, 2, 3_600),
+    /*
+     * DECISION B — both fail closed (public write, and it spends the send
+     * quota).
+     *
+     * Unauthenticated, creates a row, and mails a confirmation. With no ceiling
+     * it is an open relay pointed at any address somebody types, charged against
+     * the same Resend reputation that carries buyers' receipts — so an hour of
+     * failing open costs more than the hour of signups it refuses.
+     */
+    rateLimit(`newsletter-ip:${await callerIp()}`, 8, 600, { onOutage: "closed" }),
+    rateLimit(`newsletter-email:${email}`, 2, 3_600, { onOutage: "closed" }),
   ]);
   if (!byIp.allowed) return { done: false, error: b.subscribeTooMany };
   if (!byEmail.allowed) return { done: true };

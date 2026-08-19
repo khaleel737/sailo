@@ -205,6 +205,12 @@ export async function upsertSubscription(
     currency: (price?.currency ?? existing?.currency ?? ctx.shop.currency).toUpperCase(),
     interval: price?.recurring?.interval ?? existing?.interval ?? "month",
     /*
+     * And how many of them, read off the same Price. A quarterly member whose
+     * row said `month` with no count would be shown, and asked about, on the
+     * wrong cycle by every screen that renders the arrangement.
+     */
+    intervalCount: price?.recurring?.interval_count ?? existing?.intervalCount ?? 1,
+    /*
      * Stripe's word on what we are charging, never ours.
      *
      * Recorded here rather than written when `reconcileMembershipFees` asks

@@ -14,7 +14,7 @@ export async function getDashboardStats(shopId: string, window: Window = 30) {
   const db = getReadDb();
   const { since, until } = windowBounds(window);
 
-  const [[visitRow], [periodRow], [openRow], [productRow], [reviewRow]] =
+  const [[visitRow], [periodRow], [openRow], [productRow], [reviewRow], [leadRow]] =
     await Promise.all([
       db
         .select({
@@ -89,6 +89,12 @@ export async function getDashboardStats(shopId: string, window: Window = 30) {
         })
         .from(reviews)
         .where(eq(reviews.shopId, shopId)),
+      db
+        .select({ total: sql<string>`count(*)` })
+        .from(leads)
+        .where(
+          and(eq(leads.shopId, shopId), inWindow(leads.createdAt, since, until)),
+        ),
     ]);
 
   return {

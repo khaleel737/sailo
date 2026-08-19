@@ -99,6 +99,7 @@ export default async function ShopPage({
     about,
     faq,
     legalLinks,
+    testimonials,
     currency,
     currencyOptions,
   } = await getShopPageData(handle, filters);

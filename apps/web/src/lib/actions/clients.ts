@@ -55,8 +55,8 @@ export async function setClientTags(
    * is most often written against, so a flow watching them is the common case.
    *
    * Deferred with `after`, unlike the custom-field path: the seller is holding
-   * a tag editor and an enrolment they cannot see must not sit between them
-   * and the row being saved.
+   * a tag editor and an enrolment they cannot see must not be between them and
+   * the row being saved.
    */
   after(() => announceContactUpdated(shop.id, clientId, ["tags"]));
 

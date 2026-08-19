@@ -21,6 +21,7 @@ export * from "./risk";
 export * from "./payments";
 export * from "./subscriptions";
 export * from "./lists";
+export * from "./order";
 export * from "./partners";
 export * from "./support";
 export * from "./security";

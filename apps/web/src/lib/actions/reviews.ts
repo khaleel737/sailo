@@ -19,7 +19,16 @@ export async function submitReview(
 ): Promise<ActionState> {
   // Public and unauthenticated: without a ceiling a shop's product page is a
   // free billboard for whoever scripts it fastest.
-  const gate = await rateLimit(`review:${await callerIp()}`, 5, 3600);
+  /*
+   * DECISION B — fails closed (public write).
+   *
+   * Anonymous, creates a row, and the row is displayed on a seller's storefront.
+   * A ceiling that vanishes for an hour is an hour of unbounded review spam
+   * under somebody else's shop name.
+   */
+  const gate = await rateLimit(`review:${await callerIp()}`, 5, 3600, {
+    onOutage: "closed",
+  });
   if (!gate.allowed) {
     return { ok: false, error: "Too many reviews just now. Try again later." };
   }

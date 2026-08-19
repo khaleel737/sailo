@@ -14,7 +14,13 @@ import { getDb } from "@sailo/db";
 import { products, type Order, type Product, type Shop } from "@sailo/db/schema";
 import { actingAs, stripe } from "@sailo/payments";
 import { platformFeePercent } from "@sailo/core/plans";
-import { intervalOf, membershipSellable, normalizeTrialDays, priceIsStale } from "../memberships/memberships";
+import {
+  intervalCountOf,
+  intervalOf,
+  membershipSellable,
+  normalizeTrialDays,
+  priceIsStale,
+} from "../memberships/memberships";
 
 /* --------------------------------------------------------------------------
    Memberships
@@ -69,7 +75,17 @@ export async function membershipPrice(
       {
         currency: shop.currency.toLowerCase(),
         unit_amount: toStripeAmount(product.priceCents, shop.currency),
-        recurring: { interval: intervalOf(product) },
+        /*
+         * Stripe's own (interval, interval_count) pair, which is why the
+         * product stores the two separately rather than inventing a name for
+         * each combination. `intervalCountOf` has already clamped the count
+         * against Stripe's one-year ceiling, so nothing here can be refused
+         * for a cycle the seller typed.
+         */
+        recurring: {
+          interval: intervalOf(product),
+          interval_count: intervalCountOf(product),
+        },
         /*
          * What the amount means, for the sessions that hand tax to Stripe.
          *
@@ -105,6 +121,7 @@ export async function membershipPrice(
         stripePriceId: price.id,
         stripePriceCents: product.priceCents,
         stripePriceInterval: intervalOf(product),
+        stripePriceIntervalCount: intervalCountOf(product),
         updatedAt: new Date(),
       })
       .where(eq(products.id, product.id));

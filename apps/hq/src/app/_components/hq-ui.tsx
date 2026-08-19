@@ -249,10 +249,60 @@ export function ShopCell({
   return (
     <Link
       href={`/accounts/${ownerId}`}
-      className="focus-ring flex min-w-0 flex-col items-start justify-center rounded pointer-coarse:min-h-11"
+      /*
+       * `relative z-10` so this keeps working inside a row that is itself a
+       * link. A `RowLink`'s overlay is a positioned pseudo-element and would
+       * otherwise paint over this one — the shop would still look like a link,
+       * and clicking it would open the row instead. Positioning costs nothing
+       * on the rows that have no overlay.
+       */
+      className="focus-ring relative z-10 flex min-w-0 flex-col items-start justify-center rounded pointer-coarse:min-h-11"
     >
       <span className="max-w-full truncate font-medium text-ink-900">{name}</span>
       <span className="max-w-full truncate text-xs text-ink-400">/{handle}</span>
+    </Link>
+  );
+}
+
+/**
+ * Turns a whole table row into a link, from inside the cell that names it.
+ *
+ * A list page whose rows open nothing is a list page people read and then go
+ * looking for a search box. The row is the thing a person points at, so the
+ * row is what should be clickable — but an `<a>` cannot be a child of `<tr>`:
+ * the HTML parser hoists it straight out of the table and the row falls apart.
+ *
+ * So the anchor lives in the cell it genuinely belongs to and grows a `::after`
+ * with no size of its own, which stretches to the nearest positioned ancestor.
+ * That ancestor is the row, which is why every caller passes `className="relative"`
+ * to its `<Tr>` — without it the overlay escapes to the page and covers
+ * everything. Below `md` the row is a card and the same rule covers the card.
+ *
+ * Anything else clickable in the row has to sit above the overlay. `ShopCell`
+ * already does; a new one needs `relative z-10` for the same reason.
+ */
+export function RowLink({
+  href,
+  children,
+  label,
+  className,
+}: {
+  href: string;
+  children: ReactNode;
+  /** What the row opens, for a reader who only hears the link. */
+  label?: string;
+  className?: string;
+}) {
+  return (
+    <Link
+      href={href}
+      aria-label={label}
+      className={cn(
+        "focus-ring rounded after:absolute after:inset-0 after:content-['']",
+        className,
+      )}
+    >
+      {children}
     </Link>
   );
 }

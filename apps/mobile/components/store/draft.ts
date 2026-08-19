@@ -85,6 +85,17 @@ export type Draft = {
   eventStartsAt: Date | null;
   eventJoinUrl: string;
   billingInterval: string;
+  /**
+   * How many intervals per charge — the `3` in "every 3 months".
+   *
+   * Carried but never edited here. This screen offers monthly and yearly and
+   * nothing else, and a save that simply omitted the count would reset a
+   * quarterly membership to monthly the first time its owner corrected a typo
+   * from their phone. Round-tripping it costs one field and makes that
+   * impossible; the editor shows a sentence instead of the picker when it is
+   * anything but one, so the control never claims a cycle it cannot set.
+   */
+  billingIntervalCount: number;
   trialDays: string;
   durationMinutes: string;
   serviceMode: "in_person" | "online";
@@ -130,6 +141,7 @@ export function draftFrom(
       eventStartsAt: null,
       eventJoinUrl: "",
       billingInterval: "month",
+      billingIntervalCount: 1,
       trialDays: "",
       durationMinutes: "",
       serviceMode: "in_person",
@@ -161,6 +173,7 @@ export function draftFrom(
     eventStartsAt: product.eventStartsAt ? new Date(product.eventStartsAt) : null,
     eventJoinUrl: product.eventJoinUrl ?? "",
     billingInterval: product.billingInterval ?? "month",
+    billingIntervalCount: product.billingIntervalCount ?? 1,
     trialDays: product.trialDays === null ? "" : String(product.trialDays),
     durationMinutes:
       product.durationMinutes === null ? "" : String(product.durationMinutes),
@@ -276,6 +289,8 @@ export function toSaveInput(
     /* Only a membership carries an interval. Sending one on a physical
        product would put a billing cycle on a mug. */
     billingInterval: draft.kind === "membership" ? draft.billingInterval : null,
+    billingIntervalCount:
+      draft.kind === "membership" ? draft.billingIntervalCount : null,
     trialDays: draft.kind === "membership" ? textToCount(draft.trialDays) : null,
 
     inStock: draft.inStock,

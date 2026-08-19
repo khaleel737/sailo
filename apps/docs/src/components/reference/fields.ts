@@ -336,7 +336,8 @@ type _ProductBookingIsComplete = Exhaustive<
 >;
 
 export const PRODUCT_EVENT_FIELDS = [
-  { name: "startsAt", type: "string | null", body: "ISO 8601, in UTC. Render it in the shop's `timeZone`." },
+  { name: "startsAt", type: "string | null", body: "ISO 8601, in UTC. Render it in the shop's `timeZone`. Ticket sales close at this moment." },
+  { name: "endsAt", type: "string | null", body: "ISO 8601, in UTC. Optional — plenty of events have no fixed end, and this one closes nothing." },
 ] as const satisfies readonly Field[];
 
 type _ProductEventIsComplete = Exhaustive<
@@ -345,7 +346,8 @@ type _ProductEventIsComplete = Exhaustive<
 >;
 
 export const PRODUCT_MEMBERSHIP_FIELDS = [
-  { name: "interval", type: "string | null", body: "`month` or `year`." },
+  { name: "interval", type: "string | null", body: "`day`, `week`, `month` or `year`." },
+  { name: "intervalCount", type: "number | null", body: "How many of them per charge — the `3` in every 3 months. Read it with `interval`, never alone: `month` on its own would bill a quarterly membership monthly." },
   { name: "trialDays", type: "number | null", body: "Free days before the first charge. Null or zero means none." },
 ] as const satisfies readonly Field[];
 
@@ -413,7 +415,8 @@ export const SUBSCRIPTION_FIELDS = [
   { name: "clientId", type: "string | null", body: "The member — readable with `GET /contacts/{id}`." },
   { name: "price", type: "money", body: "What they pay each interval. Snapshotted at signup: a seller who re-prices the product has not re-priced this member." },
   { name: "currency", type: "string", body: "ISO 4217, matching the money object's own currency." },
-  { name: "interval", type: "string", body: "How often it renews — `month` or `year`." },
+  { name: "interval", type: "string", body: "How often it renews — `day`, `week`, `month` or `year`." },
+  { name: "intervalCount", type: "number", body: "How many of them per renewal — the `3` in every 3 months. Snapshotted at signup alongside the price, so a seller who changes the product's cycle has not changed this member's." },
   {
     name: "billingMode",
     type: "string",

@@ -28,6 +28,20 @@ export type StockedProduct = Pick<
   "inStock" | "trackInventory" | "stockQuantity"
 >;
 
+/**
+ * A product that may also cap how many one order takes.
+ *
+ * Optional rather than folded into `StockedProduct`, because half the callers
+ * of that type hand in a trimmed literal — a card, a test, a projection — and
+ * they are asking whether the thing is *sellable*, which the cap has no
+ * opinion about. A full row satisfies this without being changed, so the
+ * checkout, the buy box and the basket all get the cap for free.
+ */
+export type CappedProduct = StockedProduct & {
+  /** Most units one order may take. Null or absent is no cap beyond stock. */
+  maxPerOrder?: number | null;
+};
+
 export type VariantLike = {
   options: VariantOptions;
   priceCents: number | null;
@@ -216,13 +230,54 @@ export function isSellable(
   return left === null || left > 0;
 }
 
-/** The most a buyer may put in the quantity box. */
+/**
+ * The most a buyer may put in the quantity box.
+ *
+ * Three ceilings, and the smallest wins: the hard cap that stops a typo
+ * becoming an order for nine million mugs, what is left in stock, and the
+ * seller's own per-order limit. The last is the one that is not about supply —
+ * a sold-out event and an event that will not sell you a fifth ticket are
+ * different refusals, and a shop with 200 seats can mean both at once.
+ *
+ * `maxPerOrder` of 0 is read as "no cap", not "nothing may be ordered": a
+ * seller who wants to stop sales has `inStock`, and a zero here is far more
+ * likely to be a cleared field than a deliberate embargo.
+ */
 export function maxOrderable(
-  product: StockedProduct,
+  product: CappedProduct,
   variant?: VariantLike | null,
 ): number {
-  const left = unitsLeft(product, variant);
-  return left === null ? MAX_QUANTITY : Math.min(MAX_QUANTITY, left);
+  return quantityCeiling(unitsLeft(product, variant), perOrderCap(product));
+}
+
+/**
+ * The same three ceilings, from the two numbers a client already holds.
+ *
+ * The buy box and the basket are handed `unitsLeft` and the cap already
+ * resolved — they have no product row to pass `maxOrderable` — and both had
+ * grown their own `stockLeft === null ? 999 : …`. That is the rule written a
+ * third and fourth time, and the third copy is the one that forgot the
+ * seller's cap and offered a fifth ticket on a four-a-head event.
+ */
+export function quantityCeiling(
+  /** Units left, or null when nobody is counting. */
+  left: number | null,
+  /** The seller's per-order limit. Null, absent or zero is no limit. */
+  maxPerOrder: number | null | undefined,
+): number {
+  const cap =
+    typeof maxPerOrder === "number" && Number.isFinite(maxPerOrder) && maxPerOrder > 0
+      ? maxPerOrder
+      : MAX_QUANTITY;
+  return Math.min(MAX_QUANTITY, cap, left ?? MAX_QUANTITY);
+}
+
+/** The seller's per-order limit, once nonsense is discarded. Null is none. */
+export function perOrderCap(product: CappedProduct): number | null {
+  const raw = product.maxPerOrder;
+  if (typeof raw !== "number" || !Number.isFinite(raw)) return null;
+  const cap = Math.trunc(raw);
+  return cap > 0 ? Math.min(cap, MAX_QUANTITY) : null;
 }
 
 /** True when at least one combination is still sellable. */

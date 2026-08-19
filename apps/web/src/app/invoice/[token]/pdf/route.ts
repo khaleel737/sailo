@@ -36,7 +36,9 @@ export async function GET(
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
-  const gate = await rateLimit(`invoice-pdf:${token}`, 20, 300);
+  const gate = await // DECISION B — fails closed. Same argument as the download token: an
+  // invoice names a buyer, their address and what they bought.
+  rateLimit(`invoice-pdf:${token}`, 20, 300, { onOutage: "closed" });
   if (!gate.allowed) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }

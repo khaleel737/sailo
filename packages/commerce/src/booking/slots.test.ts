@@ -5,6 +5,7 @@ import {
   slotsForDays,
   slotsOnDate,
   todayIn,
+  widen,
   type Busy,
   type SlotOptions,
 } from "../booking/slots";
@@ -80,6 +81,25 @@ describe("overlaps", () => {
       endsAt: at("2026-08-07T10:30:00Z"),
     };
     expect(overlaps(nineToTen, other)).toBe(overlaps(other, nineToTen));
+  });
+});
+
+describe("widen", () => {
+  const booked: Busy = {
+    startsAt: at("2026-08-07T11:00:00Z"),
+    endsAt: at("2026-08-07T12:00:00Z"),
+  };
+
+  it("pads both ends, so nothing is booked up against an appointment", () => {
+    expect(widen(booked, 15)).toEqual({
+      startsAt: at("2026-08-07T10:45:00Z"),
+      endsAt: at("2026-08-07T12:15:00Z"),
+    });
+  });
+
+  it("hands the range back untouched when there is no buffer", () => {
+    expect(widen(booked, 0)).toBe(booked);
+    expect(widen(booked, -30)).toBe(booked);
   });
 });
 
@@ -283,6 +303,49 @@ describe("slotsOnDate — what is already booked", () => {
       }),
     );
     expect(starts(slots)).toContain("2026-08-07T11:00:00.000Z");
+  });
+
+  it("keeps a slot clear of the seller's buffer on both sides", () => {
+    /*
+     * The gap to clean the room, write the notes, drive to the next one. A
+     * fifteen-minute buffer around an 11:00–12:00 appointment takes out the
+     * hour before it and the hour after it, because both would start or end
+     * inside the quiet time.
+     *
+     * Both sides, not just the far one: an appointment that ends exactly when
+     * the next begins is the same problem read backwards.
+     */
+    const booked: Busy = {
+      startsAt: at("2026-08-07T11:00:00Z"),
+      endsAt: at("2026-08-07T12:00:00Z"),
+    };
+
+    // Without a buffer, 10:00 and 12:00 are both offered.
+    const open = starts(slotsOnDate(FRIDAY, base({ busy: [booked] })));
+    expect(open).toContain("2026-08-07T10:00:00.000Z");
+    expect(open).toContain("2026-08-07T12:00:00.000Z");
+
+    const guarded = starts(
+      slotsOnDate(FRIDAY, base({ busy: [booked], bufferMinutes: 15 })),
+    );
+    expect(guarded).not.toContain("2026-08-07T10:00:00.000Z");
+    expect(guarded).not.toContain("2026-08-07T11:00:00.000Z");
+    expect(guarded).not.toContain("2026-08-07T12:00:00.000Z");
+    // Everything a clear hour away is untouched.
+    expect(guarded).toContain("2026-08-07T09:00:00.000Z");
+    expect(guarded).toContain("2026-08-07T13:00:00.000Z");
+  });
+
+  it("changes nothing at all when the seller wants no gap", () => {
+    // Zero is what every product carried before the column existed, so it has
+    // to reproduce the old calendar exactly.
+    const booked: Busy = {
+      startsAt: at("2026-08-07T11:00:00Z"),
+      endsAt: at("2026-08-07T12:00:00Z"),
+    };
+    expect(starts(slotsOnDate(FRIDAY, base({ busy: [booked], bufferMinutes: 0 })))).toEqual(
+      starts(slotsOnDate(FRIDAY, base({ busy: [booked] }))),
+    );
   });
 
   it("ignores a booking on another day", () => {

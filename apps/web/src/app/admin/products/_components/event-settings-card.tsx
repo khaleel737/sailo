@@ -42,9 +42,20 @@ export function EventSettingsCard({
    * reading labels: an online event has a join link and no venue, a room has
    * a venue and no link. Showing both invites a seller to fill in both, and
    * the product then has an address the buyer's email will never print.
+   *
+   * Three modes, not two. `eventMode` has been a column, a `ProductInput`
+   * field and a `formData.get` since spec 50 landed, and nothing ever posted
+   * it — so it saved as null on every event and "both" was unreachable. The
+   * publish check reads it (`event_needs_venue` / `event_needs_join_url`) and
+   * was falling back to `serviceMode`, which cannot express a hybrid: a room
+   * that also streams was refused a join link or refused a venue, whichever
+   * the seller picked.
    */
-  const [mode, setMode] = useState(product?.serviceMode ?? "in_person");
-  const online = mode === "online";
+  const [mode, setMode] = useState<string>(
+    () => product?.eventMode ?? (product?.serviceMode === "online" ? "online" : "in_person"),
+  );
+  const online = mode !== "in_person";
+  const inPerson = mode !== "online";
 
   /*
    * Held in state only so the end can refuse to offer a moment before the
@@ -107,18 +118,33 @@ export function EventSettingsCard({
         </Field>
       </div>
 
-      <Field label={a.productForm.eventWhere} htmlFor="serviceMode">
+      <Field label={a.productForm.eventMode} htmlFor="eventMode">
         <Select
-          id="serviceMode"
-          name="serviceMode"
+          id="eventMode"
+          name="eventMode"
           value={mode}
           onChange={(e) => setMode(e.target.value)}
           className="sm:w-64"
         >
-          <option value="in_person">{a.productForm.eventInPerson}</option>
-          <option value="online">{a.productForm.eventOnline}</option>
+          <option value="in_person">{a.productForm.eventModeInPerson}</option>
+          <option value="online">{a.productForm.eventModeOnline}</option>
+          <option value="hybrid">{a.productForm.eventModeHybrid}</option>
         </Select>
       </Field>
+
+      {/*
+        `serviceMode` is still posted, because it is what the *buyer* reads:
+        the shop card and the product page both print "Online" or "In person"
+        off it, and an order line keeps a copy. A hybrid has somewhere to turn
+        up, so it reads as in person there — the join link is shown alongside
+        it, and calling a room with a stream "online" would send people to a
+        page instead of an address.
+      */}
+      <input
+        type="hidden"
+        name="serviceMode"
+        value={mode === "online" ? "online" : "in_person"}
+      />
 
       {online ? (
         <Field
@@ -136,7 +162,9 @@ export function EventSettingsCard({
             placeholder="https://zoom.us/j/…"
           />
         </Field>
-      ) : (
+      ) : null}
+
+      {inPerson ? (
         <Field
           label={a.productForm.eventVenue}
           htmlFor="serviceLocation"
@@ -150,7 +178,7 @@ export function EventSettingsCard({
             placeholder={a.productForm.eventVenuePlaceholder}
           />
         </Field>
-      )}
+      ) : null}
 
       <Toggle
         name="releaseOnPayment"

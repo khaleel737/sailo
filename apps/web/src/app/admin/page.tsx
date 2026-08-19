@@ -17,6 +17,7 @@ import {
 import { setupSteps } from "@sailo/core/onboarding";
 import { getPartnerCard } from "@sailo/partners/store";
 import { Chart } from "@sailo/design-system/web/chart";
+import { ShareLinkButton } from "@/app/admin/_components/share-link-dialog";
 import { TrafficPanel } from "@/app/admin/_components/traffic-panel";
 import { ProductPerformancePanel } from "@/app/admin/_components/product-performance";
 import { RangePicker } from "@/app/admin/_components/range-picker";
@@ -172,8 +173,20 @@ export default async function AdminOverviewPage({
               {displayUrl}
             </p>
           </div>
-          <div className="flex shrink-0 gap-2">
+          <div className="flex shrink-0 flex-wrap gap-2">
             <CopyLink url={shopUrl} />
+            {/*
+              The same link as a picture — spec'd alongside the storefront's
+              share sheet. The seller at a market stall doesn't paste a URL;
+              they hold this up, or print the PNG it downloads.
+            */}
+            <ShareLinkButton
+              url={shopUrl}
+              title={a.share.shopTitle}
+              body={a.share.shopBody}
+              fileName={shop.handle}
+              variant="onDark"
+            />
             <a
               href={`/${shop.handle}`}
               target="_blank"
@@ -434,7 +447,12 @@ export default async function AdminOverviewPage({
               >
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium">
-                    {orderSummaryTitle(order)}
+                    <Link
+                      href={`/admin/orders/${order.id}`}
+                      className="focus-ring rounded underline-offset-2 hover:underline"
+                    >
+                      {orderSummaryTitle(order)}
+                    </Link>
                     {order.itemCount === 1 && order.quantity > 1 ? (
                       <span className="text-ink-400"> ×{order.quantity}</span>
                     ) : null}

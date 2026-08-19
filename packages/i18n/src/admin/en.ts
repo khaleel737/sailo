@@ -57,18 +57,77 @@ export const adminEn = {
     category: "Category",
     client: "Client",
     code: "Code",
+    date: "Date",
     discount: "Discount",
     expires: "Expires",
     never: "Never",
+    order: "Order",
     orders: "Orders",
+    payment: "Payment",
     product: "Product",
     price: "Price",
     products: "Products",
     spent: "Spent",
     status: "Status",
     stock: "Stock",
+    total: "Total",
     used: "Used",
     where: "Where",
+  },
+
+  /**
+   * The share dialog — the QR code and link a seller hands out.
+   *
+   * One dialog, two doorways: the shop itself and the mailing-list sign-up
+   * form. Unprotected, because nothing here is read at the moment money moves;
+   * it is the words around a picture of a link.
+   */
+  share: {
+    share: "Share",
+    shopTitle: "Share your shop",
+    shopBody: "Anyone who scans the code lands on your storefront.",
+    signupTitle: "Share your sign-up link",
+    signupBody: "Anyone who scans the code lands on your sign-up form.",
+    qrAlt: "QR code for {url}",
+    downloadQr: "Download QR",
+    drawing: "Drawing the code…",
+  },
+
+  /**
+   * The orders list's own chrome — tabs, search, the row's affordance.
+   *
+   * Its own section rather than more keys under `orders`, for the reason
+   * `shipmentsTitle` gives: `orders` is a protected money section a filler may
+   * not write into, and a new key there is a hole in thirty-four locales that
+   * nothing can close. These strings name controls, not amounts.
+   */
+  orderList: {
+    all: "All",
+    searchLabel: "Search orders",
+    searchPlaceholder: "Customer, email or product…",
+    viewOrder: "View order",
+    /** The tab counter, read by screen readers: "New, 3 orders". */
+    tabCount: "{label}, {count} orders",
+  },
+
+  /**
+   * The single-order page — section headings and its one destructive act.
+   * Same reasoning as `orderList`: chrome, not amounts, so the filler may
+   * translate it.
+   */
+  orderDetail: {
+    payment: "Payment",
+    customer: "Customer",
+    fulfilment: "Fulfilment",
+    /** The affiliate's cut, as a line in the money summary. */
+    commission: "Commission",
+    note: "Buyer's note",
+    placed: "Placed",
+    noContact: "No contact details were left.",
+    viewClient: "View client",
+    deleteTitle: "Delete this order?",
+    deleteBody:
+      "It comes off your records, your revenue and this buyer's history, and any stock it held goes back on the shelf. There's no undo.",
   },
 
   shell: {
@@ -708,9 +767,6 @@ export const adminEn = {
     publishedBody: "Uncheck to hide it from your shop while you work on it.",
     added: "Product added.",
     updated: "Product updated.",
-    eventWhere: "Where it happens",
-    eventInPerson: "At a venue",
-    eventOnline: "Online",
     eventJoinUrl: "Join link",
     /*
      * Spec 07 — the kind whose checkout is a form.

@@ -22,6 +22,7 @@ describe("brand icons", () => {
     "TikTok",
     "WhatsApp",
     "Pinterest",
+    "LinkedIn",
   ] as const;
 
   it.each(REQUIRED)("%s is exported", (name) => {

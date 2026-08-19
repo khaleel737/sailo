@@ -199,7 +199,15 @@ export async function testSendBroadcast(
   if (!gate.ok) return { ok: false, error: gate.error };
   const { shop, userEmail } = gate;
 
-  const limit = await rateLimit(`test-send:${shop.id}`, 10, 3_600);
+  const limit = await /*
+   * DECISION B — fails closed (spends the send quota).
+   *
+   * A test send is real mail on the shared Resend allowance, and that allowance
+   * also carries every buyer's receipt. Ten an hour is generous for a seller
+   * checking a template and the only thing standing between a loop and the
+   * transactional stream.
+   */
+  rateLimit(`test-send:${shop.id}`, 10, 3_600, { onOutage: "closed" });
   if (!limit.allowed) {
     return { ok: false, error: "That's a lot of test sends — try again later." };
   }

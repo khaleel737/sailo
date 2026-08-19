@@ -36,7 +36,12 @@ import { intervalCountOf, intervalOf, isMembership } from "@sailo/commerce/membe
 import { createManualSubscription } from "@sailo/commerce/memberships/server";
 import { claimCouponRedemption } from "@sailo/commerce/coupons";
 import { policySnapshotsForOrder } from "@sailo/commerce/disputes";
-import { claimSlots, releaseSlots, slotEnd } from "@sailo/commerce/booking/server";
+import {
+  claimSlots,
+  firstFreeStaff,
+  releaseSlots,
+  slotEnd,
+} from "@sailo/commerce/booking/server";
 import { downloadUrl, newDownloadToken, releasesImmediately } from "@/lib/downloads";
 import { resolveDigitalDelivery } from "@sailo/commerce/orders/server";
 import { eventSalesOpen, ticketValues } from "@sailo/commerce/ticketing";
@@ -839,18 +844,49 @@ export async function createOrderIntent(
    * After the insert because the claim carries a foreign key to the order, and
    * before the coupon because losing a slot must not also burn a discount.
    */
-  const slots = lines.flatMap((line) =>
-    line.scheduledFor && line.productId
-      ? [
-          {
-            productId: line.productId,
-            startsAt: line.scheduledFor,
-            // The range, not just the start: two appointments that overlap are
-            // as double-booked as two that begin together.
-            endsAt: slotEnd(line.scheduledFor, line.product.durationMinutes),
-          },
-        ]
-      : [],
+  const slots = await Promise.all(
+    lines
+      .filter((line) => line.scheduledFor && line.productId)
+      .map(async (line) => {
+        const startsAt = line.scheduledFor as Date;
+        const endsAt = slotEnd(startsAt, line.product.durationMinutes);
+        /*
+         * Who the appointment is with — spec 51.
+         *
+         * Asked at the moment the claim is taken rather than when the calendar
+         * was rendered, because those are different instants and the second is
+         * the one that has to be true. It is a *read* and not the guard: two
+         * buyers racing for the last stylist can both be told "Sam is free"
+         * here, and the exclusion constraint hands the slot to exactly one of
+         * them.
+         *
+         * Null for a shop with no staff rows, which is every shop today, and
+         * that null is what the constraint's `COALESCE(staff_id, product_id)`
+         * falls back on — so nothing about this path changes for them.
+         */
+        const staff = await firstFreeStaff({
+          shopId: shop.id,
+          productId: line.productId as string,
+          startsAt,
+          endsAt,
+        });
+
+        return {
+          productId: line.productId as string,
+          startsAt,
+          // The range, not just the start: two appointments that overlap are
+          // as double-booked as two that begin together.
+          endsAt,
+          staffId: staff?.id ?? null,
+          /*
+           * A class takes seats rather than the whole slot — spec 51. Null or
+           * one is an ordinary appointment, which is every service today, and
+           * the two paths are chosen by this number alone.
+           */
+          seats: line.quantity,
+          capacity: line.product.bookingCapacity,
+        };
+      }),
   );
   const gotSlots = await claimSlots(order.id, slots).catch(async (error: unknown) => {
     /*

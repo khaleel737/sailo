@@ -33,7 +33,15 @@ export async function requestPortalLink(email: string): Promise<{ ok: true }> {
    * limited" to one address and "ok" to another would leak exactly what the
    * constant reply is here to hide.
    */
-  const gate = await rateLimit(`portal:${await callerIp()}`, 5, 900);
+  /*
+   * DECISION B — fails closed (sends mail to a caller-chosen address, and is an
+   * existence oracle). The reply above is a constant `ok` whatever happens, so
+   * closing this loses nothing a caller could learn from and stops an outage
+   * becoming an unmetered mailer aimed at anybody's inbox.
+   */
+  const gate = await rateLimit(`portal:${await callerIp()}`, 5, 900, {
+    onOutage: "closed",
+  });
   if (!gate.allowed) return { ok: true };
 
   const address = email.trim().toLowerCase();
@@ -69,7 +77,13 @@ export async function savePayoutDetails(
    * to be real. An affiliate correcting a typo twice costs nothing; ten
    * invalid tokens from one connection ends the guessing for the window.
    */
-  const gate = await rateLimit(`portal-write:${await callerIp()}`, 10, 900);
+  /*
+   * DECISION B — fails closed (token guessing). A portal token is the whole
+   * authorisation for somebody else's payout details.
+   */
+  const gate = await rateLimit(`portal-write:${await callerIp()}`, 10, 900, {
+    onOutage: "closed",
+  });
   if (!gate.allowed) {
     return { ok: false, error: "Too many attempts — try again in a few minutes." };
   }
@@ -151,7 +165,13 @@ export async function savePayoutDetails(
 export async function rotatePortalToken(formData: FormData): Promise<void> {
   // Same budget and same charge-misses shape as the save above: the two
   // actions are the same lookup as far as a token-guesser is concerned.
-  const gate = await rateLimit(`portal-write:${await callerIp()}`, 10, 900);
+  /*
+   * DECISION B — fails closed (token guessing). A portal token is the whole
+   * authorisation for somebody else's payout details.
+   */
+  const gate = await rateLimit(`portal-write:${await callerIp()}`, 10, 900, {
+    onOutage: "closed",
+  });
   if (!gate.allowed) return;
 
   const token = String(formData.get("token") ?? "").trim();

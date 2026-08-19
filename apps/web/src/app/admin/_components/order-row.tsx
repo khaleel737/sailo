@@ -4,17 +4,15 @@ import {
   Download,
   FileText,
   MapPin,
-  Trash2,
   Truck,
 } from "lucide-react";
-import { deleteOrder } from "@/lib/actions/order-admin";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { OrderStatusSelect } from "@/app/admin/orders/_components/order-status-select";
 import { PaymentStatusSelect } from "@/app/admin/orders/_components/payment-status-select";
 import { OrderActions } from "@/app/admin/orders/_components/order-actions";
 import { ShipmentsPanel } from "@/app/admin/orders/_components/shipments-panel";
 import { shipmentsForOrder } from "@sailo/commerce/orders/server";
-import { Badge, Button } from "@sailo/design-system/web";
+import { Badge } from "@sailo/design-system/web";
 import { orderStatusLabel, orderStatusTone } from "@sailo/core/order-status";
 import { getAdminT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
@@ -76,7 +74,14 @@ export async function OrderRow({
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <p className="text-sm font-medium">
-              {order.productTitle}
+              {/* The order's own page, where the full story and its controls
+                  live — this row is the client-history summary of it. */}
+              <Link
+                href={`/admin/orders/${order.id}`}
+                className="focus-ring rounded underline-offset-2 hover:underline"
+              >
+                {order.productTitle}
+              </Link>
               {order.variantLabel ? (
                 <span className="text-ink-500"> — {order.variantLabel}</span>
               ) : null}
@@ -366,18 +371,8 @@ export async function OrderRow({
             paymentStatus={order.paymentStatus}
           />
           <OrderStatusSelect orderId={order.id} status={order.status} />
-          <form action={deleteOrder}>
-            <input type="hidden" name="id" value={order.id} />
-            <Button
-              variant="ghost"
-              size="sm"
-              type="submit"
-              aria-label={a.orders.deleteOrder}
-              className="text-ink-400 hover:bg-red-50 hover:text-red-600"
-            >
-              <Trash2 className="size-4" />
-            </Button>
-          </form>
+          {/* Deleting moved to the order's own page, behind a confirm — it
+              was a bare icon here, one mis-tap from removing an order. */}
         </div>
       </div>
 

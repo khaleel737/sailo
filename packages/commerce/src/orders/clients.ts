@@ -119,6 +119,8 @@ export async function upsertClient(
       email: data.email,
       phone: data.phone,
       ...address,
+      // Insert only — see the argument's own note.
+      ...(source ? { source } : {}),
       marketingConsentAt: grantedConsent,
     })
     .onConflictDoNothing()

@@ -54,7 +54,15 @@ export async function openMembershipPortal(formData: FormData): Promise<void> {
    * costs a database lookup and a Stripe call, and the address is what bounds
    * somebody trying thousands of them.
    */
-  const gate = await rateLimit(`portal:${await callerIp()}`, 10, 300);
+  /*
+   * DECISION B — fails closed (token guessing, and each attempt spends a Stripe
+   * call). The refusal redirects to `?busy=1`, which says the request could not
+   * be served now and says nothing about whether the token was real — the same
+   * sentence for a spent budget and for no budget at all.
+   */
+  const gate = await rateLimit(`portal:${await callerIp()}`, 10, 300, {
+    onOutage: "closed",
+  });
   if (!gate.allowed) redirect(`/download/${encodeURIComponent(token)}?busy=1`);
 
   const order = await getDb().query.orders.findFirst({

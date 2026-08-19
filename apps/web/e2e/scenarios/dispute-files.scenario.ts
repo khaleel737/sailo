@@ -132,12 +132,12 @@ vi.mock("@sailo/payments/disputes", async (importOriginal) => {
 const {
   attachEvidenceFile,
   detachEvidenceFile,
+  disputeReadiness,
   evidenceFileIdsFor,
   evidenceFilesFor,
   respondToDispute,
 } = await import("@sailo/commerce/disputes");
 const { getSellerDisputes } = await import("@/lib/seller-disputes");
-const { getDisputeDetail } = await import("@/lib/hq/disputes");
 const { POST: uploadRoute } = await import(
   "@/app/api/disputes/[id]/evidence/route"
 );
@@ -334,8 +334,8 @@ describe("attaching a document", () => {
      */
     const { dispute } = await fixture();
 
-    const before = await getDisputeDetail(dispute.id);
-    const gapBefore = before?.readiness?.evidence.fields.find(
+    const before = await disputeReadiness(dispute.id);
+    const gapBefore = before?.evidence.fields.find(
       (f) => f.field === "shipping_documentation",
     );
     expect(gapBefore?.status).not.toBe("held");
@@ -349,13 +349,13 @@ describe("attaching a document", () => {
       uploadedBy: "staff@sailo.test",
     });
 
-    const after = await getDisputeDetail(dispute.id);
-    const gapAfter = after?.readiness?.evidence.fields.find(
+    const after = await disputeReadiness(dispute.id);
+    const gapAfter = after?.evidence.fields.find(
       (f) => f.field === "shipping_documentation",
     );
     expect(gapAfter?.status).toBe("held");
-    expect(after?.readiness?.evidence.completenessBp).toBeGreaterThan(
-      before?.readiness?.evidence.completenessBp ?? 0,
+    expect(after?.evidence.completenessBp).toBeGreaterThan(
+      before?.evidence.completenessBp ?? 0,
     );
   });
 

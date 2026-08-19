@@ -1,5 +1,5 @@
 import { EmptyRow, Table, Td, Th, Tr } from "@/app/_components/hq-table";
-import { SectionTitle, When } from "@/app/_components/hq-ui";
+import { RowLink, SectionTitle, When } from "@/app/_components/hq-ui";
 import { Badge } from "@sailo/design-system/web";
 import { PAYMENT_STATUS_TONES } from "@sailo/core/payment-status";
 import { orderSummaryTitle } from "@sailo/core/order-lines";
@@ -35,11 +35,13 @@ export function OrdersTable({ detail }: { detail: AccountCommerce }) {
         <EmptyRow colSpan={6}>No orders yet.</EmptyRow>
       ) : (
         detail.recentOrders.map((order) => (
-          <Tr key={order.id}>
+          <Tr key={order.id} className="relative cursor-pointer">
             <Td className="max-w-56">
-              <span className="block truncate text-ink-900">
-                {orderSummaryTitle(order)}
-              </span>
+              <RowLink href={`/orders/${order.id}`} className="block">
+                <span className="block truncate text-ink-900">
+                  {orderSummaryTitle(order)}
+                </span>
+              </RowLink>
               <span className="text-xs text-ink-400">
                 {order.itemCount} item{order.itemCount === 1 ? "" : "s"}
                 {order.affiliateCode ? ` · ref ${order.affiliateCode}` : ""}

@@ -8,6 +8,7 @@ import {
   type BroadcastState,
 } from "@/lib/actions/broadcasts";
 import { Alert, Button, Card, Field, Input } from "@sailo/design-system/web";
+import { ShareLinkButton } from "@/app/admin/_components/share-link-dialog";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { interpolate } from "@sailo/i18n";
 
@@ -78,18 +79,25 @@ export function GrowCard({
       </div>
 
       <Field label={a.broadcasts.signupLink} htmlFor="signup-link">
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Input
             id="signup-link"
             readOnly
             value={url}
             onFocus={(e) => e.currentTarget.select()}
-            className="font-mono text-xs"
+            className="min-w-0 flex-1 basis-52 font-mono text-xs"
           />
           <Button variant="secondary" type="button" onClick={copy}>
             {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
             {copied ? a.broadcasts.copied : a.broadcasts.copyLink}
           </Button>
+          {/* The link as a QR — a counter card, a flyer, a slide. */}
+          <ShareLinkButton
+            url={url}
+            title={a.share.signupTitle}
+            body={a.share.signupBody}
+            fileName="signup"
+          />
         </div>
       </Field>
 

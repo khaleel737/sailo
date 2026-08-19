@@ -44,6 +44,7 @@ export async function GET(
       kind: true,
       bookingEnabled: true,
       bookingLeadHours: true,
+      bookingBufferMinutes: true,
       durationMinutes: true,
     },
   });

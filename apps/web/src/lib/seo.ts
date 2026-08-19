@@ -4,6 +4,7 @@ import type { DeliveryMethodType } from "@sailo/commerce/delivery";
 import type { PaymentMethodType } from "@/lib/payments";
 import { centsToAmount } from "@sailo/core/currency";
 import { PLAN_IDS, PLANS } from "@sailo/core/plans";
+import { SOCIALS } from "@sailo/marketing/socials";
 
 /**
  * Everything a crawler reads.
@@ -30,6 +31,27 @@ import { PLAN_IDS, PLANS } from "@sailo/core/plans";
  *
  * This file keeps what is actually its own: canonicals, metadata and JSON-LD.
  */
+
+/**
+ * Sailo, as the publisher of everything on this site.
+ *
+ * Written twice before — once under the application, once under the blog — and
+ * a function now because of `sameAs`. That array is what tells a search engine
+ * the Instagram account, the LinkedIn page and this domain are one
+ * organisation, which is the difference between a knowledge panel that carries
+ * the social profiles and one that doesn't. Two copies of it would eventually
+ * be two different lists, and a `sameAs` naming a profile the footer doesn't
+ * link is a claim about identity made with no evidence on the page.
+ */
+function publisher() {
+  return {
+    "@type": "Organization",
+    name: "Sailo",
+    url: appOrigin(),
+    logo: absolute("/brand/sailo-mark-512.png"),
+    sameAs: SOCIALS.map((account) => account.url),
+  };
+}
 
 /**
  * The product itself, for the knowledge panel and for anything that wants to
@@ -70,12 +92,7 @@ export function softwareJsonLd(m: MarketingDictionary) {
       offerCount: String(PLAN_IDS.length),
       availability: "https://schema.org/InStock",
     },
-    publisher: {
-      "@type": "Organization",
-      name: "Sailo",
-      url: appOrigin(),
-      logo: absolute("/brand/sailo-mark-512.png"),
-    },
+    publisher: publisher(),
   };
 }
 
@@ -266,12 +283,7 @@ export function blogJsonLd(blog: {
     description: blog.description,
     url: absolute(blog.path),
     inLanguage: blog.locale,
-    publisher: {
-      "@type": "Organization",
-      name: "Sailo",
-      url: appOrigin(),
-      logo: absolute("/brand/sailo-mark-512.png"),
-    },
+    publisher: publisher(),
   };
 }
 

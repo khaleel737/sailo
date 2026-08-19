@@ -31,6 +31,7 @@ import {
   type SaveProductRefusal,
 } from "@sailo/commerce/products";
 import { requireShop } from "@/lib/session";
+import { getAdminT } from "@/i18n/server";
 import { notifySellerOfLowStock } from "@sailo/workflows/orders";
 import { notifyBackInStock } from "@sailo/workflows/catalog";
 import { parseMoneyToCents } from "@sailo/core/currency";
@@ -72,12 +73,32 @@ function sentenceFor(refusal: SaveProductRefusal): string {
         : "Add the code or joining details buyers get after paying.";
     case "digital_link_not_public":
       return "The download link must be a public https:// address.";
+    /*
+     * Three different problems behind one refusal, and a seller cannot guess
+     * which they hit — so each gets its own sentence. The third is the one
+     * worth wording carefully: a pattern that folds to the length of a ticket
+     * or a member pass would put a third string into a space the door resolves
+     * by arithmetic, and "make it longer or shorter" is the only instruction
+     * that actually fixes it.
+     */
+    case "code_pattern_invalid":
+      return refusal.reason === "not_enough_random"
+        ? "A code pattern needs at least ten X's — each one becomes a random character."
+        : refusal.reason === "collides_with_scan_codes"
+          ? "That pattern is the same length as a ticket or a member pass. Add or remove a character."
+          : "That code pattern can't be used. Try something like SAILO-XXXX-XXXX-XXXX.";
     case "membership_needs_interval":
       return "Choose how often a membership is charged.";
     case "membership_needs_price":
       return "A membership needs a price to charge.";
     case "join_url_not_public":
       return "The join link must be a public https:// address.";
+    case "event_time_zone_unknown":
+      return "We don't recognise that time zone. Pick one from the list.";
+    case "event_needs_venue":
+      return "An in-person event needs an address before you publish it.";
+    case "event_needs_join_url":
+      return "An online event needs a join link before you publish it.";
     case "sell_window_inverted":
       return "Sales have to close after they open. Check the two dates.";
     case "pwyw_not_for_membership":
@@ -315,6 +336,16 @@ function readProduct(
     digitalDelivery: String(formData.get("digitalDelivery") ?? "file"),
     digitalLinkUrl: String(formData.get("digitalLinkUrl") ?? ""),
     digitalAccessDetails: text(formData.get("digitalAccessDetails"), 2000),
+    /*
+     * Spec 48. Blank is the shared string — today's behaviour — so an empty
+     * select must reach the domain as null rather than as a third state the
+     * `isCodeSource` guard would have to invent a meaning for.
+     */
+    codeSource: text(formData.get("codeSource"), 20),
+    codePattern: text(formData.get("codePattern"), 64),
+    licenseEnabled: formData.get("licenseEnabled") === "on",
+    licenseActivationLimit: optionalCount(formData.get("licenseActivationLimit"), 10_000),
+    licenseDays: optionalCount(formData.get("licenseDays"), 3650),
     releaseOnPayment: formData.get("releaseOnPayment") === "on",
     downloadLimit: optionalCount(formData.get("downloadLimit"), 1000),
     downloadExpiryDays: optionalCount(formData.get("downloadExpiryDays"), 3650),
@@ -325,6 +356,30 @@ function readProduct(
     bookingEnabled: formData.get("bookingEnabled") === "on",
     bookingLeadHours: optionalCount(formData.get("bookingLeadHours"), 24 * 365) ?? 0,
     bookingBufferMinutes: optionalCount(formData.get("bookingBufferMinutes"), 24 * 60),
+
+    /* ---- Spec 49 ------------------------------------------------------ */
+    termCycles: optionalCount(formData.get("termCycles"), 520),
+    accessAfterTerm: formData.get("accessAfterTerm") === "on",
+    minimumTermCycles: optionalCount(formData.get("minimumTermCycles"), 520),
+    cancelNoticeDays: optionalCount(formData.get("cancelNoticeDays"), 365),
+    cancelPolicyNote: text(formData.get("cancelPolicyNote"), 2000),
+    pauseMaxDays: optionalCount(formData.get("pauseMaxDays"), 365),
+
+    /* ---- Spec 50 ------------------------------------------------------- */
+    sessionMode: text(formData.get("sessionMode"), 20),
+    collectAttendeeDetails: formData.get("collectAttendeeDetails") === "on",
+    eventMode: text(formData.get("eventMode"), 20),
+    eventVenueName: text(formData.get("eventVenueName"), 200),
+    eventAddress: text(formData.get("eventAddress"), 500),
+    eventTimeZone: text(formData.get("eventTimeZone"), 64),
+    eventRefundPolicy: text(formData.get("eventRefundPolicy"), 2000),
+    eventRefundCutoffHours: optionalCount(formData.get("eventRefundCutoffHours"), 8760),
+    eventAllowSelfCancel: formData.get("eventAllowSelfCancel") === "on",
+
+    /* ---- Spec 51 ------------------------------------------------------- */
+    bookingCapacity: optionalCount(formData.get("bookingCapacity"), 500),
+    rescheduleCutoffHours: optionalCount(formData.get("rescheduleCutoffHours"), 8760),
+    cancelCutoffHours: optionalCount(formData.get("cancelCutoffHours"), 8760),
 
     eventStartsAt: readMoment(formData, "eventStartsAt"),
     eventEndsAt: readMoment(formData, "eventEndsAt"),
@@ -425,9 +480,20 @@ export async function saveProduct(
    */
   after(() => notifyBackInStock({ shop, productId: result.id }));
 
+  /*
+   * The one message on this form that is not English.
+   *
+   * Every refusal above is a hardcoded sentence — that is this file's standing
+   * convention and it is recorded debt, not an oversight. These two are
+   * different only because the keys already exist, translated into all 35
+   * languages, and were sitting unread: a German seller was told "Product
+   * updated." by a screen that was German everywhere else. Reading them costs
+   * one cookie lookup on a path that has already written to the database.
+   */
+  const { a } = await getAdminT();
   return {
     ok: true,
-    message: result.created ? "Product added." : "Product updated.",
+    message: result.created ? a.productForm.added : a.productForm.updated,
   };
 }
 

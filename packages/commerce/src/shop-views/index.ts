@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, desc, eq, sql } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import {
   affiliates,
@@ -90,7 +90,55 @@ export type OrderFilters = {
   paymentStatus?: string | null;
   /** Matched case-insensitively; coupon codes are stored uppercase. */
   couponCode?: string | null;
+  /**
+   * Free text over who bought and what — the question a seller actually
+   * arrives with ("where is Maria's mug order"). Matched against the buyer's
+   * name, their email and the headline product, case-insensitively.
+   */
+  search?: string | null;
 };
+
+/** The WHERE the two order reads share, so the list and its tab counts can
+ *  never disagree about which orders they are talking about. */
+function orderConditions(shopId: string, filters: OrderFilters) {
+  /*
+   * `%` and `_` are match syntax inside ILIKE, not text. A buyer named
+   * "100%" must be findable by typing exactly that, so the input's own
+   * wildcards are escaped before ours go on.
+   */
+  const term = filters.search
+    ? `%${filters.search.replace(/[\\%_]/g, "\\$&")}%`
+    : null;
+
+  return and(
+    eq(orders.shopId, shopId),
+    ...(filters.status ? [eq(orders.status, filters.status)] : []),
+    ...(filters.paymentMethod
+      ? [eq(orders.paymentMethod, filters.paymentMethod)]
+      : []),
+    ...(filters.paymentStatus
+      ? [eq(orders.paymentStatus, filters.paymentStatus)]
+      : []),
+    /*
+     * Read from the order's snapshot rather than joined through `couponId`.
+     * The snapshot is what the buyer was actually charged under, and it
+     * survives the coupon being renamed or deleted — a join would quietly
+     * stop finding last year's orders the day a seller tidies up their codes.
+     */
+    ...(filters.couponCode
+      ? [eq(orders.couponCode, filters.couponCode.toUpperCase())]
+      : []),
+    ...(term
+      ? [
+          or(
+            ilike(orders.customerName, term),
+            ilike(orders.customerEmail, term),
+            ilike(orders.productTitle, term),
+          ),
+        ]
+      : []),
+  );
+}
 
 /** A shop's orders, newest first, with the filters both panels offer. */
 export async function getShopOrders(
@@ -99,26 +147,37 @@ export async function getShopOrders(
   filters: OrderFilters = {},
 ) {
   return getDb().query.orders.findMany({
-    where: and(
-      eq(orders.shopId, shopId),
-      ...(filters.status ? [eq(orders.status, filters.status)] : []),
-      ...(filters.paymentMethod
-        ? [eq(orders.paymentMethod, filters.paymentMethod)]
-        : []),
-      ...(filters.paymentStatus
-        ? [eq(orders.paymentStatus, filters.paymentStatus)]
-        : []),
-      /*
-       * Read from the order's snapshot rather than joined through `couponId`.
-       * The snapshot is what the buyer was actually charged under, and it
-       * survives the coupon being renamed or deleted — a join would quietly
-       * stop finding last year's orders the day a seller tidies up their codes.
-       */
-      ...(filters.couponCode
-        ? [eq(orders.couponCode, filters.couponCode.toUpperCase())]
-        : []),
-    ),
+    where: orderConditions(shopId, filters),
     orderBy: [desc(orders.createdAt)],
     limit,
+  });
+}
+
+/**
+ * How many orders sit in each status, under the *other* filters.
+ *
+ * This is what the tabs above the list print, so it deliberately ignores
+ * `filters.status`: the tabs are the status dimension, and a count that
+ * narrowed by the selected tab would show every unselected tab as zero.
+ * Counted in the database rather than over the returned page, because the
+ * list is capped and a count over a sample is a lie with a number on it.
+ */
+export async function getShopOrderStatusCounts(
+  shopId: string,
+  filters: OrderFilters = {},
+): Promise<Record<string, number>> {
+  const rows = await getDb()
+    .select({ status: orders.status, count: sql<number>`count(*)::int` })
+    .from(orders)
+    .where(orderConditions(shopId, { ...filters, status: null }))
+    .groupBy(orders.status);
+
+  return Object.fromEntries(rows.map((r) => [r.status, r.count]));
+}
+
+/** One order, provably the shop's own — the detail page's read. */
+export async function getShopOrder(shopId: string, orderId: string) {
+  return getDb().query.orders.findFirst({
+    where: and(eq(orders.id, orderId), eq(orders.shopId, shopId)),
   });
 }

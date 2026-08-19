@@ -291,7 +291,16 @@ export async function applyAsAffiliate(
    * a denial of service against the whole fleet from a single caller, and the
    * opposite of what a per-applicant ceiling is for.
    */
-  const gate = await rateLimit(`affiliate-apply:${shopId}:${await callerIp()}`, 5, 900);
+  /*
+   * DECISION B — fails closed (public write).
+   *
+   * Anonymous and creates a row a seller has to triage. The refusal below is
+   * already `APPLICATION_RECEIVED`, which says nothing about whether the shop
+   * runs a programme — so failing closed adds no oracle, it only stops the rows.
+   */
+  const gate = await rateLimit(`affiliate-apply:${shopId}:${await callerIp()}`, 5, 900, {
+    onOutage: "closed",
+  });
   if (!gate.allowed) return APPLICATION_RECEIVED;
 
   const shop = await db.query.shops.findFirst({

@@ -120,6 +120,16 @@ const STORE_COPY = {
    */
   digitalNeedsFiles:
     "You can create it here, but add the file on the web admin before publishing — until you do, buyers get nothing.",
+  /*
+   * A membership on a cycle this screen cannot express.
+   *
+   * Every 2 weeks, every 3 months: the web form sets those, and the picker
+   * here offers monthly and yearly. Shown instead of the picker so a
+   * quarterly membership is never displayed as "Monthly" — the cycle itself
+   * rides through the save untouched either way.
+   */
+  customCycleOnWeb:
+    "This membership is billed on a custom cycle. Everything else saves normally; change the cycle on the web admin.",
 } as const;
 
 export type StoreCopy = typeof STORE_COPY;
