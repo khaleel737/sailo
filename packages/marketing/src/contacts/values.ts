@@ -1,7 +1,8 @@
 import "server-only";
 import { and, asc, eq, inArray, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { contactFieldValues, contactFields } from "@sailo/db/schema";
+import { clients, contactFieldValues, contactFields } from "@sailo/db/schema";
+import { enrolIfMatching } from "../automations/enrol";
 import type { OrderCustomField } from "@sailo/db/schema/json-types";
 import {
   asksAtCheckout,
@@ -427,5 +428,51 @@ export async function saveAnswers(input: {
       });
   }
 
+  /*
+   * `contact.updated` — spec 30's third trigger, fired with the keys that
+   * actually changed so a flow watching one field is not woken by another.
+   *
+   * Only when something was written. A submit that refused everything, or one
+   * where an import's blank columns all skipped, has changed nothing about
+   * this contact and must not enrol them.
+   */
+  if (clientId && written.length > 0) {
+    await announceContactUpdated(
+      input.shopId,
+      clientId,
+      written.map((answer) => answer.key),
+    );
+  }
+
   return { written, refused };
+}
+
+/**
+ * Starts any flow watching these fields.
+ *
+ * Swallows everything: the answers are already written, and a seller saving a
+ * contact card must see that it worked whatever an automation is doing.
+ */
+export async function announceContactUpdated(
+  shopId: string,
+  clientId: string,
+  fields: string[],
+): Promise<void> {
+  const client = await getDb().query.clients.findFirst({
+    where: eq(clients.id, clientId),
+    columns: { email: true },
+  });
+  // No address, nothing an email flow could reach. Not an error.
+  if (!client?.email) return;
+
+  try {
+    await enrolIfMatching({
+      shopId,
+      trigger: "contact.updated",
+      subject: { email: client.email.toLowerCase(), clientId },
+      context: { fields },
+    });
+  } catch (error) {
+    console.error("[sailo] contact.updated enrolment failed", error);
+  }
 }

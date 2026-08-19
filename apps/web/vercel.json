@@ -25,6 +25,10 @@
       "schedule": "2-59/5 * * * *"
     },
     {
+      "path": "/api/cron/automations",
+      "schedule": "4-59/5 * * * *"
+    },
+    {
       "path": "/api/cron/webhooks",
       "schedule": "*/5 * * * *"
     },

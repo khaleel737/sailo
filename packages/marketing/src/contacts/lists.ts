@@ -7,6 +7,7 @@ import {
   contactListMembers,
   contactLists,
 } from "@sailo/db/schema";
+import { enrolIfMatching } from "../automations/enrol";
 import {
   MAX_LIST_DESCRIPTION_LENGTH,
   MAX_LIST_NAME_LENGTH,
@@ -264,7 +265,55 @@ export async function joinList(input: {
     .returning({ status: contactListMembers.status, joinedAt: contactListMembers.joinedAt });
 
   const settled = row?.status === "subscribed" ? "subscribed" : "pending";
-  return { status: settled, changed: row?.joinedAt?.getTime() === now.getTime() };
+  const changed = row?.joinedAt?.getTime() === now.getTime();
+
+  /*
+   * `list.joined`, announced inside the write.
+   *
+   * Here rather than at the caller, for the reason `broadcasts/subscribe`
+   * raises `contact.created` here: an announcement a caller has to remember is
+   * an announcement two of the four call sites will forget. It is one of the
+   * two deliberate exceptions the workflows package's header records.
+   *
+   * **Only on a real join, and only when they are actually subscribed.** A
+   * re-add that changed nothing must not re-enrol somebody into a welcome
+   * sequence they already walked, and a `pending` member has not joined yet —
+   * enrolling them would start a flow for an address nobody has confirmed.
+   * `confirmMembership` fires it when they do confirm, which is the moment the
+   * join becomes true.
+   */
+  if (changed && settled === "subscribed") {
+    await announceListJoin(input.shopId, list.id, client.id, client.email);
+  }
+
+  return { status: settled, changed };
+}
+
+/**
+ * Starts any flow waiting on this list.
+ *
+ * Swallows everything. A seller adding somebody to a list must see that it
+ * worked whatever an automation is doing, and `enrolIfMatching` is not the
+ * kind of failure that should undo the membership row that is already
+ * written.
+ */
+async function announceListJoin(
+  shopId: string,
+  listId: string,
+  clientId: string,
+  email: string | null,
+): Promise<void> {
+  if (!email) return;
+  try {
+    await enrolIfMatching({
+      shopId,
+      trigger: "list.joined",
+      subject: { email: email.toLowerCase(), clientId },
+      context: { listId },
+    });
+  } catch (error) {
+    console.error("[sailo] list.joined enrolment failed", error);
+  }
 }
 
 /**
@@ -337,7 +386,17 @@ export async function confirmMembership(input: {
         )`,
       ),
     )
-    .returning({ clientId: contactListMembers.clientId });
+    .returning({ clientId: contactListMembers.clientId, email: contactListMembers.email });
+
+  /*
+   * The other moment a join becomes true. On a double-opt-in list `joinList`
+   * wrote `pending` and announced nothing; this is the click, so the trigger
+   * fires here — exactly once per join, from whichever of the two paths
+   * actually completed it.
+   */
+  if (updated) {
+    await announceListJoin(input.shopId, input.listId, input.clientId, updated.email);
+  }
   return Boolean(updated);
 }
 

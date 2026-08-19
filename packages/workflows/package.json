@@ -27,6 +27,7 @@
     "@sailo/db": "workspace:*",
     "@sailo/email": "workspace:*",
     "@sailo/events": "workspace:*",
+    "@sailo/marketing": "workspace:*",
     "@sailo/notifications": "workspace:*",
     "@sailo/partners": "workspace:*",
     "@sailo/rate-limit": "workspace:*",

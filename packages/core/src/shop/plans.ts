@@ -60,6 +60,18 @@ export type Features = {
    */
   integrations: boolean;
   /**
+   * Flows — a sequence the seller builds once that runs on its own (spec 30),
+   * and the scenarios built on the same runner (spec 31).
+   *
+   * Business, and its own flag rather than riding `broadcasts`. The two sit on
+   * the same tier today and they are not the same entitlement: a broadcast is
+   * one message a seller wrote and pressed send on; a flow keeps sending after
+   * they close the laptop. Reading one to infer the other is the bug
+   * `memberships` records beside `cardRails` — the day either moves, a shared
+   * flag moves both.
+   */
+  automations: boolean;
+  /**
    * Quote the buyer in their own currency, at a price the seller typed.
    *
    * Pro rather than Business, and rather than free. It is a selling feature —
@@ -154,6 +166,7 @@ export const PLANS: Record<PlanId, Plan> = {
       broadcasts: false,
       memberships: false,
       integrations: false,
+      automations: false,
       regionalPricing: false,
       pricingModes: false,
       weightBands: false,
@@ -188,6 +201,7 @@ export const PLANS: Record<PlanId, Plan> = {
       broadcasts: false,
       memberships: false,
       integrations: false,
+      automations: false,
       regionalPricing: true,
       pricingModes: true,
       weightBands: false,
@@ -214,6 +228,7 @@ export const PLANS: Record<PlanId, Plan> = {
       broadcasts: true,
       memberships: true,
       integrations: true,
+      automations: true,
       regionalPricing: true,
       pricingModes: true,
       weightBands: true,

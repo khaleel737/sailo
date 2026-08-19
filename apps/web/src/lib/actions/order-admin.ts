@@ -7,16 +7,21 @@ import { getDb } from "@sailo/db";
 import { clients, orders } from "@sailo/db/schema";
 import { publishAffiliateEvent, publishShopEvent } from "@sailo/events";
 import { requireShop } from "@/lib/session";
+import { revalidateShop } from "@/lib/cache";
 import { formatMoney, parseMoneyToCents } from "@sailo/core/currency";
 import { restoreStock } from "@sailo/commerce/catalog";
 import { changeOrderStatus } from "@sailo/commerce/orders/server";
 import { refundOrder as refund } from "@sailo/commerce/orders/server";
 import { shipOrder as ship } from "@sailo/commerce/orders/server";
+import { recordShipment } from "@sailo/commerce/orders/server";
+import { can } from "@sailo/core/plans";
 import { setPaymentStatus as pay } from "@sailo/commerce/orders/server";
 import { sendDownloadReady } from "@sailo/email/transactional";
 import { isOrderStatus } from "@sailo/core/order-status";
 import { sendBookingDecision, sendRefundNotification, sendShippingNotification } from "@/lib/email";
+import { arrivalUrl, confirmDelivery, logOrderMessage } from "@sailo/commerce/disputes";
 import { emitOrderWebhook } from "@sailo/webhooks/emit";
+import { announceOrderPaid } from "@sailo/workflows/orders";
 import type { ActionState } from "./shop";
 
 /**
@@ -136,7 +141,16 @@ export async function updatePaymentStatus(formData: FormData) {
   after(() => publishShopEvent(shop.id, "payment"));
 
   if (result.becamePaid) {
-    after(() => emitOrderWebhook({ shop, event: "order.paid", orderId: id }));
+    /*
+     * One call, not two. The webhook and spec 30's `product.purchased`
+     * enrolment are the same announcement made to two audiences, and the card
+     * rail's settlement handler makes it too — a second copy here is the
+     * "guard at one sink and not its twin" shape, on a path where the symptom
+     * is a flow that silently never runs for bank-transfer buyers.
+     */
+    after(() =>
+      announceOrderPaid({ shop, orderId: id }),
+    );
   }
 }
 

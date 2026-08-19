@@ -11,6 +11,7 @@ import { createInvoiceForOrder } from "@/lib/invoices";
 import { confirmBuyerByEmail } from "@sailo/workflows/orders";
 import { notifySellerOfOrder } from "@sailo/workflows/orders";
 import { emitOrderWebhook } from "@sailo/webhooks/emit";
+import { announceOrderPaid } from "@sailo/workflows/orders";
 import { intentIdOf, orderForIntent, orderForSession } from "@sailo/payments";
 import { taxFromSession } from "@sailo/payments/tax";
 import { presentmentFromSession } from "@sailo/payments/presentment";
@@ -268,11 +269,14 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
             event: "order.created",
             orderId: order.id,
           });
-          await emitOrderWebhook({
-            shop: paidShop,
-            event: "order.paid",
-            orderId: order.id,
-          });
+          /*
+           * One call, not two. The webhook and spec 30's `product.purchased`
+           * enrolment are the same announcement made to two audiences, and
+           * the seller's own "mark as paid" makes it too — a second copy is
+           * the "guard at one sink and not its twin" shape, on a path where
+           * the symptom is a flow that runs for one rail and not the other.
+           */
+          await announceOrderPaid({ shop: paidShop, orderId: order.id });
         }
       }
 

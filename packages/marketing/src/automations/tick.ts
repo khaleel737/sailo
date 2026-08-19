@@ -378,7 +378,7 @@ async function runSend(
    * bought the right to keep sending them, and the check that gates the button
    * is worth nothing if the tick does not make it too.
    */
-  if (!can(shop, "broadcasts")) {
+  if (!can(shop, "automations")) {
     await step(run.id, node, "skipped", "plan");
     return moveTo(run, nextNode(graph, node.id), now);
   }
