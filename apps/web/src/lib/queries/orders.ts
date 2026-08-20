@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq, isNotNull } from "drizzle-orm";
+import { and, eq, gte, isNotNull, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { orders, type Order } from "@sailo/db/schema";
 import { orderLines, orderLinesMap } from "@/lib/order-lines";
@@ -48,6 +48,32 @@ export {
   getShopOrders,
   getShopOrderStatusCounts,
 } from "@sailo/commerce/shop-views";
+
+/**
+ * What settled over card in the last thirty days, net of refunds.
+ *
+ * One number with one reader: the plan cards, which turn the fee ladder into
+ * this shop's own arithmetic — "on Business you'd have kept ~$X more". The
+ * WHERE mirrors where the platform fee is actually charged: card orders that
+ * were paid, with whatever was later refunded taken back out.
+ */
+export async function cardNetLast30Days(shopId: string): Promise<number> {
+  const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  const rows = await getDb()
+    .select({
+      cents: sql<number>`coalesce(sum(${orders.totalCents} - ${orders.refundedCents}), 0)::int`,
+    })
+    .from(orders)
+    .where(
+      and(
+        eq(orders.shopId, shopId),
+        eq(orders.paymentMethod, "card"),
+        eq(orders.paymentStatus, "paid"),
+        gte(orders.createdAt, since),
+      ),
+    );
+  return rows[0]?.cents ?? 0;
+}
 
 /** Every coupon code that has actually been used, for the filter's options. */
 export async function usedCouponCodes(shopId: string): Promise<string[]> {

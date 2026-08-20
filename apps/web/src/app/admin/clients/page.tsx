@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Users } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { CLIENT_LIMIT, getShopClients } from "@/lib/queries";
 import { normalizeTag, tagVocabulary } from "@sailo/core/tags";
-import { PageHeader } from "@sailo/design-system/web";
+import { PageHeader, PeopleArt } from "@sailo/design-system/web";
 import { ExportButton } from "@/app/admin/_components/export-button";
 import { AddContact } from "./_components/add-contact";
 import { Table, Td, Th, Tr } from "@sailo/design-system/web";
@@ -100,7 +99,7 @@ export default async function AdminClientsPage({
 
       {clients.length === 0 ? (
         <EmptyState
-          icon={<Users className="size-6" />}
+          art={<PeopleArt />}
           title={tag ? a.clients.noneTagged : a.clients.empty}
           description={tag ? a.clients.noneTaggedBody : a.clients.emptyBody}
         />

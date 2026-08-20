@@ -26,7 +26,7 @@ import { ReferralCard } from "@/app/admin/_components/referral-card";
 import { analyticsLimit, planFor } from "@sailo/core/plans";
 import { resolveAnalyticsWindow, type DateWindow } from "@sailo/analytics/window";
 import { CopyLink } from "@sailo/design-system/web";
-import { Badge, Card, EmptyState, Stat } from "@sailo/design-system/web";
+import { Badge, Card, EmptyState, Sparkline, Stat } from "@sailo/design-system/web";
 import { orderStatusLabel, orderStatusTone } from "@sailo/core/order-status";
 import { formatMoney } from "@sailo/core/currency";
 import { getAdminT, getLocale, getT } from "@/i18n/server";
@@ -233,15 +233,34 @@ export default async function AdminOverviewPage({
       </div>
 
       <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {/*
+          The two tiles with a day-by-day series carry a sparkline — the
+          Analytics grammar: the figure says where you are, the line says
+          which way you've been going. Traffic draws in ink, money in brand
+          green; the other two tiles keep their written hints instead of a
+          chart they'd have to fake.
+        */}
         <Stat
           icon={<Eye className="size-4" />}
           label={a.dashboard.visits}
           value={stats.visitsInRange.toLocaleString()}
+          chart={
+            <Sparkline
+              values={visitSeries.map((d) => d.count)}
+              className="text-ink-400"
+            />
+          }
         />
         <Stat
           icon={<Users className="size-4" />}
           label={a.dashboard.uniqueVisitors}
           value={stats.uniqueVisitorsInRange.toLocaleString()}
+          chart={
+            <Sparkline
+              values={visitSeries.map((d) => d.unique)}
+              className="text-ink-300"
+            />
+          }
         />
         <Stat
           icon={<ShoppingBag className="size-4" />}
@@ -272,6 +291,12 @@ export default async function AdminOverviewPage({
           icon={<Wallet className="size-4" />}
           label={a.dashboard.netRevenue}
           value={money(stats.netRevenueCents)}
+          chart={
+            <Sparkline
+              values={revenueSeries.map((d) => d.cents)}
+              className="text-brand-600"
+            />
+          }
           hint={
             [
               stats.refundedCents > 0

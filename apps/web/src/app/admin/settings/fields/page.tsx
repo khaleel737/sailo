@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { fieldsFor } from "@sailo/marketing/contacts/server";
-import { PageHeader } from "@sailo/design-system/web";
 import { FieldManager } from "./_components/field-manager";
 
 export const metadata: Metadata = { title: "Custom fields" };
@@ -25,10 +24,10 @@ export default async function CustomFieldsPage() {
 
   return (
     <>
-      <PageHeader
-        title={a.broadcasts.fieldsTitle}
-        description={a.broadcasts.fieldsDescription}
-      />
+      {/* The overlay's rail names this section; only the intro stays here. */}
+      <p className="mb-5 -mt-3 max-w-prose text-sm leading-relaxed text-ink-500">
+        {a.broadcasts.fieldsDescription}
+      </p>
       <FieldManager fields={fields} />
     </>
   );

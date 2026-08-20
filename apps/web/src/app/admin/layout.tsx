@@ -1,10 +1,8 @@
 import { GoogleTag } from "@/lib/google-tag";
 import { ConsentGate } from "@/components/shared/consent-gate";
 import { Sidebar } from "@/app/admin/_components/sidebar";
-import {
-  AdminHeader,
-  AdminHeaderCompact,
-} from "@/app/admin/_components/admin-header";
+import { Topbar } from "@/app/admin/_components/topbar";
+import type { PaletteEntry } from "@/app/admin/_components/command-palette";
 import { getDashboardStats } from "@/lib/queries";
 import { getNotifications } from "@sailo/notifications/feed";
 import { isStaff, requireShop } from "@/lib/session";
@@ -34,49 +32,93 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
 
   const dismissed = new Set(shop.dismissedNotifications);
   const notifications = all.filter((n) => !dismissed.has(n.id));
+  const docs = docsUrl();
+
+  /*
+   * Everything ⌘K can reach, named by the same dictionaries the rail reads —
+   * built here because the palette is a client component and labels are
+   * server truth. Pages first, then the verbs a seller reaches for between
+   * pages. Plain strings on purpose: this crosses the serialization line.
+   */
+  const entries: PaletteEntry[] = [
+    { label: t.nav.overview, href: "/admin", group: "pages" },
+    { label: t.nav.orders, href: "/admin/orders", group: "pages" },
+    { label: t.nav.checkin, href: "/admin/checkin", group: "pages" },
+    { label: t.nav.products, href: "/admin/products", group: "pages" },
+    { label: t.nav.categories, href: "/admin/categories", group: "pages" },
+    { label: t.nav.reviews, href: "/admin/reviews", group: "pages" },
+    { label: t.nav.clients, href: "/admin/clients", group: "pages" },
+    { label: t.nav.members, href: "/admin/members", group: "pages" },
+    { label: t.nav.testimonials, href: "/admin/testimonials", group: "pages" },
+    { label: t.nav.broadcasts, href: "/admin/broadcasts", group: "pages" },
+    { label: t.nav.coupons, href: "/admin/coupons", group: "pages" },
+    { label: t.nav.affiliates, href: "/admin/affiliates", group: "pages" },
+    { label: t.nav.payments, href: "/admin/payments", group: "pages" },
+    { label: t.nav.delivery, href: "/admin/delivery", group: "pages" },
+    { label: t.nav.dataRequests, href: "/admin/data-requests", group: "pages" },
+    { label: t.nav.settings, href: "/admin/settings", group: "pages" },
+    ...(
+      [
+        [a.settings.tabBilling, "/admin/settings/billing"],
+        [a.tax.title, "/admin/settings/tax"],
+        [a.settings.tabTeam, "/admin/settings/team"],
+        [a.productForm.staffTitle, "/admin/settings/staff"],
+        [a.integrations.title, "/admin/settings/integrations"],
+        [a.broadcasts.fieldsTitle, "/admin/settings/fields"],
+        [a.legal.title, "/admin/settings/legal"],
+        [a.settings.tabSecurity, "/admin/settings/security"],
+        [a.settings.tabData, "/admin/settings/data"],
+      ] as const
+    ).map(([label, href]) => ({
+      label: `${t.nav.settings} · ${label}`,
+      href,
+      group: "pages" as const,
+    })),
+    { label: a.support.helpLabel, href: "/admin/support", group: "pages" },
+
+    { label: a.products.add, href: "/admin/products/new", group: "actions" },
+    { label: a.broadcasts.compose, href: "/admin/broadcasts/new", group: "actions" },
+    { label: t.nav.viewShop, href: `/${shop.handle}`, group: "actions", external: true },
+    { label: a.shell.docs, href: docs, group: "actions", external: true },
+  ];
+
+  const nav = {
+    pendingReviews: stats.pendingReviews,
+    newOrders: stats.newOrders,
+    t,
+  };
 
   return (
     <AdminI18nProvider value={a} locale={locale}>
-      <div
-        dir={dir}
-        lang={locale}
-        className="flex min-h-screen flex-col bg-ink-950 lg:flex-row"
-      >
-        <Sidebar
-          shopName={shop.name}
-          handle={shop.handle}
-          pendingReviews={stats.pendingReviews}
-          newOrders={stats.newOrders}
-          docsUrl={docsUrl()}
-          actions={
-            <AdminHeaderCompact
-              shop={shop}
-              notifications={notifications}
-              locale={locale}
-              t={t}
-            />
-          }
+      <div dir={dir} lang={locale} className="flex min-h-screen flex-col bg-ink-50">
+        <Topbar
+          shop={shop}
+          notifications={notifications}
+          locale={locale}
           t={t}
+          docsUrl={docs}
+          entries={entries}
+          nav={nav}
         />
-        <div className="flex min-w-0 flex-1 flex-col bg-ink-50">
-          <StatusBanners
-            shop={shop}
-            isStaff={staff}
-            unverifiedEmail={user.emailVerified ? null : user.email}
-          />
-          <AdminHeader
-            shop={shop}
-            notifications={notifications}
-            locale={locale}
-            t={t}
-          />
-          <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-            <div className="animate-fade mx-auto w-full max-w-6xl">
-              {children}
-            </div>
-          </main>
-          <PanelFooter labels={a.shell} />
+
+        <div className="flex flex-1">
+          <Sidebar {...nav} />
+
+          <div className="flex min-w-0 flex-1 flex-col">
+            <StatusBanners
+              shop={shop}
+              isStaff={staff}
+              unverifiedEmail={user.emailVerified ? null : user.email}
+            />
+            <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+              <div className="animate-fade mx-auto w-full max-w-6xl">
+                {children}
+              </div>
+            </main>
+            <PanelFooter labels={a.shell} />
+          </div>
         </div>
+
         {/*
           The panel re-renders itself when the shop changes under it — a
           webhook settling an order, a storefront visit landing. In the
@@ -85,7 +127,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
         */}
         <LiveRefresh url="/api/admin/events" />
         <GoogleTag />
-      <ConsentGate />
+        <ConsentGate />
       </div>
     </AdminI18nProvider>
   );

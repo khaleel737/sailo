@@ -8,7 +8,15 @@ import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { openBillingPortal, startCheckout } from "@/lib/actions/billing";
 import { syncSubscriptionForShop } from "@sailo/billing/sync";
-import { PLAN_IDS, PLANS, planFor, platformFeeLabel, productLimit } from "@sailo/core/plans";
+import {
+  PLAN_IDS,
+  PLANS,
+  formatFeeBp,
+  planFor,
+  platformFeeLabel,
+  productLimit,
+} from "@sailo/core/plans";
+import { cardNetLast30Days } from "@/lib/queries";
 import { billingEnabled } from "@sailo/payments";
 import { IntervalToggle } from "@/app/admin/settings/billing/_components/interval-toggle";
 import { Alert, Badge, Button, Card, Progress } from "@sailo/design-system/web";
@@ -45,6 +53,17 @@ export default async function BillingPage({
 
   const limit = productLimit(fresh);
   const atLimit = limit !== null && productCount >= limit;
+
+  /*
+   * The fee ladder, argued with this shop's own takings — the line Shopify's
+   * plans page never writes. Net card volume over the last thirty days times
+   * the fee difference is what a cheaper rate would actually have kept; each
+   * paid card states its own number. Zero for the many shops with no card
+   * sales yet, and the line simply doesn't render.
+   */
+  const cardNetCents = await cardNetLast30Days(fresh.id);
+  const keptCents = (planFeeBp: number) =>
+    Math.round((cardNetCents * (current.feeBp - planFeeBp)) / 10000);
 
   return (
     <>
@@ -187,6 +206,20 @@ export default async function BillingPage({
                     <p className="tabular text-xs text-ink-400">
                       {interpolate(a.billing.billedYearly, {
                         amount: formatMoney(price, "USD", locale),
+                      })}
+                    </p>
+                  ) : null}
+
+                  {/* Every tier states its card rate — the ladder is the
+                      product, so no card gets to leave it unsaid. */}
+                  <p className="mt-1.5 text-xs font-medium text-ink-500">
+                    {interpolate(a.billing.cardFee, { fee: formatFeeBp(plan.feeBp) })}
+                  </p>
+
+                  {keptCents(plan.feeBp) >= 100 ? (
+                    <p className="tabular mt-2 rounded-lg bg-brand-50 px-2.5 py-1.5 text-xs font-medium leading-snug text-brand-800">
+                      {interpolate(a.billing.keepMore, {
+                        amount: formatMoney(keptCents(plan.feeBp), fresh.currency, locale),
                       })}
                     </p>
                   ) : null}

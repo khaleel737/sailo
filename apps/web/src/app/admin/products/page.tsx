@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import { interpolate } from "@sailo/i18n";
 import Image from "next/image";
 import Link from "next/link";
-import { Eye, EyeOff, ImageIcon, Package, Plus, Trash2 } from "lucide-react";
+import { Eye, EyeOff, ImageIcon, Plus, Trash2 } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { ADMIN_PRODUCT_LIMIT, getAdminProducts } from "@/lib/queries";
 import { deleteProduct, toggleProductPublished } from "@/lib/actions/products";
-import { PageHeader } from "@sailo/design-system/web";
+import { PageHeader, TagsArt } from "@sailo/design-system/web";
 import { ExportButton } from "@/app/admin/_components/export-button";
 import { Table, Td, Th, Tr } from "@sailo/design-system/web";
 import { Badge, Button, EmptyState } from "@sailo/design-system/web";
@@ -65,7 +65,7 @@ export default async function AdminProductsPage() {
 
       {products.length === 0 ? (
         <EmptyState
-          icon={<Package className="size-6" />}
+          art={<TagsArt />}
           title={a.products.empty}
           description={a.products.emptyBody}
           action={

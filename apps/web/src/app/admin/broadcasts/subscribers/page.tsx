@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, Users } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import {
@@ -8,7 +8,7 @@ import {
   listSubscribers,
   subscriberStats,
 } from "@sailo/marketing/broadcasts/server";
-import { Card, EmptyState, PageHeader } from "@sailo/design-system/web";
+import { Card, EmptyState, PageHeader, PeopleArt } from "@sailo/design-system/web";
 import { interpolate } from "@sailo/i18n";
 import { SubscriberList } from "../_components/subscriber-list";
 
@@ -95,7 +95,7 @@ export default async function SubscribersPage() {
 
       {rows.length === 0 ? (
         <EmptyState
-          icon={<Users className="size-6" />}
+          art={<PeopleArt />}
           title={a.broadcasts.subscribersEmpty}
           description={a.broadcasts.subscribersEmptyBody}
         />

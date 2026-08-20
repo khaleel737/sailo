@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useActionState, useState } from "react";
+import { startTransition, useActionState, useRef, useState } from "react";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { saveProduct } from "@/lib/actions/products";
@@ -12,8 +12,10 @@ import {
   Field,
   Input,
   Select,
+  Stepper,
   Textarea,
 } from "@sailo/design-system/web";
+import { cn } from "@sailo/design-system/web/cn";
 import { centsToAmount } from "@sailo/core/currency";
 import { isProductKind, type ProductKind } from "@sailo/core/variants";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
@@ -54,6 +56,22 @@ import type { Category } from "@sailo/db/schema";
  * Only the active panel is rendered, which is what makes the exclusivity real
  * rather than visual: an input that is in the DOM is in the `FormData`, so a
  * hidden event panel would post a start time on a physical product.
+ *
+ * CREATING IS A FLOW, EDITING IS A PAGE
+ *
+ * A new product is five decisions asked one at a time — what is it, what is
+ * it called, what does it cost, its kind's own questions, and whether people
+ * can see it — behind a Stepper, the way onboarding already walks. Editing
+ * keeps every card on one page, because editing is random access: a wizard
+ * would put four clicks between a seller and a typo.
+ *
+ * The steps hide with CSS rather than unmounting, so every field a seller
+ * has passed is still in the DOM and therefore still in the one `FormData`
+ * this form submits. The kind panels keep their mount-only exclusivity —
+ * that logic is untouched. A `required` field left empty on a hidden step
+ * would make the browser try to focus something invisible at submit time, so
+ * the form catches `invalid` and walks back to the step that owns the field
+ * before asking the browser to say what's wrong.
  */
 
 function Submit({ isEdit, pending }: { isEdit: boolean; pending: boolean }) {
@@ -127,6 +145,50 @@ export function ProductForm({
   const [state, action, pending] = useActionState(saveProduct, { ok: false });
   const isEdit = Boolean(product);
 
+  /*
+   * The guided flow — creation only; editing renders every card at once.
+   * `step` is which of the five is visible; the rest stay mounted but hidden
+   * so their fields survive into the final FormData.
+   */
+  const flow = !isEdit;
+  const [step, setStep] = useState(0);
+  const formRef = useRef<HTMLFormElement>(null);
+  const stepLabels = [
+    a.productForm.stepKind,
+    a.productForm.stepBasics,
+    a.productForm.stepPrice,
+    a.productForm.stepDetails,
+    a.productForm.stepFinish,
+  ];
+  const lastStep = stepLabels.length - 1;
+
+  /** One named control, straight off the live form. */
+  const control = (name: string) =>
+    formRef.current?.elements.namedItem(name) as HTMLInputElement | null;
+
+  const goForward = () => {
+    /*
+     * The two gates a seller can actually fail early: a product needs a name
+     * before anything else makes sense, and a price before its kind's own
+     * questions do. The browser says what's wrong, on the field itself.
+     */
+    if (step === 1) {
+      const title = control("title");
+      if (title && !title.value.trim()) {
+        title.reportValidity();
+        return;
+      }
+    }
+    if (step === 2) {
+      const priceField = control("price");
+      if (priceField && !priceField.value.trim()) {
+        priceField.reportValidity();
+        return;
+      }
+    }
+    setStep((s) => Math.min(s + 1, lastStep));
+  };
+
   // The form shows different sections per kind and per toggle, so these are
   // held in state rather than read back from the DOM.
   const [kind, setKind] = useState<ProductKind>(() =>
@@ -153,6 +215,27 @@ export function ProductForm({
    */
   const membership = kind === "membership";
 
+  /*
+   * A render helper, not a component: a component defined inside render gets
+   * a new identity every pass and remounts its children — which empties every
+   * uncontrolled field it wraps. A function that returns JSX reconciles.
+   */
+  const wrapStep = (index: number, node: React.ReactNode) =>
+    flow ? (
+      <div
+        key={index}
+        data-step={index}
+        className={cn("space-y-5", step === index ? "animate-rise" : "hidden")}
+      >
+        {node}
+      </div>
+    ) : (
+      node
+    );
+
+  /* One jump per validation burst — see the header comment. */
+  const invalidJumped = useRef(false);
+
   return (
     <form
       /*
@@ -176,6 +259,32 @@ export function ProductForm({
         const data = new FormData(event.currentTarget);
         startTransition(() => action(data));
       }}
+      /*
+       * A `required` field left empty on a hidden step would make the browser
+       * try to focus something invisible and give up silently. Walk to the
+       * step that owns the first invalid field, then let the browser speak.
+       */
+      onInvalidCapture={(event) => {
+        if (!flow) return;
+        const el = event.target as HTMLInputElement;
+        if (invalidJumped.current) {
+          event.preventDefault();
+          return;
+        }
+        invalidJumped.current = true;
+        setTimeout(() => {
+          invalidJumped.current = false;
+        }, 0);
+
+        const holder = el.closest<HTMLElement>("[data-step]");
+        const owner = holder ? Number(holder.dataset.step) : null;
+        if (owner !== null && owner !== step) {
+          event.preventDefault();
+          setStep(owner);
+          requestAnimationFrame(() => el.reportValidity());
+        }
+      }}
+      ref={formRef}
       className="space-y-5"
     >
       {product ? <input type="hidden" name="id" value={product.id} /> : null}
@@ -185,23 +294,32 @@ export function ProductForm({
         <Alert tone="success">{state.message}</Alert>
       ) : null}
 
+      {flow ? (
+        <Stepper steps={stepLabels} current={step} className="px-1 pb-1" />
+      ) : null}
+
       {/* ---- What is being sold ------------------------------------------ */}
 
-      <Card className="space-y-4 p-5">
-        <div>
-          <h2 className="text-sm font-semibold text-ink-900">
-            {a.productForm.kindTitle}
-          </h2>
-          <p className="mt-0.5 text-xs leading-relaxed text-ink-500">
-            {a.productForm.kindBody}
-          </p>
-        </div>
-        <KindTabs value={kind} onChange={setKind} />
-      </Card>
+      {wrapStep(
+        0,
+        <Card className="space-y-4 p-5">
+          <div>
+            <h2 className="text-sm font-semibold text-ink-900">
+              {a.productForm.kindTitle}
+            </h2>
+            <p className="mt-0.5 text-xs leading-relaxed text-ink-500">
+              {a.productForm.kindBody}
+            </p>
+          </div>
+          <KindTabs value={kind} onChange={setKind} />
+        </Card>,
+      )}
 
       {/* ---- The four things every kind has ------------------------------- */}
 
-      <Card className="space-y-4 p-5">
+      {wrapStep(
+        1,
+        <Card className="space-y-4 p-5">
         <Field label={a.productForm.titleLabel} htmlFor="title">
           <Input
             id="title"
@@ -230,8 +348,12 @@ export function ProductForm({
         <Field label={a.productForm.photos}>
           <ImageUploader initial={product?.images.map((i) => i.url) ?? []} />
         </Field>
-      </Card>
+      </Card>,
+      )}
 
+      {wrapStep(
+        2,
+        <>
       <Card className="space-y-4 p-5">
         <div className="grid gap-4 sm:grid-cols-2">
           <Field
@@ -379,9 +501,13 @@ export function ProductForm({
           upgradeTo={pricingUpgradeTo}
         />
       )}
+        </>,
+      )}
 
       {/* ---- This kind's own settings ------------------------------------- */}
 
+      {wrapStep(
+        3,
       <div
         id={KIND_PANEL_ID}
         role="tabpanel"
@@ -458,10 +584,14 @@ export function ProductForm({
             regionalCurrencies={regionalCurrencies}
           />
         )}
-      </div>
+      </div>,
+      )}
 
       {/* ---- Visibility --------------------------------------------------- */}
 
+      {wrapStep(
+        4,
+        <>
       <Card className="space-y-3 p-5">
         <Toggle
           name="inStock"
@@ -483,15 +613,49 @@ export function ProductForm({
         />
       </Card>
 
-      <div className="flex items-center gap-3">
-        <Submit isEdit={isEdit} pending={pending} />
-        <Link
-          href="/admin/products"
-          className="focus-ring inline-flex items-center rounded text-sm text-ink-500 transition hover:text-ink-900 pointer-coarse:min-h-11"
-        >
-          {a.common.cancel}
-        </Link>
-      </div>
+      </>,
+      )}
+
+      {flow ? (
+        /*
+         * The flow's own footer: back on the start side, forward on the end
+         * side, and the real submit only where the seller can see everything
+         * they are about to publish.
+         */
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            {step > 0 ? (
+              <Button type="button" variant="ghost" onClick={() => setStep(step - 1)}>
+                {a.common.back}
+              </Button>
+            ) : (
+              <Link
+                href="/admin/products"
+                className="focus-ring inline-flex items-center rounded px-1 text-sm text-ink-500 transition hover:text-ink-900 pointer-coarse:min-h-11"
+              >
+                {a.common.cancel}
+              </Link>
+            )}
+          </div>
+          {step < lastStep ? (
+            <Button type="button" onClick={goForward}>
+              {a.common.continue}
+            </Button>
+          ) : (
+            <Submit isEdit={isEdit} pending={pending} />
+          )}
+        </div>
+      ) : (
+        <div className="flex items-center gap-3">
+          <Submit isEdit={isEdit} pending={pending} />
+          <Link
+            href="/admin/products"
+            className="focus-ring inline-flex items-center rounded text-sm text-ink-500 transition hover:text-ink-900 pointer-coarse:min-h-11"
+          >
+            {a.common.cancel}
+          </Link>
+        </div>
+      )}
     </form>
   );
 }

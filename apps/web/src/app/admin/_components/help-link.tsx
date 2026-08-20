@@ -9,7 +9,7 @@ import { useAdminT } from "./admin-i18n";
  * dictionary: the header is a server component holding the storefront `t`,
  * while this label lives with the rest of the admin copy in `a`.
  */
-export function HelpLink() {
+export function HelpLink({ variant = "light" }: { variant?: "light" | "onDark" }) {
   const a = useAdminT();
 
   return (
@@ -17,7 +17,11 @@ export function HelpLink() {
       href="/admin/support"
       aria-label={a.support.helpLabel}
       title={a.support.helpLabel}
-      className="focus-ring inline-flex h-9 pointer-coarse:h-11 items-center justify-center rounded-xl px-2.5 text-ink-600 transition hover:bg-ink-100 hover:text-ink-900"
+      className={
+        variant === "onDark"
+          ? "focus-ring inline-flex h-9 pointer-coarse:h-11 items-center justify-center rounded-lg px-2.5 text-white/70 transition hover:bg-white/10 hover:text-white"
+          : "focus-ring inline-flex h-9 pointer-coarse:h-11 items-center justify-center rounded-xl px-2.5 text-ink-600 transition hover:bg-ink-100 hover:text-ink-900"
+      }
     >
       <HelpCircle className="size-[18px]" />
     </Link>

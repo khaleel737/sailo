@@ -1,21 +1,13 @@
-import { SettingsNav } from "@/app/admin/settings/_components/settings-nav";
-import { getAdminT } from "@/i18n/server";
+import { SettingsShell } from "./_components/settings-shell";
 
-export default async function SettingsLayout({
+/*
+ * Settings render inside a full-screen overlay with their own rail — see
+ * `settings-shell.tsx` for why the modal is earned here. This layout stays
+ * a server component so every settings page keeps streaming through it;
+ * the shell is the client boundary.
+ */
+export default function SettingsLayout({
   children,
 }: LayoutProps<"/admin/settings">) {
-  const { a } = await getAdminT();
-
-  return (
-    <>
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold tracking-tight">
-          {a.settings.title}
-        </h1>
-        <p className="mt-1 text-sm text-ink-500">{a.settings.description}</p>
-      </div>
-      <SettingsNav />
-      {children}
-    </>
-  );
+  return <SettingsShell>{children}</SettingsShell>;
 }

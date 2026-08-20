@@ -9,7 +9,7 @@ import { can } from "@sailo/core/plans";
 import { shopSubscriptions } from "@/lib/membership-access";
 import { membershipAccess } from "@sailo/commerce/memberships";
 import { visitSummary } from "@sailo/commerce/memberships/server";
-import { PageHeader } from "@sailo/design-system/web";
+import { PageHeader, PeopleArt } from "@sailo/design-system/web";
 import { LockedFeature } from "@/app/admin/_components/locked-feature";
 import { Card, EmptyState, Stat } from "@sailo/design-system/web";
 import { formatMoney } from "@sailo/core/currency";
@@ -95,7 +95,7 @@ export default async function MembersPage() {
 
       {rows.length === 0 ? (
         <EmptyState
-          icon={<BadgeCheck className="size-6" />}
+          art={<PeopleArt />}
           title={a.members.empty}
           description={a.members.emptyBody}
         />

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Info, Package, Plus, Store, Truck } from "lucide-react";
+import { Info, Package, Plus, Store } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { can } from "@sailo/core/plans";
 import { getAdminT } from "@/i18n/server";
@@ -15,7 +15,7 @@ import {
   deleteDeliveryMethod,
   toggleDeliveryMethod,
 } from "@/lib/actions/delivery";
-import { PageHeader } from "@sailo/design-system/web";
+import { PageHeader, ParcelArt } from "@sailo/design-system/web";
 import { DeliveryRateForm } from "@/app/admin/delivery/_components/delivery-rate-form";
 import { Panel } from "@sailo/design-system/web";
 import { Alert, Badge, Button, EmptyState } from "@sailo/design-system/web";
@@ -69,7 +69,7 @@ export default async function AdminDeliveryPage() {
       {methods.length === 0 ? (
         <div className="mb-5">
           <EmptyState
-            icon={<Truck className="size-6" />}
+            art={<ParcelArt />}
             title={a.delivery.empty}
             description={a.delivery.emptyBody}
           />

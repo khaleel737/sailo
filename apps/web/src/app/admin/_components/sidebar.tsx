@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   BadgeCheck,
-  ChevronDown,
   Code,
   CreditCard,
   ExternalLink,
   Gift,
+  HelpCircle,
   Mail,
   LayoutDashboard,
   LogOut,
@@ -19,7 +19,6 @@ import {
   Quote,
   ScanLine,
   Package,
-  ScrollText,
   ShieldCheck,
   Settings,
   ShoppingBag,
@@ -31,27 +30,23 @@ import {
 } from "lucide-react";
 import { signOutSeller } from "@/lib/actions/auth";
 import { SailoMark } from "@/components/brand";
+import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { useAdminT } from "./admin-i18n";
 import type { Dictionary } from "@sailo/i18n";
 import type { AdminDictionary } from "@sailo/i18n/admin/en";
+import type { Locale } from "@sailo/i18n/config";
 import { cn } from "@sailo/design-system/web/cn";
 
 /*
- * The same rail HQ uses: dark, with a brand rule marking position — but
- * structured the way a commerce admin's day is structured rather than as one
- * long list.
+ * The rail, remade on Shopify's grammar: a light column beside a dark top
+ * bar, a short list of doors, and rooms that appear *inside* the door you are
+ * standing in — indented, text-only, hanging off a hairline. The dark rail
+ * this replaces carried the brand; the brand lives in the top bar now, so the
+ * rail's only job is saying where you are and where you can go.
  *
- * Fifteen flat entries became five doors and a Setup shelf. Each door is the
- * page a seller opens daily (Orders, Products, Clients); the pages that serve
- * it (Check-in serves Orders, Categories and Reviews serve Products) sit
- * *inside* it, revealed when the section is active and collapsible by hand.
- * Growth is the one door that is only a door — Broadcasts, Coupons and
- * Affiliates are siblings with no parent page, so its row discloses rather
- * than navigates.
- *
- * Setup keeps its heading and stays flat: Payments, Delivery, Legal and Data
- * requests are visited rarely and found by reading, and "Data requests" has a
- * statutory clock on it — it must be visible on every pass, never folded away.
+ * Five doors and a Setup shelf. A door's rooms reveal only while the door is
+ * active — no chevrons, no remembered open state: navigation is the toggle,
+ * which is also why arriving anywhere always shows you where you are.
  */
 type NavKey = keyof Dictionary["nav"];
 type GroupKey = keyof AdminDictionary["navGroups"];
@@ -75,7 +70,7 @@ type NavSection = {
   | { href?: undefined; key: GroupKey; labelFrom: "groups" }
 );
 
-const SECTIONS: readonly NavSection[] = [
+const SECTIONS: NavSection[] = [
   {
     id: "home",
     href: "/admin",
@@ -137,12 +132,10 @@ const SECTIONS: readonly NavSection[] = [
 const SETUP = [
   { href: "/admin/payments", key: "payments", icon: CreditCard },
   { href: "/admin/delivery", key: "delivery", icon: Truck },
-  { href: "/admin/legal", key: "legal", icon: ScrollText },
   { href: "/admin/data-requests", key: "dataRequests", icon: ShieldCheck },
-  { href: "/admin/settings", key: "settings", icon: Settings },
 ] as const;
 
-/** The child icons, kept for the mobile sheet where rows are read by thumb. */
+/** Icons for the mobile sheet's child rows, where a thumb reads by shape. */
 const CHILD_ICONS: Record<string, typeof Package> = {
   checkin: ScanLine,
   categories: Tag,
@@ -162,119 +155,47 @@ function sectionIsActive(section: NavSection, pathname: string): boolean {
   return (section.children ?? []).some((c) => pathname.startsWith(c.href));
 }
 
-export function Sidebar({
-  shopName,
-  handle,
-  pendingReviews,
-  newOrders,
-  docsUrl,
-  actions,
-  t,
-}: {
-  shopName: string;
-  handle: string;
+export type NavProps = {
   pendingReviews: number;
   newOrders: number;
-  /**
-   * Where the developer documentation lives.
-   *
-   * Passed in rather than read here, which is the convention every origin in
-   * this panel follows — the MCP URL on the Integrations tab is handed down the
-   * same way. This is a client component, so reading it here would mean
-   * trusting Next to inline the variable into the browser bundle and produce
-   * the identical string on both sides of hydration; a prop from a server
-   * component has neither question in it.
-   */
-  docsUrl: string;
-  /** Header controls, folded into the mobile bar where there is no header. */
-  actions?: React.ReactNode;
   t: Dictionary;
+};
+
+/* --------------------------------------------------------------------------
+   The list itself, shared by the desktop rail and the phone sheet.
+-------------------------------------------------------------------------- */
+
+function NavList({
+  pendingReviews,
+  newOrders,
+  t,
+  onNavigate,
+  childIcons = false,
+}: NavProps & {
+  onNavigate?: () => void;
+  /** The sheet draws child icons; the rail keeps children text-only. */
+  childIcons?: boolean;
 }) {
   const pathname = usePathname();
   const a = useAdminT();
-  const [open, setOpen] = useState(false);
-  /*
-   * Which sections the seller has opened or closed by hand. The active
-   * section is always open unless they closed it themselves; navigating into
-   * a section clears any old override so arriving somewhere always shows
-   * where you are.
-   */
-  const [overrides, setOverrides] = useState<Record<string, boolean>>({});
-  /*
-   * Reconciled during render rather than in an effect: a new page means the
-   * old hand-closed states no longer describe intent, and React re-renders
-   * immediately with the cleared state instead of painting the stale one
-   * first and correcting it a frame later.
-   */
-  const [lastPath, setLastPath] = useState(pathname);
-  if (lastPath !== pathname) {
-    setLastPath(pathname);
-    setOverrides({});
-  }
-
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [open]);
 
   const badgeCount = (badge: "orders" | "reviews" | undefined) =>
     badge === "orders" ? newOrders : badge === "reviews" ? pendingReviews : 0;
 
-  const brand = (
-    <Link
-      href="/admin"
-      onClick={() => setOpen(false)}
-      className="focus-ring flex items-center gap-2.5 rounded-xl px-1 py-1"
-    >
-      <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-brand-600 text-white">
-        <SailoMark className="size-5.5" />
-      </span>
-      <span className="min-w-0">
-        <span className="block text-[11px] font-medium uppercase tracking-wide text-brand-400">
-          {a.shell.role}
-        </span>
-        <span className="block truncate text-sm font-semibold text-white">
-          {shopName}
-        </span>
-        <span dir="ltr" className="block truncate text-start text-xs text-white/40">
-          /{handle}
-        </span>
-      </span>
-    </Link>
-  );
-
   const count = (n: number) =>
     n > 0 ? (
-      // Light-on-dark, so a count reads as a count rather than as another
-      // dark chip lost against the rail.
-      <span className="tabular rounded-full bg-brand-400 px-1.5 py-0.5 text-[11px] font-semibold text-ink-950">
+      <span className="tabular rounded-full bg-brand-600 px-1.5 py-0.5 text-[11px] font-semibold leading-none text-white">
         {n}
       </span>
     ) : null;
 
-  const leafClass = (active: boolean) =>
+  const rowClass = (active: boolean) =>
     cn(
-      "focus-ring group relative flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium transition-colors duration-150 pointer-coarse:min-h-11",
+      "focus-ring group relative flex w-full items-center gap-2 rounded-lg px-2.5 py-[7px] text-[13px] font-medium transition-colors duration-150 pointer-coarse:min-h-11",
       active
-        ? "bg-white/10 text-white"
-        : "text-white/60 hover:bg-white/5 hover:text-white",
+        ? "bg-white text-ink-900 shadow-xs"
+        : "text-ink-600 hover:bg-ink-900/[0.05] hover:text-ink-900",
     );
-
-  const rule = (active: boolean) => (
-    <span
-      aria-hidden
-      className={cn(
-        "absolute inset-y-1.5 start-0 w-0.5 rounded-full bg-brand-400 transition-opacity duration-200",
-        active ? "opacity-100" : "opacity-0",
-      )}
-    />
-  );
 
   const section = (s: NavSection) => {
     const active = sectionIsActive(s, pathname);
@@ -284,7 +205,7 @@ export function Sidebar({
         : pathname.startsWith(s.href)
       : false;
     const children = s.children ?? [];
-    const expanded = children.length > 0 && (overrides[s.id] ?? active);
+    const expanded = children.length > 0 && active;
     const label = s.labelFrom === "nav" ? t.nav[s.key] : a.navGroups[s.key];
     /*
      * A closed door still says what is behind it: the section's own count
@@ -296,28 +217,18 @@ export function Sidebar({
       : badgeCount(s.badge) +
         children.reduce((sum, c) => sum + badgeCount(c.badge), 0);
 
-    const chevron =
-      children.length > 0 ? (
-        <ChevronDown
-          className={cn(
-            "size-3.5 shrink-0 text-white/30 transition-transform duration-200 group-hover:text-white/60",
-            !expanded && "-rotate-90 rtl:rotate-90",
-          )}
-        />
-      ) : null;
-
     const inner = (
       <>
-        {rule(selfActive)}
         <s.icon
           className={cn(
             "size-4 shrink-0 transition-colors",
-            active ? "text-brand-400" : "text-white/40 group-hover:text-white/70",
+            selfActive || active
+              ? "text-ink-900"
+              : "text-ink-400 group-hover:text-ink-700",
           )}
         />
         <span className="flex-1 truncate text-start">{label}</span>
         {count(closedCount)}
-        {chevron}
       </>
     );
 
@@ -327,28 +238,25 @@ export function Sidebar({
           <Link
             href={s.href}
             aria-current={selfActive ? "page" : undefined}
-            aria-expanded={children.length > 0 ? expanded : undefined}
-            onClick={() => {
-              setOpen(false);
-              // Opening a door shows its rooms; navigation does the rest.
-              if (children.length > 0)
-                setOverrides((prev) => ({ ...prev, [s.id]: true }));
-            }}
-            className={leafClass(selfActive)}
+            onClick={onNavigate}
+            className={rowClass(selfActive)}
           >
             {inner}
           </Link>
         ) : (
-          <button
-            type="button"
-            aria-expanded={expanded}
-            onClick={() =>
-              setOverrides((prev) => ({ ...prev, [s.id]: !expanded }))
-            }
-            className={cn(leafClass(false), "w-full", active && "text-white")}
+          /*
+           * A door with no page of its own opens its first room — Broadcasts
+           * for Growth. A row that navigates is one grammar for the whole
+           * rail; a row that merely toggles would be the one item that
+           * "doesn't work" when tapped.
+           */
+          <Link
+            href={children[0]?.href ?? "/admin"}
+            onClick={onNavigate}
+            className={cn(rowClass(false), active && "text-ink-900")}
           >
             {inner}
-          </button>
+          </Link>
         )}
 
         {children.length > 0 ? (
@@ -364,31 +272,29 @@ export function Sidebar({
             )}
           >
             <div className="min-h-0 overflow-hidden">
-              <ul className="ms-[1.4rem] mt-0.5 flex flex-col gap-0.5 border-s border-white/10 ps-2 pb-1">
+              <ul className="ms-[1.1rem] mt-0.5 flex flex-col gap-0.5 border-s border-ink-200 ps-2 pb-1">
                 {children.map((child) => {
                   const childActive = pathname.startsWith(child.href);
-                  const Icon = CHILD_ICONS[child.key];
+                  const Icon = childIcons ? CHILD_ICONS[child.key] : undefined;
                   return (
                     <li key={child.href}>
                       <Link
                         href={child.href}
                         aria-current={childActive ? "page" : undefined}
-                        onClick={() => setOpen(false)}
+                        onClick={onNavigate}
                         tabIndex={expanded ? undefined : -1}
                         className={cn(
-                          "focus-ring group flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] font-medium transition-colors duration-150 pointer-coarse:min-h-11",
+                          "focus-ring group flex items-center gap-2 rounded-lg px-2.5 py-[5px] text-[13px] font-medium transition-colors duration-150 pointer-coarse:min-h-11",
                           childActive
-                            ? "bg-white/10 text-white"
-                            : "text-white/50 hover:bg-white/5 hover:text-white",
+                            ? "bg-white text-ink-900 shadow-xs"
+                            : "text-ink-500 hover:bg-ink-900/[0.05] hover:text-ink-900",
                         )}
                       >
                         {Icon ? (
                           <Icon
                             className={cn(
-                              "size-3.5 shrink-0 transition-colors",
-                              childActive
-                                ? "text-brand-400"
-                                : "text-white/30 group-hover:text-white/60",
+                              "size-3.5 shrink-0",
+                              childActive ? "text-ink-700" : "text-ink-400",
                             )}
                           />
                         ) : null}
@@ -406,12 +312,12 @@ export function Sidebar({
     );
   };
 
-  const nav = (
+  return (
     <nav className="flex flex-1 flex-col gap-5 overflow-y-auto">
       <ul className="flex flex-col gap-0.5">{SECTIONS.map(section)}</ul>
 
       <div>
-        <p className="mb-1.5 px-3 text-[11px] font-medium uppercase tracking-wide text-white/30">
+        <p className="mb-1.5 px-2.5 text-[11px] font-medium uppercase tracking-wide text-ink-400">
           {a.navGroups.setup}
         </p>
         <ul className="flex flex-col gap-0.5">
@@ -422,16 +328,13 @@ export function Sidebar({
                 <Link
                   href={item.href}
                   aria-current={active ? "page" : undefined}
-                  onClick={() => setOpen(false)}
-                  className={leafClass(active)}
+                  onClick={onNavigate}
+                  className={rowClass(active)}
                 >
-                  {rule(active)}
                   <item.icon
                     className={cn(
                       "size-4 shrink-0 transition-colors",
-                      active
-                        ? "text-brand-400"
-                        : "text-white/40 group-hover:text-white/70",
+                      active ? "text-ink-900" : "text-ink-400 group-hover:text-ink-700",
                     )}
                   />
                   <span className="flex-1 truncate">{t.nav[item.key]}</span>
@@ -443,114 +346,195 @@ export function Sidebar({
       </div>
     </nav>
   );
+}
 
-  const footer = (
-    <div className="mt-5 space-y-0.5 border-t border-white/10 pt-3">
-      <a
-        href={`/${handle}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={() => setOpen(false)}
-        className="focus-ring flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-white/60 transition hover:bg-white/5 hover:text-white pointer-coarse:min-h-11"
+/** Settings, pinned under the scroll the way Shopify pins it — the one page
+ *  you reach for from anywhere, always in the same corner. */
+function SettingsLink({
+  t,
+  onNavigate,
+}: {
+  t: Dictionary;
+  onNavigate?: () => void;
+}) {
+  const pathname = usePathname();
+  const active = pathname.startsWith("/admin/settings");
+  return (
+    <div className="mt-3 border-t border-ink-200 pt-3">
+      <Link
+        href="/admin/settings"
+        aria-current={active ? "page" : undefined}
+        onClick={onNavigate}
+        className={cn(
+          "focus-ring group flex items-center gap-2 rounded-lg px-2.5 py-[7px] text-[13px] font-medium transition-colors duration-150 pointer-coarse:min-h-11",
+          active
+            ? "bg-white text-ink-900 shadow-xs"
+            : "text-ink-600 hover:bg-ink-900/[0.05] hover:text-ink-900",
+        )}
       >
-        <ExternalLink className="size-4 text-white/40" />
-        {t.nav.viewShop}
-      </a>
-      {/*
-        The developer documentation — the REST API, the webhooks and the MCP
-        server, at docs.sailo.store.
-
-        Beside "View shop" rather than in a group above, because like that one
-        it leaves the panel: the docs are public, unauthenticated and a
-        different deployment entirely, while the groups are all pages of this
-        admin. A new tab for the same reason — a seller reads it while wiring
-        something up on the Integrations tab, and navigating away would lose the
-        key they were halfway through creating.
-      */}
-      <a
-        href={docsUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={() => setOpen(false)}
-        className="focus-ring flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-white/60 transition hover:bg-white/5 hover:text-white pointer-coarse:min-h-11"
-      >
-        <Code className="size-4 text-white/40" />
-        {a.shell.docs}
-      </a>
-      {/*
-        A form, not an onClick.
-
-        Sign-out revokes the session and moves the browser, and those two have
-        to be one act. As a client fetch they were two: better-auth's client
-        answers `{ error }` rather than throwing, so a 500 or a rate-limited
-        429 still fell through to `router.push("/login")` and told the seller
-        they were signed out while the cookie and the session were both alive.
-        The Server Action does the revoke, the cookie and the redirect in a
-        single response — see `lib/actions/auth.ts`.
-      */}
-      <form action={signOutSeller}>
-        <button
-          type="submit"
-          className="focus-ring flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-white/60 transition hover:bg-white/5 hover:text-white pointer-coarse:min-h-11"
-        >
-          <LogOut className="size-4 text-white/40" />
-          {t.nav.signOut}
-        </button>
-      </form>
+        <Settings
+          className={cn(
+            "size-4 shrink-0 transition-colors",
+            active ? "text-ink-900" : "text-ink-400 group-hover:text-ink-700",
+          )}
+        />
+        {t.nav.settings}
+      </Link>
     </div>
   );
+}
+
+/* --------------------------------------------------------------------------
+   Desktop rail — light, borderless items, under the dark top bar.
+-------------------------------------------------------------------------- */
+
+export function Sidebar(props: NavProps) {
+  return (
+    <aside className="sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-60 shrink-0 flex-col border-e border-ink-200 bg-ink-50 px-3 py-4 lg:flex">
+      <NavList {...props} />
+      <SettingsLink t={props.t} />
+    </aside>
+  );
+}
+
+/* --------------------------------------------------------------------------
+   The phone sheet, and the button in the top bar that opens it.
+-------------------------------------------------------------------------- */
+
+export function MobileMenu({
+  shopName,
+  handle,
+  docsUrl,
+  locale,
+  ...nav
+}: NavProps & {
+  shopName: string;
+  handle: string;
+  docsUrl: string;
+  locale: Locale;
+}) {
+  const a = useAdminT();
+  const [open, setOpen] = useState(false);
+  const close = () => setOpen(false);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [open]);
 
   return (
     <>
-      {/* Mobile bar */}
-      <div className="sticky top-0 z-30 flex items-center justify-between bg-ink-950 px-4 py-2.5 lg:hidden">
-        {brand}
-        <div className="flex items-center gap-1">
-          {actions}
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            aria-label={t.nav.openMenu}
-            aria-expanded={open}
-            className="focus-ring press grid size-9 place-items-center rounded-xl text-white/70 transition hover:bg-white/10 pointer-coarse:size-11"
-          >
-            <Menu className="size-5" />
-          </button>
-        </div>
-      </div>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-label={nav.t.nav.openMenu}
+        aria-expanded={open}
+        className="focus-ring press grid size-9 place-items-center rounded-lg text-white/70 transition hover:bg-white/10 lg:hidden pointer-coarse:size-11"
+      >
+        <Menu className="size-5" />
+      </button>
 
       {open ? (
         <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true">
           <button
             type="button"
-            aria-label={t.nav.closeMenu}
-            onClick={() => setOpen(false)}
-            className="animate-backdrop absolute inset-0 bg-ink-950/60 backdrop-blur-[2px]"
+            aria-label={nav.t.nav.closeMenu}
+            onClick={close}
+            className="animate-backdrop absolute inset-0 bg-ink-950/50 backdrop-blur-[2px]"
           />
-          <div className="animate-sheet-in absolute inset-y-0 start-0 flex w-72 max-w-[85vw] flex-col bg-ink-950 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-xl">
-            <div className="mb-6 flex items-center justify-between gap-2">
-              {brand}
+          <div className="animate-sheet-in absolute inset-y-0 start-0 flex w-72 max-w-[85vw] flex-col bg-ink-50 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-xl">
+            <div className="mb-4 flex items-center justify-between gap-2">
+              <Link
+                href="/admin"
+                onClick={close}
+                className="focus-ring flex min-w-0 items-center gap-2.5 rounded-xl px-1 py-1"
+              >
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-brand-600 text-white">
+                  <SailoMark className="size-5.5" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate text-sm font-semibold text-ink-900">
+                    {shopName}
+                  </span>
+                  <span dir="ltr" className="block truncate text-start text-xs text-ink-500">
+                    /{handle}
+                  </span>
+                </span>
+              </Link>
               <button
                 type="button"
-                onClick={() => setOpen(false)}
-                aria-label={t.nav.closeMenu}
-                className="focus-ring press grid size-9 place-items-center rounded-xl text-white/60 transition hover:bg-white/10 pointer-coarse:size-11"
+                onClick={close}
+                aria-label={nav.t.nav.closeMenu}
+                className="focus-ring press grid size-9 place-items-center rounded-lg text-ink-500 transition hover:bg-ink-200/60 pointer-coarse:size-11"
               >
                 <X className="size-5" />
               </button>
             </div>
-            {nav}
-            {footer}
+
+            <NavList {...nav} onNavigate={close} childIcons />
+            <SettingsLink t={nav.t} onNavigate={close} />
+
+            {/* What the top bar carries on desktop, folded down here. */}
+            <div className="mt-3 space-y-0.5 border-t border-ink-200 pt-3">
+              <a
+                href={`/${handle}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={close}
+                className="focus-ring flex items-center gap-2 rounded-lg px-2.5 py-[7px] text-[13px] font-medium text-ink-600 transition hover:bg-ink-900/[0.05] hover:text-ink-900 pointer-coarse:min-h-11"
+              >
+                <ExternalLink className="size-4 text-ink-400" />
+                {nav.t.nav.viewShop}
+              </a>
+              <Link
+                href="/admin/support"
+                onClick={close}
+                className="focus-ring flex items-center gap-2 rounded-lg px-2.5 py-[7px] text-[13px] font-medium text-ink-600 transition hover:bg-ink-900/[0.05] hover:text-ink-900 pointer-coarse:min-h-11"
+              >
+                <HelpCircle className="size-4 text-ink-400" />
+                {a.support.helpLabel}
+              </Link>
+              <a
+                href={docsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={close}
+                className="focus-ring flex items-center gap-2 rounded-lg px-2.5 py-[7px] text-[13px] font-medium text-ink-600 transition hover:bg-ink-900/[0.05] hover:text-ink-900 pointer-coarse:min-h-11"
+              >
+                <Code className="size-4 text-ink-400" />
+                {a.shell.docs}
+              </a>
+              {/*
+                A form, not an onClick — sign-out revokes the session and moves
+                the browser in one act. See `lib/actions/auth.ts`.
+              */}
+              <form action={signOutSeller}>
+                <button
+                  type="submit"
+                  className="focus-ring flex w-full items-center gap-2 rounded-lg px-2.5 py-[7px] text-[13px] font-medium text-ink-600 transition hover:bg-ink-900/[0.05] hover:text-ink-900 pointer-coarse:min-h-11"
+                >
+                  <LogOut className="size-4 text-ink-400" />
+                  {nav.t.nav.signOut}
+                </button>
+              </form>
+              <div className="px-1 pt-1">
+                <LanguageSwitcher
+                  current={locale}
+                  align="start"
+                  label={nav.t.common.language}
+                  size="md"
+                />
+              </div>
+            </div>
           </div>
         </div>
       ) : null}
-
-      {/* Desktop rail */}
-      <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col bg-ink-950 p-4 lg:flex">
-        <div className="mb-6">{brand}</div>
-        {nav}
-        {footer}
-      </aside>
     </>
   );
 }

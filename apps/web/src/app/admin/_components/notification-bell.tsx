@@ -65,10 +65,13 @@ export function NotificationBell({
   items,
   locale,
   t,
+  variant = "light",
 }: {
   items: Notification[];
   locale: Locale;
   t: Dictionary;
+  /** `onDark` sits in the ink top bar; the open panel stays light. */
+  variant?: "light" | "onDark";
 }) {
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
@@ -126,7 +129,11 @@ export function NotificationBell({
         aria-label={t.notifications.title}
         aria-expanded={open}
         aria-controls="notification-panel"
-        className="relative flex size-9 items-center justify-center rounded-lg text-ink-600 transition hover:bg-ink-100 hover:text-ink-900 pointer-coarse:size-11"
+        className={
+          variant === "onDark"
+            ? "focus-ring relative flex size-9 items-center justify-center rounded-lg text-white/70 transition hover:bg-white/10 hover:text-white pointer-coarse:size-11"
+            : "relative flex size-9 items-center justify-center rounded-lg text-ink-600 transition hover:bg-ink-100 hover:text-ink-900 pointer-coarse:size-11"
+        }
       >
         <Bell className="size-5" />
         {count > 0 ? (

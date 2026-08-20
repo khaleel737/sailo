@@ -1,3 +1,5 @@
+import { LottieArt } from "@/components/shared/lottie-art";
+import envelopeScene from "@/components/shared/lottie/envelope.json";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { desc, eq } from "drizzle-orm";
@@ -14,7 +16,7 @@ import {
 } from "@sailo/marketing/broadcasts/server";
 import { segmentPickers } from "@sailo/workflows/broadcasts";
 import { describeSegment, parseSegment } from "@sailo/marketing/broadcasts";
-import { PageHeader } from "@sailo/design-system/web";
+import { PageHeader, EnvelopeArt } from "@sailo/design-system/web";
 import { LockedFeature } from "@/app/admin/_components/locked-feature";
 import { Badge, Button, Card, EmptyState } from "@sailo/design-system/web";
 import { formatMoney } from "@sailo/core/currency";
@@ -214,7 +216,7 @@ export default async function BroadcastsPage() {
 
       {rows.length === 0 ? (
         <EmptyState
-          icon={<Mail className="size-6" />}
+          art={<LottieArt animation={envelopeScene} fallback={<EnvelopeArt />} />}
           title={a.broadcasts.empty}
           description={a.broadcasts.emptyBody}
         />

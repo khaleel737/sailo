@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { interpolate } from "@sailo/i18n";
 import Link from "next/link";
-import { ChevronRight, ShoppingBag } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { orderSummaryTitle } from "@/lib/order-lines";
@@ -29,7 +29,9 @@ import {
   PAYMENT_STATUSES,
   isPaymentMethodType,
 } from "@/lib/payments";
-import { PageHeader } from "@sailo/design-system/web";
+import { PageHeader, ParcelArt } from "@sailo/design-system/web";
+import { LottieArt } from "@/components/shared/lottie-art";
+import parcelScene from "@/components/shared/lottie/parcel.json";
 import { ExportButton } from "@/app/admin/_components/export-button";
 import { OrderTabs } from "./_components/order-tabs";
 import { OrderFilters } from "./_components/order-filters";
@@ -249,7 +251,7 @@ export default async function AdminOrdersPage({
         </>
       ) : (
         <EmptyState
-          icon={<ShoppingBag className="size-8" />}
+          art={<LottieArt animation={parcelScene} fallback={<ParcelArt />} />}
           title={a.orders.empty}
           description={a.orders.emptyBody}
         />

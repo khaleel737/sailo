@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
+import { motion, useReducedMotion } from "motion/react";
 import { cn } from "@sailo/design-system/web/cn";
 import { interpolate } from "@sailo/i18n";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
@@ -30,6 +31,7 @@ export function OrderTabs({
   const a = useAdminT();
   const pathname = usePathname();
   const params = useSearchParams();
+  const reduced = useReducedMotion();
   const current = params.get("status") ?? "";
 
   const total = Object.values(counts).reduce((sum, n) => sum + n, 0);
@@ -55,17 +57,33 @@ export function OrderTabs({
           count: String(count),
         })}
         className={cn(
-          "focus-ring press inline-flex h-8 items-center gap-1.5 rounded-lg px-3 text-xs font-medium transition-colors duration-150 pointer-coarse:h-10",
-          active
-            ? "bg-ink-900 text-white shadow-xs"
-            : "text-ink-500 hover:bg-ink-100 hover:text-ink-900",
+          "focus-ring press relative inline-flex h-8 items-center gap-1.5 rounded-lg px-3 text-xs font-medium transition-colors duration-150 pointer-coarse:h-10",
+          active ? "text-white" : "text-ink-500 hover:bg-ink-100 hover:text-ink-900",
         )}
       >
-        {label}
+        {active ? (
+          /*
+           * The pill is one element the whole row shares — `layoutId` makes
+           * it glide from the old tab to the new one instead of blinking
+           * across, which is what says "same shelf, different drawer".
+           * A spring, because a tab change is user-initiated and brief.
+           */
+          <motion.span
+            layoutId="orders-status-pill"
+            aria-hidden
+            transition={
+              reduced
+                ? { duration: 0 }
+                : { type: "spring", duration: 0.35, bounce: 0.15 }
+            }
+            className="absolute inset-0 rounded-lg bg-ink-900 shadow-xs"
+          />
+        ) : null}
+        <span className="relative">{label}</span>
         {count > 0 ? (
           <span
             className={cn(
-              "tabular text-[11px]",
+              "tabular relative text-[11px]",
               active ? "text-white/60" : "text-ink-400",
             )}
           >

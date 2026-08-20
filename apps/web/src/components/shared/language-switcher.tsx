@@ -48,6 +48,7 @@ export function LanguageSwitcher({
   align = "center",
   label = "Language",
   size = "sm",
+  variant = "surface",
 }: {
   current: Locale;
   align?: "start" | "center" | "end";
@@ -58,6 +59,13 @@ export function LanguageSwitcher({
    * footnote.
    */
   size?: "sm" | "md";
+  /**
+   * `surface` is the themed pill the storefront and light panels use;
+   * `onDark` sits in the admin's ink top bar, where a themed card would
+   * punch a white hole in it. The open panel stays light either way — it is
+   * a list to read, not part of the bar.
+   */
+  variant?: "surface" | "onDark";
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -198,7 +206,10 @@ export function LanguageSwitcher({
         aria-haspopup="listbox"
         disabled={pending}
         className={cn(
-          "surface-card inline-flex items-center gap-1.5 rounded-full font-medium transition hover:opacity-70 disabled:opacity-50",
+          "inline-flex items-center gap-1.5 rounded-full font-medium transition disabled:opacity-50",
+          variant === "onDark"
+            ? "text-white/80 hover:bg-white/10 hover:text-white"
+            : "surface-card hover:opacity-70",
           size === "md"
             ? "min-h-11 px-4 py-2.5 text-[0.8125rem]"
             /* `sm` is the admin header's size and lands at 30px. That is fine

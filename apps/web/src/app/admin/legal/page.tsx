@@ -1,46 +1,10 @@
-import type { Metadata } from "next";
-import { PageHeader } from "@sailo/design-system/web";
-import { requireShop } from "@/lib/session";
-import { shopPagesFor } from "@sailo/commerce/pages";
-import { analyticsPreanswer } from "@sailo/core/shop-pages";
-import { getAdminT } from "@/i18n/server";
-import { LegalPagesScreen } from "./_components/legal-pages-screen";
-
-export const metadata: Metadata = { title: "Legal pages" };
+import { redirect } from "next/navigation";
 
 /**
- * The seller's own documents. Spec 41.
- *
- * Its own screen rather than a card in Settings, and the reason is what it has
- * to hold: a five-page list with a publish state each, a markdown editor, a
- * regeneration diff and the checkout switch. Settings is already the longest
- * form in the product; a sixth accordion in it would be where this feature went
- * to be undiscovered.
- *
- * Read live, not cached. The public pages are cached under `shopTag` and the
- * admin must show what is actually stored — a seller who just saved a draft and
- * is shown the previous body would edit the wrong text.
+ * Legal pages moved into Settings — they are configuration, not a daily
+ * destination, and the rail earned a shorter Setup shelf. The old address
+ * keeps working for anything that bookmarked it.
  */
-export default async function AdminLegalPagesPage() {
-  const { shop } = await requireShop("settings:read");
-  const [pages, { a }] = await Promise.all([shopPagesFor(shop.id), getAdminT()]);
-
-  return (
-    <>
-      <PageHeader title={a.legal.title} description={a.legal.intro} />
-      <LegalPagesScreen
-        pages={pages}
-        handle={shop.handle}
-        termsUrl={shop.termsUrl}
-        privacyUrl={shop.privacyUrl}
-        requireTerms={shop.requireTerms}
-        /*
-         * Derived, never asked. A seller who has configured a pixel has already
-         * told us they measure; putting the question again invites the answer
-         * that makes their privacy policy untrue.
-         */
-        usesAnalytics={analyticsPreanswer(shop)}
-      />
-    </>
-  );
+export default function LegalMoved() {
+  redirect("/admin/settings/legal");
 }
