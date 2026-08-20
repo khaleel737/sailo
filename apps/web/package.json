@@ -93,6 +93,7 @@
     "better-auth": "^1.6.25",
     "drizzle-orm": "^0.45.2",
     "gray-matter": "^4.0.3",
+    "lottie-web": "^5.13.0",
     "lucide-react": "^1.28.0",
     "marked": "^18.0.9",
     "motion": "^12.43.0",

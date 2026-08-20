@@ -38,6 +38,8 @@ export * from "./modal-layer";
 export * from "./panel";
 
 export * from "./skeleton";
+export * from "./sparkline";
+export * from "./empty-art";
 export * from "./table";
 export * from "./page-header";
 export * from "./copy-link";

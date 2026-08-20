@@ -109,12 +109,19 @@ export function Alert({
 
 export function EmptyState({
   icon,
+  art,
   title,
   description,
   action,
   className,
 }: {
   icon?: React.ReactNode;
+  /**
+   * A drawing instead of an icon chip — see `empty-art.tsx`. A first visit
+   * deserves a picture of the thing it's about to have; when both are given,
+   * the drawing wins.
+   */
+  art?: React.ReactNode;
   title: string;
   description?: string;
   action?: React.ReactNode;
@@ -127,7 +134,9 @@ export function EmptyState({
         className,
       )}
     >
-      {icon ? (
+      {art ? (
+        <div className="mb-4">{art}</div>
+      ) : icon ? (
         <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-white text-ink-400 shadow-xs ring-1 ring-ink-200">
           {icon}
         </div>
@@ -157,6 +166,7 @@ export function Stat({
   hint,
   delta,
   icon,
+  chart,
   className,
 }: {
   label: string;
@@ -166,6 +176,8 @@ export function Stat({
   /** Signed change against the previous period, already formatted. */
   delta?: { value: string; direction: "up" | "down" | "flat" };
   icon?: React.ReactNode;
+  /** A sparkline under the figure — see `sparkline.tsx`. Decorative. */
+  chart?: React.ReactNode;
   className?: string;
 }) {
   return (
@@ -195,6 +207,7 @@ export function Stat({
         </p>
       ) : null}
       {hint ? <p className="mt-0.5 text-xs text-ink-500">{hint}</p> : null}
+      {chart ? <div className="mt-2">{chart}</div> : null}
     </div>
   );
 }

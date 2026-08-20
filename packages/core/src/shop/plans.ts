@@ -541,7 +541,9 @@ export const PLATFORM_FEE_RANGE_LABEL = (() => {
  * "0.5%", not "0.50%", and 100 is "1%". `toFixed` alone gives the second form,
  * which reads like a rate quoted to two decimals for a reason.
  */
-function formatFeeBp(bp: number): string {
+/** "2%" — a rate stated to a seller. Exported for the plan cards, which
+ *  state every tier's rate side by side rather than only this shop's own. */
+export function formatFeeBp(bp: number): string {
   return `${Number((bp / 100).toFixed(2))}%`;
 }
 
