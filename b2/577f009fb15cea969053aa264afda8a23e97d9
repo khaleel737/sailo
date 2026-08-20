@@ -1,0 +1,24 @@
+packages/core/src/orders/order-lines.ts
+  s_a7bbf59e767e8f::t_a31a8a5beb4a95 112
+packages/core/src/wire/resources.ts
+  s_a7bbf59e767e8f::t_f7ae73c85457d4 2
+  s_a7bbf59e767e8f::t_86209992bfaf6a 173-180
+apps/web/src/app/admin/orders/[id]/page.tsx
+  s_a7bbf59e767e8f::t_b7c9700b54cdbb 104-112
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "b2577f009fb15cea969053aa264afda8a23e97d9",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
