@@ -81,9 +81,6 @@
       ]
     },
     "packages/email": {
-      "entry": [
-        "src/testing/*.ts"
-      ],
       "project": [
         "src/**/*.{ts,tsx}"
       ]
