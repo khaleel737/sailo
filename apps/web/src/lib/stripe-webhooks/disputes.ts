@@ -26,6 +26,7 @@ import {
   reinstatePlanAfterWin,
 } from "@sailo/commerce/disputes";
 import { emitDisputeWebhook } from "@sailo/webhooks/emit";
+import { evidenceMoney } from "@sailo/core/disputes";
 import { revalidateShop } from "@/lib/cache";
 import { autoFillEvidence } from "@/lib/evidence-pack";
 
@@ -428,7 +429,7 @@ async function handlePlatformDispute(
   disputeRowId: string,
 ): Promise<Outcome> {
   const db = getDb();
-  const money = `${(dispute.deductedCents / 100).toFixed(2)} ${dispute.currency}`;
+  const money = evidenceMoney(dispute.deductedCents, dispute.currency);
 
   if (!shopId) {
     /*

@@ -32,7 +32,8 @@
  * below is a first-class outcome, not the absence of one.
  */
 
-import { EVIDENCE_FIELD_MAX, EVIDENCE_TEXT_BUDGET } from "./assemble";
+import { EVIDENCE_TEXT_BUDGET } from "./assemble";
+import { clampEvidence, evidenceDate, evidenceMoney } from "./text";
 import type { EvidenceField, EvidenceTextField } from "./reasons";
 
 /* -------------------------------------------------------------------------- */
@@ -308,8 +309,9 @@ export function platformFieldsFor(reason: string): readonly EvidenceField[] {
   return [...required, ...PLATFORM_PERSUASIVE.filter((field) => !seen.has(field))];
 }
 
+/* The shared formatter, with this module's own absence wording. */
 function date(value: Date | null): string {
-  return value ? value.toISOString().slice(0, 10) : "not on record";
+  return evidenceDate(value) ?? "not on record";
 }
 
 function usageSummary(h: PlatformHoldings): string {
@@ -318,11 +320,7 @@ function usageSummary(h: PlatformHoldings): string {
   return `${signins} sign-in(s) and ${orders} order(s) processed`;
 }
 
-function clamp(text: string): string {
-  return text.length <= EVIDENCE_FIELD_MAX
-    ? text
-    : `${text.slice(0, EVIDENCE_FIELD_MAX - 1)}…`;
-}
+const clamp = clampEvidence;
 
 /**
  * The access log for a subscription: sign-ins, not downloads.
@@ -363,7 +361,7 @@ function accessLog(h: PlatformHoldings): string | null {
 function narrative(h: PlatformHoldings): string {
   const lines: string[] = [
     `Sailo is a hosted online shop service. This charge is a ${h.subscriptionInterval ?? "recurring"} ` +
-      `subscription to the ${h.plan ?? "paid"} plan, ${(h.amountCents / 100).toFixed(2)} ${h.currency.toUpperCase()}.`,
+      `subscription to the ${h.plan ?? "paid"} plan, ${evidenceMoney(h.amountCents, h.currency)}.`,
   ];
 
   if (h.accountEmail) lines.push(`Account email: ${h.accountEmail}.`);

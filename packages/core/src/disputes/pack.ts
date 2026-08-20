@@ -44,6 +44,7 @@
  */
 
 import type { DeliverySource } from "./messages";
+import { evidenceDate, evidenceMoney } from "./text";
 
 /**
  * Bumped when the *content* of a pack changes — a section added, a line
@@ -289,17 +290,16 @@ export function policyProvenance(source: string | null, capturedAt: Date | null)
 /*  Formatting                                                                */
 /* -------------------------------------------------------------------------- */
 
+/* The shared formatters, with this pack's own absence wording. */
 function date(value: Date | null | undefined): string {
-  return value ? value.toISOString().slice(0, 10) : NOT_ON_RECORD;
+  return evidenceDate(value) ?? NOT_ON_RECORD;
 }
 
 function stamp(value: Date | null | undefined): string {
   return value ? value.toISOString().replace("T", " ").slice(0, 19) + " UTC" : NOT_ON_RECORD;
 }
 
-function money(cents: number, currency: string): string {
-  return `${(cents / 100).toFixed(2)} ${currency.toUpperCase()}`;
-}
+const money = evidenceMoney;
 
 function line(label: string, value: string | null | undefined, provenance?: string): PackLine {
   return {

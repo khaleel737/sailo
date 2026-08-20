@@ -21,6 +21,7 @@ import {
   type EvidenceTextField,
   type SoldKind,
 } from "./reasons";
+import { clampEvidence, evidenceDate, evidenceMoney } from "./text";
 
 /**
  * Everything about an order that could become evidence, already flattened.
@@ -126,8 +127,11 @@ export type EvidenceHoldings = {
  */
 export const EVIDENCE_TEXT_BUDGET = 20_000;
 
-/** Per-field ceiling, so one long product description cannot eat the budget. */
-export const EVIDENCE_FIELD_MAX = 4_000;
+/*
+ * The per-field ceiling and the shared text helpers live in `./text`;
+ * re-exported here because this module is where the budget story is told.
+ */
+export { EVIDENCE_FIELD_MAX, clampEvidence, evidenceDate, evidenceMoney } from "./text";
 
 export type FieldStatus = "held" | "missing" | "needs_seller" | "not_applicable";
 
@@ -181,19 +185,6 @@ export type AssembledEvidence = {
   optionalUploads: readonly EvidenceField[];
 };
 
-function date(d: Date | null): string | null {
-  return d ? d.toISOString().slice(0, 10) : null;
-}
-
-function money(cents: number, currency: string): string {
-  return `${(cents / 100).toFixed(2)} ${currency.toUpperCase()}`;
-}
-
-function clamp(text: string): string {
-  return text.length <= EVIDENCE_FIELD_MAX
-    ? text
-    : `${text.slice(0, EVIDENCE_FIELD_MAX - 1)}…`;
-}
 
 /**
  * The narrative, which is the one field a human would have written.
@@ -206,7 +197,7 @@ function clamp(text: string): string {
  */
 function narrative(h: EvidenceHoldings): string {
   const lines: string[] = [
-    `Order ${h.orderReference}, placed ${h.placedAt.toISOString()}, for ${money(h.totalCents, h.currency)}.`,
+    `Order ${h.orderReference}, placed ${h.placedAt.toISOString()}, for ${evidenceMoney(h.totalCents, h.currency)}.`,
   ];
   if (h.customerName) lines.push(`Buyer: ${h.customerName}.`);
   if (h.customerEmail) lines.push(`Email given at checkout: ${h.customerEmail}.`);
@@ -225,7 +216,7 @@ function narrative(h: EvidenceHoldings): string {
 
   if (h.shippedAt && h.shippingTrackingNumber) {
     lines.push(
-      `Shipped ${date(h.shippedAt)} via ${h.shippingCarrier ?? "carrier"}, ` +
+      `Shipped ${evidenceDate(h.shippedAt)} via ${h.shippingCarrier ?? "carrier"}, ` +
         `tracking ${h.shippingTrackingNumber}.`,
     );
   }
@@ -239,10 +230,10 @@ function narrative(h: EvidenceHoldings): string {
 
   if (h.refundedCents > 0) {
     lines.push(
-      `${money(h.refundedCents, h.currency)} was refunded on ${date(h.refundedAt)}.`,
+      `${evidenceMoney(h.refundedCents, h.currency)} was refunded on ${evidenceDate(h.refundedAt)}.`,
     );
   }
-  return clamp(lines.join("\n"));
+  return clampEvidence(lines.join("\n"));
 }
 
 /**
@@ -261,7 +252,7 @@ function resolve(field: EvidenceField, h: EvidenceHoldings): {
 } {
   const held = (value: string | null | undefined) =>
     value && value.trim() && value !== "unknown"
-      ? { status: "held" as const, value: clamp(value.trim()) }
+      ? { status: "held" as const, value: clampEvidence(value.trim()) }
       : null;
 
   if (isFileField(field)) {
@@ -314,7 +305,7 @@ function resolve(field: EvidenceField, h: EvidenceHoldings): {
     case "shipping_date":
       if (h.soldKind !== "physical") return { status: "not_applicable" };
       return (
-        held(date(h.shippedAt)) ?? {
+        held(evidenceDate(h.shippedAt)) ?? {
           status: "needs_seller",
           ask: "Mark the order shipped so the date is on record.",
         }
@@ -338,7 +329,7 @@ function resolve(field: EvidenceField, h: EvidenceHoldings): {
                */
             };
       }
-      return { status: "held", value: clamp(h.accessLog.join("\n")) };
+      return { status: "held", value: clampEvidence(h.accessLog.join("\n")) };
     case "refund_policy_disclosure":
       if (!h.termsAcceptedAt) {
         return {
@@ -348,7 +339,7 @@ function resolve(field: EvidenceField, h: EvidenceHoldings): {
       }
       return {
         status: "held",
-        value: clamp(
+        value: clampEvidence(
           `The shop's refund policy was shown at checkout and accepted by the buyer at ` +
             `${h.termsAcceptedAt.toISOString()}. The acceptance is recorded server-side from ` +
             `the server's own clock at order creation, not from a client-submitted flag` +
@@ -365,7 +356,7 @@ function resolve(field: EvidenceField, h: EvidenceHoldings): {
       }
       return {
         status: "held",
-        value: clamp(
+        value: clampEvidence(
           `The cancellation terms were shown at checkout and accepted at ` +
             `${h.termsAcceptedAt.toISOString()}.` +
             (h.cancellationPolicyText ? `\n\n${h.cancellationPolicyText}` : ""),
@@ -375,7 +366,7 @@ function resolve(field: EvidenceField, h: EvidenceHoldings): {
       if (!h.cancelledAt) {
         return {
           status: "held",
-          value: clamp(
+          value: clampEvidence(
             `No cancellation was ever received for this subscription. Sailo cancels through ` +
               `Stripe's own hosted billing portal, so a cancellation would appear on the ` +
               `subscription itself; none does.`,
@@ -384,7 +375,7 @@ function resolve(field: EvidenceField, h: EvidenceHoldings): {
       }
       return {
         status: "held",
-        value: clamp(
+        value: clampEvidence(
           `The subscription was cancelled at ${h.cancelledAt.toISOString()}. The disputed ` +
             `charge was raised before that date, for a period the member had already begun. ` +
             (h.accessLog.length > 0
@@ -397,9 +388,9 @@ function resolve(field: EvidenceField, h: EvidenceHoldings): {
       if (h.refundedCents > 0) {
         return {
           status: "held",
-          value: clamp(
-            `A refund of ${money(h.refundedCents, h.currency)} was issued on ` +
-              `${date(h.refundedAt)}, before this dispute. The chargeback duplicates it.`,
+          value: clampEvidence(
+            `A refund of ${evidenceMoney(h.refundedCents, h.currency)} was issued on ` +
+              `${evidenceDate(h.refundedAt)}, before this dispute. The chargeback duplicates it.`,
           ),
         };
       }
@@ -428,11 +419,11 @@ function resolve(field: EvidenceField, h: EvidenceHoldings): {
       return {
         status: "held",
         value: h.duplicateIsDistinct
-          ? clamp(
+          ? clampEvidence(
               `Charge ${h.duplicateChargeId} is a separate order for different items, placed at a ` +
                 `different time. Both were fulfilled. Receipts for each are attached.`,
             )
-          : clamp(
+          : clampEvidence(
               `Charge ${h.duplicateChargeId} is the same order charged twice and should be refunded ` +
                 `rather than contested.`,
             ),

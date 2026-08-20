@@ -31,6 +31,7 @@ import {
   meetsFloor,
   type DisputeTally,
 } from "./rate";
+import { centsToAmount } from "../money/parse";
 
 export const ESCALATION_LEVELS = [
   "clear",
@@ -204,7 +205,8 @@ export function assessShop(risk: ShopRisk): EscalationDecision {
     risk.clearedAt !== null &&
     newSinceClearance < CLEARANCE_GRACE_CHARGEBACKS;
 
-  const money = (cents: number) => `$${(cents / 100).toFixed(2)}`;
+  // Platform money is USD; the $ prefix is staff-facing house style.
+  const money = (cents: number) => `$${centsToAmount(cents, "USD")}`;
 
   /*
    * Exposure first, and it outranks a staff clearance.
