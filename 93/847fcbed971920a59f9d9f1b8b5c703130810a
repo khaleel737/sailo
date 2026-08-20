@@ -1,0 +1,43 @@
+packages/config/package.json
+  s_a7bbf59e767e8f::t_338e62902d4045 14-15
+packages/commerce/src/coupons/coupons.test.ts
+  s_a7bbf59e767e8f::t_6c78c1f08d99cb 2
+packages/customers/src/shop-consent.test.ts
+  s_a7bbf59e767e8f::t_6c78c1f08d99cb 2,28
+packages/payments/src/offline/settings.test.ts
+  s_a7bbf59e767e8f::t_6c78c1f08d99cb 2
+apps/web/src/lib/cart.test.ts
+  s_a7bbf59e767e8f::t_6c78c1f08d99cb 3,40
+packages/config/testing.ts
+  s_a7bbf59e767e8f::t_354f4abc4e7ef3 1-43
+apps/web/package.json
+  s_a7bbf59e767e8f::t_1cb1789f350139 112
+packages/customers/src/consent.test.ts
+  s_a7bbf59e767e8f::t_6c78c1f08d99cb 2,27
+packages/commerce/src/catalog/products.test.ts
+  s_a7bbf59e767e8f::t_6c78c1f08d99cb 3
+packages/workflows/src/webhooks/queue.test.ts
+  s_a7bbf59e767e8f::t_6c78c1f08d99cb 2
+packages/customers/src/favorites.test.ts
+  s_a7bbf59e767e8f::t_6c78c1f08d99cb 2,33
+packages/customers/src/subscribe-prompt.test.ts
+  s_a7bbf59e767e8f::t_6c78c1f08d99cb 2,34
+pnpm-lock.yaml
+  s_a7bbf59e767e8f::t_15dfba57118202 614-616
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "93847fcbed971920a59f9d9f1b8b5c703130810a",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
