@@ -1,0 +1,28 @@
+apps/web/src/lib/actions/dispute-files.ts
+  s_a7bbf59e767e8f::t_3b80c7dcfd0384 31
+apps/web/src/lib/dispute-access.ts
+  s_a7bbf59e767e8f::t_c11f51e72779cd 5,8-17,24-27,33,36,73
+apps/web/src/app/api/disputes/[id]/evidence/[field]/route.ts
+  s_a7bbf59e767e8f::t_9519c725cccbb2 17-19,22,27
+apps/web/src/app/api/disputes/[id]/evidence/route.ts
+  s_a7bbf59e767e8f::t_2a78ee3e8e405c 40-42,44
+  s_a7bbf59e767e8f::t_27911cd0285a8a 56
+apps/web/src/app/admin/payments/_components/disputes-card.tsx
+  s_a7bbf59e767e8f::t_1c2448296fbd5a 253
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "6eb2ad1fdaf8dfd277397dd0572d10b9d0e663d4",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
