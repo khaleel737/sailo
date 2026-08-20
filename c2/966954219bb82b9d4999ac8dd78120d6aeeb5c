@@ -1,0 +1,33 @@
+apps/web/src/app/admin/settings/_components/settings-nav.tsx
+  s_16f404b29c0075::t_61cf2d45189dbc 23-28
+apps/web/src/app/admin/_components/weekly-hours-field.tsx
+  s_16f404b29c0075::t_a9b93d69a84097 1-177
+apps/web/src/lib/session.test.ts
+  s_16f404b29c0075::t_2daf4b45fd04ae 62,79-83,88,107
+  s_16f404b29c0075::t_39dda21f46b60b 66
+apps/web/src/app/admin/settings/_components/booking-card.tsx
+  s_16f404b29c0075::t_de145f1a52e0b1 3,5-9,16-20,42-46
+apps/web/src/app/admin/settings/staff/_components/staff-card.tsx
+  s_16f404b29c0075::t_1c31993ebc7745 1-261,268,276-349
+  s_16f404b29c0075::t_e61b8de30b3dd7 262-267,269-275
+apps/web/src/app/admin/settings/staff/page.tsx
+  s_16f404b29c0075::t_658aee48cceda3 1-96
+apps/web/src/i18n/admin-coverage.test.ts
+  s_16f404b29c0075::t_1a051dda32c9fb 137,139,153-158
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "c2966954219bb82b9d4999ac8dd78120d6aeeb5c",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
