@@ -1,0 +1,20 @@
+apps/web/src/app/admin/abandoned/page.tsx
+  s_a7bbf59e767e8f::t_2467f5d8b8a840 6
+  s_a7bbf59e767e8f::t_9c8eb94e55acb6 55-64,67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "3abcc79fb985b3ec8204a18ee5bf4658c1afa373",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
