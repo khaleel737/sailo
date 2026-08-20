@@ -1,0 +1,132 @@
+packages/api/src/mcp/tools.ts
+  s_dea12176d7f649::t_1e3d2ab210ceb6 7-9,605-682
+packages/db/src/schema/booking.ts
+  s_dea12176d7f649::t_7028f711eb65b0 66-68
+packages/db/src/schema/disputes.ts
+  s_dea12176d7f649::t_7028f711eb65b0 220-221
+apps/web/drizzle/0060_api_keyset_indexes.sql
+  s_dea12176d7f649::t_01653bc5d88ae5 1-114
+packages/core/src/wire/resources.ts
+  s_dea12176d7f649::t_e8c97b3e286173 3-4,624-744
+  s_dea12176d7f649::t_d8f5840b22be9c 745
+apps/api/src/app/api/v1/flows/[id]/route.ts
+  s_dea12176d7f649::t_c8c5421c2ffe28 1-38
+packages/api/src/rest/respond.ts
+  s_dea12176d7f649::t_e4502e6a0b547e 89-126
+packages/api/src/rest/respond.test.ts
+  s_dea12176d7f649::t_cd28fb451449ac 99-141
+  s_dea12176d7f649::t_3a728018f8ee85 2-11
+packages/db/src/schema/catalog.ts
+  s_dea12176d7f649::t_7028f711eb65b0 668-670
+packages/db/src/schema/memberships.ts
+  s_dea12176d7f649::t_7028f711eb65b0 325-327
+apps/web/src/app/api/v1/flows/[id]/route.ts
+  s_dea12176d7f649::t_c8c5421c2ffe28 1-17
+apps/web/src/app/api/v1/flows/route.ts
+  s_dea12176d7f649::t_c8c5421c2ffe28 1-25
+packages/api/src/rest/endpoint-examples.ts
+  s_dea12176d7f649::t_8262ffb2fed711 420-493
+packages/api/src/rest/openapi.ts
+  s_dea12176d7f649::t_7729fc5d7f439a 7-12,515-618,655-656,850
+apps/docs/src/components/reference/endpoints.tsx
+  s_dea12176d7f649::t_1eb1ecdc7ca5fe 52
+apps/docs/src/components/reference/fields.ts
+  s_dea12176d7f649::t_0aff6c4afdad4c 3-4,619-726
+packages/api/src/rest/endpoints.ts
+  s_dea12176d7f649::t_d696ae610db130 38-42,58-60
+  s_dea12176d7f649::t_4fab49a366c718 733-824
+apps/api/src/app/api/v1/flows/route.ts
+  s_dea12176d7f649::t_c8c5421c2ffe28 1-46
+apps/docs/content/objects/flow-run.mdx
+  s_dea12176d7f649::t_2004777dc62c0c 1-78
+apps/docs/content/objects/flow.mdx
+  s_dea12176d7f649::t_2004777dc62c0c 1-74
+apps/docs/content/rate-limits.mdx
+  s_dea12176d7f649::t_e6353b654bc934 94-103,107-109
+  s_dea12176d7f649::t_f2663c6f4f7198 19-52
+apps/docs/content/mcp/index.mdx
+  s_dea12176d7f649::t_253c97caea11ba 15-16,50
+apps/docs/content/changelog.mdx
+  s_dea12176d7f649::t_6e8711fdc2b232 54-86
+apps/web/e2e/scenarios/api.scenario.ts
+  s_dea12176d7f649::t_e8a3572d7de7ef 75-86
+packages/rate-limit/src/redis.test.ts
+  s_dea12176d7f649::t_2e8fa32fa775b1 256-282
+  s_dea12176d7f649::t_d26f9075bc85f6 25-31,78
+packages/api/src/rest/route.ts
+  s_dea12176d7f649::t_ebdbb83224d3a6 31-32,35,37
+  s_dea12176d7f649::t_7d134c21d54b32 54,62,64-71,73
+  s_dea12176d7f649::t_3c4a7e5a09e0ce 4
+  s_dea12176d7f649::t_75b5c6c4042805 120,122-128
+packages/api/src/mcp/tools.test.ts
+  s_dea12176d7f649::t_c4068f7e8eb69d 172-174
+  s_dea12176d7f649::t_22a5106379ea49 234,236-237
+apps/docs/content/api/_meta.ts
+  s_dea12176d7f649::t_2004777dc62c0c 28
+apps/web/src/app/api/v1/flows/[id]/runs/route.ts
+  s_dea12176d7f649::t_c8c5421c2ffe28 1-27
+packages/api/src/rest/endpoint-shape.ts
+  s_dea12176d7f649::t_d696ae610db130 46-48
+apps/docs/content/errors.mdx
+  s_dea12176d7f649::t_088a72fe5ac37c 123-129,139-144
+apps/docs/content/api/index.mdx
+  s_dea12176d7f649::t_17cc77770d928b 10,43-44,75
+packages/rate-limit/src/redis.ts
+  s_dea12176d7f649::t_487e010ae9c3a6 197-213
+  s_dea12176d7f649::t_e6e80bc8b49cea 257-267,270,280,283,295,299-300
+apps/docs/src/components/reference/objects.tsx
+  s_dea12176d7f649::t_0aff6c4afdad4c 6-7,99-104
+packages/db/src/schema/contacts.ts
+  s_dea12176d7f649::t_5349613c493ef8 90-92
+apps/docs/content/api/flows.mdx
+  s_dea12176d7f649::t_4b70d92656dd03 106-113
+  s_dea12176d7f649::t_0304210b5eabbe 1-105,114-125
+packages/db/src/schema/orders.ts
+  s_dea12176d7f649::t_60e5ecdfe1d878 85-86,923-931
+packages/api/src/rest/auth.ts
+  s_dea12176d7f649::t_aa8d1edc02d090 26-43
+  s_dea12176d7f649::t_6e45cee1163e52 167
+  s_dea12176d7f649::t_b372ab04df5769 277-291,294-297
+  s_dea12176d7f649::t_317b73da755f59 7
+  s_dea12176d7f649::t_ea90a4c21a574f 77-83,85-97,99,159-165
+  s_dea12176d7f649::t_aabc83a66b65af 213-218,224,226-236,244
+  s_dea12176d7f649::t_07bc97831be02b 48-63
+apps/docs/content/mcp/permissions.mdx
+  s_dea12176d7f649::t_253c97caea11ba 24-25,51-54
+packages/db/src/schema/automations.ts
+  s_dea12176d7f649::t_5349613c493ef8 88-90,177-179
+packages/api/src/mcp/http.ts
+  s_dea12176d7f649::t_add30585b52110 228-233,235-236,238-244,247-248,251-255,258
+  s_dea12176d7f649::t_1c5a405bc6b008 323
+  s_dea12176d7f649::t_f8eca49d6e7c26 3,266,268,279,300-301,305
+  s_dea12176d7f649::t_905197fda9bc59 333-337,353-354
+packages/api/src/rest/handlers.ts
+  s_dea12176d7f649::t_315c69b9703032 1411-1421,1423-1430,1439,1443
+  s_dea12176d7f649::t_1dc319d6350771 5-6,23,32-33
+  s_dea12176d7f649::t_4b70d92656dd03 807-817
+  s_dea12176d7f649::t_86727934729448 1340,1342-1348,1350-1352,1367-1398
+  s_dea12176d7f649::t_f66a4acb8c48dd 799-806,818-1028
+  s_dea12176d7f649::t_831b6372c387c6 25
+apps/docs/content/objects/index.mdx
+  s_dea12176d7f649::t_17cc77770d928b 32-33
+apps/api/src/app/api/v1/flows/[id]/runs/route.ts
+  s_dea12176d7f649::t_c8c5421c2ffe28 1-48
+apps/docs/content/objects/_meta.ts
+  s_dea12176d7f649::t_2004777dc62c0c 25-26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "ba3145fb584b3730b63cf865b7f75ffa7bedaed8",
+  "prompts": {},
+  "sessions": {
+    "s_dea12176d7f649": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d48cc105-2598-4cad-8e85-b8850bb9df27",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
