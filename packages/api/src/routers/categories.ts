@@ -133,14 +133,19 @@ export const categoriesRouter = router({
     .mutation(async ({ ctx, input }) => {
       const db = getDb();
 
-      await db.transaction(async (tx) => {
-        for (const [position, id] of input.ids.entries()) {
-          await tx
-            .update(categories)
-            .set({ position })
-            .where(and(eq(categories.id, id), eq(categories.shopId, ctx.shopId)));
-        }
-      });
+      /*
+       * One `db.batch()`, never a driver transaction — neon-http has no
+       * transactions and throws on the call, which made every drag-reorder a
+       * 500 until this was one. The batch is the only atomicity the driver
+       * offers, and it is also one round trip instead of up to two hundred.
+       */
+      const [head, ...rest] = input.ids.map((id, position) =>
+        db
+          .update(categories)
+          .set({ position })
+          .where(and(eq(categories.id, id), eq(categories.shopId, ctx.shopId))),
+      );
+      if (head) await db.batch([head, ...rest]);
 
       await publishShopEvent(ctx.shopId, "catalog");
       return { count: input.ids.length };
