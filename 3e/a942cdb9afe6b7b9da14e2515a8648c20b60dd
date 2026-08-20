@@ -1,0 +1,23 @@
+packages/design-system/src/web/sparkline.tsx
+  s_a7bbf59e767e8f::t_aaeda0ce126f9b 39-41
+apps/mobile/tests/design-system.test.tsx
+  s_a7bbf59e767e8f::t_55ad2836e63a09 6
+apps/web/src/app/admin/affiliates/page.tsx
+  s_a7bbf59e767e8f::t_861573a2f6e627 32-37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "3ea942cdb9afe6b7b9da14e2515a8648c20b60dd",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
