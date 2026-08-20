@@ -1,0 +1,20 @@
+apps/web/e2e/scenarios/event-depth.scenario.ts
+  s_16f404b29c0075::t_d1e89af8b6ae66 24
+  s_16f404b29c0075::t_78b9d4aaf3b327 649-681
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "fd9c1d197aff22d62d01a6c410fb825975fee443",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
