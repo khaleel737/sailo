@@ -22,6 +22,7 @@ import {
   ShieldCheck,
   Settings,
   ShoppingBag,
+  ShoppingCart,
   Tag,
   Tags,
   Truck,
@@ -87,7 +88,10 @@ const SECTIONS: NavSection[] = [
     key: "orders",
     labelFrom: "nav",
     badge: "orders",
-    children: [{ href: "/admin/checkin", key: "checkin" }],
+    children: [
+      { href: "/admin/checkin", key: "checkin" },
+      { href: "/admin/abandoned", key: "abandoned" },
+    ],
   },
   {
     id: "products",
@@ -140,6 +144,7 @@ const SETUP = [
 /** Icons for the mobile sheet's child rows, where a thumb reads by shape. */
 const CHILD_ICONS: Record<string, typeof Package> = {
   checkin: ScanLine,
+  abandoned: ShoppingCart,
   categories: Tag,
   reviews: MessageSquare,
   members: BadgeCheck,

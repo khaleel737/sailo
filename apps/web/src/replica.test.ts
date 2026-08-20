@@ -153,6 +153,12 @@ describe("read replica", () => {
        */
       "../../packages/analytics/src/breakdowns.ts",
       "../../packages/analytics/src/dashboard.ts",
+      /*
+       * The dashboard's from-visit-to-order panel. Three counts over visits,
+       * checkout_sessions and orders — reporting in the same sense as its four
+       * siblings, and a second stale is the same non-bug it is for them.
+       */
+      "../../packages/analytics/src/funnel.ts",
       "../../packages/analytics/src/performance.ts",
       "../../packages/analytics/src/series.ts",
 

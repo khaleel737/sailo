@@ -65,6 +65,7 @@ export default async function FlowsPage() {
   const triggerLabels: Record<string, string> = {
     "list.joined": a.flows.triggerListJoined,
     "product.purchased": a.flows.triggerProductPurchased,
+    "checkout.abandoned": a.flows.triggerCheckoutAbandoned,
     "waitlist.signup": a.flows.triggerWaitlistSignup,
     "contact.updated": a.flows.triggerContactUpdated,
   };

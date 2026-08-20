@@ -23,4 +23,5 @@ export * from "./dashboard";
 export * from "./series";
 export * from "./breakdowns";
 export * from "./performance";
+export * from "./funnel";
 export type { Window } from "./bounds";

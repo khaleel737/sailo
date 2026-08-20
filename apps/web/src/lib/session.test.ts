@@ -59,7 +59,7 @@ describe("requireShop, audited", () => {
     expect(source).not.toMatch(/requireShop\(\s*permission\?/);
   });
 
-  it("is called 157 times, and every one names a real permission", () => {
+  it("is called 159 times, and every one names a real permission", () => {
     const sites = callSites();
 
     /*
@@ -93,10 +93,16 @@ describe("requireShop, audited", () => {
      * `marketing:send` — the same permission broadcasts sends under, because
      * a flow is another way to put mail in somebody's inbox.
      *
+     * 157 → 159 is spec 32's seller-facing half: the abandoned-checkouts
+     * ledger at `/admin/abandoned` reading `orders:read` — a stalled checkout
+     * is order-shaped news — and `setRecoveryEnabled` in `actions/recovery.ts`
+     * claiming `settings:write`, because the built-in recovery email's switch
+     * configures the shop the way opening hours do.
+     *
      * Update this deliberately when a screen is added or removed. A number that
      * moves on its own is exactly the thing this exists to notice.
      */
-    expect(sites).toHaveLength(157);
+    expect(sites).toHaveLength(159);
 
     const unknown = sites.filter(
       (s) => !(SHOP_PERMISSIONS as readonly string[]).includes(s.permission),
@@ -113,9 +119,9 @@ describe("requireShop, audited", () => {
         s.file.startsWith("src/app/") &&
         (s.file.endsWith("page.tsx") || s.file.endsWith("layout.tsx")),
     );
-    expect(inActions).toHaveLength(103);
+    expect(inActions).toHaveLength(104);
     expect(inRoutes).toHaveLength(7);
-    expect(inPages).toHaveLength(47);
+    expect(inPages).toHaveLength(48);
     expect(inActions.length + inRoutes.length + inPages.length).toBe(sites.length);
 
     /*

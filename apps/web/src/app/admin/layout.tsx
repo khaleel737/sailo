@@ -44,6 +44,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
     { label: t.nav.overview, href: "/admin", group: "pages" },
     { label: t.nav.orders, href: "/admin/orders", group: "pages" },
     { label: t.nav.checkin, href: "/admin/checkin", group: "pages" },
+    { label: t.nav.abandoned, href: "/admin/abandoned", group: "pages" },
     { label: t.nav.products, href: "/admin/products", group: "pages" },
     { label: t.nav.categories, href: "/admin/categories", group: "pages" },
     { label: t.nav.reviews, href: "/admin/reviews", group: "pages" },

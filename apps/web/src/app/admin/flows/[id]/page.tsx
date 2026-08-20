@@ -178,6 +178,9 @@ export default async function FlowPage({
             : typeof config.productId === "string"
               ? config.productId
               : undefined,
+          fields: Array.isArray(config.fields)
+            ? config.fields.map(String)
+            : undefined,
         }}
         steps={steps}
         stats={stats}

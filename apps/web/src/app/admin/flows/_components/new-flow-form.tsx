@@ -17,6 +17,7 @@ type Option = { id: string; label: string };
 const TRIGGERS = [
   "list.joined",
   "product.purchased",
+  "checkout.abandoned",
   "waitlist.signup",
   "contact.updated",
 ] as const;
@@ -79,18 +80,22 @@ export function TriggerFields({
   defaultType,
   defaultListId,
   defaultProductId,
+  defaultUpdatedFields,
 }: {
   lists: Option[];
   products: Option[];
   defaultType?: string;
   defaultListId?: string;
   defaultProductId?: string;
+  /** "tags" when the stored trigger watches tags alone; anything else = any. */
+  defaultUpdatedFields?: string;
 }) {
   const a = useAdminT();
 
   const labels: Record<(typeof TRIGGERS)[number], string> = {
     "list.joined": a.flows.triggerListJoined,
     "product.purchased": a.flows.triggerProductPurchased,
+    "checkout.abandoned": a.flows.triggerCheckoutAbandoned,
     "waitlist.signup": a.flows.triggerWaitlistSignup,
     "contact.updated": a.flows.triggerContactUpdated,
   };
@@ -107,7 +112,7 @@ export function TriggerFields({
         </Select>
       </Field>
 
-      {/* Both pickers always render; the server reads only the one the
+      {/* Every picker always renders; the server reads only the ones the
           chosen trigger uses. An empty value means "any", which the enrol
           path treats as an absent config — not a sentinel. */}
       <Field label={labels["list.joined"]}>
@@ -121,7 +126,7 @@ export function TriggerFields({
         </Select>
       </Field>
 
-      <Field label={labels["product.purchased"]}>
+      <Field label={a.flows.productLabel}>
         <Select name="productId" defaultValue={defaultProductId ?? ""}>
           <option value="">{a.flows.anyProduct}</option>
           {products.map((product) => (
@@ -129,6 +134,13 @@ export function TriggerFields({
               {product.label}
             </option>
           ))}
+        </Select>
+      </Field>
+
+      <Field label={a.flows.updatedLabel} hint={a.flows.updatedHint}>
+        <Select name="updatedFields" defaultValue={defaultUpdatedFields ?? ""}>
+          <option value="">{a.flows.updatedAny}</option>
+          <option value="tags">{a.flows.updatedTags}</option>
         </Select>
       </Field>
     </>

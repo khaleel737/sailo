@@ -69,7 +69,7 @@ export function FlowEditor({
   status: "draft" | "active" | "paused";
   name: string;
   entryPolicy: "once" | "repeat";
-  trigger: { type: string; listId?: string; productId?: string };
+  trigger: { type: string; listId?: string; productId?: string; fields?: string[] };
   /** Null when the stored graph is not the linear shape this editor draws. */
   steps: EditorStep[] | null;
   stats: { queued: number; waiting: number; done: number; failed: number; cancelled: number };
@@ -120,6 +120,8 @@ export function FlowEditor({
           type: String(form.get("trigger") ?? trigger.type),
           listId: String(form.get("listId") ?? "") || undefined,
           productId: String(form.get("productId") ?? "") || undefined,
+          fields:
+            String(form.get("updatedFields") ?? "") === "tags" ? ["tags"] : undefined,
         },
         steps: rows.map(({ key: _key, ...step }) => step),
       }),
@@ -185,6 +187,7 @@ export function FlowEditor({
             defaultType={trigger.type}
             defaultListId={trigger.listId}
             defaultProductId={trigger.productId}
+            defaultUpdatedFields={trigger.fields?.includes("tags") ? "tags" : ""}
           />
 
           <Field label={a.flows.entryLabel} hint={a.flows.entryRepeatHint}>

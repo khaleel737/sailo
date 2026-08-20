@@ -6,6 +6,7 @@ import { requireShop } from "@/lib/session";
 import {
   getCheckoutMethods,
   getClickBreakdown,
+  getConversionFunnel,
   getDashboardStats,
   getProductPerformance,
   getRevenueSeries,
@@ -20,6 +21,7 @@ import { Chart } from "@sailo/design-system/web/chart";
 import { ShareLinkButton } from "@/app/admin/_components/share-link-dialog";
 import { TrafficPanel } from "@/app/admin/_components/traffic-panel";
 import { ProductPerformancePanel } from "@/app/admin/_components/product-performance";
+import { ConversionFunnelPanel } from "@/app/admin/_components/conversion-funnel";
 import { RangePicker } from "@/app/admin/_components/range-picker";
 import { SetupChecklist } from "@/app/admin/_components/setup-checklist";
 import { ReferralCard } from "@/app/admin/_components/referral-card";
@@ -80,6 +82,7 @@ export default async function AdminOverviewPage({
      */
     usableRails,
     partnerCard,
+    funnel,
     currencyMix,
   ] = await Promise.all([
     getDashboardStats(shop.id, window.query),
@@ -97,6 +100,7 @@ export default async function AdminOverviewPage({
      * than one a page render makes on their behalf.
      */
     getPartnerCard(shop.userId),
+    getConversionFunnel(shop.id, window.query),
     /*
      * What was taken in a currency that is not the shop's own — spec 53.
      *
@@ -325,6 +329,8 @@ export default async function AdminOverviewPage({
           }
         />
       </div>
+
+      <ConversionFunnelPanel funnel={funnel} />
 
       {stats.awaitingShipment > 0 ? (
         <Link

@@ -49,9 +49,14 @@ export type FlowDraft = {
     listId?: string;
     productIds?: string[];
     productId?: string;
+    /** For `contact.updated`: which fields wake the flow. Empty means any. */
+    fields?: string[];
   };
   steps: FlowStep[];
 };
+
+/** The one field the builder offers to watch. The engine takes any list. */
+const WATCHABLE_FIELDS = ["tags"] as const;
 
 /**
  * The gate, in one place — the `editable()` shape next door in
@@ -101,6 +106,19 @@ function triggerFrom(input: FlowDraft["trigger"]): AutomationTrigger | null {
   if (input.type === "waitlist.signup" && isUuid(input.productId ?? "")) {
     config.productId = input.productId;
   }
+  if (input.type === "checkout.abandoned") {
+    /* The purchased trigger's vocabulary: absent means any product. */
+    const ids = [...(input.productIds ?? []), input.productId ?? ""].filter((id) =>
+      isUuid(id),
+    );
+    if (ids.length > 0) config.productIds = [...new Set(ids)];
+  }
+  if (input.type === "contact.updated") {
+    const fields = (input.fields ?? []).filter((f) =>
+      (WATCHABLE_FIELDS as readonly string[]).includes(f),
+    );
+    if (fields.length > 0) config.fields = fields;
+  }
   return { type: input.type, config };
 }
 
@@ -123,6 +141,8 @@ export async function createFlow(
     listId: String(formData.get("listId") ?? "") || undefined,
     productId: String(formData.get("productId") ?? "") || undefined,
     productIds: formData.getAll("productIds").map(String),
+    fields:
+      String(formData.get("updatedFields") ?? "") === "tags" ? ["tags"] : undefined,
   });
   if (!trigger) return { ok: false, error: "trigger" };
 
