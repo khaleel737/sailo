@@ -7,22 +7,22 @@ App Store Connect before a human ever sees it.
 
 ## What is required
 
-`app.json` has `"supportsTablet": false`, so **iPhone 6.7" is the only
-mandatory set**. That is the whole iOS requirement: Apple scales one set down
-for every smaller device.
+`app.json` has `"supportsTablet": true`, so **two sets are mandatory**: the
+iPhone 6.7" set, and the iPad 13" set — and the app has to genuinely work on
+iPad, which no screenshot gate can check for you. Apple scales each set down
+for the smaller devices in its family.
 
 | Set | `store.config.json` key | Pixels (portrait) | How many |
 |---|---|---|---|
 | iPhone 6.7" / 6.9" | `APP_IPHONE_67` | 1290 × 2796 | 3 minimum, 10 maximum. Ship 5. |
+| iPad Pro 13" | `APP_IPAD_PRO_3GEN_129` | 2064 × 2752 | 3 minimum, 10 maximum. Ship 5. |
 
-Also accepted in that set: 1320 × 2868, 1284 × 2778, 1206 × 2622. Pick one and
-use it for every shot — a set with mixed dimensions is rejected.
+Also accepted in the iPhone set: 1320 × 2868, 1284 × 2778, 1206 × 2622. Pick
+one and use it for every shot — a set with mixed dimensions is rejected.
 
-**If `supportsTablet` ever goes back to `true`,** iPad 13" screenshots
-(`APP_IPAD_PRO_3GEN_129`, 2064 × 2752) become mandatory *and* the app has to
-genuinely work on iPad. `preflight.sh` reads `app.json` and starts requiring
-them on its own, so the gate will tell you. It cannot make the app work on
-iPad.
+**If `supportsTablet` is ever flipped back to `false`,** the iPad set stops
+being required. `preflight.sh` reads `app.json` and adjusts what it demands on
+its own, so the gate will tell you either way.
 
 For Google Play, the same PNGs are fine: 2 to 8 phone screenshots, and
 separately a 1024 × 500 feature graphic and a 512 × 512 icon, neither of which

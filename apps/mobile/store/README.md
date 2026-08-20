@@ -111,7 +111,7 @@ an asset already referenced by the bundle:
 
 - a screen that crashes, a wrong total, a mis-sorted list
 - copy, translations, a new string in `@sailo/i18n/native`
-- styling, layout, a component from `@sailo/design-native`
+- styling, layout, a component from `@sailo/design-system`
 - a tRPC call that needs a different shape
 - a new screen, as long as it uses no new native module
 

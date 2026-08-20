@@ -122,9 +122,10 @@ fi
 # ── 5. Screenshots exist for every size the listing claims ───────────────────
 #
 # App Store Connect will not accept a version without an iPhone 6.7" set, and
-# `eas metadata:push` fails on a path that is not there. app.json has
-# `supportsTablet: false`, so iPad sets are not required — if that ever flips
-# back to true, iPad screenshots become mandatory and this check has to grow.
+# `eas metadata:push` fails on a path that is not there. The check reads
+# `supportsTablet` from app.json at run time: while it is true (as it is
+# today), the iPad 13" set is mandatory too; flip it to false and the iPad
+# requirement falls away on its own.
 section "5 · Screenshots"
 
 tablet=$(node -e 'console.log(require("'"$mobile"'/app.json").expo.ios.supportsTablet === true)')
