@@ -1,0 +1,24 @@
+apps/web/src/lib/track-liveness.ts
+  s_a7bbf59e767e8f::t_fc466dec2897a0 1-57
+apps/web/src/app/api/track/route.ts
+  s_a7bbf59e767e8f::t_e8f35099b2d9e9 188-191
+  s_a7bbf59e767e8f::t_04b621176cc706 63-66,68-70
+  s_a7bbf59e767e8f::t_5a792ef954e3d9 8
+  s_a7bbf59e767e8f::t_0429fb9b69cd3d 13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "b7b2bb67bce1c587bdb66bbb918b420e3a13191e",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
