@@ -1,0 +1,25 @@
+packages/design-system/src/web/chart/variations.test.ts
+  s_a7bbf59e767e8f::t_fd46ea7807d14e 209-213
+packages/commerce/src/pagination.test.ts
+  s_a7bbf59e767e8f::t_702596e23712e5 112-116
+packages/core/src/money/codes.test.ts
+  s_a7bbf59e767e8f::t_b1848621205054 1-196
+packages/api/src/rest/respond.test.ts
+  s_a7bbf59e767e8f::t_d267e0189c0f2b 11-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "eb348180d383f3584d8887822927f8c164b3b948",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
