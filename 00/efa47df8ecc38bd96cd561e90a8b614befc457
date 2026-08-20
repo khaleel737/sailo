@@ -1,0 +1,23 @@
+apps/web/src/app/[handle]/p/[slug]/_components/lead-form.tsx
+  s_5a74b4ec056616::t_d24f6788341c8a 148
+apps/web/src/app/testimonial/[token]/_components/testimonial-form.tsx
+  s_5a74b4ec056616::t_3053380fd796cf 118
+apps/web/src/lib/actions/testimonials.ts
+  s_5a74b4ec056616::t_d6bf9f74aaf50b 65-72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "00efa47df8ecc38bd96cd561e90a8b614befc457",
+  "prompts": {},
+  "sessions": {
+    "s_5a74b4ec056616": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "09d9ff8c-792d-4483-a67b-d14f394f16c7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
