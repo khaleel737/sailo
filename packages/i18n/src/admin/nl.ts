@@ -767,6 +767,7 @@ export const adminNl: PartialAdminDictionary = {
     currencyGapVariants: "{count} varianten",
     currencyGapDelivery: "{count} verzendtarieven",
     currencyGapCoupons: "{count} kortingscodes",
+    currencyGapTiers: "{count} ticketcategorieën — categorieën kunnen nog geen tweede valuta dragen",
     currencyLive: "{currency} staat live in je winkel",
     tabTeam: "Team",
     teamTitle: "Wie er in deze winkel mag werken",

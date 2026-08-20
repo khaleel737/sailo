@@ -593,6 +593,7 @@ export const adminTh: PartialAdminDictionary = {
     currencyGapVariants: "ตัวเลือก {count} รายการ",
     currencyGapDelivery: "ค่าจัดส่ง {count} รายการ",
     currencyGapCoupons: "โค้ดส่วนลด {count} รายการ",
+    currencyGapTiers: "ระดับบัตร {count} ระดับ — ระดับบัตรยังรองรับสกุลเงินที่สองไม่ได้",
     currencyLive: "{currency} ใช้งานอยู่บนหน้าร้านของคุณแล้ว",
     tabTeam: "ทีม",
     teamTitle: "ใครทำงานในร้านนี้ได้บ้าง",

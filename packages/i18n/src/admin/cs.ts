@@ -763,6 +763,7 @@ export const adminCs: PartialAdminDictionary = {
     currencyGapVariants: "{count} variant",
     currencyGapDelivery: "{count} sazeb dopravy",
     currencyGapCoupons: "{count} slevových kódů",
+    currencyGapTiers: "{count} kategorií vstupenek — kategorie zatím neunesou druhou měnu",
     currencyLive: "{currency} je v obchodě spuštěná",
     tabTeam: "Tým",
     teamTitle: "Kdo může v tomhle obchodě pracovat",

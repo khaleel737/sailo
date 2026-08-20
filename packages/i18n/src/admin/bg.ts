@@ -592,6 +592,7 @@ export const adminBg: PartialAdminDictionary = {
     currencyGapVariants: "{count} варианта",
     currencyGapDelivery: "{count} тарифи за доставка",
     currencyGapCoupons: "{count} кода за отстъпка",
+    currencyGapTiers: "{count} категории билети — категориите още не могат да имат втора валута",
     currencyLive: "{currency} е активна в магазина ти",
     tabTeam: "Екип",
     teamTitle: "Кой може да работи в този магазин",

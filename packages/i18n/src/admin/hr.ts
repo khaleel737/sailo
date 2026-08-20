@@ -594,6 +594,7 @@ export const adminHr: PartialAdminDictionary = {
     currencyGapVariants: "{count} varijanti",
     currencyGapDelivery: "{count} cijena dostave",
     currencyGapCoupons: "{count} kodova za popust",
+    currencyGapTiers: "{count} kategorija ulaznica — kategorije još ne mogu nositi drugu valutu",
     currencyLive: "{currency} je uživo u tvojoj trgovini",
     tabTeam: "Tim",
     teamTitle: "Tko smije raditi u ovoj trgovini",

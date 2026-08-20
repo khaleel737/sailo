@@ -593,6 +593,7 @@ export const adminSq: PartialAdminDictionary = {
     currencyGapVariants: "{count} variante",
     currencyGapDelivery: "{count} tarifa dërgese",
     currencyGapCoupons: "{count} kode zbritjeje",
+    currencyGapTiers: "{count} kategori biletash — kategoritë nuk mbajnë ende një monedhë të dytë",
     currencyLive: "{currency} është live në dyqanin tënd",
     tabTeam: "Ekipi",
     teamTitle: "Kush mund të punojë në këtë dyqan",

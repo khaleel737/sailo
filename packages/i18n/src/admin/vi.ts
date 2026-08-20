@@ -593,6 +593,7 @@ export const adminVi: PartialAdminDictionary = {
     currencyGapVariants: "{count} phiên bản",
     currencyGapDelivery: "{count} mức phí giao hàng",
     currencyGapCoupons: "{count} mã giảm giá",
+    currencyGapTiers: "{count} hạng vé — hạng vé chưa mang được đồng tiền thứ hai",
     currencyLive: "{currency} đã chạy trên cửa hàng của bạn",
     tabTeam: "Nhóm",
     teamTitle: "Ai được làm việc trong cửa hàng này",

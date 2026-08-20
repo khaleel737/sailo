@@ -764,6 +764,7 @@ export const adminSv: PartialAdminDictionary = {
     currencyGapVariants: "{count} varianter",
     currencyGapDelivery: "{count} fraktavgifter",
     currencyGapCoupons: "{count} rabattkoder",
+    currencyGapTiers: "{count} biljettkategorier — kategorier kan ännu inte bära en andra valuta",
     currencyLive: "{currency} är live i din butik",
     tabTeam: "Team",
     teamTitle: "Vilka som får jobba i butiken",

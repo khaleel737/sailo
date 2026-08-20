@@ -767,6 +767,7 @@ export const adminRu: PartialAdminDictionary = {
     currencyGapVariants: "{count} вариантов",
     currencyGapDelivery: "{count} тарифов доставки",
     currencyGapCoupons: "{count} промокодов",
+    currencyGapTiers: "{count} категорий билетов — категории пока не могут нести вторую валюту",
     currencyLive: "{currency} уже работает в твоём магазине",
     tabTeam: "Команда",
     teamTitle: "Кто может работать в этом магазине",

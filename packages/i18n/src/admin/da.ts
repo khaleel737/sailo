@@ -763,6 +763,7 @@ export const adminDa: PartialAdminDictionary = {
     currencyGapVariants: "{count} varianter",
     currencyGapDelivery: "{count} fragtsatser",
     currencyGapCoupons: "{count} rabatkoder",
+    currencyGapTiers: "{count} billetkategorier — kategorier kan endnu ikke bære en anden valuta",
     currencyLive: "{currency} er live i din butik",
     tabTeam: "Team",
     teamTitle: "Hvem der må arbejde i butikken",

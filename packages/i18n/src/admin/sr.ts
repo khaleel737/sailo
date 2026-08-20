@@ -593,6 +593,7 @@ export const adminSr: PartialAdminDictionary = {
     currencyGapVariants: "{count} варијанти",
     currencyGapDelivery: "{count} цена доставе",
     currencyGapCoupons: "{count} кодова за попуст",
+    currencyGapTiers: "{count} категорија улазница — категорије још не могу носити другу валуту",
     currencyLive: "{currency} је уживо у твојој продавници",
     tabTeam: "Тим",
     teamTitle: "Ко сме да ради у овој продавници",

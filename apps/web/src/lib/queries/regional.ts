@@ -2,7 +2,13 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { coupons, deliveryMethods, productVariants, products } from "@sailo/db/schema";
+import {
+  coupons,
+  deliveryMethods,
+  eventTiers,
+  productVariants,
+  products,
+} from "@sailo/db/schema";
 import { shopTag } from "@/lib/cache";
 
 /**
@@ -95,6 +101,35 @@ async function readLiveCurrencies(
             and v.price_cents is not null
             and not jsonb_exists(v.currency_prices, c)
         )`,
+        /*
+         * A published event with price bands holds every other currency back —
+         * spec 50.
+         *
+         * `event_tiers` has a `price_cents` and no `currency_prices`: a band is
+         * one number, in the shop's own currency, and there is nowhere to put a
+         * euro one. `resolveLines` therefore refuses a tiered line whenever the
+         * order is priced in anything else — refuses rather than falls back,
+         * because the product's euro price is a price for a *different* ticket
+         * and charging it would sell VIP at the general rate.
+         *
+         * Without this clause that refusal is invisible: euros go live off a
+         * fully-priced catalogue, and every ticket sale in euros fails with
+         * "isn't available right now" while the seller sees nothing wrong. One
+         * currency not going live is a state they can see and ask about; a
+         * checkout that quietly stops taking money is not.
+         *
+         * Blunter than the variant rule above, and deliberately so — there is
+         * no "only bands that override" case to carve out, because a band that
+         * inherits nothing is still a price. The real fix is `currency_prices`
+         * on `event_tiers`, which is a migration and an editor; until then this
+         * is the honest shape.
+         */
+        sql`not exists (
+          select 1 from ${eventTiers} t
+          join ${products} p on p.id = t.product_id
+          where p.shop_id = ${shopId}
+            and p.is_published
+        )`,
         sql`not exists (
           select 1 from ${deliveryMethods} d
           where d.shop_id = ${shopId}
@@ -155,6 +190,17 @@ export type CurrencyGaps = {
   variants: number;
   delivery: number;
   coupons: number;
+  /**
+   * Price bands on a published event — spec 50.
+   *
+   * A count of bands rather than of unpriced ones, because none of them can be
+   * priced in another currency at all: `event_tiers` has a `price_cents` and no
+   * `currency_prices`. So this is not "add a price to three of these", it is
+   * "this shop sells tickets in bands and cannot quote them in euros" — the one
+   * gap on this card the seller cannot close by typing a number, and therefore
+   * the one they most need named rather than left to work out.
+   */
+  tiers: number;
 };
 
 export async function currencyGaps(
@@ -174,7 +220,8 @@ export async function currencyGaps(
 
   const out: CurrencyGaps[] = [];
   for (const code of wanted) {
-    const [[productRow], [variantRow], [deliveryRow], [couponRow]] = await Promise.all([
+    const [[productRow], [variantRow], [deliveryRow], [couponRow], [tierRow]] =
+      await Promise.all([
       db
         .select({ n: missing("products.currency_prices", code) })
         .from(products)
@@ -206,6 +253,12 @@ export async function currencyGaps(
             sql`(${coupons.discountType} = 'fixed' or ${coupons.minSubtotalCents} > 0)`,
           ),
         ),
+      // Every band on a published event, because every one of them blocks.
+      db
+        .select({ n: sql<string>`count(*)` })
+        .from(eventTiers)
+        .innerJoin(products, eq(products.id, eventTiers.productId))
+        .where(and(eq(products.shopId, shopId), eq(products.isPublished, true))),
     ]);
 
     out.push({
@@ -214,6 +267,7 @@ export async function currencyGaps(
       variants: Number(variantRow?.n ?? 0),
       delivery: Number(deliveryRow?.n ?? 0),
       coupons: Number(couponRow?.n ?? 0),
+      tiers: Number(tierRow?.n ?? 0),
     });
   }
 

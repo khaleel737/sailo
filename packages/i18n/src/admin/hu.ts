@@ -765,6 +765,7 @@ export const adminHu: PartialAdminDictionary = {
     currencyGapVariants: "{count} változat",
     currencyGapDelivery: "{count} szállítási díj",
     currencyGapCoupons: "{count} kedvezménykód",
+    currencyGapTiers: "{count} jegykategória — a kategóriák még nem bírnak második pénznemet",
     currencyLive: "{currency} él a boltodban",
     tabTeam: "Csapat",
     teamTitle: "Ki dolgozhat ebben a boltban",

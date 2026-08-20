@@ -594,6 +594,7 @@ export const adminId: PartialAdminDictionary = {
     currencyGapVariants: "{count} varian",
     currencyGapDelivery: "{count} tarif pengiriman",
     currencyGapCoupons: "{count} kode diskon",
+    currencyGapTiers: "{count} kategori tiket — kategori belum bisa membawa mata uang kedua",
     currencyLive: "{currency} sudah aktif di tokomu",
     tabTeam: "Tim",
     teamTitle: "Siapa saja yang boleh bekerja di toko ini",

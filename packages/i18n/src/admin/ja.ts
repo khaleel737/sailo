@@ -765,6 +765,7 @@ export const adminJa: PartialAdminDictionary = {
     currencyGapVariants: "{count} 件のバリエーション",
     currencyGapDelivery: "{count} 件の配送料",
     currencyGapCoupons: "{count} 件の割引コード",
+    currencyGapTiers: "チケット区分 {count} 件 — 区分はまだ2つ目の通貨を持てません",
     currencyLive: "{currency} はストアフロントで有効です",
     tabTeam: "チーム",
     teamTitle: "このショップで働ける人",

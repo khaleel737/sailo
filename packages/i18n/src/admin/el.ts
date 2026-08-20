@@ -763,6 +763,7 @@ export const adminEl: PartialAdminDictionary = {
     currencyGapVariants: "{count} παραλλαγές",
     currencyGapDelivery: "{count} χρεώσεις αποστολής",
     currencyGapCoupons: "{count} κωδικούς έκπτωσης",
+    currencyGapTiers: "{count} κατηγορίες εισιτηρίων — οι κατηγορίες δεν φέρουν ακόμη δεύτερο νόμισμα",
     currencyLive: "Το {currency} είναι ενεργό στο κατάστημά σου",
     tabTeam: "Ομάδα",
     teamTitle: "Ποιοι μπορούν να δουλεύουν σε αυτό το κατάστημα",

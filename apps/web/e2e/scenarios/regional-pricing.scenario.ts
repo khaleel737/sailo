@@ -5,6 +5,7 @@ import { getDb } from "@sailo/db";
 import {
   coupons,
   deliveryMethods,
+  eventTiers,
   invoices,
   orderItems,
   orders,
@@ -14,6 +15,7 @@ import {
   shops,
   user,
 } from "@sailo/db/schema";
+import { currencyGaps, liveCurrencies } from "@/lib/queries/regional";
 
 /**
  * Selling in the buyer's currency — spec 53, against a real database.
@@ -350,6 +352,47 @@ describe("a currency that is not fully priced", () => {
     );
 
     expect(intent.ok).toBe(false);
+  });
+
+  /*
+   * A published event with price bands takes the whole shop out of euros —
+   * spec 50 meeting spec 53.
+   *
+   * `event_tiers` has a `price_cents` and no `currency_prices`, so a band is
+   * one number in the shop's own money and there is nowhere to put a euro one.
+   * Without this rule the shop's catalogue would be fully priced, euros would
+   * go live, and the storefront would render every band's *pound* number with a
+   * euro sign in front of it — which is the exact defect `liveCurrencies` was
+   * written to prevent, quoted in its own header, on the one page a buyer
+   * commits from.
+   */
+  it("takes the shop out of euros while a published event sells in bands", async () => {
+    const shop = await makeShop();
+    const event = await makeProduct(shop.id, {
+      kind: "event",
+      eventStartsAt: new Date(Date.now() + 7 * 24 * 3600 * 1000),
+    });
+
+    // Everything priced in euros: without a band, this shop is live in EUR.
+    expect(
+      await liveCurrencies(shop.id, ["EUR"], shop.currency),
+    ).toEqual(["EUR"]);
+
+    await db
+      .insert(eventTiers)
+      .values({ productId: event.id, name: "VIP", priceCents: 5000, capacity: 30 });
+
+    expect(await liveCurrencies(shop.id, ["EUR"], shop.currency)).toEqual([]);
+
+    /*
+     * And the seller is told which of the five things is stopping it, by name.
+     * This is the one entry on that card they cannot close by typing a number,
+     * so leaving it out of the list would be a currency that never goes live
+     * with nothing on screen explaining why.
+     */
+    const [gap] = await currencyGaps(shop.id, ["EUR"], shop.currency);
+    expect(gap?.tiers).toBe(1);
+    expect(gap?.products).toBe(0);
   });
 });
 
