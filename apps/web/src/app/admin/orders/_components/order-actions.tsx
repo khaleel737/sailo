@@ -23,7 +23,19 @@ function Submit({ label }: { label: string }) {
   );
 }
 
-export function OrderActions({ order }: { order: Order }) {
+export function OrderActions({
+  order,
+  shipsAsParcel,
+}: {
+  order: Order;
+  /*
+   * Decided by the page from the order's *lines* (`shipsAsParcel` in
+   * `@sailo/core/order-lines`), never from `order.productKind` — the header
+   * describes the first line only, and a basket whose first line is a
+   * download and whose second is a mug is still a parcel.
+   */
+  shipsAsParcel: boolean;
+}) {
   const a = useAdminT();
   const locale = useAdminLocale();
 
@@ -34,12 +46,7 @@ export function OrderActions({ order }: { order: Order }) {
    * a quiet toggle nobody found. Once it has shipped, the panel folds back
    * to a toggle for edits.
    */
-  const promoteShip = Boolean(
-    (order.deliveryMethod === "shipping" ||
-      (order.deliveryMethod === null && order.productKind === "physical")) &&
-      !order.shippedAt &&
-      !order.trackingNumber,
-  );
+  const promoteShip = Boolean(shipsAsParcel && !order.shippedAt && !order.trackingNumber);
   const [panel, setPanel] = useState<"ship" | "refund" | null>(
     promoteShip ? "ship" : null,
   );
@@ -51,16 +58,7 @@ export function OrderActions({ order }: { order: Order }) {
     ok: false,
   });
 
-  /*
-   * A parcel is a parcel even when no delivery method says so. Orders written
-   * before delivery methods existed — and shops that never configured one —
-   * carry `deliveryMethod = null` on physical goods, and the old strict
-   * equality left those sellers with no way to record a shipment at all.
-   * Explicit collection stays excluded: a pickup does not ship.
-   */
-  const isShipping =
-    order.deliveryMethod === "shipping" ||
-    (order.deliveryMethod === null && order.productKind === "physical");
+  const isShipping = shipsAsParcel;
   const canRefund = order.refundedCents === 0 && order.status !== "cancelled";
 
   /*

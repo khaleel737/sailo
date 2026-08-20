@@ -20,7 +20,7 @@ import { taxName } from "@sailo/core/tax-label";
 import { formatAddress } from "@sailo/core/address";
 import { formatMoney } from "@sailo/core/currency";
 import type { Order } from "@sailo/db/schema";
-import type { OrderLine } from "@/lib/order-lines";
+import { linesFor, shipsAsParcel, type OrderLine } from "@/lib/order-lines";
 
 export async function OrderRow({
   order,
@@ -376,7 +376,12 @@ export async function OrderRow({
         </div>
       </div>
 
-      <OrderActions order={order} />
+      {/* The parcel question is asked of the lines, with linesFor's own
+          single-line header fallback when the caller sent none. */}
+      <OrderActions
+        order={order}
+        shipsAsParcel={shipsAsParcel(order, lines.length > 0 ? lines : linesFor(order, []))}
+      />
 
       {/* Only where there is genuinely more than one thing to send. An order
           whose second line is a download has one box, and offering a

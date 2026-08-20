@@ -137,6 +137,26 @@ export function lineTitle(line: Pick<OrderLine, "title" | "variantLabel">) {
 }
 
 /**
+ * Whether this order ships as a parcel — the fulfilment gate.
+ *
+ * An explicit delivery method answers by itself: `shipping` ships, and
+ * explicit collection or digital delivery never does. `null` is the
+ * never-configured and pre-methods case, and there the question is whether
+ * any *line* holds physical goods — never `order.productKind`, which
+ * describes the first line only. A basket whose first line is a download and
+ * whose second is a mug is still a parcel, and the gate that read the header
+ * left exactly that order impossible to mark shipped.
+ */
+export function shipsAsParcel(
+  order: Pick<Order, "deliveryMethod">,
+  lines: readonly Pick<OrderLine, "kind">[],
+): boolean {
+  if (order.deliveryMethod === "shipping") return true;
+  if (order.deliveryMethod !== null) return false;
+  return lines.some((line) => line.kind === "physical");
+}
+
+/**
  * How to name a whole order in one line.
  *
  * The order's header columns describe its first line, so using them straight

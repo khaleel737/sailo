@@ -17,6 +17,7 @@ import {
   shipOrder as ship,
 } from "@sailo/commerce/orders/server";
 import { sendDownloadReady } from "@sailo/email/transactional";
+import { orderLinesMap, shipsAsParcel } from "@/lib/order-lines";
 import { sendShippingNotification } from "@/lib/email";
 import { arrivalUrl, logOrderMessage } from "@sailo/commerce/disputes";
 import { announceOrderPaid } from "@sailo/workflows/orders";
@@ -133,12 +134,12 @@ export async function bulkMarkShipped(
 
   /* The fulfilment card's own gate: a parcel is a parcel even when no
      delivery method says so; explicit collection and digital goods never
-     ship, and an order already shipped is not shipped twice. */
+     ship, and an order already shipped is not shipped twice. Decided from
+     the lines, never `productKind` — the header describes the first line
+     only, and a digital-first basket with a mug in it is still a parcel. */
+  const lineMap = await orderLinesMap(rows);
   const eligible = rows.filter(
-    (o) =>
-      !o.shippedAt &&
-      (o.deliveryMethod === "shipping" ||
-        (o.deliveryMethod === null && o.productKind === "physical")),
+    (o) => !o.shippedAt && shipsAsParcel(o, lineMap.get(o.id) ?? []),
   );
 
   let done = 0;

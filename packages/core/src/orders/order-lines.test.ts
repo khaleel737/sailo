@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { lineTitle, linesSubtotal, orderSummaryTitle } from "./order-lines";
+import { lineTitle, linesSubtotal, orderSummaryTitle, shipsAsParcel } from "./order-lines";
 
 /**
  * This module exists because an order had two representations — header
@@ -82,5 +82,32 @@ describe("linesSubtotal", () => {
     expect(Number.isInteger(linesSubtotal([{ subtotalCents: 1 }, { subtotalCents: 2 }]))).toBe(
       true,
     );
+  });
+});
+
+describe("shipsAsParcel", () => {
+  const line = (kind: string) => ({ kind });
+
+  it("ships when the method says shipping, whatever the lines hold", () => {
+    expect(shipsAsParcel({ deliveryMethod: "shipping" }, [line("digital")])).toBe(true);
+  });
+
+  it("never ships explicit collection, even for physical goods", () => {
+    expect(shipsAsParcel({ deliveryMethod: "collection" }, [line("physical")])).toBe(false);
+  });
+
+  it("asks the lines when no method was ever configured", () => {
+    /*
+     * The bug this was written for. The gate read `order.productKind`, which
+     * is the header's first line — so a basket whose first line was a
+     * download and whose second was a mug could never be marked shipped: the
+     * ship panel never promoted and bulk "Mark as shipped" silently skipped
+     * it. Any physical line makes a parcel.
+     */
+    expect(
+      shipsAsParcel({ deliveryMethod: null }, [line("digital"), line("physical")]),
+    ).toBe(true);
+    expect(shipsAsParcel({ deliveryMethod: null }, [line("digital")])).toBe(false);
+    expect(shipsAsParcel({ deliveryMethod: null }, [])).toBe(false);
   });
 });

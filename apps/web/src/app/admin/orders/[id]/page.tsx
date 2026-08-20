@@ -21,7 +21,7 @@ import {
   getOrderItems,
   getShopOrder,
 } from "@/lib/queries";
-import { orderNumber, orderSummaryTitle, type OrderLine } from "@/lib/order-lines";
+import { orderNumber, orderSummaryTitle, shipsAsParcel, type OrderLine } from "@/lib/order-lines";
 import { shipmentsForOrder } from "@sailo/commerce/orders/server";
 import { can } from "@sailo/core/plans";
 import { PAYMENT_METHOD_DEFS, awaitsTransfer, isPaymentMethodType } from "@/lib/payments";
@@ -535,7 +535,7 @@ export default async function AdminOrderPage({
               ) : null}
             </div>
 
-            <OrderActions order={order} />
+            <OrderActions order={order} shipsAsParcel={shipsAsParcel(order, items)} />
 
             {/* Only where there is genuinely more than one thing to send. An
                 order whose second line is a download has one box, and offering
