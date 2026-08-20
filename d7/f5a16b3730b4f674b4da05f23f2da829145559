@@ -1,0 +1,20 @@
+apps/web/src/app/api/v1/contacts/[id]/lists/route.ts
+  s_a7bbf59e767e8f::t_d7c6337ebb5e05 46-52,58
+  s_a7bbf59e767e8f::t_02147c143c3ca3 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "d7f5a16b3730b4f674b4da05f23f2da829145559",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
