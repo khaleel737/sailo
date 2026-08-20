@@ -193,6 +193,8 @@ export const adminTr: PartialAdminDictionary = {
     viewAsTable: "Tablo olarak",
     upgrade: "Yükselt",
     couldntLoad: "Yüklenemedi",
+    back: "Geri",
+    continue: "Devam",
   },
   dashboard: {
     views: "Görüntülenme",
@@ -791,6 +793,7 @@ export const adminTr: PartialAdminDictionary = {
     noAccessTitle: "Bunu bu dükkânda yapamazsın",
     noAccessBody: "Rolün {permission} iznini içermiyor. İçermesi gerektiğini düşünüyorsan dükkânın sahibine söyle.",
     noAccessBack: "Dükkâna dön",
+    close: "Ayarları kapat",
   },
   productForm: {
     titlePlaceholder: "Benekli taş çömlek kupa",
@@ -1047,6 +1050,11 @@ export const adminTr: PartialAdminDictionary = {
     poolPasteHint: "Ya da bir CSV yapıştır — ilk sütunu alırız. Tekrarlar atlanır, verilmiş kodlara asla dokunulmaz.",
     poolAdd: "Havuza ekle",
     poolGenerateCount: "Kaç tane üretilsin",
+    stepKind: "Ne olduğu",
+    stepBasics: "Temel bilgiler",
+    stepPrice: "Fiyat",
+    stepDetails: "Ayrıntılar",
+    stepFinish: "Bitir",
   },
   variants: {
     untick: "İşareti kaldır",
@@ -1911,5 +1919,12 @@ export const adminTr: PartialAdminDictionary = {
     refundedNote: "Bu dönemdeki {count} siparişin parası alıcıya iade edildi. Vergileri yukarıdaki toplamın dışında bırakıldı; çünkü Sailo tahsil edilen tutarı saklar, kısmi bir para iadesinin nasıl bölündüğünü değil.",
     totalNet: "Net tutar",
     totalTax: "Vergi",
+  },
+  commandBar: {
+    open: "Ara",
+    placeholder: "Sayfalarda ve eylemlerde ara…",
+    pages: "Sayfalar",
+    actions: "Eylemler",
+    empty: "Eşleşme yok. Bir sayfa adı dene.",
   },
 };

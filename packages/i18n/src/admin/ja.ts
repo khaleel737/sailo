@@ -193,6 +193,8 @@ export const adminJa: PartialAdminDictionary = {
     viewAsTable: "表で見る",
     upgrade: "アップグレード",
     couldntLoad: "読み込めませんでした",
+    back: "戻る",
+    continue: "続行",
   },
   dashboard: {
     views: "表示数",
@@ -792,6 +794,7 @@ export const adminJa: PartialAdminDictionary = {
     noAccessTitle: "このショップではその操作はできません",
     noAccessBody: "あなたの役割には {permission} が含まれていません。必要だと思う場合は、ショップのオーナーに相談してください。",
     noAccessBack: "ショップに戻る",
+    close: "設定を閉じる",
   },
   productForm: {
     titlePlaceholder: "斑点のあるストーンウェアマグ",
@@ -1048,6 +1051,11 @@ export const adminJa: PartialAdminDictionary = {
     poolPasteHint: "CSV を貼り付けてもかまいません。最初の列を読み取ります。重複は飛ばし、配布済みのコードには一切触れません。",
     poolAdd: "在庫に追加",
     poolGenerateCount: "作成する数",
+    stepKind: "種類",
+    stepBasics: "基本情報",
+    stepPrice: "価格",
+    stepDetails: "詳細",
+    stepFinish: "仕上げ",
   },
   variants: {
     untick: "チェックを外す",
@@ -1913,5 +1921,12 @@ export const adminJa: PartialAdminDictionary = {
     refundedNote: "この期間の注文 {count} 件は購入者に返金されました。Sailo は請求した金額を保存し、一部返金の内訳までは保存しないため、これらの税額は上の合計から除外しています。",
     totalNet: "正味",
     totalTax: "税額",
+  },
+  commandBar: {
+    open: "検索",
+    placeholder: "ページや操作を検索…",
+    pages: "ページ",
+    actions: "操作",
+    empty: "一致するものがありません。ページ名で試してください。",
   },
 };

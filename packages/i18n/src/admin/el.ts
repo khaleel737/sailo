@@ -193,6 +193,8 @@ export const adminEl: PartialAdminDictionary = {
     viewAsTable: "Ως πίνακας",
     upgrade: "Αναβάθμιση",
     couldntLoad: "Δεν φορτώθηκε",
+    back: "Πίσω",
+    continue: "Συνέχεια",
   },
   dashboard: {
     views: "Προβολές",
@@ -790,6 +792,7 @@ export const adminEl: PartialAdminDictionary = {
     noAccessTitle: "Αυτό δεν μπορείς να το κάνεις σε αυτό το κατάστημα",
     noAccessBody: "Ο ρόλος σου δεν περιλαμβάνει {permission}. Ζήτα το από τον ιδιοκτήτη του καταστήματος, αν πιστεύεις ότι θα έπρεπε.",
     noAccessBack: "Πίσω στο κατάστημα",
+    close: "Κλείσιμο ρυθμίσεων",
   },
   productForm: {
     titlePlaceholder: "Κούπα από διάστικτη πέτρινη κεραμική",
@@ -1046,6 +1049,11 @@ export const adminEl: PartialAdminDictionary = {
     poolPasteHint: "Ή επικόλλησε ένα CSV — παίρνουμε την πρώτη στήλη. Τα διπλότυπα παραλείπονται και ό,τι έχει ήδη δοθεί δεν το πειράζουμε ποτέ.",
     poolAdd: "Πρόσθεσε στο απόθεμα",
     poolGenerateCount: "Πόσους να φτιάξουμε",
+    stepKind: "Τι είναι",
+    stepBasics: "Βασικά",
+    stepPrice: "Τιμή",
+    stepDetails: "Λεπτομέρειες",
+    stepFinish: "Ολοκλήρωση",
   },
   variants: {
     untick: "Ξετσεκάρισμα",
@@ -1910,5 +1918,12 @@ export const adminEl: PartialAdminDictionary = {
     refundedNote: "Σε {count} παραγγελίες αυτής της περιόδου επιστράφηκαν χρήματα στον αγοραστή. Ο φόρος τους δεν μπαίνει στο παραπάνω σύνολο, γιατί το Sailo κρατά τι χρεώθηκε και όχι πώς μοιράστηκε μια μερική επιστροφή.",
     totalNet: "Καθαρό ποσό",
     totalTax: "Φόρος",
+  },
+  commandBar: {
+    open: "Αναζήτηση",
+    placeholder: "Αναζητήστε σελίδες και ενέργειες…",
+    pages: "Σελίδες",
+    actions: "Ενέργειες",
+    empty: "Καμία αντιστοιχία. Δοκιμάστε όνομα σελίδας.",
   },
 };

@@ -193,6 +193,8 @@ export const adminDe: PartialAdminDictionary = {
     viewAsTable: "Als Tabelle",
     upgrade: "Upgrade",
     couldntLoad: "Nicht geladen",
+    back: "Zurück",
+    continue: "Weiter",
   },
   dashboard: {
     views: "Aufrufe",
@@ -790,6 +792,7 @@ export const adminDe: PartialAdminDictionary = {
     noAccessTitle: "Das darfst du in diesem Shop nicht",
     noAccessBody: "Deine Rolle umfasst {permission} nicht. Frag den Inhaber des Shops, wenn du meinst, sie sollte es.",
     noAccessBack: "Zurück zum Shop",
+    close: "Einstellungen schließen",
   },
   productForm: {
     titlePlaceholder: "Gesprenkelte Steinzeugtasse",
@@ -1046,6 +1049,11 @@ export const adminDe: PartialAdminDictionary = {
     poolPasteHint: "Oder füge eine CSV ein – wir nehmen die erste Spalte. Duplikate werden übersprungen, und bereits vergebene Codes bleiben unangetastet.",
     poolAdd: "Zum Vorrat hinzufügen",
     poolGenerateCount: "Wie viele erzeugen",
+    stepKind: "Was es ist",
+    stepBasics: "Grundlagen",
+    stepPrice: "Preis",
+    stepDetails: "Details",
+    stepFinish: "Abschluss",
   },
   variants: {
     untick: "Abwählen",
@@ -1913,5 +1921,12 @@ export const adminDe: PartialAdminDictionary = {
     refundedNote: "Bei {count} Bestellungen in diesem Zeitraum wurde dem Käufer Geld zurückerstattet. Ihre Steuer fehlt in der Summe oben, weil Sailo speichert, was berechnet wurde, und nicht, wie sich eine Teilerstattung aufgeteilt hat.",
     totalNet: "Netto",
     totalTax: "Steuer",
+  },
+  commandBar: {
+    open: "Suchen",
+    placeholder: "Seiten und Aktionen durchsuchen…",
+    pages: "Seiten",
+    actions: "Aktionen",
+    empty: "Nichts gefunden. Versuch einen Seitennamen.",
   },
 };

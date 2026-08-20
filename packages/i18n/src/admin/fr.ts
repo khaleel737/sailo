@@ -193,6 +193,8 @@ export const adminFr: PartialAdminDictionary = {
     viewAsTable: "Voir en tableau",
     upgrade: "Mettre à niveau",
     couldntLoad: "Chargement impossible",
+    back: "Retour",
+    continue: "Continuer",
   },
   dashboard: {
     views: "Vues",
@@ -792,6 +794,7 @@ export const adminFr: PartialAdminDictionary = {
     noAccessTitle: "Tu ne peux pas faire ça dans cette boutique",
     noAccessBody: "Ton rôle n'inclut pas {permission}. Demande au propriétaire de la boutique si tu penses qu'il le devrait.",
     noAccessBack: "Retour à la boutique",
+    close: "Fermer les paramètres",
   },
   productForm: {
     titlePlaceholder: "Mug en grès moucheté",
@@ -1048,6 +1051,11 @@ export const adminFr: PartialAdminDictionary = {
     poolPasteHint: "Ou colle un CSV — nous prenons la première colonne. Les doublons sont ignorés, et rien de déjà distribué n'est touché.",
     poolAdd: "Ajouter à la réserve",
     poolGenerateCount: "Combien en créer",
+    stepKind: "Ce que c'est",
+    stepBasics: "Les bases",
+    stepPrice: "Prix",
+    stepDetails: "Détails",
+    stepFinish: "Finalisation",
   },
   variants: {
     untick: "Décocher",
@@ -1913,5 +1921,12 @@ export const adminFr: PartialAdminDictionary = {
     refundedNote: "{count} commandes de cette période ont été remboursées à l'acheteur. Leur taxe est exclue du total ci-dessus, car Sailo enregistre ce qui a été facturé et non la répartition d'un remboursement partiel.",
     totalNet: "Montant net",
     totalTax: "Taxe",
+  },
+  commandBar: {
+    open: "Rechercher",
+    placeholder: "Recherchez des pages et des actions…",
+    pages: "Pages",
+    actions: "Actions",
+    empty: "Aucun résultat. Essayez un nom de page.",
   },
 };

@@ -286,6 +286,11 @@ export const adminSq: PartialAdminDictionary = {
     poolPasteHint: "Ose ngjit një CSV — marrim kolonën e parë. Dublikatat kapërcehen dhe asgjë e dhënë tashmë nuk preket.",
     poolAdd: "Shto në rezervë",
     poolGenerateCount: "Sa të krijohen",
+    stepKind: "Çfarë është",
+    stepBasics: "Bazat",
+    stepPrice: "Çmimi",
+    stepDetails: "Detajet",
+    stepFinish: "Përfundimi",
   },
 
   affiliates: {
@@ -620,6 +625,7 @@ export const adminSq: PartialAdminDictionary = {
     noAccessTitle: "Këtë nuk mund ta bësh në këtë dyqan",
     noAccessBody: "Roli yt nuk përfshin {permission}. Kërkoja pronarit të dyqanit nëse mendon se duhet.",
     noAccessBack: "Kthehu te dyqani",
+    close: "Mbyll cilësimet",
   },
 
   delivery: {
@@ -808,6 +814,8 @@ export const adminSq: PartialAdminDictionary = {
     viewAsTable: "Shfaq si tabelë",
     upgrade: "Përmirëso planin",
     couldntLoad: "S'u ngarkua",
+    back: "Prapa",
+    continue: "Vazhdo",
   },
 
   coupons: {
@@ -1926,5 +1934,12 @@ export const adminSq: PartialAdminDictionary = {
     refundedNote: "{count} porosive në këtë periudhë u janë kthyer paratë blerësit. Taksa e tyre lihet jashtë totalit më sipër, sepse Sailo ruan atë që u ngarkua dhe jo si u nda një kthim i pjesshëm parash.",
     totalNet: "Neto",
     totalTax: "Taksa",
+  },
+  commandBar: {
+    open: "Kërko",
+    placeholder: "Kërkoni faqe dhe veprime…",
+    pages: "Faqet",
+    actions: "Veprimet",
+    empty: "Asgjë nuk përputhet. Provoni emrin e një faqeje.",
   },
 };

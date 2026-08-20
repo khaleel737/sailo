@@ -286,6 +286,11 @@ export const adminVi: PartialAdminDictionary = {
     poolPasteHint: "Hoặc dán tệp CSV — chúng tôi lấy cột đầu tiên. Mã trùng sẽ bị bỏ qua, và mã đã phát thì không bao giờ bị động đến.",
     poolAdd: "Thêm vào kho mã",
     poolGenerateCount: "Tạo bao nhiêu mã",
+    stepKind: "Đây là gì",
+    stepBasics: "Cơ bản",
+    stepPrice: "Giá",
+    stepDetails: "Chi tiết",
+    stepFinish: "Hoàn tất",
   },
 
   affiliates: {
@@ -620,6 +625,7 @@ export const adminVi: PartialAdminDictionary = {
     noAccessTitle: "Bạn không làm được việc đó trong cửa hàng này",
     noAccessBody: "Vai trò của bạn không gồm {permission}. Hỏi chủ cửa hàng nếu bạn thấy nên có.",
     noAccessBack: "Quay lại cửa hàng",
+    close: "Đóng cài đặt",
   },
 
   delivery: {
@@ -808,6 +814,8 @@ export const adminVi: PartialAdminDictionary = {
     viewAsTable: "Xem dạng bảng",
     upgrade: "Nâng cấp",
     couldntLoad: "Không tải được",
+    back: "Quay lại",
+    continue: "Tiếp tục",
   },
 
   coupons: {
@@ -1926,5 +1934,12 @@ export const adminVi: PartialAdminDictionary = {
     refundedNote: "{count} đơn hàng trong kỳ này đã hoàn tiền cho người mua. Thuế của chúng bị loại khỏi tổng ở trên, vì Sailo lưu số đã thu chứ không lưu cách một lần hoàn tiền một phần được chia ra.",
     totalNet: "Thuần",
     totalTax: "Thuế",
+  },
+  commandBar: {
+    open: "Tìm kiếm",
+    placeholder: "Tìm trang và thao tác…",
+    pages: "Trang",
+    actions: "Thao tác",
+    empty: "Không có kết quả. Hãy thử tên trang.",
   },
 };

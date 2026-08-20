@@ -193,6 +193,8 @@ export const adminSv: PartialAdminDictionary = {
     viewAsTable: "Som tabell",
     upgrade: "Uppgradera",
     couldntLoad: "Kunde inte hämtas",
+    back: "Tillbaka",
+    continue: "Fortsätt",
   },
   dashboard: {
     views: "Visningar",
@@ -791,6 +793,7 @@ export const adminSv: PartialAdminDictionary = {
     noAccessTitle: "Det får du inte göra i den här butiken",
     noAccessBody: "Din roll omfattar inte {permission}. Fråga butikens ägare om du tycker att den borde det.",
     noAccessBack: "Tillbaka till butiken",
+    close: "Stäng inställningar",
   },
   productForm: {
     titlePlaceholder: "Spräcklig stengodsmugg",
@@ -1047,6 +1050,11 @@ export const adminSv: PartialAdminDictionary = {
     poolPasteHint: "Eller klistra in en CSV — vi tar första kolumnen. Dubbletter hoppas över, och redan utdelade koder rörs aldrig.",
     poolAdd: "Lägg till i lagret",
     poolGenerateCount: "Hur många ska skapas",
+    stepKind: "Vad det är",
+    stepBasics: "Grunderna",
+    stepPrice: "Pris",
+    stepDetails: "Detaljer",
+    stepFinish: "Slutför",
   },
   variants: {
     untick: "Bocka ur",
@@ -1911,5 +1919,12 @@ export const adminSv: PartialAdminDictionary = {
     refundedNote: "{count} ordrar i den här perioden återbetalades till köparen. Deras skatt är utelämnad ur summan ovan, eftersom Sailo sparar vad som debiterades och inte hur en delåterbetalning fördelades.",
     totalNet: "Netto",
     totalTax: "Skatt",
+  },
+  commandBar: {
+    open: "Sök",
+    placeholder: "Sök efter sidor och åtgärder…",
+    pages: "Sidor",
+    actions: "Åtgärder",
+    empty: "Inget matchar. Prova ett sidnamn.",
   },
 };

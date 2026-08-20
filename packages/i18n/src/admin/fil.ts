@@ -286,6 +286,11 @@ export const adminFil: PartialAdminDictionary = {
     poolPasteHint: "O mag-paste ng CSV — ang unang column ang kinukuha namin. Nilalaktawan ang doble, at hindi kailanman ginagalaw ang naibigay na.",
     poolAdd: "Idagdag sa stock",
     poolGenerateCount: "Ilan ang gagawin",
+    stepKind: "Ano ito",
+    stepBasics: "Mga batayan",
+    stepPrice: "Presyo",
+    stepDetails: "Mga detalye",
+    stepFinish: "Tapusin",
   },
 
   affiliates: {
@@ -621,6 +626,7 @@ export const adminFil: PartialAdminDictionary = {
     noAccessTitle: "Hindi mo puwedeng gawin iyan sa tindahang ito",
     noAccessBody: "Hindi kasama sa role mo ang {permission}. Sabihin mo sa may-ari ng tindahan kung sa tingin mo ay dapat kasama.",
     noAccessBack: "Balik sa tindahan",
+    close: "Isara ang mga setting",
   },
 
   delivery: {
@@ -809,6 +815,8 @@ export const adminFil: PartialAdminDictionary = {
     viewAsTable: "Ipakita bilang talahanayan",
     upgrade: "Mag-upgrade",
     couldntLoad: "Hindi nakuha",
+    back: "Bumalik",
+    continue: "Magpatuloy",
   },
 
   coupons: {
@@ -1923,5 +1931,12 @@ export const adminFil: PartialAdminDictionary = {
     refundedNote: "{count} order sa panahong ito ang isinauli ang bayad sa mamimili. Wala ang buwis nila sa kabuuan sa itaas, dahil iniimbak ng Sailo ang siningil at hindi kung paano hinati ang bahagyang isinauling bayad.",
     totalNet: "Neto",
     totalTax: "Buwis",
+  },
+  commandBar: {
+    open: "Maghanap",
+    placeholder: "Maghanap ng mga pahina at aksyon…",
+    pages: "Mga pahina",
+    actions: "Mga aksyon",
+    empty: "Walang tumugma. Subukan ang pangalan ng pahina.",
   },
 };

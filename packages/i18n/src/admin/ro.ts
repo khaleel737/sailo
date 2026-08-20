@@ -193,6 +193,8 @@ export const adminRo: PartialAdminDictionary = {
     viewAsTable: "Ca tabel",
     upgrade: "Treci la alt plan",
     couldntLoad: "Nu s-a încărcat",
+    back: "Înapoi",
+    continue: "Continuă",
   },
   dashboard: {
     views: "Vizualizări",
@@ -794,6 +796,7 @@ export const adminRo: PartialAdminDictionary = {
     noAccessTitle: "Asta nu poți face în acest magazin",
     noAccessBody: "Rolul tău nu include {permission}. Cere-i proprietarului magazinului dacă crezi că ar trebui.",
     noAccessBack: "Înapoi la magazin",
+    close: "Închide setările",
   },
   productForm: {
     titlePlaceholder: "Cană din gresie pestriță",
@@ -1050,6 +1053,11 @@ export const adminRo: PartialAdminDictionary = {
     poolPasteHint: "Sau lipește un CSV — luăm prima coloană. Duplicatele sunt sărite, iar ce a fost deja distribuit nu se atinge niciodată.",
     poolAdd: "Adaugă în rezervă",
     poolGenerateCount: "Câte să creez",
+    stepKind: "Ce este",
+    stepBasics: "Elemente de bază",
+    stepPrice: "Preț",
+    stepDetails: "Detalii",
+    stepFinish: "Finalizare",
   },
   variants: {
     untick: "Debifează",
@@ -1920,5 +1928,12 @@ export const adminRo: PartialAdminDictionary = {
     refundedNote: "La {count} comenzi din perioadă banii au fost returnați cumpărătorului. Taxa lor este lăsată în afara totalului de mai sus, pentru că Sailo păstrează ce s-a perceput, nu cum s-a împărțit o returnare parțială de bani.",
     totalNet: "Valoare netă",
     totalTax: "Taxă",
+  },
+  commandBar: {
+    open: "Caută",
+    placeholder: "Caută pagini și acțiuni…",
+    pages: "Pagini",
+    actions: "Acțiuni",
+    empty: "Nicio potrivire. Încearcă numele unei pagini.",
   },
 };

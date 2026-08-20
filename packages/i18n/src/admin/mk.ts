@@ -286,6 +286,11 @@ export const adminMk: PartialAdminDictionary = {
     poolPasteHint: "Или залепи CSV — ја земаме првата колона. Дупликатите се прескокнуваат, а веќе поделеното никогаш не се допира.",
     poolAdd: "Додај во залиха",
     poolGenerateCount: "Колку да се направат",
+    stepKind: "Што е тоа",
+    stepBasics: "Основи",
+    stepPrice: "Цена",
+    stepDetails: "Детали",
+    stepFinish: "Завршување",
   },
 
   affiliates: {
@@ -621,6 +626,7 @@ export const adminMk: PartialAdminDictionary = {
     noAccessTitle: "Тоа не смееш во оваа продавница",
     noAccessBody: "Твојата улога не вклучува {permission}. Прашај го сопственикот на продавницата ако мислиш дека треба.",
     noAccessBack: "Назад во продавницата",
+    close: "Затвори ги поставките",
   },
 
   delivery: {
@@ -809,6 +815,8 @@ export const adminMk: PartialAdminDictionary = {
     viewAsTable: "Приказ во табела",
     upgrade: "Надгради",
     couldntLoad: "Не се вчита",
+    back: "Назад",
+    continue: "Продолжи",
   },
 
   coupons: {
@@ -1925,5 +1933,12 @@ export const adminMk: PartialAdminDictionary = {
     refundedNote: "На {count} нарачки во овој период парите му се вратени на купувачот. Нивниот данок е изоставен од горниот збир, бидејќи Sailo чува што било наплатено, а не како се поделил делумниот поврат.",
     totalNet: "Нето",
     totalTax: "Данок",
+  },
+  commandBar: {
+    open: "Пребарај",
+    placeholder: "Пребарувајте страници и дејства…",
+    pages: "Страници",
+    actions: "Дејства",
+    empty: "Нема совпаѓања. Обидете се со име на страница.",
   },
 };

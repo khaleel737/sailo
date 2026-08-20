@@ -193,6 +193,8 @@ export const adminEs: PartialAdminDictionary = {
     viewAsTable: "Ver como tabla",
     upgrade: "Mejorar",
     couldntLoad: "No se pudo cargar",
+    back: "Atrás",
+    continue: "Continuar",
   },
   dashboard: {
     views: "Vistas",
@@ -790,6 +792,7 @@ export const adminEs: PartialAdminDictionary = {
     noAccessTitle: "Eso no lo puedes hacer en esta tienda",
     noAccessBody: "Tu rol no incluye {permission}. Pídeselo al propietario de la tienda si crees que debería.",
     noAccessBack: "Volver a la tienda",
+    close: "Cerrar la configuración",
   },
   productForm: {
     titlePlaceholder: "Taza de gres moteado",
@@ -1046,6 +1049,11 @@ export const adminEs: PartialAdminDictionary = {
     poolPasteHint: "O pega un CSV: tomamos la primera columna. Los duplicados se omiten y nunca se toca nada que ya se haya entregado.",
     poolAdd: "Añadir a la reserva",
     poolGenerateCount: "Cuántos crear",
+    stepKind: "Qué es",
+    stepBasics: "Lo básico",
+    stepPrice: "Precio",
+    stepDetails: "Detalles",
+    stepFinish: "Finalizar",
   },
   variants: {
     untick: "Desmarcar",
@@ -1908,5 +1916,12 @@ export const adminEs: PartialAdminDictionary = {
     refundedNote: "En {count} pedidos de este periodo se devolvió el dinero al comprador. Su impuesto queda fuera del total de arriba, porque Sailo guarda lo que se cobró y no cómo se repartió una devolución parcial.",
     totalNet: "Neto",
     totalTax: "Impuesto",
+  },
+  commandBar: {
+    open: "Buscar",
+    placeholder: "Busca páginas y acciones…",
+    pages: "Páginas",
+    actions: "Acciones",
+    empty: "Nada coincide. Prueba con el nombre de una página.",
   },
 };

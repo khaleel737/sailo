@@ -286,6 +286,11 @@ export const adminMs: PartialAdminDictionary = {
     poolPasteHint: "Atau tampal CSV — kami ambil lajur pertama. Pendua dilangkau, dan kod yang sudah diberikan tidak pernah disentuh.",
     poolAdd: "Tambah ke stok",
     poolGenerateCount: "Berapa banyak hendak dibuat",
+    stepKind: "Apakah ini",
+    stepBasics: "Asas",
+    stepPrice: "Harga",
+    stepDetails: "Butiran",
+    stepFinish: "Selesai",
   },
 
   affiliates: {
@@ -619,6 +624,7 @@ export const adminMs: PartialAdminDictionary = {
     noAccessTitle: "Anda tidak boleh berbuat demikian di kedai ini",
     noAccessBody: "Peranan anda tidak merangkumi {permission}. Tanya pemilik kedai jika anda rasa ia sepatutnya ada.",
     noAccessBack: "Kembali ke kedai",
+    close: "Tutup tetapan",
   },
 
   delivery: {
@@ -807,6 +813,8 @@ export const adminMs: PartialAdminDictionary = {
     viewAsTable: "Papar sebagai jadual",
     upgrade: "Naik taraf",
     couldntLoad: "Gagal dimuatkan",
+    back: "Kembali",
+    continue: "Teruskan",
   },
 
   coupons: {
@@ -1925,5 +1933,12 @@ export const adminMs: PartialAdminDictionary = {
     refundedNote: "{count} pesanan dalam tempoh ini telah dibayar balik kepada pembeli. Cukainya ditinggalkan daripada jumlah di atas, kerana Sailo menyimpan apa yang dicaj dan bukan cara bayaran balik separa itu dibahagikan.",
     totalNet: "Bersih",
     totalTax: "Cukai",
+  },
+  commandBar: {
+    open: "Cari",
+    placeholder: "Cari halaman dan tindakan…",
+    pages: "Halaman",
+    actions: "Tindakan",
+    empty: "Tiada padanan. Cuba nama halaman.",
   },
 };

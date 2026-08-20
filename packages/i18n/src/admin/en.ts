@@ -13,6 +13,8 @@ export const adminEn = {
     save: "Save",
     saveChanges: "Save changes",
     cancel: "Cancel",
+    back: "Back",
+    continue: "Continue",
     delete: "Delete",
     edit: "Edit",
     add: "Add",
@@ -91,6 +93,18 @@ export const adminEn = {
     qrAlt: "QR code for {url}",
     downloadQr: "Download QR",
     drawing: "Drawing the code…",
+  },
+
+  /**
+   * The ⌘K palette in the top bar — the way to anywhere. Unprotected:
+   * these words open pages, they never state amounts.
+   */
+  commandBar: {
+    open: "Search",
+    placeholder: "Search pages and actions…",
+    pages: "Pages",
+    actions: "Actions",
+    empty: "Nothing matches. Try a page name.",
   },
 
   /**
@@ -501,6 +515,12 @@ export const adminEn = {
     /* The heading over the tabs. The kind is the first decision on the page
        now, so it gets a heading rather than being a field among fields. */
     kindTitle: "What are you selling?",
+    /** The five stops of the creation flow, named for the Stepper. */
+    stepKind: "What it is",
+    stepBasics: "Basics",
+    stepPrice: "Price",
+    stepDetails: "Details",
+    stepFinish: "Finish",
     kindBody:
       "Pick one. The settings underneath change to match — an event asks for a date, a download asks how buyers get it.",
     category: "Category",
@@ -1547,6 +1567,8 @@ export const adminEn = {
     tabBilling: "Plan & billing",
     tabSecurity: "Security",
     tabData: "Import & export",
+    /** The X on the settings overlay — where it takes you, not "dismiss". */
+    close: "Close settings",
 
     /* Seller-facing email switches. Every one defaults to on. */
     notifications: "Email notifications",
@@ -1822,6 +1844,13 @@ export const adminEn = {
     active: "Active",
     slotsUsed: "{used} of {limit} products used",
     cardFee: "{fee} fee on card payments",
+    /**
+     * The fee ladder argued with the shop's own takings — net card volume
+     * over the last 30 days times the rate difference. "About", because the
+     * estimate ignores per-charge rounding. Protected money copy: waits for
+     * a human translator, falls back to English until then.
+     */
+    keepMore: "Keeps about {amount} more of your last 30 days of card sales.",
     accessEnds: "Access ends",
     renews: "Renews",
     atLimit: "You've used every product slot on {plan}. Existing products keep working — upgrade to add more.",

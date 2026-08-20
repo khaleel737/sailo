@@ -193,6 +193,8 @@ export const adminRu: PartialAdminDictionary = {
     viewAsTable: "В виде таблицы",
     upgrade: "Сменить тариф",
     couldntLoad: "Не загрузилось",
+    back: "Назад",
+    continue: "Продолжить",
   },
   dashboard: {
     views: "Просмотры",
@@ -794,6 +796,7 @@ export const adminRu: PartialAdminDictionary = {
     noAccessTitle: "Этого тебе в этом магазине нельзя",
     noAccessBody: "Твоя роль не включает {permission}. Скажи владельцу магазина, если считаешь, что должна.",
     noAccessBack: "Назад в магазин",
+    close: "Закрыть настройки",
   },
   productForm: {
     titlePlaceholder: "Кружка из крапчатого керамогранита",
@@ -1050,6 +1053,11 @@ export const adminRu: PartialAdminDictionary = {
     poolPasteHint: "Или вставь CSV — берём первый столбец. Повторы пропускаем, а уже выданные коды не трогаем.",
     poolAdd: "Добавить в запас",
     poolGenerateCount: "Сколько создать",
+    stepKind: "Что это",
+    stepBasics: "Основное",
+    stepPrice: "Цена",
+    stepDetails: "Детали",
+    stepFinish: "Завершение",
   },
   variants: {
     untick: "Снять галочку",
@@ -1920,5 +1928,12 @@ export const adminRu: PartialAdminDictionary = {
     refundedNote: "По {count} заказам за этот период деньги вернули покупателю. Их налог не входит в итог выше, потому что Sailo хранит начисленную сумму, а не то, как разделился частичный возврат.",
     totalNet: "Нетто",
     totalTax: "Налог",
+  },
+  commandBar: {
+    open: "Поиск",
+    placeholder: "Ищите страницы и действия…",
+    pages: "Страницы",
+    actions: "Действия",
+    empty: "Ничего не найдено. Попробуйте название страницы.",
   },
 };

@@ -286,6 +286,11 @@ export const adminTh: PartialAdminDictionary = {
     poolPasteHint: "หรือวางไฟล์ CSV — เราจะอ่านคอลัมน์แรก รหัสซ้ำจะถูกข้าม และรหัสที่แจกไปแล้วจะไม่ถูกแตะต้อง",
     poolAdd: "เพิ่มเข้าสต็อก",
     poolGenerateCount: "ต้องการสร้างกี่รหัส",
+    stepKind: "สิ่งที่ขาย",
+    stepBasics: "ข้อมูลพื้นฐาน",
+    stepPrice: "ราคา",
+    stepDetails: "รายละเอียด",
+    stepFinish: "เสร็จสิ้น",
   },
 
   affiliates: {
@@ -620,6 +625,7 @@ export const adminTh: PartialAdminDictionary = {
     noAccessTitle: "คุณทำสิ่งนี้ในร้านนี้ไม่ได้",
     noAccessBody: "บทบาทของคุณไม่รวม {permission} ถ้าคิดว่าควรมี ให้ถามเจ้าของร้าน",
     noAccessBack: "กลับไปที่ร้าน",
+    close: "ปิดการตั้งค่า",
   },
 
   delivery: {
@@ -808,6 +814,8 @@ export const adminTh: PartialAdminDictionary = {
     viewAsTable: "แสดงเป็นตาราง",
     upgrade: "อัปเกรด",
     couldntLoad: "โหลดไม่สำเร็จ",
+    back: "ย้อนกลับ",
+    continue: "ดำเนินการต่อ",
   },
 
   coupons: {
@@ -1926,5 +1934,12 @@ export const adminTh: PartialAdminDictionary = {
     refundedNote: "คำสั่งซื้อ {count} รายการในช่วงนี้ได้คืนเงินให้ผู้ซื้อแล้ว ภาษีของรายการเหล่านั้นไม่รวมอยู่ในยอดด้านบน เพราะ Sailo เก็บยอดที่เรียกเก็บไว้ ไม่ได้เก็บว่าการคืนเงินบางส่วนแบ่งอย่างไร",
     totalNet: "ยอดก่อนภาษี",
     totalTax: "ภาษี",
+  },
+  commandBar: {
+    open: "ค้นหา",
+    placeholder: "ค้นหาหน้าและการทำงาน…",
+    pages: "หน้า",
+    actions: "การทำงาน",
+    empty: "ไม่พบรายการที่ตรงกัน ลองพิมพ์ชื่อหน้า",
   },
 };

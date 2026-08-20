@@ -193,6 +193,8 @@ export const adminNl: PartialAdminDictionary = {
     viewAsTable: "Als tabel",
     upgrade: "Upgraden",
     couldntLoad: "Laden mislukt",
+    back: "Terug",
+    continue: "Doorgaan",
   },
   dashboard: {
     views: "Weergaven",
@@ -794,6 +796,7 @@ export const adminNl: PartialAdminDictionary = {
     noAccessTitle: "Dat mag je niet in deze winkel",
     noAccessBody: "Jouw rol omvat {permission} niet. Vraag het de eigenaar van de winkel als je vindt dat dat wel zo hoort.",
     noAccessBack: "Terug naar de winkel",
+    close: "Instellingen sluiten",
   },
   productForm: {
     titlePlaceholder: "Gespikkelde steengoed mok",
@@ -1050,6 +1053,11 @@ export const adminNl: PartialAdminDictionary = {
     poolPasteHint: "Of plak een CSV — we nemen de eerste kolom. Dubbele codes worden overgeslagen en al uitgedeelde codes blijven ongemoeid.",
     poolAdd: "Toevoegen aan voorraad",
     poolGenerateCount: "Hoeveel er maken",
+    stepKind: "Wat het is",
+    stepBasics: "Basis",
+    stepPrice: "Prijs",
+    stepDetails: "Details",
+    stepFinish: "Afronden",
   },
   variants: {
     untick: "Uitvinken",
@@ -1920,5 +1928,12 @@ export const adminNl: PartialAdminDictionary = {
     refundedNote: "Bij {count} bestellingen in deze periode is geld terugbetaald aan de koper. Hun belasting valt buiten het totaal hierboven, omdat Sailo bewaart wat er in rekening is gebracht en niet hoe een gedeeltelijke terugbetaling verdeeld was.",
     totalNet: "Netto",
     totalTax: "Belasting",
+  },
+  commandBar: {
+    open: "Zoeken",
+    placeholder: "Zoek pagina's en acties…",
+    pages: "Pagina's",
+    actions: "Acties",
+    empty: "Niets gevonden. Probeer een paginanaam.",
   },
 };

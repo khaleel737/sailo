@@ -193,6 +193,8 @@ export const adminPt: PartialAdminDictionary = {
     viewAsTable: "Ver como tabela",
     upgrade: "Mudar de plano",
     couldntLoad: "Não foi possível carregar",
+    back: "Voltar",
+    continue: "Continuar",
   },
   dashboard: {
     views: "Visualizações",
@@ -794,6 +796,7 @@ export const adminPt: PartialAdminDictionary = {
     noAccessTitle: "Isso não podes fazer nesta loja",
     noAccessBody: "O teu papel não inclui {permission}. Pede ao proprietário da loja, se achas que devia incluir.",
     noAccessBack: "Voltar à loja",
+    close: "Fechar as definições",
   },
   productForm: {
     titlePlaceholder: "Caneca de grés malhado",
@@ -1050,6 +1053,11 @@ export const adminPt: PartialAdminDictionary = {
     poolPasteHint: "Ou cola um CSV — usamos a primeira coluna. Os duplicados são ignorados e nada do que já foi entregue é tocado.",
     poolAdd: "Adicionar à reserva",
     poolGenerateCount: "Quantos criar",
+    stepKind: "O que é",
+    stepBasics: "O essencial",
+    stepPrice: "Preço",
+    stepDetails: "Detalhes",
+    stepFinish: "Concluir",
   },
   variants: {
     untick: "Desmarcar",
@@ -1920,5 +1928,12 @@ export const adminPt: PartialAdminDictionary = {
     refundedNote: "{count} encomendas deste período foram reembolsadas ao comprador. O imposto delas fica de fora do total acima, porque o Sailo guarda o que foi cobrado e não como se repartiu um reembolso parcial.",
     totalNet: "Líquido",
     totalTax: "Imposto",
+  },
+  commandBar: {
+    open: "Pesquisar",
+    placeholder: "Pesquise páginas e ações…",
+    pages: "Páginas",
+    actions: "Ações",
+    empty: "Nada corresponde. Tente o nome de uma página.",
   },
 };

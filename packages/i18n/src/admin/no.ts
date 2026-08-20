@@ -193,6 +193,8 @@ export const adminNo: PartialAdminDictionary = {
     viewAsTable: "Som tabell",
     upgrade: "Oppgrader",
     couldntLoad: "Fikk ikke lastet",
+    back: "Tilbake",
+    continue: "Fortsett",
   },
   dashboard: {
     views: "Visninger",
@@ -794,6 +796,7 @@ export const adminNo: PartialAdminDictionary = {
     noAccessTitle: "Det får du ikke gjøre i denne butikken",
     noAccessBody: "Rollen din omfatter ikke {permission}. Spør eieren av butikken hvis du mener den burde det.",
     noAccessBack: "Tilbake til butikken",
+    close: "Lukk innstillinger",
   },
   productForm: {
     titlePlaceholder: "Spraglete steintøyskrus",
@@ -1050,6 +1053,11 @@ export const adminNo: PartialAdminDictionary = {
     poolPasteHint: "Eller lim inn en CSV — vi tar første kolonne. Duplikater hoppes over, og koder som alt er delt ut, røres aldri.",
     poolAdd: "Legg til i lageret",
     poolGenerateCount: "Hvor mange skal lages",
+    stepKind: "Hva det er",
+    stepBasics: "Grunnleggende",
+    stepPrice: "Pris",
+    stepDetails: "Detaljer",
+    stepFinish: "Fullfør",
   },
   variants: {
     untick: "Fjern haken",
@@ -1920,5 +1928,12 @@ export const adminNo: PartialAdminDictionary = {
     refundedNote: "{count} ordrer i denne perioden ble refundert til kjøperen. Skatten på dem er holdt utenfor totalen over, fordi Sailo lagrer hva som ble belastet og ikke hvordan en delvis refusjon fordelte seg.",
     totalNet: "Netto",
     totalTax: "Skatt",
+  },
+  commandBar: {
+    open: "Søk",
+    placeholder: "Søk etter sider og handlinger…",
+    pages: "Sider",
+    actions: "Handlinger",
+    empty: "Ingen treff. Prøv et sidenavn.",
   },
 };

@@ -286,6 +286,11 @@ export const adminBg: PartialAdminDictionary = {
     poolPasteHint: "Или постави CSV — вземаме първата колона. Дублиращите се пропускат, а вече раздадените никога не се пипат.",
     poolAdd: "Добави в запаса",
     poolGenerateCount: "Колко да се създадат",
+    stepKind: "Какво е",
+    stepBasics: "Основни данни",
+    stepPrice: "Цена",
+    stepDetails: "Детайли",
+    stepFinish: "Завършване",
   },
 
   affiliates: {
@@ -619,6 +624,7 @@ export const adminBg: PartialAdminDictionary = {
     noAccessTitle: "Това не можеш в този магазин",
     noAccessBody: "Твоята роля не включва {permission}. Питай собственика на магазина, ако смяташ, че трябва.",
     noAccessBack: "Обратно към магазина",
+    close: "Затваряне на настройките",
   },
 
   delivery: {
@@ -807,6 +813,8 @@ export const adminBg: PartialAdminDictionary = {
     viewAsTable: "Показване като таблица",
     upgrade: "Надгради",
     couldntLoad: "Не се зареди",
+    back: "Назад",
+    continue: "Напред",
   },
 
   coupons: {
@@ -1925,5 +1933,12 @@ export const adminBg: PartialAdminDictionary = {
     refundedNote: "{count} поръчки от този период бяха възстановени на купувача. Данъкът им е изваден от общата сума горе, защото Sailo пази какво е начислено, а не как е разпределено частично възстановяване.",
     totalNet: "Нето",
     totalTax: "Данък",
+  },
+  commandBar: {
+    open: "Търсене",
+    placeholder: "Търсете страници и действия…",
+    pages: "Страници",
+    actions: "Действия",
+    empty: "Нищо не съвпада. Опитайте с име на страница.",
   },
 };

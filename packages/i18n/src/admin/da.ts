@@ -193,6 +193,8 @@ export const adminDa: PartialAdminDictionary = {
     viewAsTable: "Som tabel",
     upgrade: "Opgrader",
     couldntLoad: "Kunne ikke hentes",
+    back: "Tilbage",
+    continue: "Fortsæt",
   },
   dashboard: {
     views: "Visninger",
@@ -790,6 +792,7 @@ export const adminDa: PartialAdminDictionary = {
     noAccessTitle: "Det må du ikke i denne butik",
     noAccessBody: "Din rolle omfatter ikke {permission}. Spørg butikkens ejer, hvis du mener, den burde.",
     noAccessBack: "Tilbage til butikken",
+    close: "Luk indstillinger",
   },
   productForm: {
     titlePlaceholder: "Spættet stentøjskrus",
@@ -1046,6 +1049,11 @@ export const adminDa: PartialAdminDictionary = {
     poolPasteHint: "Eller indsæt en CSV — vi tager første kolonne. Dubletter springes over, og allerede udleverede koder røres aldrig.",
     poolAdd: "Føj til puljen",
     poolGenerateCount: "Hvor mange skal laves",
+    stepKind: "Hvad det er",
+    stepBasics: "Grundlæggende",
+    stepPrice: "Pris",
+    stepDetails: "Detaljer",
+    stepFinish: "Afslut",
   },
   variants: {
     untick: "Fjern flueben",
@@ -1910,5 +1918,12 @@ export const adminDa: PartialAdminDictionary = {
     refundedNote: "{count} ordrer i perioden blev refunderet til køberen. Deres skat er holdt ude af totalen ovenfor, fordi Sailo gemmer det opkrævede beløb og ikke, hvordan en delvis refusion blev fordelt.",
     totalNet: "Netto",
     totalTax: "Skat",
+  },
+  commandBar: {
+    open: "Søg",
+    placeholder: "Søg efter sider og handlinger…",
+    pages: "Sider",
+    actions: "Handlinger",
+    empty: "Intet matcher. Prøv et sidenavn.",
   },
 };

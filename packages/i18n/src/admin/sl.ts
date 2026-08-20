@@ -286,6 +286,11 @@ export const adminSl: PartialAdminDictionary = {
     poolPasteHint: "Ali prilepi CSV — vzamemo prvi stolpec. Podvojene preskočimo, že razdeljenih pa nikoli ne spremenimo.",
     poolAdd: "Dodaj v zalogo",
     poolGenerateCount: "Koliko jih ustvariti",
+    stepKind: "Kaj je to",
+    stepBasics: "Osnove",
+    stepPrice: "Cena",
+    stepDetails: "Podrobnosti",
+    stepFinish: "Zaključek",
   },
 
   affiliates: {
@@ -619,6 +624,7 @@ export const adminSl: PartialAdminDictionary = {
     noAccessTitle: "Tega v tej trgovini ne smeš",
     noAccessBody: "Tvoja vloga ne vključuje {permission}. Vprašaj lastnika trgovine, če misliš, da bi jo morala.",
     noAccessBack: "Nazaj v trgovino",
+    close: "Zapri nastavitve",
   },
 
   delivery: {
@@ -807,6 +813,8 @@ export const adminSl: PartialAdminDictionary = {
     viewAsTable: "Prikaz v tabeli",
     upgrade: "Nadgradi",
     couldntLoad: "Ni se naložilo",
+    back: "Nazaj",
+    continue: "Nadaljuj",
   },
 
   coupons: {
@@ -1925,5 +1933,12 @@ export const adminSl: PartialAdminDictionary = {
     refundedNote: "Pri {count} naročilih v tem obdobju je bil kupcu vrnjen denar. Njihov davek je izpuščen iz vsote zgoraj, ker Sailo hrani, kaj je bilo zaračunano, in ne, kako se je delno vračilo razdelilo.",
     totalNet: "Neto",
     totalTax: "Davek",
+  },
+  commandBar: {
+    open: "Iskanje",
+    placeholder: "Iščite strani in dejanja…",
+    pages: "Strani",
+    actions: "Dejanja",
+    empty: "Ni zadetkov. Poskusite z imenom strani.",
   },
 };

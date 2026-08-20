@@ -193,6 +193,8 @@ export const adminHu: PartialAdminDictionary = {
     viewAsTable: "Táblázatként",
     upgrade: "Váltás",
     couldntLoad: "Nem sikerült betölteni",
+    back: "Vissza",
+    continue: "Tovább",
   },
   dashboard: {
     views: "Megtekintések",
@@ -792,6 +794,7 @@ export const adminHu: PartialAdminDictionary = {
     noAccessTitle: "Ezt nem teheted ebben a boltban",
     noAccessBody: "A szereped nem tartalmazza ezt: {permission}. Szólj a bolt tulajdonosának, ha szerinted kellene.",
     noAccessBack: "Vissza a boltba",
+    close: "Beállítások bezárása",
   },
   productForm: {
     titlePlaceholder: "Pettyes kőagyag bögre",
@@ -1048,6 +1051,11 @@ export const adminHu: PartialAdminDictionary = {
     poolPasteHint: "Vagy illessz be egy CSV-t — az első oszlopot vesszük. Az ismétlődéseket kihagyjuk, a már kiosztottakhoz pedig soha nem nyúlunk.",
     poolAdd: "Hozzáadás a készlethez",
     poolGenerateCount: "Hány készüljön",
+    stepKind: "Mi ez",
+    stepBasics: "Alapok",
+    stepPrice: "Ár",
+    stepDetails: "Részletek",
+    stepFinish: "Befejezés",
   },
   variants: {
     untick: "Pipa levétele",
@@ -1908,5 +1916,12 @@ export const adminHu: PartialAdminDictionary = {
     refundedNote: "Az időszak {count} rendelésénél a vevő visszakapta a pénzét. Az ezekre eső adó kimarad a fenti összegből, mert a Sailo azt tárolja, mit számoltunk fel, nem azt, hogyan oszlott meg egy részleges visszatérítés.",
     totalNet: "Nettó",
     totalTax: "Adó",
+  },
+  commandBar: {
+    open: "Keresés",
+    placeholder: "Keress oldalakat és műveleteket…",
+    pages: "Oldalak",
+    actions: "Műveletek",
+    empty: "Nincs találat. Próbálj egy oldalnevet.",
   },
 };

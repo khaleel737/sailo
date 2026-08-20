@@ -193,6 +193,8 @@ export const adminAr: PartialAdminDictionary = {
     viewAsTable: "عرض كجدول",
     upgrade: "ترقية",
     couldntLoad: "تعذّر التحميل",
+    back: "رجوع",
+    continue: "متابعة",
   },
   dashboard: {
     views: "مشاهدات",
@@ -790,6 +792,7 @@ export const adminAr: PartialAdminDictionary = {
     noAccessTitle: "لا يمكنك فعل ذلك في هذا المتجر",
     noAccessBody: "دورك لا يشمل {permission}. اطلب ذلك من مالك المتجر إن رأيت أنه ينبغي.",
     noAccessBack: "العودة إلى المتجر",
+    close: "إغلاق الإعدادات",
   },
   productForm: {
     titlePlaceholder: "كوب حجري منقّط",
@@ -1046,6 +1049,11 @@ export const adminAr: PartialAdminDictionary = {
     poolPasteHint: "أو الصق ملف CSV — نأخذ العمود الأول. تُتجاهل المكررات، ولا يُمسّ أي رمز سُلّم من قبل.",
     poolAdd: "أضف إلى المخزن",
     poolGenerateCount: "كم رمزًا تريد إنشاءه",
+    stepKind: "ما هو",
+    stepBasics: "الأساسيات",
+    stepPrice: "السعر",
+    stepDetails: "التفاصيل",
+    stepFinish: "الإنهاء",
   },
   variants: {
     untick: "إلغاء التحديد",
@@ -1912,5 +1920,12 @@ export const adminAr: PartialAdminDictionary = {
     refundedNote: "{count} طلبًا في هذه الفترة رُدَّت أموالها إلى المشتري. ضريبتها مستبعدة من الإجمالي أعلاه، لأن Sailo يخزّن ما حُصِّل لا كيف قُسِّم الردّ الجزئي.",
     totalNet: "الصافي",
     totalTax: "الضريبة",
+  },
+  commandBar: {
+    open: "بحث",
+    placeholder: "ابحث في الصفحات والإجراءات…",
+    pages: "الصفحات",
+    actions: "إجراءات",
+    empty: "لا نتائج مطابقة. جرّب اسم صفحة.",
   },
 };

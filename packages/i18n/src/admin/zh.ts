@@ -193,6 +193,8 @@ export const adminZh: PartialAdminDictionary = {
     viewAsTable: "以表格查看",
     upgrade: "升级",
     couldntLoad: "加载失败",
+    back: "返回",
+    continue: "继续",
   },
   dashboard: {
     views: "浏览量",
@@ -791,6 +793,7 @@ export const adminZh: PartialAdminDictionary = {
     noAccessTitle: "你在这家店铺里不能这么做",
     noAccessBody: "你的角色不包含 {permission}。如果你觉得应该有，去找店铺所有者。",
     noAccessBack: "返回店铺",
+    close: "关闭设置",
   },
   productForm: {
     titlePlaceholder: "斑点炻器马克杯",
@@ -1047,6 +1050,11 @@ export const adminZh: PartialAdminDictionary = {
     poolPasteHint: "也可以粘贴 CSV——我们取第一列。重复的会跳过，已发出的绝不会被改动。",
     poolAdd: "添加到库存",
     poolGenerateCount: "生成多少个",
+    stepKind: "商品类型",
+    stepBasics: "基本信息",
+    stepPrice: "价格",
+    stepDetails: "详细信息",
+    stepFinish: "完成",
   },
   variants: {
     untick: "取消勾选",
@@ -1911,5 +1919,12 @@ export const adminZh: PartialAdminDictionary = {
     refundedNote: "本期有 {count} 笔订单已向买家退款。它们的税额未计入上方合计，因为 Sailo 存的是收取的金额，而不是部分退款如何分摊。",
     totalNet: "净额",
     totalTax: "税额",
+  },
+  commandBar: {
+    open: "搜索",
+    placeholder: "搜索页面和操作…",
+    pages: "页面",
+    actions: "操作",
+    empty: "没有匹配项。试试页面名称。",
   },
 };

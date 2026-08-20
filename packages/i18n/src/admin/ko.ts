@@ -286,6 +286,11 @@ export const adminKo: PartialAdminDictionary = {
     poolPasteHint: "CSV를 붙여 넣어도 됩니다. 첫 번째 열을 읽습니다. 중복은 건너뛰고, 이미 전달된 코드는 건드리지 않습니다.",
     poolAdd: "재고에 추가",
     poolGenerateCount: "만들 개수",
+    stepKind: "종류",
+    stepBasics: "기본 정보",
+    stepPrice: "가격",
+    stepDetails: "세부 정보",
+    stepFinish: "마무리",
   },
 
   affiliates: {
@@ -621,6 +626,7 @@ export const adminKo: PartialAdminDictionary = {
     noAccessTitle: "이 가게에서는 할 수 없는 일입니다",
     noAccessBody: "지금 역할에는 {permission} 권한이 없습니다. 필요하다고 생각되면 가게 소유자에게 요청하세요.",
     noAccessBack: "가게로 돌아가기",
+    close: "설정 닫기",
   },
 
   delivery: {
@@ -809,6 +815,8 @@ export const adminKo: PartialAdminDictionary = {
     viewAsTable: "표로 보기",
     upgrade: "업그레이드",
     couldntLoad: "불러오지 못함",
+    back: "뒤로",
+    continue: "계속",
   },
 
   coupons: {
@@ -1925,5 +1933,12 @@ export const adminKo: PartialAdminDictionary = {
     refundedNote: "이 기간의 주문 {count}건은 구매자에게 환불됐어요. Sailo는 청구된 금액만 저장하고 부분 환불이 어떻게 나뉘었는지는 저장하지 않아서, 이 주문들의 세금은 위 합계에서 빠져 있어요.",
     totalNet: "순액",
     totalTax: "세금",
+  },
+  commandBar: {
+    open: "검색",
+    placeholder: "페이지와 작업 검색…",
+    pages: "페이지",
+    actions: "작업",
+    empty: "일치하는 항목이 없습니다. 페이지 이름으로 시도해 보세요.",
   },
 };

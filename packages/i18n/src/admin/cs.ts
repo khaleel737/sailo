@@ -193,6 +193,8 @@ export const adminCs: PartialAdminDictionary = {
     viewAsTable: "Jako tabulku",
     upgrade: "Vyšší tarif",
     couldntLoad: "Nepodařilo se načíst",
+    back: "Zpět",
+    continue: "Pokračovat",
   },
   dashboard: {
     views: "Zobrazení",
@@ -790,6 +792,7 @@ export const adminCs: PartialAdminDictionary = {
     noAccessTitle: "Tohle v tomhle obchodě nemůžeš",
     noAccessBody: "Tvoje role nezahrnuje {permission}. Když myslíš, že by měla, řekni majiteli obchodu.",
     noAccessBack: "Zpět do obchodu",
+    close: "Zavřít nastavení",
   },
   productForm: {
     titlePlaceholder: "Kropenatý kameninový hrnek",
@@ -1046,6 +1049,11 @@ export const adminCs: PartialAdminDictionary = {
     poolPasteHint: "Nebo vlož CSV — bereme první sloupec. Duplicity přeskočíme a už rozdaných se nikdy nedotkneme.",
     poolAdd: "Přidat do zásoby",
     poolGenerateCount: "Kolik jich vytvořit",
+    stepKind: "Co to je",
+    stepBasics: "Základy",
+    stepPrice: "Cena",
+    stepDetails: "Podrobnosti",
+    stepFinish: "Dokončení",
   },
   variants: {
     untick: "Odškrtnout",
@@ -1910,5 +1918,12 @@ export const adminCs: PartialAdminDictionary = {
     refundedNote: "U {count} objednávek v tomto období byly peníze vráceny kupujícímu. Jejich daň v součtu výše není, protože Sailo ukládá, co bylo naúčtováno, ne jak se částečná vratka rozdělila.",
     totalNet: "Netto",
     totalTax: "Daň",
+  },
+  commandBar: {
+    open: "Hledat",
+    placeholder: "Hledejte stránky a akce…",
+    pages: "Stránky",
+    actions: "Akce",
+    empty: "Nic neodpovídá. Zkuste název stránky.",
   },
 };

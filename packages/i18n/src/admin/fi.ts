@@ -193,6 +193,8 @@ export const adminFi: PartialAdminDictionary = {
     viewAsTable: "Taulukkona",
     upgrade: "Päivitä",
     couldntLoad: "Ei latautunut",
+    back: "Takaisin",
+    continue: "Jatka",
   },
   dashboard: {
     views: "Katselut",
@@ -790,6 +792,7 @@ export const adminFi: PartialAdminDictionary = {
     noAccessTitle: "Tätä et voi tehdä tässä kaupassa",
     noAccessBody: "Roolisi ei sisällä oikeutta {permission}. Kysy kaupan omistajalta, jos mielestäsi sen pitäisi.",
     noAccessBack: "Takaisin kauppaan",
+    close: "Sulje asetukset",
   },
   productForm: {
     titlePlaceholder: "Pilkullinen kivitavaramuki",
@@ -1046,6 +1049,11 @@ export const adminFi: PartialAdminDictionary = {
     poolPasteHint: "Tai liitä CSV — otamme ensimmäisen sarakkeen. Kaksoiskappaleet ohitetaan, eikä jo jaettuihin kosketa.",
     poolAdd: "Lisää varastoon",
     poolGenerateCount: "Montako luodaan",
+    stepKind: "Mikä se on",
+    stepBasics: "Perustiedot",
+    stepPrice: "Hinta",
+    stepDetails: "Tiedot",
+    stepFinish: "Viimeistely",
   },
   variants: {
     untick: "Poista rasti",
@@ -1908,5 +1916,12 @@ export const adminFi: PartialAdminDictionary = {
     refundedNote: "{count} tämän jakson tilauksesta hyvitettiin ostajalle. Niiden vero on jätetty pois yllä olevasta summasta, koska Sailo tallentaa veloitetun määrän eikä sitä, miten osittainen hyvitys jakautui.",
     totalNet: "Netto",
     totalTax: "Vero",
+  },
+  commandBar: {
+    open: "Haku",
+    placeholder: "Hae sivuja ja toimintoja…",
+    pages: "Sivut",
+    actions: "Toiminnot",
+    empty: "Ei osumia. Kokeile sivun nimeä.",
   },
 };

@@ -193,6 +193,8 @@ export const adminUk: PartialAdminDictionary = {
     viewAsTable: "Як таблицю",
     upgrade: "Змінити тариф",
     couldntLoad: "Не завантажилося",
+    back: "Назад",
+    continue: "Продовжити",
   },
   dashboard: {
     views: "Перегляди",
@@ -791,6 +793,7 @@ export const adminUk: PartialAdminDictionary = {
     noAccessTitle: "Цього тобі в цій крамниці не можна",
     noAccessBody: "Твоя роль не включає {permission}. Скажи власнику крамниці, якщо вважаєш, що має включати.",
     noAccessBack: "Назад до крамниці",
+    close: "Закрити налаштування",
   },
   productForm: {
     titlePlaceholder: "Горнятко з крапчастого кераміту",
@@ -1047,6 +1050,11 @@ export const adminUk: PartialAdminDictionary = {
     poolPasteHint: "Або встав CSV — беремо перший стовпець. Повтори пропускаємо, а вже видані коди не чіпаємо.",
     poolAdd: "Додати до запасу",
     poolGenerateCount: "Скільки створити",
+    stepKind: "Що це",
+    stepBasics: "Основне",
+    stepPrice: "Ціна",
+    stepDetails: "Деталі",
+    stepFinish: "Завершення",
   },
   variants: {
     untick: "Зняти галочку",
@@ -1911,5 +1919,12 @@ export const adminUk: PartialAdminDictionary = {
     refundedNote: "За {count} замовленнями цього періоду гроші повернули покупцеві. Їхній податок не входить до підсумку вище, бо Sailo зберігає нараховану суму, а не те, як розподілилося часткове повернення.",
     totalNet: "Нетто",
     totalTax: "Податок",
+  },
+  commandBar: {
+    open: "Пошук",
+    placeholder: "Шукайте сторінки та дії…",
+    pages: "Сторінки",
+    actions: "Дії",
+    empty: "Нічого не знайдено. Спробуйте назву сторінки.",
   },
 };
