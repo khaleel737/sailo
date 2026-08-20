@@ -109,7 +109,7 @@ function fromHeader(order: Order): OrderLine {
  * loudly and returns nothing rather than something wrong. Callers that price
  * from lines then fail visibly instead of undercharging.
  */
-export function linesFor(order: Order, items: OrderItem[]): OrderLine[] {
+export function linesFor(order: Order, items: readonly OrderItem[]): OrderLine[] {
   if (items.length > 0) return items.map(fromItem);
   if (order.itemCount <= 1) return [fromHeader(order)];
 

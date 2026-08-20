@@ -101,29 +101,15 @@ export default async function AdminOrderPage({
   ]);
   const invoice = invoices.get(order.id);
 
-  /* Orders written before carts carry their one line in the header columns. */
-  const lines: OrderLine[] = items.length
-    ? items
-    : [
-        {
-          id: order.id,
-          orderId: order.id,
-          position: 0,
-          productId: order.productId,
-          variantId: null,
-          title: order.productTitle,
-          variantLabel: order.variantLabel,
-          sku: null,
-          kind: "product",
-          imageUrl: null,
-          unitPriceCents: order.subtotalCents,
-          quantity: order.quantity,
-          subtotalCents: order.subtotalCents,
-          scheduledFor: order.scheduledFor,
-          serviceMode: order.serviceMode,
-          serviceLocation: null,
-        },
-      ];
+  /*
+   * `getOrderItems` already applies linesFor's header fallback, so an empty
+   * list here is the one case linesFor refuses to guess about: a multi-line
+   * order whose rows are gone. The block this replaces re-synthesised a
+   * "plausible single line" for exactly that case — with the whole-order
+   * subtotal as the unit price — which is the mistake order-lines.ts exists
+   * to prevent. An empty table over honest header totals beats a wrong line.
+   */
+  const lines: OrderLine[] = items;
 
   const address = formatAddress(order);
   const methodName = isPaymentMethodType(order.paymentMethod)

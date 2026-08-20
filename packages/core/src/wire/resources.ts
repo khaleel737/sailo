@@ -1,4 +1,5 @@
 import { minorPerMajor } from "../money/currency";
+import { linesFor } from "../orders/order-lines";
 import type {
   Automation,
   AutomationRun,
@@ -169,7 +170,14 @@ export function orderResource(order: Order, items: readonly OrderItem[]) {
 
     note: order.note,
 
-    items: items.map((item) => ({
+    /*
+     * Through `linesFor`, never the raw rows. A pre-cart order has no
+     * order_items rows and its single line lives on the header — serialized
+     * raw, it went out as itemCount 1 with full totals and an empty `items`
+     * array, which a consumer summing items read as zero and a Zapier field
+     * map built from it read as an order with no product fields.
+     */
+    items: linesFor(order, items).map((item) => ({
       id: item.id,
       productId: item.productId,
       variantId: item.variantId,
