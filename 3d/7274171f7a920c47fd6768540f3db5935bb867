@@ -1,0 +1,68 @@
+apps/web/src/app/api/admin/palette/route.ts
+  s_a7bbf59e767e8f::t_4d07f7827a38f8 33
+  s_a7bbf59e767e8f::t_575e55caea5674 9
+packages/partners/src/program.ts
+  s_a7bbf59e767e8f::t_6df71ac94c1bc3 16-17
+  s_a7bbf59e767e8f::t_a37cd643fc8185 138
+apps/web/src/app/admin/orders/page.tsx
+  s_a7bbf59e767e8f::t_c1e071a1c5e33c 50,56
+packages/core/src/disputes/escalation.ts
+  s_a7bbf59e767e8f::t_c54a3094df7476 31
+  s_a7bbf59e767e8f::t_17e8b779706fe6 284
+  s_a7bbf59e767e8f::t_38a12ae8670dea 293,303
+packages/core/package.json
+  s_a7bbf59e767e8f::t_c1e071a1c5e33c 35
+packages/core/src/search-params.ts
+  s_a7bbf59e767e8f::t_bdeabfc521d474 1-15
+packages/design-system/src/initials.ts
+  s_a7bbf59e767e8f::t_3b8c7081e1811a 1-21
+packages/design-system/package.json
+  s_a7bbf59e767e8f::t_67a80f15bcba91 10
+packages/commerce/src/checkout-link.ts
+  s_a7bbf59e767e8f::t_68218269824e7e 30-31,110
+apps/web/src/app/(auth)/reset-password/page.tsx
+  s_a7bbf59e767e8f::t_c1e071a1c5e33c 6,13
+apps/web/src/app/admin/_components/account-menu.tsx
+  s_a7bbf59e767e8f::t_747001767f907b 11-13,15
+  s_a7bbf59e767e8f::t_dc3c5536059983 9
+apps/web/src/app/onboarding/_components/shop-preview.tsx
+  s_a7bbf59e767e8f::t_67a80f15bcba91 5,32
+  s_a7bbf59e767e8f::t_1b7b8898cf0789 51
+packages/commerce/src/shop-views/index.ts
+  s_a7bbf59e767e8f::t_a050ffd947126f 136
+  s_a7bbf59e767e8f::t_575e55caea5674 4
+  s_a7bbf59e767e8f::t_b8cf5331d7f5cd 47-62
+apps/web/src/app/admin/settings/tax/page.tsx
+  s_a7bbf59e767e8f::t_c1e071a1c5e33c 18,122
+packages/design-system/src/native/avatar.tsx
+  s_a7bbf59e767e8f::t_67a80f15bcba91 5,100
+packages/db/src/like.ts
+  s_a7bbf59e767e8f::t_24af05861378bd 1-12
+packages/db/package.json
+  s_a7bbf59e767e8f::t_b0d81ded2504e1 11
+apps/web/src/lib/actions/order-status.ts
+  s_a7bbf59e767e8f::t_a71ed88c625a9c 9,34
+packages/core/src/shop/plans.ts
+  s_a7bbf59e767e8f::t_b5f472907a45c8 545-546,548
+  s_a7bbf59e767e8f::t_97f77219ad862f 3
+apps/hq/src/lib/platform/pagination.ts
+  s_a7bbf59e767e8f::t_f2b608074e62bd 16-17
+  s_a7bbf59e767e8f::t_c1e071a1c5e33c 13-14
+  s_a7bbf59e767e8f::t_50324631309891 58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "3d7274171f7a920c47fd6768540f3db5935bb867",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
