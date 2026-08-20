@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { thenable } from "@sailo/config/testing";
 
 /**
  * One tick of the delivery queue, driven through `runWebhookQueue`.
@@ -33,10 +34,6 @@ let disableReturns: unknown[][];
 
 const nameOf = (table: unknown) =>
   String((table as { [k: symbol]: unknown })[Symbol.for("drizzle:Name")] ?? "?");
-
-function thenable<T>(result: T, extra: Record<string, unknown> = {}) {
-  return { ...extra, then: (resolve: (value: T) => unknown) => resolve(result) };
-}
 
 vi.mock("@sailo/db", () => ({
   getDb: () => ({

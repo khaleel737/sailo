@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { thenable } from "@sailo/config/testing";
 
 /**
  * The rule that decides whether a buyer sees a broken button.
@@ -24,10 +25,6 @@ let inserted: { values: unknown; conflict: unknown }[];
 let deleted: unknown[];
 /** What the `max(position)` aggregate answers with. */
 let maxPosition = "0";
-
-function thenable<T>(result: T, extra: Record<string, unknown> = {}) {
-  return { ...extra, then: (resolve: (value: T) => unknown) => resolve(result) };
-}
 
 vi.mock("@sailo/db", () => ({
   getDb: () => ({

@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { thenable } from "@sailo/config/testing";
 
 /**
  * What a discount code may be, whoever is saving it.
@@ -23,10 +24,6 @@ let updated: { values: unknown; where: unknown }[];
 let inserted: unknown[];
 /** What `.returning()` answers with, so "not found" can be exercised. */
 let updateReturns: { id: string }[];
-
-function thenable<T>(result: T, extra: Record<string, unknown> = {}) {
-  return { ...extra, then: (resolve: (value: T) => unknown) => resolve(result) };
-}
 
 vi.mock("@sailo/db", () => ({
   getDb: () => ({

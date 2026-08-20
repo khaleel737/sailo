@@ -11,7 +11,8 @@
   "exports": {
     "./tsconfig.base.json": "./tsconfig.base.json",
     "./tsconfig.hermes.json": "./tsconfig.hermes.json",
-    "./vitest": "./vitest.base.mts"
+    "./vitest": "./vitest.base.mts",
+    "./testing": "./testing.ts"
   },
   "devDependencies": {
     "vitest": "^4.1.10"

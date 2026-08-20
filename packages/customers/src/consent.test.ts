@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { stubLocalStorageWindow } from "@sailo/config/testing";
 import {
   CONSENT_KEY,
   CONSENT_VERSION,
@@ -23,18 +24,7 @@ beforeEach(() => {
   // The module reads `window.localStorage`, so the window is what needs
   // standing in — stubbing a bare `localStorage` global left every write
   // going nowhere and every read returning null, which reads as "declined".
-  vi.stubGlobal("window", {
-    localStorage: {
-      getItem: (k: string) => store.get(k) ?? null,
-      setItem: (k: string, v: string) => void store.set(k, v),
-      removeItem: (k: string) => void store.delete(k),
-    },
-    dispatchEvent: () => true,
-  });
-  // A stand-in for the DOM constructor the module dispatches through. It is
-  // never read, only constructed, so it needs no members — a function is a
-  // lighter way to say that than an empty class.
-  vi.stubGlobal("CustomEvent", function CustomEventStub() {});
+  stubLocalStorageWindow(store);
 });
 
 afterEach(() => vi.unstubAllGlobals());

@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { stubLocalStorageWindow } from "@sailo/config/testing";
 import {
   clearPendingOrder,
   clearStoredCart,
@@ -36,13 +37,7 @@ beforeEach(() => {
   // The module reads `window.localStorage`, so the window is what needs
   // standing in — the same stand-in `consent.test.ts` uses, for the same
   // reason.
-  vi.stubGlobal("window", {
-    localStorage: {
-      getItem: (k: string) => store.get(k) ?? null,
-      setItem: (k: string, v: string) => void store.set(k, v),
-      removeItem: (k: string) => void store.delete(k),
-    },
-  });
+  stubLocalStorageWindow(store);
 });
 
 afterEach(() => vi.unstubAllGlobals());

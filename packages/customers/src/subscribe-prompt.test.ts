@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { stubLocalStorageWindow } from "@sailo/config/testing";
 import {
   SUBSCRIBE_PROMPT_VERSION,
   SUBSCRIBE_SNOOZE_DAYS,
@@ -30,15 +31,7 @@ const store = new Map<string, string>();
 
 beforeEach(() => {
   store.clear();
-  vi.stubGlobal("window", {
-    localStorage: {
-      getItem: (k: string) => store.get(k) ?? null,
-      setItem: (k: string, v: string) => void store.set(k, v),
-      removeItem: (k: string) => void store.delete(k),
-    },
-    dispatchEvent: () => true,
-  });
-  vi.stubGlobal("CustomEvent", function CustomEventStub() {});
+  stubLocalStorageWindow(store);
 });
 
 afterEach(() => vi.unstubAllGlobals());

@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { stubLocalStorageWindow } from "@sailo/config/testing";
 import {
   SHOP_CONSENT_VERSION,
   clearShopConsent,
@@ -24,15 +25,7 @@ const store = new Map<string, string>();
 beforeEach(() => {
   store.clear();
   // The module reads `window.localStorage`, so the window is the stand-in.
-  vi.stubGlobal("window", {
-    localStorage: {
-      getItem: (k: string) => store.get(k) ?? null,
-      setItem: (k: string, v: string) => void store.set(k, v),
-      removeItem: (k: string) => void store.delete(k),
-    },
-    dispatchEvent: () => true,
-  });
-  vi.stubGlobal("CustomEvent", function CustomEventStub() {});
+  stubLocalStorageWindow(store);
 });
 
 afterEach(() => vi.unstubAllGlobals());

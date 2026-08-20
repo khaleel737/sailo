@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Shop } from "@sailo/db/schema";
+import { thenable } from "@sailo/config/testing";
 
 /**
  * What a product has to be, whoever is saving it.
@@ -35,10 +36,6 @@ const filesFindMany = vi.fn();
 
 /** Every row this save wrote, by table, in the order it wrote them. */
 let written: { table: string; values: unknown }[];
-
-function thenable<T>(result: T, extra: Record<string, unknown> = {}) {
-  return { ...extra, then: (resolve: (value: T) => unknown) => resolve(result) };
-}
 
 /** Table objects are opaque to us; drizzle stamps a name we can read back. */
 const nameOf = (table: unknown) =>
