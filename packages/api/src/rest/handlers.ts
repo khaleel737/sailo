@@ -2,6 +2,8 @@ import "server-only";
 import { and, asc, desc, eq, gte, inArray, isNotNull, lt, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import {
+  automationRuns,
+  automations,
   bookingClaims,
   clients,
   contactListMembers,
@@ -18,15 +20,17 @@ import {
 import { MAX_TAGS, normalizeTag, normalizeTags } from "@sailo/core/tags";
 import { normalizePhone } from "@sailo/core/phone";
 import { isUuid } from "@sailo/core/uuid";
+import { can, cheapestPlanWith } from "@sailo/core/plans";
 import { MAX_EMAIL_LENGTH, confirmUrl, normalizeEmail, normalizeName, subscribeToken } from "@sailo/marketing/broadcasts/server";
-import { MAX_LISTS_PER_SHOP } from "@sailo/marketing/contacts";
-import { joinList, leaveList, listsForClient } from "@sailo/marketing/contacts/server";
+import { joinList, listsForClient } from "@sailo/marketing/contacts/server";
 import { sendSubscribeConfirmation } from "@sailo/email/lifecycle";
 import { getDictionary, interpolate } from "@sailo/i18n";
 import { rateLimit } from "@sailo/rate-limit";
 import type { ApiCaller } from "./auth";
 import {
   bookingResource,
+  flowResource,
+  flowRunResource,
   contactListResource,
   contactResource,
   disputeResource,
@@ -793,6 +797,236 @@ export async function getList(
 }
 
 /* -------------------------------------------------------------------------- */
+/*  Flows (automations)                                                        */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * The second gate, and it is not the one `apiGuard` runs.
+ *
+ * `apiGuard` answers "may this shop use the API at all", which is a different
+ * question from "does this shop have automations" — and the admin's own
+ * `gate()` in `actions/flows.ts` asks the second one before every write.
+ *
+ * **It cannot fire today, and it is here anyway.** `integrations` and
+ * `automations` are both Business-only, so a shop that fails this has already
+ * failed the API gate one step earlier and been refused with a different
+ * sentence. They are two separate flags in the plan table, though, and the day
+ * one of them moves — the API opening up on Pro is the obvious direction —
+ * this is the difference between a Pro shop reading a Business feature and
+ * being told it cannot. A gate that costs one boolean and closes that is worth
+ * keeping ahead of the change rather than after it.
+ *
+ * Returned as a refusal rather than an empty page on purpose: a shop with no
+ * automations and a shop that may not have them are different facts, and an
+ * integration that saw `[]` would conclude the seller has no flows and stop
+ * asking.
+ */
+function requireAutomations(caller: ApiCaller): { failure: ApiFailure } | null {
+  if (can(caller.shop, "automations")) return null;
+  const plan = cheapestPlanWith("automations");
+  return {
+    failure: {
+      code: "forbidden",
+      message: `Automations are available on ${plan?.name ?? "a higher plan"}.`,
+    },
+  };
+}
+
+/**
+ * The node list, flattened out of the stored graph.
+ *
+ * Read straight off the jsonb rather than through `parseGraph`, deliberately.
+ * The parser answers "is this graph runnable" and returns `Map`s that are not
+ * JSON — but a flow that has stopped parsing is exactly the flow a seller most
+ * needs to see in a list, and a reader that refused to describe it would hide
+ * the broken one. Order comes from the stored array, which is the order the
+ * builder wrote and the order the runner walks.
+ */
+function stepsOf(automation: typeof automations.$inferSelect) {
+  const nodes = automation.graph?.nodes;
+  if (!Array.isArray(nodes)) return [];
+  return nodes
+    .filter((node): node is { id: string; kind: string } =>
+      Boolean(node && typeof node.id === "string" && typeof node.kind === "string"),
+    )
+    .map((node) => ({ id: node.id, kind: node.kind }));
+}
+
+export type FlowFilters = ListOptions & {
+  status?: string | null;
+  kind?: string | null;
+};
+
+/**
+ * The shop's automations.
+ *
+ * Deliberately without run tallies. Counting live runs per flow is a second
+ * query against a table that grows with every contact who ever entered one,
+ * and a page of flows should not pay for it when the overwhelming majority of
+ * callers want the names, the triggers and whether each is running. `GET
+ * /flows/{id}` carries the counts for the one flow somebody is actually
+ * looking at, which is where the cost belongs.
+ */
+export async function listFlows(
+  caller: ApiCaller,
+  options: FlowFilters,
+): Promise<Handled<ReturnType<typeof flowResource>[]> & { page?: Page<unknown> }> {
+  const gate = requireAutomations(caller);
+  if (gate) return { ok: false, failure: gate.failure };
+
+  const cursor = readCursor(options.cursor);
+  if (cursor && "failure" in cursor) return { ok: false, failure: cursor.failure };
+
+  /*
+   * `kind` defaults to `email` rather than to everything, and matches what the
+   * admin lists. An email flow is a sequence a seller drew; a scenario is a
+   * one-step rule wired to an outside app. They are different objects with
+   * different screens, and folding them into one unfiltered page would mean a
+   * consumer counting "my flows" got a number the seller has never seen.
+   */
+  const filters = [
+    eq(automations.shopId, caller.shop.id),
+    eq(automations.kind, options.kind || "email"),
+  ];
+  if (options.status) filters.push(eq(automations.status, options.status));
+  if (cursor) filters.push(keysetWhere(automations, cursor));
+
+  const rows = await getDb()
+    .select()
+    .from(automations)
+    .where(and(...filters))
+    .orderBy(desc(automations.createdAt), desc(automations.id))
+    .limit(options.limit + 1);
+
+  const page = paginate(rows, options.limit);
+
+  return {
+    ok: true,
+    data: page.items.map((row) => flowResource(row, { steps: stepsOf(row) })),
+    page,
+  };
+}
+
+export async function getFlow(
+  caller: ApiCaller,
+  id: string,
+): Promise<Handled<ReturnType<typeof flowResource>>> {
+  const gate = requireAutomations(caller);
+  if (gate) return { ok: false, failure: gate.failure };
+  if (!isUuid(id)) return notFound("flow");
+
+  const flow = await getDb().query.automations.findFirst({
+    where: and(eq(automations.id, id), eq(automations.shopId, caller.shop.id)),
+  });
+  if (!flow) return notFound("flow");
+
+  /*
+   * One grouped statement rather than five counts. `automation_runs_automation_idx`
+   * is `(automation_id, status)`, so this is an index-only scan over one flow's
+   * runs — and it is why the tallies are on the detail endpoint and not on the
+   * list, where it would be one such scan per row.
+   */
+  const tallies = await getDb()
+    .select({ status: automationRuns.status, n: sql<string>`count(*)` })
+    .from(automationRuns)
+    .where(eq(automationRuns.automationId, flow.id))
+    .groupBy(automationRuns.status);
+
+  const by = (status: string) =>
+    Number(tallies.find((row) => row.status === status)?.n ?? 0);
+
+  const queued = by("queued");
+  const waiting = by("waiting");
+
+  return {
+    ok: true,
+    data: flowResource(flow, {
+      steps: stepsOf(flow),
+      runs: {
+        total: tallies.reduce((sum, row) => sum + Number(row.n ?? 0), 0),
+        /* Queued and waiting together: both are people still inside the flow,
+           and the difference between them is whether a timer is running. */
+        live: queued + waiting,
+        completed: by("done"),
+        failed: by("failed"),
+        cancelled: by("cancelled"),
+      },
+    }),
+  };
+}
+
+export type FlowRunFilters = ListOptions & {
+  status?: string | null;
+  email?: string | null;
+};
+
+/**
+ * Who has walked one flow, and where each of them got to.
+ *
+ * The read that answers "why did this customer not get the email", which is
+ * the question a seller brings to support and which nothing outside the
+ * database could answer until now.
+ *
+ * **Ordered by `entered_at`, not `created_at`.** This table has no
+ * `created_at` — when somebody entered the flow is the only time it records —
+ * so the cursor is built over `(entered_at, id)` and the column is aliased
+ * into the shape `paginate` reads. `automation_runs_flow_keyset_idx` exists
+ * for exactly this ordering.
+ */
+export async function listFlowRuns(
+  caller: ApiCaller,
+  flowId: string,
+  options: FlowRunFilters,
+): Promise<Handled<ReturnType<typeof flowRunResource>[]> & { page?: Page<unknown> }> {
+  const gate = requireAutomations(caller);
+  if (gate) return { ok: false, failure: gate.failure };
+  if (!isUuid(flowId)) return notFound("flow");
+
+  const cursor = readCursor(options.cursor);
+  if (cursor && "failure" in cursor) return { ok: false, failure: cursor.failure };
+
+  /*
+   * The flow is loaded first and scoped to the shop, so the runs query can key
+   * on `automation_id` alone and still be safe. `automation_runs` carries its
+   * own `shop_id` as well, and both are in the WHERE below: the denormalised
+   * column is fast, and the ownership was already proven here.
+   */
+  const flow = await getDb().query.automations.findFirst({
+    where: and(eq(automations.id, flowId), eq(automations.shopId, caller.shop.id)),
+    columns: { id: true },
+  });
+  if (!flow) return notFound("flow");
+
+  const filters = [
+    eq(automationRuns.automationId, flow.id),
+    eq(automationRuns.shopId, caller.shop.id),
+  ];
+  if (options.status) filters.push(eq(automationRuns.status, options.status));
+  if (options.email) {
+    filters.push(sql`lower(${automationRuns.email}) = ${options.email.toLowerCase()}`);
+  }
+  if (cursor) {
+    filters.push(
+      sql`(${automationRuns.enteredAt}, ${automationRuns.id}) < (${cursor.createdAt.toISOString()}::timestamp, ${cursor.id}::uuid)`,
+    );
+  }
+
+  const rows = await getDb()
+    .select()
+    .from(automationRuns)
+    .where(and(...filters))
+    .orderBy(desc(automationRuns.enteredAt), desc(automationRuns.id))
+    .limit(options.limit + 1);
+
+  const page = paginate(
+    rows.map((row) => ({ ...row, createdAt: row.enteredAt })),
+    options.limit,
+  );
+
+  return { ok: true, data: page.items.map(flowRunResource), page };
+}
+
+/* -------------------------------------------------------------------------- */
 /*  Writes                                                                     */
 /* -------------------------------------------------------------------------- */
 
@@ -1103,18 +1337,19 @@ export async function updateContactLists(
   if (!contact) return notFound("contact");
 
   /*
-   * Sequential rather than `Promise.all`.
+   * Joins run one at a time, and that is a real cost worth naming.
    *
-   * Every one of these is an upsert against `(list, client)` and a join can
-   * enrol the contact into an automation, so a caller naming the same list
-   * twice — or naming one in both arrays — must produce one settled answer
-   * rather than a race between two writers. The lists a shop may hold are
-   * capped, so the longest run this can be is short.
+   * Each `joinList` is two lookups, an upsert, and — when the membership
+   * actually settles as subscribed — an automation enrolment that is itself
+   * several statements. That is why `MAX_WRITE_LISTS` below is much smaller
+   * than the shop's list ceiling: capping this call by how many lists a shop
+   * *may hold* would let one request issue several hundred sequential
+   * statements, which at 240 requests a minute is a comfortable way for one
+   * key to exhaust a connection pool.
    *
-   * `leave` runs after `join` for the same reason: sending a list in both
-   * arrays is a caller contradicting themselves, and the API has to pick one
-   * meaning and keep picking it. Removal wins, because "take them off this
-   * list" is the safer half of the contradiction to honour.
+   * They stay sequential rather than becoming `Promise.all` because each is an
+   * upsert on `(list, client)` that can fire an enrolment, and a fan-out of
+   * those against one contact is a race with itself.
    */
   for (const listId of join.ids) {
     /*
@@ -1129,8 +1364,38 @@ export async function updateContactLists(
       source: "api",
     });
   }
-  for (const listId of leave.ids) {
-    await leaveList({ shopId: caller.shop.id, listId, clientId: contact.id });
+
+  /*
+   * Leaves go in one statement rather than one apiece.
+   *
+   * They are independent, idempotent and — unlike a join — trigger nothing: no
+   * enrolment, no send, no consent decision. So the loop bought nothing and
+   * cost a round trip per list. The ownership check is the same correlated
+   * `EXISTS` on `contact_lists` that `leaveList` uses, kept as a subquery in
+   * the same statement rather than a lookup above it, because
+   * `contact_list_members` has no `shop_id` of its own and check-then-act here
+   * would be a genuine TOCTOU on a table any signed-in seller can name a row
+   * in.
+   *
+   * `leave` is applied after `join` so that a caller naming one list in both
+   * arrays ends with the contact off it. Removal is the safer half of a
+   * contradiction to honour.
+   */
+  if (leave.ids.length > 0) {
+    await db
+      .update(contactListMembers)
+      .set({ status: "removed", removedAt: new Date() })
+      .where(
+        and(
+          eq(contactListMembers.clientId, contact.id),
+          inArray(contactListMembers.listId, leave.ids),
+          sql`exists (
+            select 1 from ${contactLists}
+            where ${contactLists.id} = ${contactListMembers.listId}
+              and ${contactLists.shopId} = ${caller.shop.id}
+          )`,
+        ),
+      );
   }
 
   /*
@@ -1143,12 +1408,26 @@ export async function updateContactLists(
 }
 
 /**
- * List ids off a request body — uuid-shaped, deduplicated and capped.
+ * How many lists one call may name, per array.
  *
- * The cap is the shop's own list ceiling rather than an arbitrary number,
- * because a call naming more lists than the shop can hold is a mistake however
- * politely it is phrased, and the alternative is a caller pasting ten thousand
- * ids into an endpoint that would then run ten thousand upserts.
+ * **Not `MAX_LISTS_PER_SHOP`, which is what this used to be and was the wrong
+ * constant.** That number bounds what a shop may *hold*; this bounds what one
+ * request may *do*, and the two are only the same if the work per list is
+ * free. It is not: a join is two lookups, an upsert, and — when the membership
+ * settles as subscribed — an automation enrolment that is several statements
+ * more. Capping at the shop ceiling let one request issue several hundred
+ * sequential statements, and at 240 requests a minute per key that is a
+ * comfortable way to exhaust a connection pool without doing anything a rate
+ * limiter would call abusive.
+ *
+ * Twenty is well above what any real integration sends — a contact joining
+ * more than a handful of lists at once is a bulk import, which has its own
+ * path — and low enough that the worst request is bounded.
+ */
+export const MAX_WRITE_LISTS = 20;
+
+/**
+ * List ids off a request body — uuid-shaped, deduplicated and capped.
  */
 function readListIds(
   raw: unknown,
@@ -1157,11 +1436,11 @@ function readListIds(
   if (!Array.isArray(raw)) {
     return { failure: { code: "invalid_request", message: "`join` and `leave` are arrays of list ids." } };
   }
-  if (raw.length > MAX_LISTS_PER_SHOP) {
+  if (raw.length > MAX_WRITE_LISTS) {
     return {
       failure: {
         code: "invalid_request",
-        message: `That is more lists than a shop can have (${MAX_LISTS_PER_SHOP}).`,
+        message: `Name at most ${MAX_WRITE_LISTS} lists per call.`,
       },
     };
   }

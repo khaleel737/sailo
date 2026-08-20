@@ -43,7 +43,9 @@ export type ResourceName =
   | "Dispute"
   | "Booking"
   | "Staff"
-  | "List";
+  | "List"
+  | "Flow"
+  | "FlowRun";
 
 export type Endpoint = {
   /** Stable anchor and OpenAPI `operationId`. Never renamed — docs deep-link to it. */

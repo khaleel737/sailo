@@ -217,6 +217,8 @@ export const disputes = pgTable(
      * subscription chargeback.
      */
     index("disputes_shop_scope_idx").on(t.shopId, t.scope),
+    // The public list, which pins `scope` to 'connected' on every call.
+    index("disputes_shop_scope_keyset_idx").on(t.shopId, t.scope, t.createdAt, t.id),
     index("disputes_charge_idx").on(t.stripeChargeId),
     /*
      * The reminder sweep: open disputes with a deadline nobody has been nagged

@@ -87,6 +87,9 @@ export const contactLists = pgTable(
      */
     uniqueIndex("contact_lists_shop_name_key").on(t.shopId, sql`lower(${t.name})`),
     index("contact_lists_shop_idx").on(t.shopId, t.createdAt),
+    // `id` too, so the API's row-value keyset is an index qual rather than a
+    // truncated `created_at <=` with a recheck.
+    index("contact_lists_shop_keyset_idx").on(t.shopId, t.createdAt, t.id),
   ],
 );
 

@@ -63,7 +63,9 @@ export const staffResources = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
-  (t) => [index("staff_resources_shop_idx").on(t.shopId, t.isActive, t.position)],
+  (t) => [index("staff_resources_shop_idx").on(t.shopId, t.isActive, t.position),
+    // The `/api/v1` keyset, so every list endpoint has one plan shape.
+    index("staff_resources_shop_keyset_idx").on(t.shopId, t.createdAt, t.id)],
 );
 
 /**

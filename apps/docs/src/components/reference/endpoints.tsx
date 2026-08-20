@@ -49,6 +49,7 @@ export const SECTIONS = [
   { slug: "/api/disputes", title: "Disputes", prefix: "/disputes" },
   { slug: "/api/bookings", title: "Bookings", prefix: "/bookings" },
   { slug: "/api/staff", title: "Staff", prefix: "/staff" },
+  { slug: "/api/flows", title: "Flows", prefix: "/flows" },
 ] as const;
 
 export function sectionFor(endpoint: Endpoint): (typeof SECTIONS)[number] | undefined {

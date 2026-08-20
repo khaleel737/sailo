@@ -417,3 +417,77 @@ export const CONTACT_LISTS_EXAMPLE = `{
     ]
   }
 }`;
+
+export const FLOW_EXAMPLE = `{
+  "data": {
+    "id": "d4e5f6a7-8b9c-4d0e-1f2a-3b4c5d6e7f80",
+    "object": "flow",
+    "name": "Welcome sequence",
+    "kind": "email",
+    "status": "active",
+    "trigger": {
+      "type": "list.joined",
+      "config": { "listId": "b8c1a057-3e62-4d19-9f74-5a0c8b2e6d13" }
+    },
+    "entryPolicy": "once",
+    "steps": [
+      { "id": "s-1a2b3c4d", "kind": "send" },
+      { "id": "s-5e6f7a8b", "kind": "timer" },
+      { "id": "s-9c0d1e2f", "kind": "send" }
+    ],
+    "stepCount": 3,
+    "runs": {
+      "total": 412,
+      "live": 37,
+      "completed": 361,
+      "failed": 12,
+      "cancelled": 2
+    },
+    "activatedAt": "2026-06-02T09:15:00.000Z",
+    "createdAt": "2026-06-01T14:22:10.004Z",
+    "updatedAt": "2026-08-14T11:03:52.771Z"
+  }
+}`;
+
+export const FLOW_PAGE_EXAMPLE = `{
+  "data": [
+    {
+      "id": "d4e5f6a7-8b9c-4d0e-1f2a-3b4c5d6e7f80",
+      "object": "flow",
+      "name": "Welcome sequence",
+      "kind": "email",
+      "status": "active",
+      "trigger": { "type": "list.joined", "config": { "listId": "b8c1…" } },
+      "entryPolicy": "once",
+      "steps": [ /* … */ ],
+      "stepCount": 3,
+      "runs": null,
+      "activatedAt": "2026-06-02T09:15:00.000Z",
+      "createdAt": "2026-06-01T14:22:10.004Z",
+      "updatedAt": "2026-08-14T11:03:52.771Z"
+    }
+  ],
+  "has_more": false,
+  "next_cursor": null
+}`;
+
+export const FLOW_RUN_PAGE_EXAMPLE = `{
+  "data": [
+    {
+      "id": "e7f8a9b0-1c2d-4e3f-8a5b-6c7d8e9f0a1b",
+      "object": "flow_run",
+      "flowId": "d4e5f6a7-8b9c-4d0e-1f2a-3b4c5d6e7f80",
+      "contactId": "c1d2e3f4-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
+      "email": "ada@example.com",
+      "status": "waiting",
+      "currentStep": "s-5e6f7a8b",
+      "wakeAt": "2026-08-22T09:00:00.000Z",
+      "attempt": 0,
+      "enteredAt": "2026-08-20T09:00:04.118Z",
+      "finishedAt": null,
+      "lastError": null
+    }
+  ],
+  "has_more": true,
+  "next_cursor": "MjAyNi0wOC0yMFQwOTowMDowNC4xMThafGU3ZjhhOWIw"
+}`;

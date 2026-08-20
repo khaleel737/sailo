@@ -169,6 +169,9 @@ describe("tools against the REST catalogue", () => {
       getBooking: "get_booking",
       listStaff: "list_staff",
       getStaff: "get_staff",
+      listFlows: "list_flows",
+      getFlow: "get_flow",
+      listFlowRuns: "list_flow_runs",
     };
 
     for (const endpoint of ENDPOINTS) {
@@ -228,8 +231,9 @@ describe("toolResponse", () => {
      * something rather than an empty result.
      */
     const answer = toolResponse({ ok: true, data: { id: "1", object: "shop" } });
-    const [block] = answer.content as { type: string; text: string }[];
+    const blocks = answer.content as { type: string; text: string }[];
 
-    expect(JSON.parse(block.text)).toEqual(answer.structuredContent);
+    expect(blocks).toHaveLength(1);
+    expect(JSON.parse(blocks[0]!.text)).toEqual(answer.structuredContent);
   });
 });

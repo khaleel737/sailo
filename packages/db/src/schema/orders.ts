@@ -82,6 +82,8 @@ export const clients = pgTable(
      * into a 500 and, worse, into an oracle that the address was already
      * known. See `drizzle/0016`.
      */
+    // `(shop_id, created_at, id)` — the shape every `/api/v1` list pages by.
+    index("clients_shop_keyset_idx").on(t.shopId, t.createdAt, t.id),
     index("clients_shop_email_lower_idx").on(t.shopId, sql`lower(${t.email})`),
   ],
 );
@@ -918,6 +920,15 @@ export const bookingClaims = pgTable(
      */
     index("booking_claims_order_idx").on(t.orderId),
     index("booking_claims_staff_idx").on(t.staffId, t.startsAt),
+    /*
+     * The public API's diary, which reaches a shop through `products` because
+     * this table has no `shop_id`. Without it that join is a sequential scan of
+     * every tenant's appointments — the plain btree on `product_id` was dropped
+     * in 0046 and its replacement is partial on `WHERE NOT is_exclusive`, which
+     * excludes ordinary one-to-one bookings. `created_at, id` follow so the
+     * keyset is the same index rather than a sort on top of it.
+     */
+    index("booking_claims_product_keyset_idx").on(t.productId, t.createdAt, t.id),
   ],
 );
 

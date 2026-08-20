@@ -1,0 +1,125 @@
+---
+title: Flows
+description: Read a shop's automations and who is walking them. The endpoint that answers why a customer did not get the email, without opening the database.
+---
+
+import { Callout } from "nextra/components";
+
+# Flows
+
+An automation: a sequence a seller built once — *somebody joins a list, wait two
+days, send this* — that runs itself from then on.
+
+Two things are readable here, and they answer different questions. The flow
+answers **is this working**. Its runs answer **what happened to this person**.
+
+## Only `active` enrols anybody
+
+<Callout type="warning">
+`paused` is not `cancelled`. A paused flow stops taking new people and **keeps
+everyone already inside it** — their timers keep running and they resume where
+they were when the seller switches it back on.
+</Callout>
+
+- **`draft`** — never finished. Has no trigger, or a graph that does not parse.
+- **`active`** — running. New people enter it whenever the trigger fires.
+- **`paused`** — takes nobody new, holds everybody it has.
+
+So a flow with live runs and a `paused` status is not a contradiction, and a
+dashboard that renders paused flows as stopped will confuse a seller whose
+customers are still receiving from one.
+
+## Why did this customer not get the email?
+
+The question a seller actually brings to support, and the reason
+`GET /flows/{id}/runs` exists:
+
+<CurlExample path="/flows/d4e5f6a7-8b9c-4d0e-1f2a-3b4c5d6e7f80/runs?email=ada@example.com" />
+
+The answer is in three fields:
+
+| Field | What it tells you |
+| --- | --- |
+| `status` | Where the run stands. |
+| `currentStep` | Which node they stopped on — matches an `id` in the flow's `steps`. |
+| `lastError` | Why, on a `failed` run. |
+
+<Callout type="error">
+**A `waiting` run is not a stuck run.** It is a timer that has not elapsed, and
+`wakeAt` says when it will. Reporting `waiting` as a failure is the commonest
+way to misread this endpoint — most people in a healthy flow are waiting most
+of the time.
+</Callout>
+
+If there is no run at all for that address, they never entered: either the flow
+was not `active` when the trigger fired, or `entryPolicy` is `once` and they had
+walked it before.
+
+## Tallies are on the flow, not the list
+
+`GET /flows` returns `runs: null` on every row, deliberately. Counting who is
+inside a flow means aggregating a table that grows with every contact who ever
+entered one, and a page of twenty-five flows should not pay for twenty-five of
+those. `GET /flows/{id}` carries the counts for the one flow you are actually
+looking at.
+
+`live` is queued **plus** waiting, because both are people still inside the
+sequence — the only difference between them is whether a timer is currently
+running.
+
+## `kind` defaults to email
+
+`email` is the sequences the builder draws. `scenario` is the one-step rules
+wired to an outside app. They are separate screens to a seller and separate
+objects here, so an unfiltered page would hand you a count of "my flows" they
+have never seen. Pass `?kind=scenario` for the other half.
+
+## What `steps` does and does not say
+
+`steps` is the ordered node list with each node's `kind` — enough to see the
+shape of a flow, and to resolve a run's `currentStep` to a position in it.
+
+The node **bodies** are deliberately absent: the subject line, the timer's
+length, the segment a filter matches. That shape is the contract between the
+builder and the runner, it is ours to change, and a consumer reconstructing
+"what this flow does" from raw node config would be reimplementing a parser
+against a moving target. What an integration needs from a flow — whether it is
+running, what starts it, how it is going — is all here.
+
+## What is deliberately absent
+
+**Every write.** You cannot create, edit, activate, pause or delete a flow
+through this API. A flow is a thing that sends mail to a seller's customers on
+its own schedule, and switching one on from an integration is not an action
+whose consequence the seller can see before it happens. The builder is where
+that belongs.
+
+**Enrolment.** There is no way to push somebody into a flow. Enrolment is what
+the trigger is for — join the list, and the flow takes it from there.
+
+**The per-email statistics.** How many of each message sent, failed or were
+suppressed is not on this surface yet. If you need it,
+[get in touch](/support); it is a gap rather than a decision.
+
+## The plan
+
+Automations are a Business feature — as is the API itself, so in practice a key
+that can reach anything here can reach flows too.
+
+What you will not get is an empty list. A shop that may not have automations is
+told `forbidden`, and that is deliberately a different answer from `[]`: a shop
+with no flows and a shop that cannot have them are different facts, and an
+integration told `[]` would conclude the seller simply has none and stop
+asking.
+
+## The objects
+
+The full shapes are on the [flow](/objects/flow) and
+[flow run](/objects/flow-run) references.
+
+<Endpoints match="/flows" />
+
+## Getting a key
+
+The API is on the <ApiPlanName /> plan and automations need Business. Reading
+flows needs only a read key. Create one under <KeyLink />.

@@ -1,5 +1,7 @@
 import { minorPerMajor } from "../money/currency";
 import type {
+  Automation,
+  AutomationRun,
   BookingClaim,
   Client,
   ContactListRow,
@@ -616,6 +618,128 @@ export function contactListResource(
     pendingCount: counts.pending,
     createdAt: iso(list.createdAt),
     updatedAt: iso(list.updatedAt),
+  };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Flow                                                                       */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * An automation, as `GET /api/v1/flows` describes it.
+ *
+ * A seller builds a sequence once — somebody joins a list, wait two days, send
+ * this — and it runs itself from then on. This is that sequence, plus how much
+ * of it is currently in flight.
+ *
+ * **The graph is summarised, not published.** `steps` is the ordered node list
+ * with each node's `kind` and nothing else. The full node bodies are an
+ * internal shape that the builder and the runner agree on and that is ours to
+ * change; publishing them would freeze it, and a consumer reconstructing "what
+ * this flow does" from raw node config would be reimplementing the parser
+ * against a moving target. What an integration actually needs from a flow is
+ * whether it is running, what starts it, and how it is going — all of which
+ * are here.
+ *
+ * `runs` is null when the caller did not ask for the tallies, which is the
+ * list case: counting live runs per flow is a second query, and a page of
+ * flows should not pay for it when most callers want the names and statuses.
+ */
+export function flowResource(
+  automation: Automation,
+  context: {
+    steps: readonly { id: string; kind: string }[];
+    runs?: {
+      total: number;
+      live: number;
+      completed: number;
+      failed: number;
+      cancelled: number;
+    } | null;
+  },
+) {
+  return {
+    id: automation.id,
+    object: "flow" as const,
+    name: automation.name,
+    /** `email` for a sequence a seller drew, `scenario` for a one-step rule. */
+    kind: automation.kind,
+    /** `draft`, `active` or `paused`. Only `active` enrols anybody. */
+    status: automation.status,
+
+    /**
+     * What starts it. Null on a draft nobody has finished.
+     *
+     * `config` is the trigger's own qualifier — which list, which product —
+     * and is passed through as stored rather than reshaped, because it is the
+     * one part of the graph whose meaning is stable and public: it is the same
+     * vocabulary the webhook events use.
+     */
+    trigger: automation.trigger
+      ? { type: automation.trigger.type, config: automation.trigger.config ?? {} }
+      : null,
+
+    /**
+     * `once` or `repeat` — whether somebody who already walked this flow can
+     * enter it again. A consumer counting sends per person needs it.
+     */
+    entryPolicy: automation.entryPolicy,
+
+    steps: context.steps.map((step) => ({ id: step.id, kind: step.kind })),
+    stepCount: context.steps.length,
+
+    runs: context.runs ?? null,
+
+    activatedAt: iso(automation.activatedAt),
+    createdAt: iso(automation.createdAt),
+    updatedAt: iso(automation.updatedAt),
+  };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Flow run                                                                   */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * One person walking one flow, as `GET /api/v1/flows/{id}/runs` describes it.
+ *
+ * The row that answers "why did this customer not get the email" — which is
+ * the question a seller brings to support, and until now had no way to answer
+ * except by reading the database.
+ *
+ * **`lastError` is our own sentence, never a cause.** The runner truncates
+ * whatever it writes there to 500 characters, and what it writes is a reason a
+ * person can act on — a send refusal, an action's failure — rather than an
+ * exception. Nothing from a stack, a driver or a third party's response body
+ * reaches it, which is what makes it safe to hand back.
+ *
+ * `email` is the address the run is keyed on, which is the same personal data
+ * `GET /contacts` already returns under the same key. A run list is
+ * nonetheless a bulk read of addresses, so it needs a key like any other read.
+ */
+export function flowRunResource(run: AutomationRun) {
+  return {
+    id: run.id,
+    object: "flow_run" as const,
+    flowId: run.automationId,
+    contactId: run.clientId,
+    email: run.email,
+
+    /** `queued`, `waiting`, `done`, `failed` or `cancelled`. */
+    status: run.status,
+    /**
+     * Which step they are sitting on, as the node id from the flow's `steps`.
+     * Null once the run is over.
+     */
+    currentStep: run.cursor,
+    /** When the runner will next look at them. Null when nothing is pending. */
+    wakeAt: iso(run.wakeAt),
+    /** How many times a step has been retried. Six is the ceiling. */
+    attempt: run.attempt,
+
+    enteredAt: iso(run.enteredAt),
+    finishedAt: iso(run.finishedAt),
+    lastError: run.lastError,
   };
 }
 

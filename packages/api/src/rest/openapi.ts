@@ -4,6 +4,12 @@ import { ORDER_STATUSES } from "@sailo/core/order-status";
 import { PAYMENT_STATUSES } from "@sailo/core/payment-status";
 import { SUBSCRIPTION_STATUSES } from "@sailo/core/subscription-status";
 import { DISPUTE_CASE_TYPES, DISPUTE_STATUSES } from "@sailo/core/disputes";
+import {
+  AUTOMATION_KINDS,
+  AUTOMATION_STATUSES,
+  NODE_KINDS,
+  RUN_STATUSES,
+} from "@sailo/marketing/automations";
 import { ENDPOINTS, type Endpoint, type ResourceName } from "./endpoints";
 import { API_ERROR_CODES, API_VERSION, MAX_LIMIT } from "./respond";
 
@@ -506,6 +512,110 @@ const LIST = {
   },
 } as const;
 
+const FLOW = {
+  type: "object",
+  description:
+    "An automation: a sequence a seller built once that runs itself. The node bodies are deliberately summarised rather than published — that shape is the builder's and the runner's, and is ours to change.",
+  required: [
+    "id", "object", "name", "kind", "status", "trigger", "entryPolicy",
+    "steps", "stepCount", "runs", "activatedAt", "createdAt", "updatedAt",
+  ],
+  properties: {
+    id: { type: "string", format: "uuid" },
+    object: { type: "string", const: "flow" },
+    name: { type: "string" },
+    kind: { type: "string", enum: [...AUTOMATION_KINDS] },
+    status: {
+      type: "string",
+      enum: [...AUTOMATION_STATUSES],
+      description: "Only `active` enrols anybody. A paused flow keeps its waiting runs.",
+    },
+    trigger: {
+      type: ["object", "null"],
+      description: "What starts it. Null on a draft nobody has finished.",
+      required: ["type", "config"],
+      properties: {
+        type: { type: "string", description: "e.g. `list.joined`, `product.purchased`." },
+        config: {
+          type: "object",
+          additionalProperties: true,
+          description: "The trigger's qualifier — which list, which product.",
+        },
+      },
+    },
+    entryPolicy: {
+      type: "string",
+      description: "`once` or `repeat` — whether somebody may walk this flow again.",
+    },
+    steps: {
+      type: "array",
+      description: "The nodes in the order the runner walks them.",
+      items: {
+        type: "object",
+        required: ["id", "kind"],
+        properties: {
+          id: { type: "string" },
+          kind: { type: "string", enum: [...NODE_KINDS] },
+        },
+      },
+    },
+    stepCount: { type: "integer" },
+    runs: {
+      type: ["object", "null"],
+      description:
+        "Null on the list endpoint, which does not pay for the tally. Populated by `GET /flows/{id}`.",
+      required: ["total", "live", "completed", "failed", "cancelled"],
+      properties: {
+        total: { type: "integer", description: "Everybody who has ever entered." },
+        live: {
+          type: "integer",
+          description: "Queued plus waiting — people still inside the flow.",
+        },
+        completed: { type: "integer" },
+        failed: { type: "integer" },
+        cancelled: { type: "integer" },
+      },
+    },
+    activatedAt: nullable("string", { format: "date-time" }),
+    createdAt: nullable("string", { format: "date-time" }),
+    updatedAt: nullable("string", { format: "date-time" }),
+  },
+} as const;
+
+const FLOW_RUN = {
+  type: "object",
+  description: "One person moving through one flow.",
+  required: [
+    "id", "object", "flowId", "contactId", "email", "status", "currentStep",
+    "wakeAt", "attempt", "enteredAt", "finishedAt", "lastError",
+  ],
+  properties: {
+    id: { type: "string", format: "uuid" },
+    object: { type: "string", const: "flow_run" },
+    flowId: { type: "string", format: "uuid" },
+    contactId: nullable("string", {
+      format: "uuid",
+      description: "Null when the flow was entered by an address with no contact record.",
+    }),
+    email: { type: "string", description: "The address the run is keyed on." },
+    status: { type: "string", enum: [...RUN_STATUSES] },
+    currentStep: nullable("string", {
+      description: "The node id they are sitting on, from the flow's `steps`. Null once over.",
+    }),
+    wakeAt: nullable("string", {
+      format: "date-time",
+      description: "When the runner next looks at them. Null when nothing is pending.",
+    }),
+    attempt: { type: "integer", description: "Retries of the current step. Six is the ceiling." },
+    enteredAt: nullable("string", { format: "date-time" }),
+    finishedAt: nullable("string", { format: "date-time" }),
+    lastError: nullable("string", {
+      description:
+        "Why a failed run stopped, as a sentence. Never a stack, a driver message or a third party's response body.",
+    }),
+  },
+} as const;
+
 const ERROR = {
   type: "object",
   required: ["error"],
@@ -542,6 +652,8 @@ const SCHEMAS: Record<string, unknown> = {
   Booking: BOOKING,
   Staff: STAFF,
   List: LIST,
+  Flow: FLOW,
+  FlowRun: FLOW_RUN,
   Error: ERROR,
 };
 
@@ -735,6 +847,7 @@ export function openApiDocument(baseUrl: string): Record<string, unknown> {
       { name: "disputes", description: "Chargebacks against this shop's sales." },
       { name: "bookings", description: "The diary — appointments a shop owes." },
       { name: "staff", description: "The bookable roster. Not logins." },
+      { name: "flows", description: "Automations, and who is walking them." },
     ],
     paths,
     components: {

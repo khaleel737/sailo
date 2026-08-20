@@ -7,7 +7,7 @@ description: Read a Sailo shop's orders, products, contacts, memberships, charge
 
 Base URL <code><ApiBaseUrl /></code>.
 
-<EndpointCount /> operations over nine resources. Everything returns
+<EndpointCount /> operations over ten resources. Everything returns
 `{ "data": … }`; failures return `{ "error": { "code", "message" } }` with a
 matching HTTP status. Every response carries a `sailo-version` header, currently
 <ApiVersion />.
@@ -40,8 +40,8 @@ missed a delivery had lost that state for good. An event and an endpoint are two
 halves of one integration, and shipping only the first is what
 [spec 16](/webhooks) calls half of one.
 
-**Nine resources, not everything.** Shops, orders, products, contacts, lists,
-subscriptions, disputes, bookings and staff. Broadcasts, coupons, tax
+**Ten resources, not everything.** Shops, orders, products, contacts, lists,
+subscriptions, disputes, bookings, staff and flows. Broadcasts, coupons, tax
 registrations, tickets and testimonials have no endpoints — if you need one, the
 [support page](/support) says where to ask.
 
@@ -72,6 +72,7 @@ way that is invisible until it costs something:
 | [Disputes](/api/disputes) | <SectionEndpointCount prefix="/disputes" /> | Chargebacks, and the deadline to answer them. |
 | [Bookings](/api/bookings) | <SectionEndpointCount prefix="/bookings" /> | The diary — appointments a shop owes. |
 | [Staff](/api/staff) | <SectionEndpointCount prefix="/staff" /> | The bookable roster. Not logins. |
+| [Flows](/api/flows) | <SectionEndpointCount prefix="/flows" /> | Automations, and who is walking them. |
 
 ## Getting a key
 

@@ -1,7 +1,7 @@
 import "server-only";
 import { apiGuard, type ApiCaller } from "./auth";
 import type { Handled, ListOptions, Page } from "./handlers";
-import { apiFail, apiList, apiOk, readLimit } from "./respond";
+import { apiFail, apiList, apiOk, rateHeaders, readLimit } from "./respond";
 import type { ApiScope } from "./keys";
 
 /**
@@ -28,11 +28,13 @@ export async function handleOne<T>(
   const guard = await apiGuard(request, scope);
   if (!guard.ok) return guard.response;
 
+  const rate = rateHeaders(guard.caller.rate);
+
   try {
     const result = await fn(guard.caller);
-    return result.ok ? apiOk(result.data) : apiFail(result.failure);
+    return result.ok ? apiOk(result.data, rate) : apiFail(result.failure, rate);
   } catch (error) {
-    return serverError(error, request);
+    return serverError(error, request, rate);
   }
 }
 
@@ -49,6 +51,7 @@ export async function handleList<T>(
   if (!guard.ok) return guard.response;
 
   const url = new URL(request.url);
+  const rate = rateHeaders(guard.caller.rate);
 
   try {
     const result = await fn(
@@ -56,14 +59,18 @@ export async function handleList<T>(
       { limit: readLimit(url), cursor: url.searchParams.get("cursor") },
       url,
     );
-    if (!result.ok) return apiFail(result.failure);
+    if (!result.ok) return apiFail(result.failure, rate);
 
-    return apiList(result.data, {
-      hasMore: result.page?.hasMore ?? false,
-      nextCursor: result.page?.nextCursor ?? null,
-    });
+    return apiList(
+      result.data,
+      {
+        hasMore: result.page?.hasMore ?? false,
+        nextCursor: result.page?.nextCursor ?? null,
+      },
+      rate,
+    );
   } catch (error) {
-    return serverError(error, request);
+    return serverError(error, request, rate);
   }
 }
 
@@ -110,10 +117,13 @@ export async function readJson(
  * stack trace, a Postgres message or a constraint name in a response body is a
  * description of our schema handed to whoever provoked it.
  */
-function serverError(error: unknown, request: Request): Response {
+function serverError(error: unknown, request: Request, extra?: HeadersInit): Response {
   console.error(`[sailo] api error on ${new URL(request.url).pathname}`, error);
-  return apiFail({
-    code: "server_error",
-    message: "Something went wrong on our side. Try again.",
-  });
+  return apiFail(
+    {
+      code: "server_error",
+      message: "Something went wrong on our side. Try again.",
+    },
+    extra,
+  );
 }

@@ -322,6 +322,9 @@ export const subscriptions = pgTable(
     uniqueIndex("subscriptions_pass_code_key").on(t.passCode),
     // The members list: this shop, these statuses, newest first.
     index("subscriptions_shop_idx").on(t.shopId, t.status, t.createdAt),
+    // The unfiltered call — "list my members" sends no status, which leaves
+    // the index above unusable from its second column on.
+    index("subscriptions_shop_keyset_idx").on(t.shopId, t.createdAt, t.id),
     // "Is this person a member" — asked on every gated download.
     index("subscriptions_client_idx").on(t.clientId, t.status),
     /*

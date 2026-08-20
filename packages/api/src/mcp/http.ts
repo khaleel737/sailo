@@ -1,5 +1,6 @@
 import { appOrigin as appUrl } from "@sailo/core/origin";
 import { authenticateApi, type ApiCaller } from "../rest/auth";
+import { rateHeaders, retryAfterHeader } from "../rest/respond";
 import {
   CAPABILITIES,
   INSTRUCTIONS,
@@ -224,22 +225,37 @@ export async function handleMcp(request: Request): Promise<Response> {
      * use when that is what is missing, and appending a second copy of the
      * same sentence — which an earlier version did — reads as a bug in the
      * one place a person is already confused.
+     *
+     * The budget headers ride along for the same reason they do on `/api/v1`:
+     * this is the same 240-a-minute grant, and a client driving an assistant
+     * hits it exactly as easily as one driving a script. A JSON-RPC error body
+     * is not somewhere a generic HTTP retry helper knows to look, which makes
+     * `retry-after` more useful here rather than less.
      */
-    return json(
-      rpcError(id, RPC_ERRORS.invalidRequest, auth.failure.message),
-      status,
-      status === 401
+    return json(rpcError(id, RPC_ERRORS.invalidRequest, auth.failure.message), status, {
+      ...(status === 401
         ? { "www-authenticate": `Bearer realm="Sailo", error="invalid_token"` }
-        : undefined,
-    );
+        : {}),
+      ...(auth.rate ? rateHeaders(auth.rate) : {}),
+      ...(auth.rate && auth.failure.code === "rate_limited"
+        ? retryAfterHeader(auth.rate.resetSeconds)
+        : {}),
+      ...(auth.retryAfterSeconds ? retryAfterHeader(auth.retryAfterSeconds) : {}),
+    });
   }
+
+  const rate = rateHeaders(auth.caller.rate);
 
   switch (rpc.method) {
     case "tools/list":
-      return json(rpcResult(id, completeResult(era, { tools: listTools(auth.caller) })));
+      return json(
+        rpcResult(id, completeResult(era, { tools: listTools(auth.caller) })),
+        200,
+        rate,
+      );
 
     case "tools/call":
-      return callTool(auth.caller, rpc, id, era);
+      return callTool(auth.caller, rpc, id, era, rate);
 
     /*
      * Declared in no capability, so a conformant client never asks — but a
@@ -247,9 +263,9 @@ export async function handleMcp(request: Request): Promise<Response> {
      * the friendlier of two correct answers.
      */
     case "resources/list":
-      return json(rpcResult(id, completeResult(era, { resources: [] })));
+      return json(rpcResult(id, completeResult(era, { resources: [] })), 200, rate);
     case "prompts/list":
-      return json(rpcResult(id, completeResult(era, { prompts: [] })));
+      return json(rpcResult(id, completeResult(era, { prompts: [] })), 200, rate);
 
     default:
       /*
@@ -260,6 +276,7 @@ export async function handleMcp(request: Request): Promise<Response> {
       return json(
         rpcError(id, RPC_ERRORS.methodNotFound, `Unknown method: ${rpc.method}`),
         404,
+        rate,
       );
   }
 }
@@ -280,10 +297,12 @@ async function callTool(
   rpc: JsonRpcRequest,
   id: JsonRpcId,
   era: Era,
+  /** The budget headers, carried so every answer on this path reports it. */
+  rate: Record<string, string>,
 ): Promise<Response> {
   const name = readString(rpc.params?.name);
   if (!name) {
-    return json(rpcError(id, RPC_ERRORS.invalidParams, "`name` is required."), 400);
+    return json(rpcError(id, RPC_ERRORS.invalidParams, "`name` is required."), 400, rate);
   }
 
   const tool = findTool(caller, name);
@@ -301,6 +320,7 @@ async function callTool(
         `Unknown tool: ${name}. It may exist but need a key with write access.`,
       ),
       400,
+      rate,
     );
   }
 
@@ -310,7 +330,11 @@ async function callTool(
       : {};
 
   try {
-    return json(rpcResult(id, completeResult(era, toolResponse(await tool.run(caller, args)))));
+    return json(
+      rpcResult(id, completeResult(era, toolResponse(await tool.run(caller, args)))),
+      200,
+      rate,
+    );
   } catch (error) {
     console.error(`[sailo] mcp tool ${name} failed`, error);
     /*
@@ -326,6 +350,8 @@ async function callTool(
           isError: true,
         }),
       ),
+      200,
+      rate,
     );
   }
 }

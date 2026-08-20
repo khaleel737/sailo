@@ -665,6 +665,9 @@ export const products = pgTable(
   (t) => [
     uniqueIndex("products_shop_slug_key").on(t.shopId, t.slug),
     index("products_shop_idx").on(t.shopId),
+    // The `/api/v1` keyset. `products_shop_browse_idx` cannot serve it:
+    // `is_featured` and `position` sit between `shop_id` and `created_at`.
+    index("products_shop_keyset_idx").on(t.shopId, t.createdAt, t.id),
     index("products_category_idx").on(t.categoryId),
     /**
      * The storefront's default order, batched. Without this a deep catalogue

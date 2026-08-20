@@ -1,0 +1,74 @@
+---
+title: Flow object
+description: An automation a seller built once that runs itself. Only active enrols anybody, and paused keeps everyone already inside it.
+---
+
+import { Callout } from "nextra/components";
+
+# Flow
+
+A sequence: *somebody joins a list, wait two days, send this*. What
+`GET /flows` and `GET /flows/{id}` answer with.
+
+<FlowFields />
+
+## `paused` is not `cancelled`
+
+<Callout type="warning">
+A paused flow takes nobody new and **keeps everyone already inside it**. Their
+timers keep running; they resume where they were when it is switched back on.
+</Callout>
+
+Which means a flow can be `paused` and still have live runs, and a dashboard
+that renders paused as stopped will contradict what the seller's customers are
+actually receiving.
+
+## `steps` is a shape, not a definition
+
+The ordered node list, each `{ id, kind }`. It is enough to see what a flow
+does and to resolve a run's [`currentStep`](/objects/flow-run) to a position
+in it.
+
+The node bodies — subject lines, timer lengths, the segment a filter matches —
+are deliberately not published. That shape is the contract between the builder
+and the runner and is ours to change; a consumer rebuilding "what this flow
+does" from it would be reimplementing a parser against a moving target.
+
+## `runs` is null on the list
+
+Counting who is inside a flow aggregates a table that grows with every contact
+who ever entered one. A page of twenty-five flows should not pay for
+twenty-five such counts, so the list omits them and `GET /flows/{id}` carries
+them for the one flow being looked at.
+
+`live` is queued **plus** waiting: both are people still inside the sequence,
+and the only difference is whether a timer is currently running.
+
+## Example
+
+```json
+{
+  "data": {
+    "id": "d4e5f6a7-8b9c-4d0e-1f2a-3b4c5d6e7f80",
+    "object": "flow",
+    "name": "Welcome sequence",
+    "kind": "email",
+    "status": "active",
+    "trigger": {
+      "type": "list.joined",
+      "config": { "listId": "b8c1a057-3e62-4d19-9f74-5a0c8b2e6d13" }
+    },
+    "entryPolicy": "once",
+    "steps": [
+      { "id": "s-1a2b3c4d", "kind": "send" },
+      { "id": "s-5e6f7a8b", "kind": "timer" },
+      { "id": "s-9c0d1e2f", "kind": "send" }
+    ],
+    "stepCount": 3,
+    "runs": { "total": 412, "live": 37, "completed": 361, "failed": 12, "cancelled": 2 },
+    "activatedAt": "2026-06-02T09:15:00.000Z",
+    "createdAt": "2026-06-01T14:22:10.004Z",
+    "updatedAt": "2026-08-14T11:03:52.771Z"
+  }
+}
+```

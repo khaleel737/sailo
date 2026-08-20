@@ -35,6 +35,11 @@ import { ORDER_STATUSES } from "@sailo/core/order-status";
 import { PAYMENT_STATUSES } from "@sailo/core/payment-status";
 import { SUBSCRIPTION_STATUSES } from "@sailo/core/subscription-status";
 import { DISPUTE_STATUSES } from "@sailo/core/disputes";
+import {
+  AUTOMATION_KINDS,
+  AUTOMATION_STATUSES,
+  RUN_STATUSES,
+} from "@sailo/marketing/automations";
 import { MAX_TAGS, MAX_TAG_LENGTH } from "@sailo/core/tags";
 import {
   AUTH_HEADER,
@@ -50,6 +55,9 @@ import {
 } from "./endpoint-shape";
 import {
   BOOKING_EXAMPLE,
+  FLOW_EXAMPLE,
+  FLOW_PAGE_EXAMPLE,
+  FLOW_RUN_PAGE_EXAMPLE,
   BOOKING_PAGE_EXAMPLE,
   CONTACT_EXAMPLE,
   CONTACT_LISTS_EXAMPLE,
@@ -721,5 +729,97 @@ export const ENDPOINTS: readonly Endpoint[] = [
     curl: (base) => `curl ${base}/api/v1/staff/6d4b2e19-7a30-4f85-b1c6-2e8d5a3f0b71 \\
   -H "${AUTH_HEADER}"`,
     successExample: STAFF_EXAMPLE,
+  },
+
+  {
+    id: "listFlows",
+    method: "GET",
+    path: "/flows",
+    scope: "read",
+    summary: "Automations, newest first",
+    description:
+      "The sequences a seller built once and left running — somebody joins a list, wait two days, send this. `kind` defaults to `email`, which is the sequences the builder draws; pass `scenario` for the one-step rules wired to an outside app. They are separate on purpose, because they are separate screens to a seller and folding them together would hand you a count of \"my flows\" they have never seen. `runs` is null here: counting who is inside each flow is a query against a table that grows with every contact who ever entered one, and a page of twenty-five should not pay for it. Fetch one flow to get its tallies.",
+    params: [
+      {
+        name: "kind",
+        in: "query",
+        required: false,
+        schema: { type: "string", enum: [...AUTOMATION_KINDS] },
+        description: `What sort of automation. One of ${AUTOMATION_KINDS.join(", ")}. Defaults to \`email\`.`,
+      },
+      {
+        name: "status",
+        in: "query",
+        required: false,
+        schema: { type: "string", enum: [...AUTOMATION_STATUSES] },
+        description: `One of ${AUTOMATION_STATUSES.join(", ")}. Only \`active\` enrols anybody.`,
+      },
+      LIMIT_PARAM,
+      CURSOR_PARAM,
+    ],
+    result: { resource: "Flow", shape: "page" },
+    errors: [
+      { code: "forbidden", when: "The shop's plan does not include automations." },
+      ...PAGE_ERRORS,
+    ],
+    curl: (base) => `curl "${base}/api/v1/flows?status=active" \\
+  -H "${AUTH_HEADER}"`,
+    successExample: FLOW_PAGE_EXAMPLE,
+  },
+
+  {
+    id: "getFlow",
+    method: "GET",
+    path: "/flows/{id}",
+    scope: "read",
+    summary: "One automation, with how it is going",
+    description:
+      "The same flow the list returns, plus `runs` — every contact who has ever entered, split by where they got to. `live` is queued plus waiting together, because both are people still inside the sequence and the only difference between them is whether a timer is currently running. `steps` is the ordered node list with each node's kind; the node bodies themselves are deliberately not published, because they are the shape the builder and the runner agree on and reconstructing \"what this flow does\" from them would mean reimplementing the parser against something that is ours to change.",
+    params: [ID_PARAM("flow")],
+    result: { resource: "Flow", shape: "one" },
+    errors: [
+      { code: "forbidden", when: "The shop's plan does not include automations." },
+      ...ONE_ERRORS("flow"),
+    ],
+    curl: (base) => `curl ${base}/api/v1/flows/d4e5f6a7-8b9c-4d0e-1f2a-3b4c5d6e7f80 \\
+  -H "${AUTH_HEADER}"`,
+    successExample: FLOW_EXAMPLE,
+  },
+
+  {
+    id: "listFlowRuns",
+    method: "GET",
+    path: "/flows/{id}/runs",
+    scope: "read",
+    summary: "Who walked a flow, and where they got to",
+    description:
+      "The read that answers *why did this customer not get the email*. Each run is one person moving through one flow: `currentStep` is the node they are sitting on, `wakeAt` is when the runner will next look at them, and `lastError` is the reason a failed one stopped. Filter by `email` to answer the question about one person directly. Ordered by when somebody entered, newest first — this table records no other time, so that is what the cursor is built over.",
+    params: [
+      ID_PARAM("flow"),
+      {
+        name: "status",
+        in: "query",
+        required: false,
+        schema: { type: "string", enum: [...RUN_STATUSES] },
+        description: `Where the run stands. One of ${RUN_STATUSES.join(", ")}. \`queued\` and \`waiting\` are both still inside the flow.`,
+      },
+      {
+        name: "email",
+        in: "query",
+        required: false,
+        schema: { type: "string", format: "email" },
+        description: "Exact address, matched case-insensitively. The fastest way to answer a question about one customer.",
+      },
+      LIMIT_PARAM,
+      CURSOR_PARAM,
+    ],
+    result: { resource: "FlowRun", shape: "page" },
+    errors: [
+      { code: "forbidden", when: "The shop's plan does not include automations." },
+      ...ONE_ERRORS("flow"),
+    ],
+    curl: (base) => `curl "${base}/api/v1/flows/d4e5f6a7-8b9c-4d0e-1f2a-3b4c5d6e7f80/runs?status=failed" \\
+  -H "${AUTH_HEADER}"`,
+    successExample: FLOW_RUN_PAGE_EXAMPLE,
   },
 ] as const;

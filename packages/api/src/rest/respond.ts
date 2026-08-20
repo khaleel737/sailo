@@ -87,6 +87,44 @@ export function apiFail(failure: ApiFailure, extra?: HeadersInit): Response {
 }
 
 /* -------------------------------------------------------------------------- */
+/*  Rate-limit headers                                                         */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * What a caller has left, on **every** answer rather than only on a refusal.
+ *
+ * A budget you only learn about by exhausting it is a budget that has already
+ * cost you a rejected request. An integration that can read `ratelimit-remaining`
+ * on a success can slow itself down before anything is refused, which is the
+ * difference between a client that degrades and one that thrashes.
+ *
+ * The un-prefixed spelling is the one from the IETF's rate-limit-headers draft
+ * rather than the older `X-RateLimit-*`. `X-` prefixes on new headers were
+ * deprecated by RFC 6648 fifteen years ago, and there is no installed base here
+ * to be compatible with — these headers have never been sent before.
+ *
+ * `retry-after` alongside them is not redundant: it is a real RFC 9110 header
+ * that HTTP clients, proxies and libraries already understand without being
+ * taught, and it is the one a generic retry helper will find.
+ */
+export function rateHeaders(rate: {
+  limit: number;
+  remaining: number;
+  resetSeconds: number;
+}): Record<string, string> {
+  return {
+    "ratelimit-limit": String(rate.limit),
+    "ratelimit-remaining": String(rate.remaining),
+    "ratelimit-reset": String(rate.resetSeconds),
+  };
+}
+
+/** `retry-after`, in seconds, for a refusal that knows when to come back. */
+export function retryAfterHeader(seconds: number): Record<string, string> {
+  return { "retry-after": String(Math.max(1, Math.ceil(seconds))) };
+}
+
+/* -------------------------------------------------------------------------- */
 /*  Paging                                                                     */
 /* -------------------------------------------------------------------------- */
 

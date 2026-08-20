@@ -3,6 +3,8 @@ import {
   BOOKING_FIELDS,
   CONTACT_FIELDS,
   DISPUTE_FIELDS,
+  FLOW_FIELDS,
+  FLOW_RUN_FIELDS,
   LIST_FIELDS,
   MONEY_FIELDS,
   ORDER_BOOKING_FIELDS,
@@ -94,3 +96,9 @@ export const StaffFields = () => (
 );
 
 export const ListFields = () => <FieldTable caption="Fields on a list" fields={LIST_FIELDS} />;
+
+export const FlowFields = () => <FieldTable caption="Fields on a flow" fields={FLOW_FIELDS} />;
+
+export const FlowRunFields = () => (
+  <FieldTable caption="Fields on a flow run" fields={FLOW_RUN_FIELDS} />
+);

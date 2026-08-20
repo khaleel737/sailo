@@ -16,9 +16,40 @@ It is high enough that no ordinary integration will ever meet it: four calls a
 second, sustained. It is low enough that a runaway loop stops being Sailo's
 database's problem within a minute.
 
-Over it, you get [`rate_limited`](/errors#rate_limited) with a 429.
-[Back off exponentially](/errors#a-retry-helper); the window is a minute, so
-backing off past a minute always clears.
+Over it, you get [`rate_limited`](/errors#rate_limited) with a 429 and a
+`Retry-After` telling you exactly when to come back.
+
+## Every response says what is left
+
+You do not have to hit the ceiling to find out where it is. **Every answer** —
+success or failure, REST or MCP — carries the budget:
+
+```http
+ratelimit-limit:      240
+ratelimit-remaining:  237
+ratelimit-reset:      42
+```
+
+`ratelimit-reset` is whole seconds until the window rolls and the budget is
+whole again. A 429 adds `retry-after` with the same number, which is the header
+a generic HTTP retry helper already knows to look for.
+
+The un-prefixed spelling is deliberate: `X-` prefixes on new headers were
+deprecated by RFC 6648, and there is no installed base here to stay compatible
+with — these have never been sent before.
+
+**Read `ratelimit-remaining` on successes and slow down before you are
+refused.** A client that only learns about the ceiling by hitting it has
+already had a request rejected, and rejected requests are what turn into
+retries, backlogs and support tickets. A worker that pauses when remaining
+drops under, say, twenty never sees a 429 at all.
+
+<Callout type="info">
+`retry-after` is the exact second the window rolls, not a fixed minute. A
+caller refused at the fifty-ninth second of a window waits **one** second, not
+sixty — which is why honouring the header beats any backoff you can compute
+without it.
+</Callout>
 
 ## Why per key and not per address
 
@@ -60,15 +91,22 @@ Requests that **fail to authenticate** are separately and more tightly limited,
 per source address.
 
 That budget is for guessing, so its size is not published and you should not
-calibrate against it. Two things follow that are worth knowing:
+calibrate against it. Three things follow that are worth knowing:
 
-- **A client with a valid key will never encounter it.** The charge is refunded
-  on a successful authentication, precisely so that an integration polling every
-  second does not exhaust its own anti-guessing allowance and lock itself out.
+- **A client with a valid key will not meet it.** The charge is refunded on a
+  successful authentication, so for a valid credential the counter stays near
+  zero however fast you poll.
+- **What it bounds in practice is concurrency, not rate.** A refund lands after
+  the key is looked up, so requests still in flight are still holding their
+  charge. The ceiling is set well above the per-key limit for that reason —
+  nobody reaches four calls a second without overlapping them, and a budget
+  that punished the overlap would make the allowance above unusable.
 - **A client probing for keys learns nothing from the response either way.**
 
 If you are seeing 429s on requests that are also getting 401s, the problem is
-the key, not the rate.
+the key, not the rate. A 429 from this budget carries `retry-after` like any
+other, and carries no `ratelimit-*` headers — publishing what is left of a
+guessing allowance would tell somebody probing how to pace the next attempt.
 
 <Callout type="info">
 The charge is taken *before* the key is looked up, and refunded after a success.

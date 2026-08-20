@@ -51,6 +51,39 @@ a breaking change. See [versioning](/conventions#versioning).
 
 ## History
 
+### 2026-08-20 (later) — automations, and a budget you can see
+
+Additive. `sailo-version` does not move.
+
+**Flows.** [`GET /flows`](/api/flows), `GET /flows/{id}` and
+`GET /flows/{id}/runs`, plus three matching MCP tools. The runs endpoint is the
+one worth wiring: it answers *why did this customer not get the email* without
+anybody opening a database. Automations are a Business feature, so a key on a
+lower plan gets `forbidden` rather than an empty list — those are different
+facts and an integration told `[]` would conclude the seller has no flows.
+
+**Every response now reports the rate budget.** `ratelimit-limit`,
+`ratelimit-remaining` and `ratelimit-reset` on every answer, success or
+failure, on REST and MCP alike; `retry-after` on a 429.
+
+This reverses something this documentation previously stated as a decision —
+that no `Retry-After` was needed because the window is a minute. True, and
+needlessly expensive: a caller refused at the fifty-ninth second waited a full
+minute for a budget that was whole again one second later. The header now says
+which. **Read `ratelimit-remaining` on successes** and slow down before you are
+refused rather than after.
+
+**Faster underneath.** Several list endpoints were doing a full sort per page
+because no index carried `shop_id` and `created_at` adjacently; `GET /bookings`
+was worse than that, scanning across tenants. Nothing about the responses
+changed — the same rows in the same order — but paging deep into a large shop
+no longer degrades. If you throttled a backfill to be kind, you can stop.
+
+**One cap tightened.** `POST /contacts/{id}/lists` now accepts at most 20 list
+ids per array, down from 50. The old ceiling was the number of lists a shop may
+*hold*, which is the wrong bound for what one request may *do*. Twenty is well
+above what any real integration sends.
+
 ### 2026-08-20 — five more resources, and every webhook object now readable
 
 Additive throughout. `sailo-version` does not move, no field changed meaning,

@@ -22,7 +22,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
  * neither, and it says so once rather than either never or on every request.
  */
 
-const OK = { allowed: true, remaining: 10, reason: "unconfigured" };
+/*
+ * `resetSeconds` is the full window on both no-backend paths, and that is the
+ * honest answer rather than a filler: nothing is counting, so nothing is known
+ * about when a budget would recover. A caller told a smaller number would come
+ * back early on a promise this deployment cannot keep.
+ */
+const OK = { allowed: true, remaining: 10, reason: "unconfigured", resetSeconds: 60 };
 
 describe("rateLimit without a backend", () => {
   const original = process.env.REDIS_URL;
@@ -69,6 +75,7 @@ describe("rateLimit without a backend", () => {
       allowed: true,
       remaining: 10,
       reason: "outage",
+      resetSeconds: 60,
     });
 
     // And says so. Once: the second call is inside the cold window, and a log
@@ -244,5 +251,32 @@ describe("refundRateLimit", () => {
     await refundRateLimit("never-charged", 60);
     expect(client.decr).not.toHaveBeenCalled();
     expect(store.size).toBe(0);
+  });
+});
+
+describe("resetSeconds", () => {
+  /*
+   * The number a 429 turns into `Retry-After`, so being wrong in the low
+   * direction is the expensive mistake: a client told to come back before the
+   * window has rolled retries into the same refusal, and a fleet doing it in
+   * lockstep turns one exhausted budget into a hot loop.
+   */
+  it("never promises a retry sooner than the next window", async () => {
+    delete process.env.REDIS_URL;
+    const { rateLimit } = await import("./redis");
+
+    for (const window of [1, 10, 60, 3_600]) {
+      const verdict = await rateLimit("test", 10, window);
+      expect(verdict.resetSeconds, `window ${window}`).toBeGreaterThanOrEqual(1);
+      expect(verdict.resetSeconds, `window ${window}`).toBeLessThanOrEqual(window);
+    }
+  });
+
+  it("is always at least a second, never zero", async () => {
+    // `Retry-After: 0` invites an immediate retry into a window that has not
+    // rolled — the one answer worse than sending no header at all.
+    delete process.env.REDIS_URL;
+    const { rateLimit } = await import("./redis");
+    expect((await rateLimit("test", 10, 1)).resetSeconds).toBeGreaterThan(0);
   });
 });

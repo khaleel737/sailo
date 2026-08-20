@@ -22,4 +22,6 @@ export default {
   dispute: "Dispute",
   booking: "Booking",
   staff: "Staff",
+  flow: "Flow",
+  "flow-run": "Flow run",
 } satisfies MetaRecord;

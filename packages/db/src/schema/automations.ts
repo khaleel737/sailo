@@ -85,6 +85,9 @@ export const automations = pgTable(
   },
   (t) => [
     index("automations_shop_idx").on(t.shopId, t.kind, t.status),
+    /* The public flows list. The index above is three equalities and no
+       ordering column, so it scopes and then sorts; this pages. */
+    index("automations_shop_keyset_idx").on(t.shopId, t.kind, t.createdAt, t.id),
     /* The tick's own lookup: what is live across the fleet, so one scan finds
        work rather than one query per shop. */
     index("automations_active_idx").on(t.status).where(sql`${t.status} = 'active'`),
@@ -171,6 +174,9 @@ export const automationRuns = pgTable(
   (t) => [
     index("automation_runs_due_idx").on(t.status, t.wakeAt),
     index("automation_runs_automation_idx").on(t.automationId, t.status),
+    /* The public runs list. This table has no `created_at` — `entered_at` is
+       when a contact entered the flow, and it is what the API orders by. */
+    index("automation_runs_flow_keyset_idx").on(t.automationId, t.enteredAt, t.id),
     index("automation_runs_email_idx").on(t.shopId, t.email),
     /*
      * "Never while a run is live", as a constraint rather than a

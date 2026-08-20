@@ -120,8 +120,13 @@ async function call(path: string, key: string, attempt = 0): Promise<unknown> {
   const { error } = await response.json();
 
   if (RETRYABLE.has(error.code) && attempt < 5) {
-    // Exponential, with jitter so a fleet of workers does not resynchronise.
-    const wait = 2 ** attempt * 1000 + Math.random() * 1000;
+    // `Retry-After` is the exact second the window rolls. Prefer it; fall back
+    // to exponential backoff with jitter, so a fleet does not resynchronise.
+    const after = Number(response.headers.get("retry-after"));
+    const wait = Number.isFinite(after) && after > 0
+      ? after * 1000
+      : 2 ** attempt * 1000 + Math.random() * 1000;
+
     await new Promise((resolve) => setTimeout(resolve, wait));
     return call(path, key, attempt + 1);
   }
@@ -131,8 +136,12 @@ async function call(path: string, key: string, attempt = 0): Promise<unknown> {
 ```
 
 <Callout type="info">
-There is no `Retry-After` header on a 429. The per-key window is one minute, so
-backing off to a minute is always sufficient and no header is needed to say so.
+**A 429 carries `Retry-After`, in seconds.** Honour it rather than guessing: it
+is the exact moment the window rolls, so a caller refused at the fifty-ninth
+second waits one second rather than the sixty a blind backoff would spend.
+
+Keep the exponential fallback for `server_error`, which carries no such header
+because nothing can predict when our fault clears.
 </Callout>
 
 ## Errors on the other two surfaces

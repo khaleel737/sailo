@@ -1,5 +1,7 @@
 import type {
   bookingResource,
+  flowResource,
+  flowRunResource,
   contactListResource,
   contactResource,
   disputeResource,
@@ -613,4 +615,112 @@ export const LIST_FIELDS = [
 type _ListIsComplete = Exhaustive<
   (typeof LIST_FIELDS)[number]["name"],
   KeysOf<ReturnType<typeof contactListResource>>
+>;
+
+/* -------------------------------------------------------------------------- */
+/*  Flow                                                                       */
+/* -------------------------------------------------------------------------- */
+
+export const FLOW_FIELDS = [
+  { name: "id", type: "string", body: "The flow's own id. What `/flows/{id}/runs` takes." },
+  { name: "object", type: '"flow"', body: "Always the literal string." },
+  { name: "name", type: "string", body: "What the seller called it." },
+  {
+    name: "kind",
+    type: "string",
+    body:
+      "`email` for a sequence the builder drew, `scenario` for a one-step rule wired to an outside app. `/flows` returns `email` unless you ask otherwise, because they are separate screens to a seller.",
+  },
+  {
+    name: "status",
+    type: "string",
+    body:
+      "`draft`, `active` or `paused`. **Only `active` enrols anybody.** A paused flow keeps the people already inside it — their timers keep running and they resume where they were — so pausing is not cancelling.",
+  },
+  {
+    name: "trigger",
+    type: "object | null",
+    body:
+      "What starts the flow: `{ type, config }`, where `config` is the qualifier — which list, which product. Null on a draft nobody finished. The `type` vocabulary is the same one the webhook events use.",
+  },
+  {
+    name: "entryPolicy",
+    type: "string",
+    body:
+      "`once` or `repeat` — whether somebody who already walked this flow may enter it again. A consumer counting sends per person needs it, because `repeat` means the same address can legitimately appear in several runs.",
+  },
+  {
+    name: "steps",
+    type: "array",
+    body:
+      "The nodes in the order the runner walks them, each `{ id, kind }`. Kinds are `send`, `timer`, `branch`, `filter`, `whatsapp` and `action`. The node *bodies* are deliberately absent — that shape is the builder's and the runner's, and reconstructing what a flow does from raw node config would mean reimplementing the parser against something we change.",
+  },
+  { name: "stepCount", type: "number", body: "How many nodes, so you need not count the array." },
+  {
+    name: "runs",
+    type: "object | null",
+    body:
+      "`{ total, live, completed, failed, cancelled }`. **Null on the list endpoint** — counting who is inside each flow is a query against a table that grows with every contact who ever entered one, and a page of twenty-five should not pay for it. Fetch one flow to get them. `live` is queued plus waiting together, because both are people still inside the sequence.",
+  },
+  { name: "activatedAt", type: "string | null", body: "ISO 8601, when it was last switched on. Null on a flow that has never run." },
+  { name: "createdAt", type: "string | null", body: "ISO 8601, when it was made." },
+  { name: "updatedAt", type: "string | null", body: "ISO 8601, when it last changed." },
+] as const satisfies readonly Field[];
+
+type _FlowIsComplete = Exhaustive<
+  (typeof FLOW_FIELDS)[number]["name"],
+  KeysOf<ReturnType<typeof flowResource>>
+>;
+
+/* -------------------------------------------------------------------------- */
+/*  Flow run                                                                   */
+/* -------------------------------------------------------------------------- */
+
+export const FLOW_RUN_FIELDS = [
+  { name: "id", type: "string", body: "The run's own id." },
+  { name: "object", type: '"flow_run"', body: "Always the literal string." },
+  { name: "flowId", type: "string", body: "Which flow — readable with `GET /flows/{id}`." },
+  {
+    name: "contactId",
+    type: "string | null",
+    body:
+      "The contact, readable with `GET /contacts/{id}`. Null when the flow was entered by an address that has no contact record.",
+  },
+  { name: "email", type: "string", body: "The address the run is keyed on. This is what `?email=` matches." },
+  {
+    name: "status",
+    type: "string",
+    body:
+      "`queued`, `waiting`, `done`, `failed` or `cancelled`. **A `waiting` run is not stuck** — it is a timer that has not elapsed yet, and reporting it as a failure is the commonest way to misread this endpoint.",
+  },
+  {
+    name: "currentStep",
+    type: "string | null",
+    body:
+      "The node they are sitting on, matching an `id` in the flow's `steps`. Null once the run is over. This is what tells you *where* somebody stopped.",
+  },
+  {
+    name: "wakeAt",
+    type: "string | null",
+    body:
+      "ISO 8601, when the runner will next look at them. Null when nothing is pending. On a `waiting` run this is when the next step happens.",
+  },
+  {
+    name: "attempt",
+    type: "number",
+    body: "How many times the current step has been retried. Six is the ceiling, after which the run fails.",
+  },
+  { name: "enteredAt", type: "string | null", body: "ISO 8601, when they entered the flow. This is what the list orders by." },
+  { name: "finishedAt", type: "string | null", body: "ISO 8601, when the run ended, however it ended." },
+  {
+    name: "lastError",
+    type: "string | null",
+    body:
+      "Why a failed run stopped, as a sentence. Never a stack trace, a driver message or a third party's response body — the runner writes a reason a person can act on, and nothing else reaches this field.",
+  },
+] as const satisfies readonly Field[];
+
+type _FlowRunIsComplete = Exhaustive<
+  (typeof FLOW_RUN_FIELDS)[number]["name"],
+  KeysOf<ReturnType<typeof flowRunResource>>
 >;

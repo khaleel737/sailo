@@ -4,7 +4,7 @@ import { can, cheapestPlanWith } from "@sailo/core/plans";
 import { rateLimit, refundRateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 import { resolveApiKey, touchApiKey, type ApiScope } from "./keys";
-import { apiFail, type ApiFailure } from "./respond";
+import { apiFail, rateHeaders, retryAfterHeader, type ApiFailure } from "./respond";
 
 /**
  * Turning a bearer token into a shop, or into a refusal.
@@ -23,11 +23,44 @@ export type ApiCaller = {
   shop: Shop;
   keyId: string;
   scopes: readonly string[];
+  /** What this key has left this minute. Rendered as headers on every answer. */
+  rate: RateSnapshot;
+};
+
+/**
+ * The budget, as a caller needs to see it.
+ *
+ * Carried on every response rather than only on a refusal, because the whole
+ * point is to let a client slow down *before* it is refused. An integration
+ * that only learns about the ceiling by hitting it has already had a request
+ * rejected, and rejected requests are the ones that turn into retries, backlogs
+ * and support tickets.
+ */
+export type RateSnapshot = {
+  limit: number;
+  remaining: number;
+  /** Whole seconds until the window rolls and the budget is whole again. */
+  resetSeconds: number;
 };
 
 export type AuthOutcome =
   | { ok: true; caller: ApiCaller }
-  | { ok: false; failure: ApiFailure };
+  | {
+      ok: false;
+      failure: ApiFailure;
+      /** Full `ratelimit-*` headers. Only ever the per-key budget. */
+      rate?: RateSnapshot;
+      /**
+       * `retry-after` alone, with no budget attached.
+       *
+       * The guessing budget uses this. Its ceiling is deliberately unpublished
+       * — telling somebody probing for keys exactly how many guesses they have
+       * left is telling them how to pace the next attempt — but *when to come
+       * back* gives nothing away, and a legitimate client that has tripped it
+       * still deserves an answer it can act on.
+       */
+      retryAfterSeconds?: number;
+    };
 
 /**
  * Requests per minute per key.
@@ -41,14 +74,29 @@ export type AuthOutcome =
 const PER_KEY_PER_MINUTE = 240;
 
 /**
- * Failed authentications per address per minute.
+ * The anti-guessing budget, per address.
  *
- * This is the budget for *guessing*, and the repo's rule is that such a budget
- * charges misses rather than lookups — so a successful call refunds its unit
- * below. Without the refund a legitimate integration polling every second
- * would exhaust its own anti-guessing allowance and lock itself out.
+ * Charged before the key is looked up and refunded after a success, so for
+ * *sequential* traffic the counter hovers near zero however fast a valid client
+ * polls. What it actually bounds, therefore, is not attempts per minute but
+ * **authentications in flight at once** — refunds have not landed yet for
+ * anything still being looked up.
+ *
+ * That is why the number is 240 and not the 30 it was. Thirty was chosen as a
+ * rate and behaved as a concurrency ceiling, and the two are wildly different
+ * once a client goes parallel: measured against this server, forty concurrent
+ * requests carrying a **valid** key had ten of them refused with "too many
+ * failed key attempts" — a sentence that was false in both halves. Since the
+ * per-key limit invites 240 requests a minute, and no client reaches that
+ * without overlapping them, the old ceiling made the documented allowance
+ * unusable and blamed the caller for it.
+ *
+ * Raising it costs little of what the budget is really for. A `sailo_sk_` token
+ * is 256 bits of `randomBytes`, so nothing here is being *guessed* at any rate;
+ * the budget exists to stop an address flooding `resolveApiKey` with lookups,
+ * and four a second sustained from one address is still a floor on that.
  */
-const AUTH_ATTEMPTS_PER_MINUTE = 30;
+const AUTH_ATTEMPTS_PER_MINUTE = 240;
 const AUTH_WINDOW = 60;
 
 /**
@@ -108,8 +156,15 @@ export async function authenticateApi(request: Request): Promise<AuthOutcome> {
       ok: false,
       failure: {
         code: "rate_limited",
-        message: "Too many failed key attempts from this address. Wait a minute.",
+        /*
+         * Deliberately says nothing about the key. This budget is spent by
+         * failures *and* by requests still in flight, so naming either would
+         * be a guess — and telling somebody probing for keys which of the two
+         * they hit is telling them whether they were close.
+         */
+        message: "Too many authentication attempts from this address. Slow down.",
       },
+      retryAfterSeconds: budget.resetSeconds,
     };
   }
 
@@ -155,13 +210,30 @@ export async function authenticateApi(request: Request): Promise<AuthOutcome> {
   }
 
   const perKey = await rateLimit(`api:${key.id}`, PER_KEY_PER_MINUTE, 60);
+  const rate: RateSnapshot = {
+    limit: PER_KEY_PER_MINUTE,
+    remaining: perKey.remaining,
+    resetSeconds: perKey.resetSeconds,
+  };
+
   if (!perKey.allowed) {
     return {
       ok: false,
       failure: {
         code: "rate_limited",
-        message: `This key is limited to ${PER_KEY_PER_MINUTE} requests a minute.`,
+        message: `This key is limited to ${PER_KEY_PER_MINUTE} requests a minute. Retry in ${perKey.resetSeconds}s.`,
       },
+      /*
+       * Carried so the 429 can say *when*, not merely *no*.
+       *
+       * This used to be documented as a deliberate absence — the window is a
+       * minute, so a client backing off a minute always clears. True, and
+       * needlessly expensive: a caller refused at the fifty-ninth second of a
+       * window waits a full minute for a budget that was whole again one second
+       * later. Sixty times longer than it had to, on the exact path where
+       * throughput already matters.
+       */
+      rate,
     };
   }
 
@@ -169,7 +241,7 @@ export async function authenticateApi(request: Request): Promise<AuthOutcome> {
   // position where its failure could matter.
   void touchApiKey(key.id);
 
-  return { ok: true, caller: { shop, keyId: key.id, scopes: key.scopes } };
+  return { ok: true, caller: { shop, keyId: key.id, scopes: key.scopes, rate } };
 }
 
 /**
@@ -202,10 +274,27 @@ export async function apiGuard(
   scope: ApiScope = "read",
 ): Promise<{ ok: true; caller: ApiCaller } | { ok: false; response: Response }> {
   const auth = await authenticateApi(request);
-  if (!auth.ok) return { ok: false, response: apiFail(auth.failure) };
+  if (!auth.ok) {
+    /*
+     * A refusal says what it knows about the budget and nothing more. The
+     * per-key path knows the whole thing; the guessing path knows only when to
+     * come back, on purpose.
+     */
+    const headers = {
+      ...(auth.rate ? rateHeaders(auth.rate) : {}),
+      ...(auth.rate && auth.failure.code === "rate_limited"
+        ? retryAfterHeader(auth.rate.resetSeconds)
+        : {}),
+      ...(auth.retryAfterSeconds ? retryAfterHeader(auth.retryAfterSeconds) : {}),
+    };
+    return { ok: false, response: apiFail(auth.failure, headers) };
+  }
 
   const denied = requireScope(auth.caller, scope);
-  if (denied) return { ok: false, response: apiFail(denied) };
+  if (denied) {
+    // Authenticated, so the budget is known and was spent on this call.
+    return { ok: false, response: apiFail(denied, rateHeaders(auth.caller.rate)) };
+  }
 
   return { ok: true, caller: auth.caller };
 }

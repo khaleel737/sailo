@@ -1,0 +1,78 @@
+---
+title: Flow run object
+description: One person moving through one automation. A waiting run is a timer that has not elapsed, not a stuck one.
+---
+
+import { Callout } from "nextra/components";
+
+# Flow run
+
+One person walking one [flow](/objects/flow). What
+`GET /flows/{id}/runs` answers with, and the row that says why somebody did or
+did not get an email.
+
+<FlowRunFields />
+
+## `waiting` is the healthy state
+
+<Callout type="error">
+**A `waiting` run is not stuck.** It is a timer that has not elapsed, and
+`wakeAt` says when it will. In any flow with a delay in it, most people are
+waiting most of the time — so reporting `waiting` as a problem turns normal
+operation into an alert.
+</Callout>
+
+| Status | What it means |
+| --- | --- |
+| `queued` | Entered, not yet picked up. Usually momentary. |
+| `waiting` | Sitting on a timer. `wakeAt` is when it resumes. |
+| `done` | Reached the end of the sequence. |
+| `failed` | Stopped. `lastError` says why; `attempt` reached the ceiling. |
+| `cancelled` | Ended by the seller rather than by the flow. |
+
+## Reading where somebody stopped
+
+`currentStep` is a node id that matches an entry in the flow's `steps`, so the
+two together answer "how far did they get" without any other call:
+
+```ts
+const flow = await sailo(`/flows/${flowId}`);
+const run  = (await sailo(`/flows/${flowId}/runs?email=${email}`)).data[0];
+
+const position = flow.steps.findIndex((step) => step.id === run.currentStep);
+// `position` of 1 in a 3-step flow: they are on the second node.
+```
+
+A run with no matching step is one whose flow has been edited since — the
+seller rewrote the sequence, and the node they were on no longer exists.
+
+## No run at all is also an answer
+
+If `?email=` returns nothing, that person never entered. Either the flow was not
+`active` when their trigger fired, or the flow's `entryPolicy` is `once` and
+they had walked it before.
+
+## Example
+
+```json
+{
+  "data": [
+    {
+      "id": "e7f8a9b0-1c2d-4e3f-8a5b-6c7d8e9f0a1b",
+      "object": "flow_run",
+      "flowId": "d4e5f6a7-8b9c-4d0e-1f2a-3b4c5d6e7f80",
+      "contactId": "c1d2e3f4-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
+      "email": "ada@example.com",
+      "status": "waiting",
+      "currentStep": "s-5e6f7a8b",
+      "wakeAt": "2026-08-22T09:00:00.000Z",
+      "attempt": 0,
+      "enteredAt": "2026-08-20T09:00:04.118Z",
+      "finishedAt": null,
+      "lastError": null
+    }
+  ],
+  "has_more": true,
+  "next_cursor": "MjAyNi0wOC0yMFQwOTowMDowNC4xMThafGU3ZjhhOWIw"
+}
+```

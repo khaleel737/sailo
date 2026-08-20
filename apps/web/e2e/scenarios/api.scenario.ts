@@ -72,7 +72,18 @@ async function makeCaller(scopes: string[] = ["read", "write"]) {
     .returning();
   if (!shop) throw new Error("fixture: shop was not inserted");
 
-  return { shop, keyId: uid(), scopes };
+  /*
+   * `rate` is what a real `authenticateApi` attaches so every answer can report
+   * the budget. A fixture never goes through it, so a full one is stated here
+   * rather than faked as a partial — the handlers do not read it, but the type
+   * is the contract and a cast would hide the next field that gets added to it.
+   */
+  return {
+    shop,
+    keyId: uid(),
+    scopes,
+    rate: { limit: 240, remaining: 240, resetSeconds: 60 },
+  };
 }
 
 async function makeOrder(caller: Caller, over: Partial<typeof orders.$inferInsert> = {}) {

@@ -4,6 +4,9 @@ import type { ApiScope } from "../rest/keys";
 import {
   getBooking,
   getContact,
+  getFlow,
+  listFlowRuns,
+  listFlows,
   getContactLists,
   getDispute,
   getList,
@@ -598,6 +601,84 @@ export const MCP_TOOLS: readonly McpTool[] = [
       additionalProperties: false,
     },
     run: (caller, args) => getStaff(caller, String(args.id ?? "")),
+  },
+  {
+    name: "list_flows",
+    title: "List automations",
+    description:
+      "The sequences a seller built once and left running — somebody joins a list, wait two " +
+      "days, send this. Only a flow whose status is `active` enrols anybody: `draft` was never " +
+      "finished and `paused` keeps the people already inside it but takes nobody new. `kind` " +
+      "defaults to `email`, the sequences the builder draws; pass `scenario` for one-step rules " +
+      "wired to an outside app. Run tallies are not on this list — call `get_flow` for those.",
+    scope: "read",
+    inputSchema: {
+      type: "object",
+      properties: {
+        kind: { type: "string", description: "`email` or `scenario`. Defaults to `email`." },
+        status: { type: "string", description: "`draft`, `active` or `paused`." },
+        limit: limitProperty,
+        cursor: cursorProperty,
+      },
+      additionalProperties: false,
+    },
+    run: (caller, args) =>
+      listFlows(caller, {
+        ...paging(args),
+        kind: str(args.kind),
+        status: str(args.status),
+      }),
+  },
+
+  {
+    name: "get_flow",
+    title: "Get an automation",
+    description:
+      "One flow, with `runs` — how many contacts have entered it and where they got to. `live` " +
+      "counts the people still inside it (queued plus waiting); `completed` reached the end. " +
+      "`steps` is the ordered list of what the flow does, by node kind. Use this when a seller " +
+      "asks whether a flow is working; use `list_flow_runs` when they ask about one person.",
+    scope: "read",
+    inputSchema: {
+      type: "object",
+      properties: { id: { type: "string", description: "The flow id." } },
+      required: ["id"],
+      additionalProperties: false,
+    },
+    run: (caller, args) => getFlow(caller, String(args.id ?? "")),
+  },
+
+  {
+    name: "list_flow_runs",
+    title: "Who walked an automation",
+    description:
+      "One row per person moving through one flow, newest first. This is what answers *why did " +
+      "this customer not get the email* — pass `email` to go straight to one person. " +
+      "`currentStep` is the node they are sitting on, `wakeAt` is when the runner next looks at " +
+      "them, and `lastError` is why a failed run stopped. A `waiting` run is not stuck: it is a " +
+      "timer that has not elapsed, and telling a seller it failed would be wrong.",
+    scope: "read",
+    inputSchema: {
+      type: "object",
+      properties: {
+        id: { type: "string", description: "The flow id." },
+        status: {
+          type: "string",
+          description: "`queued`, `waiting`, `done`, `failed` or `cancelled`.",
+        },
+        email: { type: "string", description: "Exact address, case-insensitive." },
+        limit: limitProperty,
+        cursor: cursorProperty,
+      },
+      required: ["id"],
+      additionalProperties: false,
+    },
+    run: (caller, args) =>
+      listFlowRuns(caller, String(args.id ?? ""), {
+        ...paging(args),
+        status: str(args.status),
+        email: str(args.email),
+      }),
   },
 ] as const;
 

@@ -194,6 +194,23 @@ export type RateVerdict = {
   allowed: boolean;
   remaining: number;
   reason: RateReason;
+  /**
+   * Whole seconds until this key's window rolls over and the budget is whole
+   * again. Always between 1 and `windowSeconds`.
+   *
+   * A fixed window knows this exactly — the bucket is `now / window`, so the
+   * next one starts at a computable instant — and it is worth returning because
+   * the caller's alternative is to assume the worst. A client told only "you
+   * are over a per-minute limit" has to wait a minute; a client told "wait 3
+   * seconds" waits three. At the moment a budget is exhausted those differ by
+   * up to sixty times, and that gap is throughput an integration never gets
+   * back.
+   *
+   * On an outage or an unconfigured deployment this is the full window, which
+   * is the honest answer: nothing is known about when a budget nobody is
+   * counting would recover.
+   */
+  resetSeconds: number;
 };
 
 /**
@@ -237,9 +254,20 @@ export async function rateLimit(
   windowSeconds: number,
   opts: { onOutage?: OutagePolicy } = {},
 ): Promise<RateVerdict> {
+  /*
+   * Computed once, from the same clock reading the bucket is derived from.
+   *
+   * Reading `Date.now()` a second time inside the callback would be a different
+   * instant, and a reset that belongs to a neighbouring bucket is worse than no
+   * reset at all — it tells a client to retry while the budget is still spent.
+   */
+  const windowMs = windowSeconds * 1000;
+  const now = Date.now();
+  const resetSeconds = Math.max(1, Math.ceil((windowMs - (now % windowMs)) / 1000));
+
   const { value, reached } = await attemptRedis<RateVerdict>(
     async (redis) => {
-      const bucket = Math.floor(Date.now() / (windowSeconds * 1000));
+      const bucket = Math.floor(now / windowMs);
       const full = `sailo:rl:${key}:${bucket}`;
 
       const count = await redis.incr(full);
@@ -249,9 +277,10 @@ export async function rateLimit(
         allowed: count <= limit,
         remaining: Math.max(0, limit - count),
         reason: count <= limit ? "under" : "over",
+        resetSeconds,
       };
     },
-    { allowed: true, remaining: limit, reason: "outage" },
+    { allowed: true, remaining: limit, reason: "outage", resetSeconds },
   );
 
   if (reached) return value;
@@ -263,12 +292,12 @@ export async function rateLimit(
    * a failure that has not happened.
    */
   if (!configured()) {
-    return { allowed: true, remaining: limit, reason: "unconfigured" };
+    return { allowed: true, remaining: limit, reason: "unconfigured", resetSeconds: windowSeconds };
   }
 
   return opts.onOutage === "closed"
-    ? { allowed: false, remaining: 0, reason: "outage" }
-    : { allowed: true, remaining: limit, reason: "outage" };
+    ? { allowed: false, remaining: 0, reason: "outage", resetSeconds: windowSeconds }
+    : { allowed: true, remaining: limit, reason: "outage", resetSeconds: windowSeconds };
 }
 
 /**

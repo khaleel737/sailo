@@ -25,5 +25,6 @@ export default {
   disputes: "Disputes",
   bookings: "Bookings",
   staff: "Staff",
+  flows: "Flows",
   openapi: "OpenAPI",
 } satisfies MetaRecord;
