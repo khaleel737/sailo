@@ -1,0 +1,98 @@
+packages/i18n/src/admin/fr.ts
+  s_16f404b29c0075::t_18843c66a272bd 86-92,327-342,414-419,502-539
+packages/i18n/src/admin/th.ts
+  s_16f404b29c0075::t_18843c66a272bd 411-417,720-757,829-834,911-926
+  s_16f404b29c0075::t_ea8f8a642d7d14 1115
+packages/i18n/src/admin/bg.ts
+  s_16f404b29c0075::t_18843c66a272bd 411-417,719-756,828-833,910-925
+packages/i18n/src/admin/cs.ts
+  s_16f404b29c0075::t_18843c66a272bd 86-92,327-342,414-419,502-539
+packages/i18n/src/admin/it.ts
+  s_16f404b29c0075::t_18843c66a272bd 86-92,327-342,414-419,502-539
+packages/i18n/src/admin/sv.ts
+  s_16f404b29c0075::t_18843c66a272bd 86-92,327-342,414-419,502-539
+packages/i18n/src/admin/ms.ts
+  s_16f404b29c0075::t_ea8f8a642d7d14 707
+  s_16f404b29c0075::t_18843c66a272bd 411-417,719-756,828-833,910-925
+packages/i18n/src/admin/ja.ts
+  s_16f404b29c0075::t_18843c66a272bd 86-92,327-342,414-419,502-539
+packages/i18n/src/admin/el.ts
+  s_16f404b29c0075::t_ea8f8a642d7d14 490,523-524,1247,1251-1252,1255-1256,1263
+  s_16f404b29c0075::t_18843c66a272bd 86-92,327-342,414-419,502-522,525-539
+packages/i18n/src/admin/vi.ts
+  s_16f404b29c0075::t_18843c66a272bd 411-417,720-757,829-834,911-926
+packages/i18n/src/admin/nl.ts
+  s_16f404b29c0075::t_18843c66a272bd 86-92,327-342,414-419,502-539
+packages/i18n/src/admin/pt.ts
+  s_16f404b29c0075::t_18843c66a272bd 86-92,327-342,414-419,502-539
+packages/i18n/src/admin/ar.ts
+  s_16f404b29c0075::t_18843c66a272bd 86-92,327-342,414-419,502-539
+  s_16f404b29c0075::t_ea8f8a642d7d14 1099
+packages/i18n/src/admin/mk.ts
+  s_16f404b29c0075::t_18843c66a272bd 411-417,721-758,830-835,912-927
+  s_16f404b29c0075::t_ea8f8a642d7d14 1116
+packages/i18n/src/admin/uk.ts
+  s_16f404b29c0075::t_18843c66a272bd 86-92,327-342,414-419,502-539
+packages/i18n/src/admin/sl.ts
+  s_16f404b29c0075::t_18843c66a272bd 411-417,719-756,828-833,910-925
+  s_16f404b29c0075::t_ea8f8a642d7d14 1114
+packages/i18n/src/admin/fil.ts
+  s_16f404b29c0075::t_18843c66a272bd 411-417,721-758,830-835,912-927
+packages/i18n/src/admin/bs.ts
+  s_16f404b29c0075::t_ea8f8a642d7d14 1114
+  s_16f404b29c0075::t_18843c66a272bd 411-417,719-756,828-833,910-925
+packages/i18n/src/admin/da.ts
+  s_16f404b29c0075::t_18843c66a272bd 86-92,327-342,414-419,502-539
+packages/i18n/src/admin/fi.ts
+  s_16f404b29c0075::t_18843c66a272bd 86-92,327-342,414-419,502-539
+packages/i18n/src/admin/pl.ts
+  s_16f404b29c0075::t_18843c66a272bd 86-92,327-342,414-419,502-539
+packages/i18n/src/admin/no.ts
+  s_16f404b29c0075::t_18843c66a272bd 86-92,327-342,414-419,502-539
+packages/i18n/src/admin/sr.ts
+  s_16f404b29c0075::t_ea8f8a642d7d14 1115
+  s_16f404b29c0075::t_18843c66a272bd 411-417,720-757,829-834,911-926
+packages/i18n/src/admin/tr.ts
+  s_16f404b29c0075::t_18843c66a272bd 86-92,327-342,414-419,502-539
+  s_16f404b29c0075::t_ea8f8a642d7d14 490
+packages/i18n/src/admin/hr.ts
+  s_16f404b29c0075::t_ea8f8a642d7d14 1116
+  s_16f404b29c0075::t_18843c66a272bd 411-417,721-758,830-835,912-927
+packages/i18n/src/admin/de.ts
+  s_16f404b29c0075::t_18843c66a272bd 86-92,327-342,414-419,502-539
+packages/i18n/src/admin/id.ts
+  s_16f404b29c0075::t_18843c66a272bd 411-417,721-758,830-835,912-927
+packages/i18n/src/admin/ru.ts
+  s_16f404b29c0075::t_18843c66a272bd 86-92,327-342,414-419,502-539
+packages/i18n/src/admin/sq.ts
+  s_16f404b29c0075::t_ea8f8a642d7d14 708,741-742,1263,1267-1268,1271-1272,1279
+  s_16f404b29c0075::t_18843c66a272bd 411-417,720-740,743-757,829-834,911-926
+packages/i18n/src/admin/zh.ts
+  s_16f404b29c0075::t_18843c66a272bd 86-92,327-342,414-419,502-539
+packages/i18n/src/admin/hu.ts
+  s_16f404b29c0075::t_18843c66a272bd 86-92,327-342,414-419,502-539
+packages/i18n/src/admin/ko.ts
+  s_16f404b29c0075::t_18843c66a272bd 411-417,721-758,830-835,912-927
+packages/i18n/src/admin/es.ts
+  s_16f404b29c0075::t_ea8f8a642d7d14 490
+  s_16f404b29c0075::t_18843c66a272bd 86-92,327-342,414-419,502-539
+packages/i18n/src/admin/ro.ts
+  s_16f404b29c0075::t_18843c66a272bd 86-92,327-342,414-419,502-522,525-539
+  s_16f404b29c0075::t_ea8f8a642d7d14 490,523-524,1249,1253-1254,1257-1258,1265
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "b0b92d55b435445ff6c5c4813e08e78cd4ec40f6",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
