@@ -314,7 +314,7 @@ home; the currency-table audit moved from apps/web into core beside the table.
 
 | # | What | Why not yet |
 |---|---|---|
-| 1 | `0062` must be applied (CONCURRENTLY by hand on large tables) before this tree's dashboard predicate ships | A schema change is not shipped until the migration has run. |
+| 1 | ~~`0062` must be applied before this tree's dashboard predicate ships~~ | **Applied to production 2026-08-20**, each CREATE as CONCURRENTLY over the direct (non-pooler) endpoint, all twelve confirmed VALID before the two redundant prefixes were dropped. The tree was pushed after, in that order on purpose. The visit beacon's liveness read now also answers from the storefront's own `shopTag` cache, so what remains on the primary per pageview is the one insert the endpoint exists for. |
 | 2 | Rate limits fail open when Redis is cold | Unchanged product decision from §3. |
 | 3 | apps/web still imports `stripe` in four modules and `@vercel/blob` beside `@sailo/storage` | Seam-completion on the money path; gated on the checkout e2e suite per house rules. |
 | 4 | REST `keysetWhere`/`paginate` vs commerce `olderThan`/`pageOf` remain two drizzle halves | The dangerous half (the codec) is unified; merging tested halves is churn without a bug. |
