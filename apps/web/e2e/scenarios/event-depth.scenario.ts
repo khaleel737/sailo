@@ -5,8 +5,12 @@ import { getDb } from "@sailo/db";
 import {
   eventSessions,
   eventTiers,
+  orderItems,
+  orders,
+  paymentMethods,
   products,
   shops,
+  tickets,
   user,
 } from "@sailo/db/schema";
 import {
@@ -15,6 +19,8 @@ import {
   generateSessions,
   releaseEventCapacity,
 } from "@sailo/commerce/ticketing";
+import { createOrderIntent } from "@/lib/actions/orders";
+import { restoreStock, retakeStock } from "@sailo/commerce/catalog";
 
 /**
  * Two-level event capacity, against a real database — spec 50.
@@ -86,10 +92,39 @@ async function makeEvent(shopId: string, stock: number | null, over = {}) {
   return p;
 }
 
-async function makeTier(productId: string, name: string, capacity: number | null) {
+/** A shop that can actually take an order, on the rail with no gateway. */
+async function makeSellingShop() {
+  const shop = await makeShop();
+  await db.insert(paymentMethods).values({
+    shopId: shop.id,
+    type: "cod",
+    label: "cod",
+    config: {} as never,
+    isEnabled: true,
+    position: 0,
+  });
+  return shop;
+}
+
+const buyer = {
+  paymentMethod: "cod",
+  customerName: "Buyer",
+  customerEmail: "buyer@example.com",
+  addressLine1: "1 High Street",
+  city: "Leeds",
+  postalCode: "LS1 1AA",
+  country: "UK",
+};
+
+async function makeTier(
+  productId: string,
+  name: string,
+  capacity: number | null,
+  over: Partial<typeof eventTiers.$inferInsert> = {},
+) {
   const [t] = await db
     .insert(eventTiers)
-    .values({ productId, name, priceCents: 5000, capacity })
+    .values({ productId, name, priceCents: 5000, capacity, ...over })
     .returning();
   if (!t) throw new Error("fixture: tier was not inserted");
   return t;
@@ -424,5 +459,407 @@ describe("when an event has run out of dates", () => {
       eventStartsAt: new Date("2020-01-01T10:00:00Z"),
     });
     expect(await eventHasFutureDate(past)).toBe(false);
+  });
+});
+
+/* -------------------------------------------------------------------------- */
+/*  The checkout, which is where the money is                                  */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * The half of spec 50 that was missing, exercised through the real order path.
+ *
+ * Everything above this line proves `claimEventCapacity` is correct. None of it
+ * proved anything about the product, because until now nothing called it: a
+ * seller could type "VIP, £50, 30 seats", a buyer would be charged the
+ * product's £25, no seat would be taken against the band, and every test in
+ * this file would still have been green. That is the shape of defect these
+ * suites exist to catch, and it is why these go through `createOrderIntent`
+ * rather than through the claim.
+ *
+ * **`Promise.all`, not a loop.** The arithmetic is only interesting under
+ * contention: a read-then-write claim passes any sequential test ever written
+ * and oversells the moment two people press the button in the same second.
+ *
+ * The tests that place a crowd of orders get their own ceiling rather than the
+ * file's 30 seconds. Thirty-one concurrent `createOrderIntent` calls are around
+ * nine hundred round trips through the local Neon proxy, and the point of these
+ * is what the counters read at the end — a timeout here says the container is
+ * slow, which is not a fact about the claim and must not read as one.
+ */
+const CROWD_TIMEOUT = 180_000;
+
+describe("buying a ticket in a band", () => {
+  it("charges the band's price and not the product's", async () => {
+    const shop = await makeSellingShop();
+    const event = await makeEvent(shop.id, 100);
+    const vip = await makeTier(event.id, "VIP", 30, { priceCents: 5000 });
+
+    const placed = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: event.id, quantity: 2, tierId: vip.id }],
+      ...buyer,
+    });
+    expect(placed.ok).toBe(true);
+    if (!placed.ok) return;
+
+    // £50 twice, not the £25 on the product row. This is the revenue bug.
+    expect(placed.totals.subtotalCents).toBe(10_000);
+
+    const [item] = await db.query.orderItems.findMany({
+      where: eq(orderItems.orderId, placed.orderId),
+    });
+    expect(item?.unitPriceCents).toBe(5000);
+    // The columns that have existed since the wave landed and were never
+    // written. `restoreStock` reads them to know which band to credit.
+    expect(item?.tierId).toBe(vip.id);
+    expect(item?.variantLabel).toBe("VIP");
+
+    // Both levels moved, and only by what was bought.
+    expect(await tierSold(vip.id)).toBe(2);
+    expect(await stockOf(event.id)).toBe(98);
+  });
+
+  /*
+   * The spec's own scenario, at the checkout rather than at the claim: "31 VIP
+   * buyers get 30 tickets and the 31st is refused while General still sells".
+   *
+   * The refusal is asserted **by name**. A buyer told "this event is sold out"
+   * leaves; a buyer told "VIP is sold out" buys a General ticket, and the room
+   * still has a hundred and seventy seats in it. The two sentences are worth a
+   * sale each, and nothing but this checks which one a losing buyer receives.
+   */
+  it("sells exactly the band's seats to a crowd of buyers and names what ran out", async () => {
+    const shop = await makeSellingShop();
+    const event = await makeEvent(shop.id, 200);
+    const vip = await makeTier(event.id, "VIP", 30);
+    const general = await makeTier(event.id, "General", null, {
+      priceCents: 2000,
+    });
+
+    const results = await Promise.all(
+      Array.from({ length: 31 }, () =>
+        createOrderIntent({
+          shopId: shop.id,
+          items: [{ productId: event.id, quantity: 1, tierId: vip.id }],
+          ...buyer,
+        }),
+      ),
+    );
+
+    expect(results.filter((r) => r.ok)).toHaveLength(30);
+
+    const refused = results.filter((r) => !r.ok);
+    expect(refused).toHaveLength(1);
+    expect(refused[0]).toEqual({ ok: false, error: "VIP is sold out." });
+
+    expect(await tierSold(vip.id)).toBe(30);
+    // Thirty of two hundred: the room is still open and General is still on.
+    expect(await stockOf(event.id)).toBe(170);
+
+    const stillSelling = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: event.id, quantity: 1, tierId: general.id }],
+      ...buyer,
+    });
+    expect(stillSelling.ok).toBe(true);
+
+    // Thirty-one admissions exist, and every one of them prints its band —
+    // which `door-list.ts` has been selecting distinct over and finding empty.
+    const minted = await db.query.tickets.findMany({
+      where: eq(tickets.productId, event.id),
+    });
+    expect(minted).toHaveLength(31);
+    expect(minted.filter((t) => t.tier === "VIP")).toHaveLength(30);
+    expect(minted.filter((t) => t.tier === "General")).toHaveLength(1);
+    expect(minted.every((t) => t.tierId !== null)).toBe(true);
+  }, CROWD_TIMEOUT);
+
+  /*
+   * The other side of the same race: the room runs out before the band does.
+   * The tier's counter has to come back, or the seller's VIP band reads as
+   * having sold seats nobody ever held.
+   */
+  it("hands the band's seat back when it is the room that runs out", async () => {
+    const shop = await makeSellingShop();
+    const event = await makeEvent(shop.id, 3);
+    const vip = await makeTier(event.id, "VIP", 50);
+
+    const results = await Promise.all(
+      Array.from({ length: 5 }, () =>
+        createOrderIntent({
+          shopId: shop.id,
+          items: [{ productId: event.id, quantity: 1, tierId: vip.id }],
+          ...buyer,
+        }),
+      ),
+    );
+
+    expect(results.filter((r) => r.ok)).toHaveLength(3);
+    // The wide level refused, so the buyer is told about the event and not
+    // about a band that has forty-seven seats left in it.
+    for (const refusal of results.filter((r) => !r.ok)) {
+      expect(refusal).toEqual({ ok: false, error: "Rooftop Show just sold out." });
+    }
+
+    // Three sold, not five. The compensation ran on the real path.
+    expect(await tierSold(vip.id)).toBe(3);
+    expect(await stockOf(event.id)).toBe(0);
+  }, CROWD_TIMEOUT);
+
+  it("keeps two bands of one event apart under contention", async () => {
+    const shop = await makeSellingShop();
+    const event = await makeEvent(shop.id, 100);
+    const vip = await makeTier(event.id, "VIP", 2);
+    const early = await makeTier(event.id, "Early bird", 2, { priceCents: 1500 });
+
+    const results = await Promise.all([
+      ...Array.from({ length: 3 }, () =>
+        createOrderIntent({
+          shopId: shop.id,
+          items: [{ productId: event.id, quantity: 1, tierId: vip.id }],
+          ...buyer,
+        }),
+      ),
+      ...Array.from({ length: 3 }, () =>
+        createOrderIntent({
+          shopId: shop.id,
+          items: [{ productId: event.id, quantity: 1, tierId: early.id }],
+          ...buyer,
+        }),
+      ),
+    ]);
+
+    expect(results.filter((r) => r.ok)).toHaveLength(4);
+    expect(await tierSold(vip.id)).toBe(2);
+    expect(await tierSold(early.id)).toBe(2);
+    expect(await stockOf(event.id)).toBe(96);
+
+    const refusals = results.map((r) => (r.ok ? null : r.error));
+    expect(refusals).toContain("VIP is sold out.");
+    expect(refusals).toContain("Early bird is sold out.");
+  }, CROWD_TIMEOUT);
+
+  it("refuses a band that is not this event's rather than pricing from the product", async () => {
+    const shop = await makeSellingShop();
+    const event = await makeEvent(shop.id, 100);
+    await makeTier(event.id, "VIP", 30);
+    const elsewhere = await makeEvent(shop.id, 100);
+    const theirs = await makeTier(elsewhere.id, "Their VIP", 30);
+
+    const placed = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: event.id, quantity: 1, tierId: theirs.id }],
+      ...buyer,
+    });
+    expect(placed).toEqual({
+      ok: false,
+      error: "Choose a ticket type for Rooftop Show.",
+    });
+    // And nothing was taken from either event on the way to saying so.
+    expect(await stockOf(event.id)).toBe(100);
+    expect(await tierSold(theirs.id)).toBe(0);
+  });
+
+  it("refuses an event with bands when the basket names none", async () => {
+    const shop = await makeSellingShop();
+    const event = await makeEvent(shop.id, 100);
+    await makeTier(event.id, "VIP", 30);
+
+    const placed = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: event.id, quantity: 1 }],
+      ...buyer,
+    });
+    expect(placed.ok).toBe(false);
+    // Not sold at the product's own price, which is the whole defect.
+    expect(await stockOf(event.id)).toBe(100);
+  });
+
+  /*
+   * A hidden band is unlisted, not unsellable. "Reachable by direct link only"
+   * means the link is the credential, and refusing it here would make the link
+   * go nowhere — which is a comp list a seller cannot use.
+   */
+  it("still sells a hidden band to somebody holding its link", async () => {
+    const shop = await makeSellingShop();
+    const event = await makeEvent(shop.id, 100);
+    const press = await makeTier(event.id, "Press", 5, {
+      priceCents: 0,
+      isHidden: true,
+    });
+
+    const placed = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: event.id, quantity: 1, tierId: press.id }],
+      ...buyer,
+    });
+    expect(placed.ok).toBe(true);
+    expect(await tierSold(press.id)).toBe(1);
+  });
+});
+
+describe("buying a date", () => {
+  it("claims the date's seats under pick_one and writes which one", async () => {
+    const shop = await makeSellingShop();
+    const event = await makeEvent(shop.id, 100, { sessionMode: "pick_one" });
+    const tuesday = await makeSession(event.id, 4);
+    const thursday = await makeSession(event.id, 4);
+
+    const results = await Promise.all(
+      Array.from({ length: 5 }, () =>
+        createOrderIntent({
+          shopId: shop.id,
+          items: [{ productId: event.id, quantity: 1, sessionId: tuesday.id }],
+          ...buyer,
+        }),
+      ),
+    );
+
+    expect(results.filter((r) => r.ok)).toHaveLength(4);
+    for (const refusal of results.filter((r) => !r.ok)) {
+      expect(refusal).toEqual({
+        ok: false,
+        error: "That date for Rooftop Show is sold out.",
+      });
+    }
+
+    expect(await sessionSold(tuesday.id)).toBe(4);
+    // Thursday is untouched, which is the whole reason dates have their own
+    // counter rather than sharing the room's.
+    expect(await sessionSold(thursday.id)).toBe(0);
+    expect(await stockOf(event.id)).toBe(96);
+
+    const placed = results.find((r) => r.ok);
+    if (!placed?.ok) throw new Error("expected at least one order");
+    const [item] = await db.query.orderItems.findMany({
+      where: eq(orderItems.orderId, placed.orderId),
+    });
+    expect(item?.sessionId).toBe(tuesday.id);
+  }, CROWD_TIMEOUT);
+
+  it("refuses a pick_one event whose basket names no date", async () => {
+    const shop = await makeSellingShop();
+    const event = await makeEvent(shop.id, 100, { sessionMode: "pick_one" });
+    await makeSession(event.id, 4);
+
+    expect(
+      await createOrderIntent({
+        shopId: shop.id,
+        items: [{ productId: event.id, quantity: 1 }],
+        ...buyer,
+      }),
+    ).toEqual({ ok: false, error: "Choose a date for Rooftop Show." });
+  });
+
+  /*
+   * `eventSalesOpen` reads `products.eventStartsAt`, which on a multi-session
+   * event describes the first date and nothing else. Without the session
+   * exemption in `createOrderIntent`, a weekly class whose first Tuesday has
+   * passed refuses every ticket for every remaining week — the whole feature
+   * broken by a column that predates it.
+   */
+  it("keeps selling later dates after the first one has been and gone", async () => {
+    const shop = await makeSellingShop();
+    const event = await makeEvent(shop.id, 100, {
+      sessionMode: "pick_one",
+      eventStartsAt: new Date("2020-01-01T10:00:00Z"),
+    });
+    const later = await makeSession(event.id, 10);
+
+    expect(
+      (
+        await createOrderIntent({
+          shopId: shop.id,
+          items: [{ productId: event.id, quantity: 1, sessionId: later.id }],
+          ...buyer,
+        })
+      ).ok,
+    ).toBe(true);
+  });
+
+  it("takes the room and no date's seats for an all-access pass", async () => {
+    const shop = await makeSellingShop();
+    const event = await makeEvent(shop.id, 10, { sessionMode: "all_access" });
+    const day = await makeSession(event.id, 1);
+
+    const placed = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: event.id, quantity: 3, sessionId: day.id }],
+      ...buyer,
+    });
+    expect(placed.ok).toBe(true);
+
+    // Naming a day on a pass would take a seat the pass does not occupy, and
+    // eight days of a conference would each lose a seat to the same person.
+    expect(await sessionSold(day.id)).toBe(0);
+    expect(await stockOf(event.id)).toBe(7);
+  });
+});
+
+describe("giving a ticket back", () => {
+  it("returns the seat to the band it came from when the order is cancelled", async () => {
+    const shop = await makeSellingShop();
+    const event = await makeEvent(shop.id, 100);
+    const vip = await makeTier(event.id, "VIP", 30);
+
+    const placed = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: event.id, quantity: 2, tierId: vip.id }],
+      ...buyer,
+    });
+    if (!placed.ok) throw new Error(placed.error);
+    expect(await tierSold(vip.id)).toBe(2);
+
+    const order = await db.query.orders.findFirst({
+      where: eq(orders.id, placed.orderId),
+    });
+    if (!order) throw new Error("order vanished");
+
+    expect(await restoreStock(order)).toBe(true);
+    // Both levels, or the band is sold out for ever while the room says there
+    // is a seat — and nothing anywhere reports which of the two is lying.
+    expect(await tierSold(vip.id)).toBe(0);
+    expect(await stockOf(event.id)).toBe(100);
+
+    // Claimed once: a seller clicking twice, or a webhook racing the sweep,
+    // must not credit the band a second time.
+    expect(await restoreStock(order)).toBe(false);
+    expect(await tierSold(vip.id)).toBe(0);
+  });
+
+  it("takes the seat off again when the seller un-cancels", async () => {
+    const shop = await makeSellingShop();
+    const event = await makeEvent(shop.id, 100, { sessionMode: "pick_one" });
+    const tuesday = await makeSession(event.id, 10);
+    const vip = await makeTier(event.id, "VIP", 30);
+
+    const placed = await createOrderIntent({
+      shopId: shop.id,
+      items: [
+        { productId: event.id, quantity: 1, tierId: vip.id, sessionId: tuesday.id },
+      ],
+      ...buyer,
+    });
+    if (!placed.ok) throw new Error(placed.error);
+
+    const order = await db.query.orders.findFirst({
+      where: eq(orders.id, placed.orderId),
+    });
+    if (!order) throw new Error("order vanished");
+
+    await restoreStock(order);
+    expect(await tierSold(vip.id)).toBe(0);
+    expect(await sessionSold(tuesday.id)).toBe(0);
+
+    const reinstated = await db.query.orders.findFirst({
+      where: eq(orders.id, placed.orderId),
+    });
+    if (!reinstated) throw new Error("order vanished");
+    expect(await retakeStock(reinstated)).toBe(true);
+
+    expect(await tierSold(vip.id)).toBe(1);
+    expect(await sessionSold(tuesday.id)).toBe(1);
+    expect(await stockOf(event.id)).toBe(99);
   });
 });
