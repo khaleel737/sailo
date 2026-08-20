@@ -184,11 +184,6 @@ export default async function ProductPage({
    * the page says, never whether money can move.
    */
   const windowState = sellWindowState(product, null, new Date());
-  const sellable =
-    product.inStock &&
-    salesOpen &&
-    windowState === "open" &&
-    anySellable(product, product.variants);
   const stockLeft = unitsLeft(product);
 
   /*
@@ -229,6 +224,34 @@ export default async function ProductPage({
    */
   const sessions =
     product.sessionMode === "pick_one" ? buyableSessions(sessionRows, now) : [];
+
+  /*
+   * An event that has bands, none of which a buyer may have right now.
+   *
+   * Every band hidden, or every one outside its own window, or every date
+   * already started. The lists above are empty in all three cases and an empty
+   * list is how the picker says "this product has no bands" — so without this
+   * the page would draw an ordinary buy button, and `resolveLines` would refuse
+   * the order for naming no band. A dead button under a price is the worst of
+   * the three ways to be unavailable: it is the one the buyer blames themselves
+   * for.
+   *
+   * Counted against the *rows*, not against what was rendered, because that is
+   * the difference between "there are none" and "there are none for you".
+   */
+  const bandsClosed = tierRows.length > 0 && tiers.length === 0;
+  const datesClosed =
+    product.sessionMode === "pick_one" &&
+    sessionRows.length > 0 &&
+    sessions.length === 0;
+  const ticketsClosed = bandsClosed || datesClosed;
+
+  const sellable =
+    product.inStock &&
+    salesOpen &&
+    windowState === "open" &&
+    !ticketsClosed &&
+    anySellable(product, product.variants);
 
   return (
     <>
@@ -422,7 +445,9 @@ export default async function ProductPage({
               priceCents={product.priceCents}
               compareAtCents={product.compareAtCents}
               currency={shop.currency}
-              inStock={product.inStock}
+              // …and an event with bands, none of which this buyer may have,
+              // has nothing in stock however many seats the room holds.
+              inStock={product.inStock && !ticketsClosed}
               salesOpen={salesOpen}
               methods={checkout.methods}
               deliveryOptions={checkout.deliveryOptions}
