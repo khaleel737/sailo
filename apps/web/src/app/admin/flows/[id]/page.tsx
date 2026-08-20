@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { Workflow } from "lucide-react";
 import { getDb } from "@sailo/db";
 import { automationEmails, automationRuns, automations } from "@sailo/db/schema";

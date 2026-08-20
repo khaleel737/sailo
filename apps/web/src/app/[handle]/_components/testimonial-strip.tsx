@@ -64,7 +64,11 @@ export function TestimonialStrip({
                    * safe *because* the frame is cross-origin — the combo only
                    * voids a sandbox when the framed page is your own. Still no
                    * popups and no top navigation: the video plays where it is.
+                   * `videoEmbedSrc` guarantees the src is youtube-nocookie or
+                   * player.vimeo — never this origin — so the rule's premise
+                   * does not hold here.
                    */
+                  // eslint-disable-next-line react/iframe-missing-sandbox
                   sandbox="allow-scripts allow-same-origin allow-presentation"
                   allow="encrypted-media; fullscreen; picture-in-picture"
                   allowFullScreen

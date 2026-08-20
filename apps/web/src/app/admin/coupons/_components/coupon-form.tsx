@@ -29,7 +29,7 @@ const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
 function randomCode(): string {
   let code = "";
   for (let i = 0; i < 8; i++) {
-    code += CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)]!;
+    code += CODE_ALPHABET.charAt(Math.floor(Math.random() * CODE_ALPHABET.length));
   }
   return code;
 }

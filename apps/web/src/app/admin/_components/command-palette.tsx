@@ -99,7 +99,8 @@ const GROUP_ICONS: Record<string, typeof Package> = {
 };
 
 function iconFor(row: Row) {
-  if (row.group in GROUP_ICONS) return GROUP_ICONS[row.group]!;
+  const grouped = GROUP_ICONS[row.group];
+  if (grouped) return grouped;
   if (row.external) return ArrowUpRight;
   const exact = ICONS[row.href];
   if (exact) return exact;

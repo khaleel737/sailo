@@ -7,6 +7,7 @@ import { getDb } from "@sailo/db";
 import { automationEmails, automations } from "@sailo/db/schema";
 import type { AutomationGraph, AutomationTrigger } from "@sailo/db/schema/json-types";
 import { requireShop } from "@/lib/session";
+import { firstRow } from "@sailo/core/invariant";
 import { can, upgradeMessage } from "@sailo/core/plans";
 import { isUuid } from "@sailo/core/uuid";
 import {
@@ -146,13 +147,16 @@ export async function createFlow(
   });
   if (!trigger) return { ok: false, error: "trigger" };
 
-  const [row] = await getDb()
-    .insert(automations)
-    .values({ shopId: gated.shop.id, name, kind: "email", status: "draft", trigger })
-    .returning({ id: automations.id });
+  const row = firstRow(
+    await getDb()
+      .insert(automations)
+      .values({ shopId: gated.shop.id, name, kind: "email", status: "draft", trigger })
+      .returning({ id: automations.id }),
+    "automation",
+  );
 
   revalidatePath("/admin/flows");
-  redirect(`/admin/flows/${row!.id}`);
+  redirect(`/admin/flows/${row.id}`);
 }
 
 /* --------------------------------------------------------------------------
@@ -209,12 +213,15 @@ export async function saveFlow(id: string, draft: FlowDraft): Promise<FlowState>
       kept.add(step.emailId);
       emailIdFor.set(index, step.emailId);
     } else {
-      const [made] = await db
-        .insert(automationEmails)
-        .values({ automationId: row.id, ...fields })
-        .returning({ id: automationEmails.id });
-      kept.add(made!.id);
-      emailIdFor.set(index, made!.id);
+      const made = firstRow(
+        await db
+          .insert(automationEmails)
+          .values({ automationId: row.id, ...fields })
+          .returning({ id: automationEmails.id }),
+        "automation email",
+      );
+      kept.add(made.id);
+      emailIdFor.set(index, made.id);
     }
   }
   const orphans = existing.map((e) => e.id).filter((eid) => !kept.has(eid));
@@ -244,7 +251,10 @@ export async function saveFlow(id: string, draft: FlowDraft): Promise<FlowState>
   });
   const graph: AutomationGraph = {
     nodes,
-    edges: nodes.slice(1).map((node, i) => ({ from: nodes[i]!.id, to: node.id })),
+    edges: nodes.flatMap((node, i) => {
+      const next = nodes[i + 1];
+      return next ? [{ from: node.id, to: next.id }] : [];
+    }),
     entry: nodes[0]?.id,
   };
 

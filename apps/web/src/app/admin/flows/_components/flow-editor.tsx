@@ -140,9 +140,13 @@ export function FlowEditor({
       const from = prev.findIndex((row) => row.key === key);
       const to = from + delta;
       if (from < 0 || to < 0 || to >= prev.length) return prev;
+      /* A move by ±1 is a swap with the neighbour. */
+      const row = prev[from];
+      const neighbour = prev[to];
+      if (!row || !neighbour) return prev;
       const next = [...prev];
-      const [row] = next.splice(from, 1);
-      next.splice(to, 0, row!);
+      next[from] = neighbour;
+      next[to] = row;
       return next;
     });
 

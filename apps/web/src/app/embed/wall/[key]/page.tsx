@@ -140,8 +140,11 @@ function TestimonialBody({
            * without it the frame runs under an opaque origin, the player's own
            * scripts cannot reach their storage, and YouTube renders a dead
            * box. The dangerous scripts+same-origin combo only voids a sandbox
-           * when the framed page is your own; this one is youtube-nocookie's.
+           * when the framed page is your own; this one is youtube-nocookie's —
+           * `videoEmbedSrc` constructs the src against a host allowlist, so it
+           * can never be this origin, which is the rule's premise.
            */
+          // eslint-disable-next-line react/iframe-missing-sandbox
           sandbox="allow-scripts allow-same-origin allow-presentation"
           allow="encrypted-media; fullscreen; picture-in-picture"
           allowFullScreen

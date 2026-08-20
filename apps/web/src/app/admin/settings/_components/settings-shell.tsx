@@ -7,6 +7,7 @@ import { motion, useReducedMotion } from "motion/react";
 import {
   Activity,
   ArrowUpRight,
+  type LucideIcon,
   Bell,
   CalendarClock,
   CreditCard,
@@ -26,6 +27,14 @@ import {
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { initials } from "@/app/admin/_components/account-menu";
 import { cn } from "@sailo/design-system/web/cn";
+
+type SettingsNavItem = {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+  /** Match this href exactly rather than as a prefix. */
+  exact?: boolean;
+};
 
 /**
  * Settings as a room you step into, not a page you wander to.
@@ -64,8 +73,15 @@ export function SettingsShell({
    * Labels are the keys these pages have always had; nothing was renamed on
    * the way into the overlay.
    */
-  const items = [
-    { href: "/admin/settings", label: a.settings.tabDetails, icon: Store, exact: true },
+  /* Named, because it is also the fallback when no section matches. */
+  const overview: SettingsNavItem = {
+    href: "/admin/settings",
+    label: a.settings.tabDetails,
+    icon: Store,
+    exact: true,
+  };
+  const items: SettingsNavItem[] = [
+    overview,
     /* Carved out of Shop details: a look change never rides a tax save. */
     { href: "/admin/settings/appearance", label: a.settings.appearance, icon: Palette },
     { href: "/admin/settings/billing", label: a.settings.tabBilling, icon: CreditCard },
@@ -102,7 +118,7 @@ export function SettingsShell({
 
   const isActive = (item: (typeof items)[number]) =>
     item.exact ? pathname === item.href : pathname.startsWith(item.href);
-  const current = items.find(isActive) ?? items[0]!;
+  const current = items.find(isActive) ?? overview;
 
   const close = () => router.push("/admin");
 

@@ -30,18 +30,18 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 /**
  * A card title that carries its own definition — the Analytics grammar from
  * the captures: dotted underline, the sentence on hover and on keyboard
- * focus (`title` reads out through the accessibility tree; `tabIndex` lets a
- * keyboard reach it at all). A local helper until a second page wants one.
+ * focus (`title` reads out through the accessibility tree; a `button` is
+ * natively keyboard-reachable). A local helper until a second page wants one.
  */
 function DefTitle({ def, children }: { def: string; children: React.ReactNode }) {
   return (
-    <span
+    <button
+      type="button"
       title={def}
-      tabIndex={0}
       className="focus-ring cursor-help rounded underline decoration-ink-300 decoration-dotted underline-offset-4"
     >
       {children}
-    </span>
+    </button>
   );
 }
 
