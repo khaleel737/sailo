@@ -19,7 +19,7 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: /^@\/(.*)$/, replacement: resolve(root, "src/$1") },
-      { find: "server-only", replacement: resolve(root, "test-stubs/server-only.ts") },
+      { find: "server-only", replacement: resolve(root, "../../packages/config/test-stubs/server-only.ts") },
     ],
   },
   test: {

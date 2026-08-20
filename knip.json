@@ -50,14 +50,12 @@
     "apps/hq": {
       "entry": [
         "e2e/**/*.scenario.ts",
-        "e2e/scenarios/*.{ts,mts}",
-        "test-stubs/*.{ts,mts}"
+        "e2e/scenarios/*.{ts,mts}"
       ],
       "project": [
         "src/**/*.{ts,tsx}",
         "src/**/*.css",
-        "e2e/**/*.ts",
-        "test-stubs/*.ts"
+        "e2e/**/*.ts"
       ]
     },
     "apps/mobile": {

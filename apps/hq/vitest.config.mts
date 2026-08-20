@@ -20,7 +20,7 @@ export default defineConfig({
        * `server-only` throws by design outside a server component, which is
        * exactly what stops a server module being unit-tested.
        */
-      { find: "server-only", replacement: resolve(root, "test-stubs/server-only.ts") },
+      { find: "server-only", replacement: resolve(root, "../../packages/config/test-stubs/server-only.ts") },
     ],
   },
   test: {

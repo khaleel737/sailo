@@ -28,7 +28,7 @@ export default {
     alias: [
       {
         find: "server-only",
-        replacement: resolve(root, "src/testing/server-only-stub.ts"),
+        replacement: resolve(root, "../config/test-stubs/server-only.ts"),
       },
     ],
   },

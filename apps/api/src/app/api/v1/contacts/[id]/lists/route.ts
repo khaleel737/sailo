@@ -20,7 +20,7 @@
  */
 
 import { getContactLists, updateContactLists } from "@sailo/api/rest";
-import { apiFail, apiOk } from "@sailo/api/rest";
+import { apiFail, apiOk, rateHeaders } from "@sailo/api/rest";
 import { apiGuard } from "@sailo/api/rest";
 import { handleOne, readJson } from "@sailo/api/rest";
 
@@ -64,10 +64,17 @@ export async function POST(
   const guard = await apiGuard(request, "write");
   if (!guard.ok) return guard.response;
 
+  /*
+   * The same rate headers `handleOne` sends — hand-rolled here only because
+   * this route also reads a body, and a write is exactly where a client most
+   * wants to see `ratelimit-remaining` before it is refused.
+   */
+  const rate = rateHeaders(guard.caller.rate);
+
   const body = await readJson(request);
   if (!body.ok) return body.response;
 
   const { id } = await params;
   const result = await updateContactLists(guard.caller, id, body.body);
-  return result.ok ? apiOk(result.data) : apiFail(result.failure);
+  return result.ok ? apiOk(result.data, rate) : apiFail(result.failure, rate);
 }

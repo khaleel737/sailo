@@ -23,7 +23,7 @@ export default defineConfig({
        * imports it — the tool list carries the handlers that read the database
        * — and the reference renders that same list.
        */
-      { find: "server-only", replacement: resolve(root, "test-stubs/server-only.ts") },
+      { find: "server-only", replacement: resolve(root, "../../packages/config/test-stubs/server-only.ts") },
     ],
   },
   /*
