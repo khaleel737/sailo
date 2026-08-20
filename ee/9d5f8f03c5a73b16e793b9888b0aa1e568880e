@@ -1,0 +1,39 @@
+apps/web/src/lib/actions/orders.ts
+  s_16f404b29c0075::t_e3eaf87168e58a 382-392,394
+  s_16f404b29c0075::t_785ff182738620 922-934
+  s_16f404b29c0075::t_e1abb759048811 548,552-560,563
+  s_16f404b29c0075::t_fc9116d4d0a831 47-54
+  s_16f404b29c0075::t_7f396c075a453a 91-111,120-158
+  s_16f404b29c0075::t_e811ff2541cbb7 491-505,507-528
+  s_16f404b29c0075::t_da347c08d6e80b 159-160
+packages/commerce/src/ticketing/tickets.ts
+  s_16f404b29c0075::t_b7ff936ad87e6a 97-104,111-130,137-138
+packages/commerce/src/catalog/inventory.ts
+  s_16f404b29c0075::t_2f9f92eef78247 175-176
+  s_16f404b29c0075::t_54b96491d9a508 312-349
+  s_16f404b29c0075::t_ce08cf1d8bf6bc 42-53
+  s_16f404b29c0075::t_8b5f29ce22821c 23-24
+  s_16f404b29c0075::t_2dffb51bc182a1 8-19
+  s_16f404b29c0075::t_a821f72e022798 234-258
+packages/commerce/src/ticketing/capacity.ts
+  s_16f404b29c0075::t_0ce26f6ef848f1 57-70
+  s_16f404b29c0075::t_30c0804196e34f 118
+  s_16f404b29c0075::t_e8dad6c3169902 145,150-182
+  s_16f404b29c0075::t_02724d9f5a95dd 183-184
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "ee9d5f8f03c5a73b16e793b9888b0aa1e568880e",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
