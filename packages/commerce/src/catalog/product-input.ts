@@ -17,6 +17,16 @@ export const MAX_IMAGES = 8;
 export const MAX_FILES = 10;
 /** Tags per product. */
 export const MAX_TAGS = 12;
+/**
+ * Bands and dates per event — spec 50, defined in `@sailo/core` and re-exported
+ * here beside the other ceilings.
+ *
+ * There rather than here because the seller's repeater is a client component
+ * and this module is `server-only`: a ceiling the browser cannot see is one the
+ * seller meets as a row that silently vanished on save. `MAX_VARIANTS` lives in
+ * the same package for the same reason.
+ */
+export { MAX_SESSIONS, MAX_TIERS } from "@sailo/core/tickets";
 
 export type ProductVariantInput = {
   options: VariantOptions;
@@ -47,6 +57,57 @@ export type ProductVariantInput = {
    */
   sellFrom?: Date | null;
   sellUntil?: Date | null;
+};
+
+/**
+ * One price band on one event — spec 50.
+ *
+ * **Identified by `id`, never by name.** A tier carries `sold`, which is the
+ * seats already taken against it, so a row matched by its label would lose the
+ * count the moment a seller fixed a typo — and `event_tiers_not_oversold`
+ * would then let the band sell past a room it had already filled. A row with
+ * no id is a new band; a row whose id this product does not have is treated as
+ * new for the same reason.
+ *
+ * `sold` is deliberately absent. It moves only through `claimEventCapacity`'s
+ * conditional UPDATE, and a save that could set it would be the read-then-write
+ * that spec 50 exists to keep out.
+ */
+export type EventTierInput = {
+  /** The row this edits. Null or absent creates one. */
+  id?: string | null;
+  name: string;
+  description?: string | null;
+  /** Zero is a comp or press band, which is a real thing to sell at. */
+  priceCents?: number | null;
+  /** **Null shares the product's stock** — a band that names a price only. */
+  capacity?: number | null;
+  /** Most seats in this band one order may take. Null is no cap of its own. */
+  maxPerOrder?: number | null;
+  /** This band's own window — spec 43's mechanism, early bird's whole point. */
+  sellFrom?: Date | null;
+  sellUntil?: Date | null;
+  /** A comp or press band, reachable by direct link only. */
+  isHidden?: boolean;
+};
+
+/**
+ * One date an event runs on — spec 50.
+ *
+ * Identified by `id` for exactly the reason a tier is: `sold` lives on the row,
+ * and a date matched by its start time would lose its seats the moment a seller
+ * moved the class by an hour.
+ */
+export type EventSessionInput = {
+  id?: string | null;
+  startsAt: Date;
+  endsAt?: Date | null;
+  /** Null shares the product's stock, as a tier's capacity does. */
+  capacity?: number | null;
+  location?: string | null;
+  joinUrl?: string | null;
+  /** Called off. The row stays so its ticket-holders can still be told. */
+  isCancelled?: boolean;
 };
 
 export type ProductFileInput = {
@@ -196,6 +257,18 @@ export type ProductInput = {
 
   /** NULL single (today) | pick_one | all_access. */
   sessionMode?: string | null;
+  /**
+   * The event's price bands, or **absent to leave them alone**.
+   *
+   * The distinction is load-bearing and is not the one the other list fields
+   * make: `[]` means "this event has no tiers, delete the ones it had", while
+   * `undefined` means "this caller does not edit tiers". The phone posts a
+   * whole `ProductInput` to `products.save` without ever having rendered a
+   * tier, and a caller that cannot see a list must not be able to empty it.
+   */
+  tiers?: EventTierInput[];
+  /** The dates it runs on. Absent leaves them alone, exactly as `tiers` does. */
+  sessions?: EventSessionInput[];
   /** Ask for each attendee's name at checkout. */
   collectAttendeeDetails?: boolean;
   /** online | in_person | hybrid. Null falls back to `serviceMode`. */
@@ -299,6 +372,22 @@ export type SaveProductRefusal =
    */
   | { kind: "event_needs_venue" }
   | { kind: "event_needs_join_url" }
+  /**
+   * A tier or a date shrunk below the seats it has already sold — spec 50.
+   *
+   * `event_tiers_not_oversold` is a CHECK constraint, so this is refused by the
+   * database whatever anybody does. Refused *here* as well because the database
+   * refuses it as an error and not as a sentence: a seller who typed 10 into a
+   * band that has sold 12 would otherwise meet a crash on a form they cannot
+   * tell what is wrong with. Carries the band's name and the count, because
+   * "you have already sold twelve" is the only sentence that says what to type
+   * instead.
+   *
+   * The constraint stays the floor under this: a seat sold in the moment
+   * between this check and the write is refused there, which is where a race
+   * belongs.
+   */
+  | { kind: "capacity_below_sold"; level: "tier" | "session"; name: string; sold: number }
   | { kind: "product_limit"; limit: number; planName: string }
   | { kind: "not_found" };
 

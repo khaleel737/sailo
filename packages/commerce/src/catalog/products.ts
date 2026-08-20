@@ -14,6 +14,8 @@ import { getDb } from "@sailo/db";
 import { normalizeQuestions } from "@sailo/core/lead-questions";
 import {
   categories,
+  eventSessions,
+  eventTiers,
   productFiles,
   productImages,
   productVariants,
@@ -48,7 +50,11 @@ import {
 import {
   MAX_FILES,
   MAX_IMAGES,
+  MAX_SESSIONS,
   MAX_TAGS,
+  MAX_TIERS,
+  type EventSessionInput,
+  type EventTierInput,
   type ProductFileInput,
   type ProductInput,
   type ProductVariantInput,
@@ -284,6 +290,196 @@ async function syncFiles(productId: string, rows: ProductFileInput[]) {
   }
 }
 
+/**
+ * The event's price bands, matched by id — spec 50.
+ *
+ * The same shape `syncVariants` has and for a stronger reason. A tier carries
+ * `sold`, the seats already taken against it, so a delete-and-reinsert would
+ * hand every band back its room on every save: thirty seats sold against a
+ * capacity of thirty would read as thirty free, and the CHECK constraint under
+ * the table would have nothing to object to because the row is new.
+ *
+ * So `sold` is never in `values`. It moves only through `claimEventCapacity`'s
+ * conditional UPDATE, which is the one statement allowed to decide whether
+ * there is room.
+ *
+ * A row whose id this product does not have becomes an insert rather than an
+ * error: `byId` is built from this product's own rows, so an id belonging to
+ * somebody else's event cannot be reached from here at all.
+ */
+async function syncTiers(productId: string, rows: EventTierInput[]) {
+  const db = getDb();
+  // A band with no name is a row the seller added and did not fill in.
+  const wanted = rows
+    .filter((row) => trimmed(row.name, 80) !== null)
+    .slice(0, MAX_TIERS);
+
+  const existing = await db.query.eventTiers.findMany({
+    where: eq(eventTiers.productId, productId),
+  });
+  const byId = new Map(existing.map((t) => [t.id, t]));
+
+  for (const [position, row] of wanted.entries()) {
+    const values = {
+      name: trimmed(row.name, 80) ?? "Ticket",
+      description: trimmed(row.description, 500),
+      /*
+       * Zero is a real price here, unlike everywhere blank means "inherit": a
+       * comp or a press band costs nothing and is still a band. The column is
+       * NOT NULL, so an absent price is that same zero.
+       */
+      priceCents: wholeCentsOrNull(row.priceCents) ?? 0,
+      /* Null shares the product's stock — a band that names a price rather
+         than rationing anything. `claimTier` reads that null directly. */
+      capacity: wholeCountOrNull(row.capacity),
+      maxPerOrder: wholeCountOrNull(row.maxPerOrder),
+      /* Spec 43's window on a band, stored as given and narrowed at read by
+         `effectiveSellWindow` — the same rule a variant's window follows. */
+      sellFrom: row.sellFrom ?? null,
+      sellUntil: row.sellUntil ?? null,
+      isHidden: row.isHidden === true,
+      position,
+      updatedAt: new Date(),
+    };
+
+    const match = row.id ? byId.get(row.id) : undefined;
+    if (match) {
+      await db.update(eventTiers).set(values).where(eq(eventTiers.id, match.id));
+      byId.delete(match.id);
+    } else {
+      await db.insert(eventTiers).values({ ...values, productId });
+    }
+  }
+
+  const stale = [...byId.values()].map((t) => t.id);
+  if (stale.length) {
+    await db.delete(eventTiers).where(inArray(eventTiers.id, stale));
+  }
+}
+
+/**
+ * The dates it runs on, matched by id — spec 50.
+ *
+ * Ordered by when they start rather than by the order the rows arrived in, so
+ * a seller inserting a forgotten date in the middle gets it in the middle.
+ * `sold` is left alone here for the same reason it is on a tier.
+ *
+ * A cancelled date is kept rather than deleted: its ticket-holders still have
+ * to be told, and `claimSessionCancelNotice` is the claim on telling them.
+ */
+async function syncSessions(productId: string, rows: EventSessionInput[]) {
+  const db = getDb();
+  const wanted = rows
+    .filter(
+      (row) => row.startsAt instanceof Date && !Number.isNaN(row.startsAt.getTime()),
+    )
+    .sort((a, b) => a.startsAt.getTime() - b.startsAt.getTime())
+    .slice(0, MAX_SESSIONS);
+
+  const existing = await db.query.eventSessions.findMany({
+    where: eq(eventSessions.productId, productId),
+  });
+  const byId = new Map(existing.map((r) => [r.id, r]));
+
+  for (const [position, row] of wanted.entries()) {
+    const endsAt = row.endsAt ?? null;
+    const values = {
+      startsAt: row.startsAt,
+      /* An end at or before its own start is dropped rather than refused: it
+         renders as a negative span and buys nothing, and the product's own two
+         dates already carry the refusal a seller needs to see. */
+      endsAt: endsAt && endsAt.getTime() > row.startsAt.getTime() ? endsAt : null,
+      capacity: wholeCountOrNull(row.capacity),
+      location: trimmed(row.location, 500),
+      /* The same guard the product's own join link gets. It is rendered as an
+         anchor in the buyer's email, so an internal host is not a thing a
+         seller may put in front of them. */
+      joinUrl: isPublicLinkUrl(row.joinUrl ?? "") ? trimmed(row.joinUrl, 2000) : null,
+      isCancelled: row.isCancelled === true,
+      position,
+      updatedAt: new Date(),
+    };
+
+    const match = row.id ? byId.get(row.id) : undefined;
+    if (match) {
+      await db.update(eventSessions).set(values).where(eq(eventSessions.id, match.id));
+      byId.delete(match.id);
+    } else {
+      await db.insert(eventSessions).values({ ...values, productId });
+    }
+  }
+
+  const stale = [...byId.values()].map((r) => r.id);
+  if (stale.length) {
+    await db.delete(eventSessions).where(inArray(eventSessions.id, stale));
+  }
+}
+
+/**
+ * A band or a date shrunk below what it has already sold — spec 50.
+ *
+ * `event_tiers_not_oversold` and `event_sessions_not_oversold` refuse this in
+ * the database, which is the floor and stays the floor. What the database
+ * cannot do is say it in a sentence: a seller typing 10 into a band that has
+ * sold 12 would meet a crashed form with nothing on it saying which of their
+ * thirty fields was wrong.
+ *
+ * Read only for an event being updated — a product that does not exist yet has
+ * sold nothing. The window between this check and the write belongs to the
+ * constraint, which is exactly the kind of race a constraint is for.
+ */
+async function capacityBelowSold(
+  productId: string,
+  tiers: EventTierInput[] | undefined,
+  sessions: EventSessionInput[] | undefined,
+): Promise<SaveProductRefusal | null> {
+  const db = getDb();
+
+  if (tiers?.length) {
+    const rows = await db.query.eventTiers.findMany({
+      where: eq(eventTiers.productId, productId),
+      columns: { id: true, name: true, sold: true },
+    });
+    const byId = new Map(rows.map((r) => [r.id, r]));
+    for (const tier of tiers) {
+      const row = tier.id ? byId.get(tier.id) : undefined;
+      const capacity = wholeCountOrNull(tier.capacity);
+      if (row && capacity !== null && capacity < row.sold) {
+        return {
+          kind: "capacity_below_sold",
+          level: "tier",
+          name: trimmed(tier.name, 80) ?? row.name,
+          sold: row.sold,
+        };
+      }
+    }
+  }
+
+  if (sessions?.length) {
+    const rows = await db.query.eventSessions.findMany({
+      where: eq(eventSessions.productId, productId),
+      columns: { id: true, startsAt: true, sold: true },
+    });
+    const byId = new Map(rows.map((r) => [r.id, r]));
+    for (const session of sessions) {
+      const row = session.id ? byId.get(session.id) : undefined;
+      const capacity = wholeCountOrNull(session.capacity);
+      if (row && capacity !== null && capacity < row.sold) {
+        return {
+          kind: "capacity_below_sold",
+          level: "session",
+          /* The date itself, because a date has no name to give — and the
+             seller is looking at a list of them. */
+          name: row.startsAt.toISOString().slice(0, 16).replace("T", " "),
+          sold: row.sold,
+        };
+      }
+    }
+  }
+
+  return null;
+}
+
 /** The variant rows this product actually has, keyed by their option string. */
 async function variantIdsByKey(productId: string): Promise<Map<string, string>> {
   const rows = await getDb().query.productVariants.findMany({
@@ -447,6 +643,30 @@ export async function saveProduct(
 
   const licenseEnabled =
     kind === "digital" && can(shop, "licensing") && input.licenseEnabled === true;
+
+  /*
+   * The event's bands and dates — spec 50, and `undefined` is not `[]`.
+   *
+   * Three states, and collapsing any two of them loses a seller's work:
+   *
+   *   - `undefined` — this caller does not edit them. The phone posts a whole
+   *     `ProductInput` to `products.save` having never rendered a tier, and a
+   *     caller that cannot see a list must not be able to empty it.
+   *   - `[]` — this event has none. The web form always posts the field, so an
+   *     empty one means the seller removed the last row and means it.
+   *   - rows — sync to exactly these.
+   *
+   * Gated in the same direction every other plan gate here falls: a downgraded
+   * shop keeps its bands and dates in the table and stops editing them, rather
+   * than being refused a save it needs to change a title. Left alone on a
+   * product that is no longer an event for the same reason the code pool is:
+   * a switch to physical and back must find the seller's work where they left
+   * it.
+   */
+  const tiers =
+    kind === "event" && can(shop, "eventTiers") ? input.tiers : undefined;
+  const sessions =
+    kind === "event" && can(shop, "eventSessions") ? input.sessions : undefined;
 
   /*
    * The join link for an online event — refused rather than quietly dropped.
@@ -898,6 +1118,16 @@ export async function saveProduct(
     // "Not yours" and "doesn't exist" are one answer, as everywhere else.
     if (!owned) return refuse({ kind: "not_found" });
 
+    /*
+     * Spec 50. After the ownership check and before the first write, which is
+     * the only place it can go: the seats sold live on rows belonging to this
+     * product, so reading them any earlier would answer a question about
+     * somebody else's event, and answering it any later would leave the product
+     * saved and the seller told it was not.
+     */
+    const shrunk = await capacityBelowSold(input.id, tiers, sessions);
+    if (shrunk) return refuse(shrunk);
+
     await db
       .update(products)
       .set({ ...values, slug })
@@ -959,6 +1189,14 @@ export async function saveProduct(
    */
   const keepsFiles = !(kind === "digital" && delivery !== "file");
   await syncFiles(savedId, keepsFiles ? (input.files ?? []) : []);
+
+  /*
+   * The bands and the dates — spec 50. `undefined` skips the sync entirely
+   * rather than syncing to nothing, which is the whole point of the three
+   * states decided above.
+   */
+  if (tiers) await syncTiers(savedId, tiers);
+  if (sessions) await syncSessions(savedId, sessions);
 
   return { ok: true, id: savedId, slug, created };
 }

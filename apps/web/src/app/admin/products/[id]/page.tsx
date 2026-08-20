@@ -11,6 +11,7 @@ import { getAdminT } from "@/i18n/server";
 import { connectState } from "@sailo/commerce/orders/server";
 import { can, cheapestPlanWith } from "@sailo/core/plans";
 import { poolCounts } from "@sailo/commerce/catalog";
+import { sessionsFor, tiersFor } from "@sailo/commerce/ticketing";
 import { CodePoolCard } from "@/app/admin/products/_components/code-pool-card";
 
 export const metadata: Metadata = { title: "Edit product" };
@@ -38,6 +39,26 @@ export default async function EditProductPage({
     product.codeSource === "pool" || product.codeSource === "generated"
       ? await poolCounts(product.id)
       : null;
+
+  /*
+   * The event's bands and its dates — spec 50.
+   *
+   * Read here and not folded into `sellerProduct`: neither table has a drizzle
+   * relation, and giving them one would put both on the phone's `products.get`
+   * and on every row of the catalogue list, which render neither. Two reads on
+   * the one screen that edits them is the cheaper shape.
+   *
+   * Only for an event, and only on a plan that has them — a shop that cannot
+   * edit a band should not pay for the query either. The editor falls back to
+   * an empty list, which is what a downgraded shop's card renders.
+   */
+  const [tiers, sessions] =
+    product.kind === "event"
+      ? await Promise.all([
+          can(shop, "eventTiers") ? tiersFor(product.id) : [],
+          can(shop, "eventSessions") ? sessionsFor(product.id) : [],
+        ])
+      : [[], []];
 
   return (
     <>
@@ -78,6 +99,13 @@ export default async function EditProductPage({
         licensing={can(shop, "licensing")}
         membershipTerms={can(shop, "membershipTerms")}
         staffResources={can(shop, "staffResources")}
+        /* Spec 50. Two flags because they are two plans — bands are Pro and a
+           series is Business — and both fall back rather than refusing, so a
+           downgraded shop keeps its bands and dates and stops editing them. */
+        eventTiers={can(shop, "eventTiers")}
+        eventSessions={can(shop, "eventSessions")}
+        tiers={tiers}
+        sessions={sessions}
         cardReady={connectState(shop) === "active" && can(shop, "cardRails")}
         /* Spec 53. Gated here and again in `saveProduct`: a form is not a
            gate, and a downgraded shop keeps every price it typed. */
