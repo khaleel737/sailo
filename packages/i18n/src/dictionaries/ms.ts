@@ -310,6 +310,7 @@ export const ms: Dictionary = {
     signOut: "Log keluar", upgrade: "Naik taraf", openMenu: "Buka menu", closeMenu: "Tutup menu",
     broadcasts: "Siaran",
     flows: "Automasi",
+    abandoned: "Troli ditinggalkan",
     members: "Ahli",
     legal: "Halaman undang-undang",
     dataRequests: "Permintaan data",

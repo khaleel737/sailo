@@ -264,10 +264,16 @@ export const adminEn = {
     triggerHint: "Who enters the flow, and the moment they do.",
     triggerListJoined: "Joins a list",
     triggerProductPurchased: "Buys a product",
+    triggerCheckoutAbandoned: "Abandons a checkout",
     triggerWaitlistSignup: "Joins a waitlist",
     triggerContactUpdated: "Contact is updated",
     anyList: "Any list",
     anyProduct: "Any product",
+    productLabel: "Product",
+    updatedLabel: "Which change",
+    updatedHint: "Only read when the trigger is a contact update.",
+    updatedAny: "Any change",
+    updatedTags: "Only when tags change",
 
     entryLabel: "Re-entry",
     entryOnce: "Once ever",
@@ -333,6 +339,47 @@ export const adminEn = {
 
     createTitle: "New flow",
     createBody: "Name it and pick what starts it. The steps come next.",
+  },
+
+  /**
+   * Spec 32's seller-facing half: the ledger of stalled checkouts and the
+   * built-in recovery email's one switch.
+   */
+  abandoned: {
+    title: "Abandoned checkouts",
+    subtitle:
+      "Checkouts that started and stopped. After three hours the recovery email — and any flow triggered by an abandonment — takes over.",
+    empty: "Nothing abandoned",
+    emptyBody:
+      "When somebody starts a checkout and leaves, it lands here with what happened next.",
+    statOpen: "Open",
+    statEmailed: "Recovery emails sent",
+    statRecovered: "Recovered",
+    statRevenue: "Recovered revenue",
+    statusOpen: "Open",
+    statusEmailed: "Email sent",
+    statusRecovered: "Recovered",
+    statusCompleted: "Completed",
+    statusExpired: "Expired",
+    noEmail: "No address typed",
+    cartOnly: "Whole cart",
+    recoveryToggle: "Send the built-in recovery email",
+    recoveryToggleBody:
+      "One email, three hours after a checkout stalls, with a link back to it — and sometimes a single-use discount, deliberately not every time. It goes only to the address typed into that checkout, and never past a suppression.",
+    flowsHint: "Building your own sequence instead? The abandonment trigger in Automations fires either way.",
+    flowsLink: "Open Automations",
+    showing: "The latest {count} — the numbers above count everything.",
+  },
+
+  /** The dashboard's from-visit-to-order panel — spec 42's missing piece. */
+  funnel: {
+    title: "From visit to order",
+    conversion: "Conversion",
+    sessions: "Sessions",
+    reachedCheckout: "Reached checkout",
+    completed: "Completed",
+    ofSessions: "{percent} of sessions",
+    noData: "Nobody visited in this window — the funnel starts with the first session.",
   },
 
   dashboard: {

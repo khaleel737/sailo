@@ -312,6 +312,7 @@ export const bs: Dictionary = {
     signOut: "Odjava", upgrade: "Nadogradi", openMenu: "Otvori meni", closeMenu: "Zatvori meni",
     broadcasts: "Kampanje",
     flows: "Automatizacije",
+    abandoned: "Napuštene korpe",
     members: "Članovi",
     legal: "Pravne stranice",
     dataRequests: "Zahtjevi za podatke",

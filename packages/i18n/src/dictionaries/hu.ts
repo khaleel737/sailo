@@ -353,6 +353,7 @@ export const hu: Dictionary = {
     openMenu: "Menü megnyitása", closeMenu: "Menü bezárása",
     broadcasts: "Körlevelek",
     flows: "Automatizálások",
+    abandoned: "Elhagyott kosarak",
     members: "Tagok",
     legal: "Jogi oldalak",
     dataRequests: "Adatkérelmek",

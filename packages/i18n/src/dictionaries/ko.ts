@@ -311,6 +311,7 @@ export const ko: Dictionary = {
     signOut: "로그아웃", upgrade: "업그레이드", openMenu: "메뉴 열기", closeMenu: "메뉴 닫기",
     broadcasts: "브로드캐스트",
     flows: "자동화",
+    abandoned: "결제 이탈",
     members: "회원",
     legal: "법률 페이지",
     dataRequests: "데이터 요청",

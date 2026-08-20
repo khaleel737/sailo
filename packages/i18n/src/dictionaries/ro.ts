@@ -352,6 +352,7 @@ export const ro: Dictionary = {
     openMenu: "Deschide meniul", closeMenu: "Închide meniul",
     broadcasts: "Trimiteri",
     flows: "Automatizări",
+    abandoned: "Coșuri abandonate",
     members: "Membri",
     legal: "Pagini juridice",
     dataRequests: "Cereri privind datele",

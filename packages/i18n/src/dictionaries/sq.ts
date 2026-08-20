@@ -314,6 +314,7 @@ export const sq: Dictionary = {
     signOut: "Dil", upgrade: "Përmirëso", openMenu: "Hap menunë", closeMenu: "Mbyll menunë",
     broadcasts: "Dërgesa",
     flows: "Automatizimet",
+    abandoned: "Shporta të braktisura",
     members: "Anëtarët",
     legal: "Faqet ligjore",
     dataRequests: "Kërkesat për të dhëna",

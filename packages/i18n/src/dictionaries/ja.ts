@@ -393,6 +393,7 @@ export const ja: Dictionary = {
     openMenu: "メニューを開く", closeMenu: "メニューを閉じる",
     broadcasts: "一斉配信",
     flows: "自動化",
+    abandoned: "かご落ち",
     members: "メンバー",
     legal: "法務ページ",
     dataRequests: "データ請求",

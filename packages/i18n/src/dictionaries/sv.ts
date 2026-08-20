@@ -355,6 +355,7 @@ export const sv: Dictionary = {
     openMenu: "Öppna meny", closeMenu: "Stäng meny",
     broadcasts: "Utskick",
     flows: "Automatiseringar",
+    abandoned: "Övergivna varukorgar",
     members: "Medlemmar",
     legal: "Juridiska sidor",
     dataRequests: "Dataförfrågningar",

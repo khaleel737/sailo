@@ -355,6 +355,7 @@ export const ru: Dictionary = {
     openMenu: "Открыть меню", closeMenu: "Закрыть меню",
     broadcasts: "Рассылки",
     flows: "Автоматизации",
+    abandoned: "Брошенные корзины",
     members: "Участники",
     legal: "Правовые страницы",
     dataRequests: "Запросы данных",

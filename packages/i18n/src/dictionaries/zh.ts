@@ -392,6 +392,7 @@ export const zh: Dictionary = {
     openMenu: "打开菜单", closeMenu: "关闭菜单",
     broadcasts: "群发邮件",
     flows: "自动化",
+    abandoned: "弃单",
     members: "会员",
     legal: "法律页面",
     dataRequests: "数据请求",

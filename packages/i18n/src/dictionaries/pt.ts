@@ -359,6 +359,7 @@ export const pt: Dictionary = {
     openMenu: "Abrir menu", closeMenu: "Fechar menu",
     broadcasts: "Envios",
     flows: "Automações",
+    abandoned: "Carrinhos abandonados",
     members: "Membros",
     legal: "Páginas legais",
     dataRequests: "Pedidos de dados",

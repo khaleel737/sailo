@@ -759,6 +759,7 @@ export const en = {
     closeMenu: "Close menu",
     broadcasts: "Broadcasts",
     flows: "Automations",
+    abandoned: "Abandoned checkouts",
     members: "Members",
     /** Spec 41 — the seller's own terms, privacy policy, refunds, about, FAQ. */
     legal: "Legal pages",

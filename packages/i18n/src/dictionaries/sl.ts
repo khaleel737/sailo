@@ -311,6 +311,7 @@ export const sl: Dictionary = {
     signOut: "Odjava", upgrade: "Nadgradi", openMenu: "Odpri meni", closeMenu: "Zapri meni",
     broadcasts: "Kampanje",
     flows: "Avtomatizacije",
+    abandoned: "Zapuščene košarice",
     members: "Člani",
     legal: "Pravne strani",
     dataRequests: "Zahteve za podatke",

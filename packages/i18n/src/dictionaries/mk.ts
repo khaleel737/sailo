@@ -313,6 +313,7 @@ export const mk: Dictionary = {
     signOut: "Одјава", upgrade: "Надгради", openMenu: "Отвори мени", closeMenu: "Затвори мени",
     broadcasts: "Кампањи",
     flows: "Автоматизации",
+    abandoned: "Напуштени кошнички",
     members: "Членови",
     legal: "Правни страници",
     dataRequests: "Барања за податоци",

@@ -313,6 +313,7 @@ export const th: Dictionary = {
     signOut: "ออกจากระบบ", upgrade: "อัปเกรด", openMenu: "เปิดเมนู", closeMenu: "ปิดเมนู",
     broadcasts: "อีเมลกลุ่ม",
     flows: "ระบบอัตโนมัติ",
+    abandoned: "ตะกร้าที่ถูกทิ้ง",
     members: "สมาชิก",
     legal: "หน้าข้อกำหนด",
     dataRequests: "คำขอข้อมูล",

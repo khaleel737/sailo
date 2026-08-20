@@ -356,6 +356,7 @@ export const uk: Dictionary = {
     openMenu: "Відкрити меню", closeMenu: "Закрити меню",
     broadcasts: "Розсилки",
     flows: "Автоматизації",
+    abandoned: "Покинуті кошики",
     members: "Учасники",
     legal: "Правові сторінки",
     dataRequests: "Запити щодо даних",

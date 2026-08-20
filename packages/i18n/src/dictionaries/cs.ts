@@ -353,6 +353,7 @@ export const cs: Dictionary = {
     openMenu: "Otevřít menu", closeMenu: "Zavřít menu",
     broadcasts: "Hromadné e-maily",
     flows: "Automatizace",
+    abandoned: "Opuštěné košíky",
     members: "Členové",
     legal: "Právní stránky",
     dataRequests: "Žádosti o údaje",

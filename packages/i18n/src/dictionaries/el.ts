@@ -358,6 +358,7 @@ export const el: Dictionary = {
     openMenu: "Άνοιγμα μενού", closeMenu: "Κλείσιμο μενού",
     broadcasts: "Αποστολές",
     flows: "Αυτοματισμοί",
+    abandoned: "Εγκαταλελειμμένα καλάθια",
     members: "Μέλη",
     legal: "Νομικές σελίδες",
     dataRequests: "Αιτήματα δεδομένων",

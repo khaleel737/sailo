@@ -353,6 +353,7 @@ export const da: Dictionary = {
     openMenu: "Åbn menu", closeMenu: "Luk menu",
     broadcasts: "Udsendelser",
     flows: "Automatiseringer",
+    abandoned: "Forladte kurve",
     members: "Medlemmer",
     legal: "Juridiske sider",
     dataRequests: "Dataanmodninger",

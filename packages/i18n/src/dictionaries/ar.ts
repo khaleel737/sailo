@@ -388,6 +388,7 @@ export const ar: Dictionary = {
     clients: "العملاء", reviews: "التقييمات", coupons: "أكواد الخصم", affiliates: "المسوّقون",
     payments: "طرق الدفع", delivery: "التوصيل", settings: "الإعدادات",
     checkin: "تسجيل الحضور",
+    abandoned: "سلال متروكة",
     viewShop: "عرض المتجر", signOut: "تسجيل الخروج", upgrade: "ترقية",
     openMenu: "فتح القائمة", closeMenu: "إغلاق القائمة",
     broadcasts: "الرسائل الجماعية",

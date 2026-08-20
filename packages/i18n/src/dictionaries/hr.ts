@@ -311,6 +311,7 @@ export const hr: Dictionary = {
     signOut: "Odjava", upgrade: "Nadogradi", openMenu: "Otvori izbornik", closeMenu: "Zatvori izbornik",
     broadcasts: "Kampanje",
     flows: "Automatizacije",
+    abandoned: "Napuštene košarice",
     members: "Članovi",
     legal: "Pravne stranice",
     dataRequests: "Zahtjevi za podatke",

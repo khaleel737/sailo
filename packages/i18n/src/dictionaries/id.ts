@@ -311,6 +311,7 @@ export const id: Dictionary = {
     signOut: "Keluar", upgrade: "Tingkatkan", openMenu: "Buka menu", closeMenu: "Tutup menu",
     broadcasts: "Siaran email",
     flows: "Otomatisasi",
+    abandoned: "Keranjang ditinggalkan",
     members: "Anggota",
     legal: "Halaman hukum",
     dataRequests: "Permintaan data",

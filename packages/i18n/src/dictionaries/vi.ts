@@ -315,6 +315,7 @@ export const vi: Dictionary = {
     signOut: "Đăng xuất", upgrade: "Nâng cấp", openMenu: "Mở menu", closeMenu: "Đóng menu",
     broadcasts: "Email hàng loạt",
     flows: "Tự động hóa",
+    abandoned: "Giỏ hàng bỏ dở",
     members: "Thành viên",
     legal: "Trang pháp lý",
     dataRequests: "Yêu cầu dữ liệu",

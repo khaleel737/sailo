@@ -312,6 +312,7 @@ export const fil: Dictionary = {
     signOut: "Mag-sign out", upgrade: "Mag-upgrade", openMenu: "Buksan ang menu", closeMenu: "Isara ang menu",
     broadcasts: "Broadcasts",
     flows: "Mga automation",
+    abandoned: "Naiwang checkout",
     members: "Mga miyembro",
     legal: "Mga legal na pahina",
     dataRequests: "Mga hiling sa datos",

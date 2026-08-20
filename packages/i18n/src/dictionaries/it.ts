@@ -361,6 +361,7 @@ export const it: Dictionary = {
     openMenu: "Apri menu", closeMenu: "Chiudi menu",
     broadcasts: "Invii",
     flows: "Automazioni",
+    abandoned: "Carrelli abbandonati",
     members: "Membri",
     legal: "Pagine legali",
     dataRequests: "Richieste sui dati",
