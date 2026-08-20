@@ -1,0 +1,20 @@
+packages/commerce/src/booking/availability.ts
+  s_16f404b29c0075::t_fb31691ec16640 58-78,81
+  s_16f404b29c0075::t_c0d3aeac914a36 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "cf00197bcb9f80743f6a5b7b0c3dc98ff466e99f",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
