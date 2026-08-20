@@ -486,12 +486,56 @@ export const orders = pgTable(
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (t) => [
-    index("orders_shop_idx").on(t.shopId),
-    // The dashboard asks "this shop, this window" on every load; without
-    // the pair it reads the shop's whole history and filters after.
-    index("orders_shop_created_idx").on(t.shopId, t.createdAt),
+    /*
+     * The one index behind every shop-scoped read of this table.
+     *
+     * `(shop_id, created_at, id)` in exactly that order: the REST and tRPC
+     * order lists keyset over `(created_at, id)` under the shop scope, and a
+     * row-value cursor is only an index qual while the row's columns line up
+     * with consecutive index columns — 0060 added this shape to every other
+     * listed table and skipped orders, the highest-write one of the set. The
+     * bare `(shop_id)` and `(shop_id, created_at)` indexes this replaces are
+     * strict prefixes and were pure write amplification beside it.
+     */
+    index("orders_shop_keyset_idx").on(t.shopId, t.createdAt, t.id),
     index("orders_client_idx").on(t.clientId),
     index("orders_created_idx").on(t.createdAt),
+    /*
+     * The seller dashboard's "open tail": undecided orders plus unpaid
+     * commission. Partial, so it holds only what the dashboard actually
+     * reads — without it, `commission_paid = false` matched every order a
+     * no-affiliate shop ever took, and the admin layout aggregated lifetime
+     * history on every navigation.
+     */
+    index("orders_open_tail_idx")
+      .on(t.shopId)
+      .where(
+        sql`${t.status} in ('new', 'confirmed') or ${t.paymentStatus} = 'pending' or (${t.commissionCents} > 0 and not ${t.commissionPaid})`,
+      ),
+    /*
+     * The orders page's status tabs: `count(*) group by status` per view.
+     * With the pair this is an index-only scan instead of a heap fetch of
+     * the shop's lifetime orders; it also serves the list's status filter.
+     */
+    index("orders_shop_status_idx").on(t.shopId, t.status),
+    /*
+     * The affiliate ledgers. `getShopAffiliates`, the partner portal and
+     * HQ's affiliate list all join or probe orders by `affiliate_id`, which
+     * had no index at all — each probe was a scan of the platform's biggest
+     * OLTP table. Partial: almost every order has no affiliate.
+     */
+    index("orders_affiliate_idx")
+      .on(t.affiliateId)
+      .where(sql`${t.affiliateId} is not null`),
+    /*
+     * `GET /api/v1/orders?email=` filters on `lower(customer_email)` under
+     * the shop scope — clients got exactly this expression index in 0016 and
+     * orders did not, so the filter walked the shop's whole history.
+     */
+    index("orders_shop_email_lower_idx").on(
+      t.shopId,
+      sql`lower(${t.customerEmail})`,
+    ),
     /*
      * Paid, and nobody has delivered it. The one shape four different callers
      * ask about, and the only one of them that had no index.

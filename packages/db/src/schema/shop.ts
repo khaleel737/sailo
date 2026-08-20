@@ -753,5 +753,9 @@ export const stripeEvents = pgTable(
     type: text("type").notNull(),
     processedAt: timestamp("processed_at").defaultNow().notNull(),
   },
-  (t) => [index("stripe_events_type_idx").on(t.type)],
+  (t) => [
+    index("stripe_events_type_idx").on(t.type),
+    // The retention sweep deletes by age; Stripe never redelivers past days.
+    index("stripe_events_processed_idx").on(t.processedAt),
+  ],
 );

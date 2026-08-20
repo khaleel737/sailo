@@ -179,6 +179,13 @@ export const automationRuns = pgTable(
     index("automation_runs_flow_keyset_idx").on(t.automationId, t.enteredAt, t.id),
     index("automation_runs_email_idx").on(t.shopId, t.email),
     /*
+     * The dashboard's expansion tile asks "this shop, entered since" per
+     * load. The `(shop_id, email)` pair above serves the equality but heap-
+     * fetches the shop's lifetime run history to test the date — a fast-
+     * growing table, one row per contact per enrolment.
+     */
+    index("automation_runs_shop_entered_idx").on(t.shopId, t.enteredAt),
+    /*
      * "Never while a run is live", as a constraint rather than a
      * read-then-write. Partial on the live states, which is what lets one
      * index serve both entry policies: `repeat` is allowed to re-enter once

@@ -669,6 +669,9 @@ export const products = pgTable(
     // `is_featured` and `position` sit between `shop_id` and `created_at`.
     index("products_shop_keyset_idx").on(t.shopId, t.createdAt, t.id),
     index("products_category_idx").on(t.categoryId),
+    // HQ's platform products list sorts newest-first across all shops; every
+    // other index here is shop-prefixed, so that sort was a full-table sort.
+    index("products_created_idx").on(t.createdAt),
     /**
      * The storefront's default order, batched. Without this a deep catalogue
      * sorts the whole published set on every batch, so the last batch costs

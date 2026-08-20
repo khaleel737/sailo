@@ -132,6 +132,13 @@ export const checkoutSessions = pgTable(
         sql`${t.status} in ('opened','error','help_requested') and ${t.productId} is null`,
       ),
     index("checkout_sessions_shop_idx").on(t.shopId, t.status, t.openedAt),
+    /*
+     * The conversion funnel counts "this shop, opened between" with no
+     * status pin — `status` in the middle of the pair above blocks the range,
+     * so that read covered the shop's lifetime sessions on every /admin/
+     * analytics view.
+     */
+    index("checkout_sessions_shop_opened_idx").on(t.shopId, t.openedAt),
     index("checkout_sessions_due_idx")
       .on(t.status, t.openedAt)
       .where(sql`${t.status} in ('opened','error')`),

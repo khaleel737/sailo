@@ -45,9 +45,19 @@ export const session = pgTable("session", {
   userId: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-});
+  },
+  /*
+   * HQ lists and revokes a person's sessions by user, and deleting a user
+   * cascades through here — both were sequential scans growing with every
+   * live session on the platform. `two_factor` got its user index in 0008;
+   * these two tables simply never did.
+   */
+  (t) => [index("session_user_idx").on(t.userId)],
+);
 
-export const account = pgTable("account", {
+export const account = pgTable(
+  "account",
+  {
   id: text("id").primaryKey(),
   accountId: text("account_id").notNull(),
   providerId: text("provider_id").notNull(),
@@ -63,7 +73,10 @@ export const account = pgTable("account", {
   password: text("password"),
   createdAt: timestamp("created_at").notNull(),
   updatedAt: timestamp("updated_at").notNull(),
-});
+  },
+  // Every credential sign-in resolves accounts by user; see session's note.
+  (t) => [index("account_user_idx").on(t.userId)],
+);
 
 /**
  * One row per enrolled user, owned by the `twoFactor` plugin. `secret` and
@@ -93,14 +106,19 @@ export const twoFactor = pgTable(
   ],
 );
 
-export const verification = pgTable("verification", {
+export const verification = pgTable(
+  "verification",
+  {
   id: text("id").primaryKey(),
   identifier: text("identifier").notNull(),
   value: text("value").notNull(),
   expiresAt: timestamp("expires_at").notNull(),
   createdAt: timestamp("created_at").$defaultFn(() => new Date()),
   updatedAt: timestamp("updated_at").$defaultFn(() => new Date()),
-});
+  },
+  // better-auth looks tokens up by identifier; without this it is a scan.
+  (t) => [index("verification_identifier_idx").on(t.identifier)],
+);
 
 /* -------------------------------------------------------------------------- */
 /*  Sailo domain                                                              */
