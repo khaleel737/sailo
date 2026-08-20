@@ -1,0 +1,45 @@
+apps/web/src/app/admin/flows/_components/flow-editor.tsx
+  s_a7bbf59e767e8f::t_4e84a27237225c 143-146,148-149
+apps/web/src/lib/actions/flows.ts
+  s_a7bbf59e767e8f::t_705b91bde82137 10
+  s_a7bbf59e767e8f::t_469aff116c2379 254-257
+  s_a7bbf59e767e8f::t_28adf8d40626b6 150-156,159
+  s_a7bbf59e767e8f::t_81655917920708 216-224
+apps/web/src/app/embed/wall/[key]/page.tsx
+  s_a7bbf59e767e8f::t_7fe61910b5e828 143-145,147
+apps/web/src/app/admin/coupons/_components/coupon-form.tsx
+  s_a7bbf59e767e8f::t_0c222314974743 32
+apps/web/src/app/[handle]/_components/testimonial-strip.tsx
+  s_a7bbf59e767e8f::t_3726b29cf2ea35 67-69,71
+apps/web/src/app/admin/flows/[id]/page.tsx
+  s_a7bbf59e767e8f::t_8e7533f54ae8c5 3
+apps/web/src/app/admin/_components/command-palette.tsx
+  s_a7bbf59e767e8f::t_a97e60eb92d5fb 102-103
+apps/web/src/app/admin/_components/account-menu.tsx
+  s_a7bbf59e767e8f::t_41bc2888897041 19
+apps/web/src/app/admin/settings/_components/settings-shell.tsx
+  s_a7bbf59e767e8f::t_4893d94321baa7 77,83
+  s_a7bbf59e767e8f::t_a1645138589d52 76,78-82,84
+  s_a7bbf59e767e8f::t_72717c8d0bddb0 121
+  s_a7bbf59e767e8f::t_e0c2426dd637db 31-38
+  s_a7bbf59e767e8f::t_2e343b2420988a 10
+apps/web/src/app/admin/analytics/page.tsx
+  s_a7bbf59e767e8f::t_429b610a8aa95d 38-39,44
+  s_a7bbf59e767e8f::t_d89fd5c81415bb 33-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "f12ae2bed2ba3a6a0a96c06da59d02a7e4856cb9",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
