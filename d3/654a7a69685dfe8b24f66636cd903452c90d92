@@ -1,0 +1,419 @@
+packages/i18n/src/admin/ja.ts
+  s_55e774cf7959af::t_5eaf3e213e7c31 2132-2134
+  s_55e774cf7959af::t_a682978e0d34c8 109,199-202,235-248,305-318,1392-1395,1609-1610,1794-1807,1822-1845
+  s_55e774cf7959af::t_faff962480b852 832-839,1144,1820-1821
+  s_55e774cf7959af::t_0f98af5550241a 2135
+packages/i18n/src/admin/bs.ts
+  s_55e774cf7959af::t_a682978e0d34c8 828-831,1030-1043,1077-1090,1148,1404-1407,1621-1622,1806-1819,1834-1857
+  s_55e774cf7959af::t_5eaf3e213e7c31 2144-2146
+  s_55e774cf7959af::t_faff962480b852 629-636,779,1832-1833
+  s_55e774cf7959af::t_b4054be161b33a 2147
+packages/i18n/src/admin/fi.ts
+  s_55e774cf7959af::t_5eaf3e213e7c31 2127-2129
+  s_55e774cf7959af::t_faff962480b852 830-837,1142,1815-1816
+  s_55e774cf7959af::t_a682978e0d34c8 109,199-202,235-248,305-318,1387-1390,1604-1605,1789-1802,1817-1840
+  s_55e774cf7959af::t_6776144029f749 2130
+packages/i18n/src/admin/pt.ts
+  s_55e774cf7959af::t_faff962480b852 834-841,1146,1827-1828
+  s_55e774cf7959af::t_5eaf3e213e7c31 2139-2141
+  s_55e774cf7959af::t_a682978e0d34c8 109,199-202,235-248,305-318,1399-1402,1616-1617,1801-1814,1829-1852
+  s_55e774cf7959af::t_74d2f3f5867483 2142
+apps/web/src/app/admin/products/_components/product-menu.tsx
+  s_55e774cf7959af::t_e4d0bb4f7acad7 3,26,50-54
+  s_55e774cf7959af::t_1be385c4f71501 1-2,4-25,27-49,55-128
+apps/web/src/app/api/export/[type]/route.ts
+  s_55e774cf7959af::t_83e8c3e8d7b685 7,10,43-60
+apps/web/src/app/admin/_components/timezone-select.tsx
+  s_55e774cf7959af::t_19342cbbb8eea0 47-53,55,63
+  s_55e774cf7959af::t_fc5c2ff72db36e 1-46,54,56-62,64-97
+apps/web/src/app/admin/_components/record-nav.tsx
+  s_55e774cf7959af::t_de456b6eecb015 1-66
+apps/web/src/app/admin/orders/_components/order-actions.tsx
+  s_55e774cf7959af::t_2a208785cb579e 5
+  s_55e774cf7959af::t_dac9ab6da23b06 29-45,88,91,129-130
+  s_55e774cf7959af::t_8b403105bb888d 54-63
+apps/web/src/app/admin/_components/learn-more.tsx
+  s_55e774cf7959af::t_50c9cce5bd157a 1-28
+apps/web/src/app/admin/_components/account-menu.tsx
+  s_55e774cf7959af::t_aee62201e9f8c6 11
+docs/admin-redesign/04-orders.md
+  s_55e774cf7959af::t_f836109fd69193 1-3,6-13,19-22,24,120
+  s_55e774cf7959af::t_82586195a5eb00 121-125
+  s_55e774cf7959af::t_7b4e4f6436a04c 4-5,14-18,23,25-119
+apps/web/src/app/admin/settings/analytics/_components/tracking-form.tsx
+  s_55e774cf7959af::t_b92c964336a05b 45-54
+  s_55e774cf7959af::t_5e23ce5c538b94 3,56
+  s_55e774cf7959af::t_519e657594a875 1-2,4-8,10-40,44,69-79,81-114
+  s_55e774cf7959af::t_b02ea086a9417e 9,41-43,55,57-68,80
+packages/i18n/src/admin/ro.ts
+  s_55e774cf7959af::t_a682978e0d34c8 109,199-202,235-248,305-318,1399-1402,1616-1617,1801-1814,1829-1852
+  s_55e774cf7959af::t_5eaf3e213e7c31 2139-2141
+  s_55e774cf7959af::t_faff962480b852 834-841,1146,1827-1828
+  s_55e774cf7959af::t_e307a03bd2fc7c 2142
+apps/web/src/app/admin/products/[id]/page.tsx
+  s_55e774cf7959af::t_18802bd7456a31 6-11,13-17,32,40-46,95-99,101-107,109-125,169-226
+apps/web/src/app/admin/clients/page.tsx
+  s_55e774cf7959af::t_dc60f9ac031ed2 1-2,186-187
+docs/admin-redesign/08-analytics.md
+  s_55e774cf7959af::t_541b5332adad83 39-42
+  s_55e774cf7959af::t_788b40ee7bb010 1-38
+apps/web/src/lib/session.test.ts
+  s_55e774cf7959af::t_d4e2524b48605a 109-114
+  s_55e774cf7959af::t_e8923663884900 128-134,138,155
+  s_55e774cf7959af::t_cadce18d54edd6 121-127,157
+  s_55e774cf7959af::t_8718780653826b 115-120
+  s_55e774cf7959af::t_6017ba61981aac 102-108
+packages/design-system/src/web/chart/chart-series.tsx
+  s_55e774cf7959af::t_015964678e2515 51-84
+docs/admin-redesign/10-primitives.md
+  s_55e774cf7959af::t_0e366e7f6d76f5 1-27
+apps/web/src/app/admin/_components/sidebar.tsx
+  s_55e774cf7959af::t_eeed65d9b3e581 7,72-78,130-140
+  s_55e774cf7959af::t_1d2f85a2f50a3e 141
+packages/analytics/src/performance.ts
+  s_55e774cf7959af::t_111a05734de04d 137-170
+packages/i18n/src/admin/fil.ts
+  s_55e774cf7959af::t_faff962480b852 631-638,781,1830-1831
+  s_55e774cf7959af::t_5eaf3e213e7c31 2142-2144
+  s_55e774cf7959af::t_a682978e0d34c8 830-833,1032-1045,1079-1092,1150,1402-1405,1619-1620,1804-1817,1832-1855
+  s_55e774cf7959af::t_4934f7d7164b54 2145
+apps/web/src/app/admin/settings/appearance/page.tsx
+  s_55e774cf7959af::t_0304cf51c64870 1-14
+apps/web/src/app/admin/_components/topbar.tsx
+  s_55e774cf7959af::t_3d4d2ad5eda6bc 9-10,67
+apps/web/src/app/admin/orders/[id]/_components/confirm-payment.tsx
+  s_55e774cf7959af::t_105048b3c84409 1-44
+packages/i18n/src/admin/ms.ts
+  s_55e774cf7959af::t_5eaf3e213e7c31 2144-2146
+  s_55e774cf7959af::t_faff962480b852 629-636,779,1832-1833
+  s_55e774cf7959af::t_a682978e0d34c8 828-831,1030-1043,1077-1090,1148,1404-1407,1621-1622,1806-1819,1834-1857
+  s_55e774cf7959af::t_cd30f013acfb19 2147
+packages/design-system/src/chart/types.ts
+  s_55e774cf7959af::t_015964678e2515 35-41
+  s_55e774cf7959af::t_8610b51b166b6f 34
+packages/i18n/src/admin/sl.ts
+  s_55e774cf7959af::t_faff962480b852 629-636,779,1832-1833
+  s_55e774cf7959af::t_5eaf3e213e7c31 2144-2146
+  s_55e774cf7959af::t_a682978e0d34c8 828-831,1030-1043,1077-1090,1148,1404-1407,1621-1622,1806-1819,1834-1857
+  s_55e774cf7959af::t_08097f352a86b9 2147
+packages/i18n/src/admin/sq.ts
+  s_55e774cf7959af::t_5eaf3e213e7c31 2145-2147
+  s_55e774cf7959af::t_faff962480b852 630-637,780,1833-1834
+  s_55e774cf7959af::t_a682978e0d34c8 829-832,1031-1044,1078-1091,1149,1405-1408,1622-1623,1807-1820,1835-1858
+  s_55e774cf7959af::t_70b3acefc64749 2148
+apps/web/src/lib/actions/shop.ts
+  s_55e774cf7959af::t_721c0571a94e96 592-691
+  s_55e774cf7959af::t_61e41e3244f5dd 377
+apps/web/src/app/admin/orders/[id]/_components/copy-address.tsx
+  s_55e774cf7959af::t_a57cc478b5b342 1-43
+packages/i18n/src/admin/it.ts
+  s_55e774cf7959af::t_a682978e0d34c8 109,199-202,235-248,305-318,1389-1392,1606-1607,1791-1804,1819-1842
+  s_55e774cf7959af::t_faff962480b852 832-839,1144,1817-1818
+  s_55e774cf7959af::t_5eaf3e213e7c31 2129-2131
+  s_55e774cf7959af::t_a09e67e56cca1a 2132
+packages/i18n/src/admin/tr.ts
+  s_55e774cf7959af::t_faff962480b852 831-838,1143,1818-1819
+  s_55e774cf7959af::t_5eaf3e213e7c31 2130-2132
+  s_55e774cf7959af::t_a682978e0d34c8 109,199-202,235-248,305-318,1390-1393,1607-1608,1792-1805,1820-1843
+  s_55e774cf7959af::t_d720c739f129a5 2133
+packages/i18n/src/admin/nl.ts
+  s_55e774cf7959af::t_5eaf3e213e7c31 2139-2141
+  s_55e774cf7959af::t_faff962480b852 834-841,1146,1827-1828
+  s_55e774cf7959af::t_a682978e0d34c8 109,199-202,235-248,305-318,1399-1402,1616-1617,1801-1814,1829-1852
+  s_55e774cf7959af::t_e4995211ec7210 2142
+packages/i18n/src/admin/ar.ts
+  s_55e774cf7959af::t_5eaf3e213e7c31 2131-2133
+  s_55e774cf7959af::t_faff962480b852 830-837,1142,1819-1820
+  s_55e774cf7959af::t_a682978e0d34c8 109,199-202,235-248,305-318,1391-1394,1608-1609,1793-1806,1821-1844
+  s_55e774cf7959af::t_ed3fa31e4c1314 2134
+apps/web/src/app/admin/settings/analytics/page.tsx
+  s_55e774cf7959af::t_27f7b81b75a716 1-14
+apps/web/src/app/admin/orders/[id]/page.tsx
+  s_55e774cf7959af::t_85be43a11a370c 555-658
+  s_55e774cf7959af::t_a91f2e9097d473 224-246,256-268,294-307,339-346
+  s_55e774cf7959af::t_19ad237f42b8a6 153-158,161-162,189-194,197-206
+  s_55e774cf7959af::t_75eea5426e4b36 384-389,391,393-422,431-464,514-522
+  s_55e774cf7959af::t_f1063fc523545f 687-718,721-739,857-898
+  s_55e774cf7959af::t_db827c6df378ec 741-786
+  s_55e774cf7959af::t_1bfdaba75079fb 4,8,10,12-13,18-24,27,32-35,44,86,89-90
+  s_55e774cf7959af::t_bda47da7d1166b 207,740,787
+packages/i18n/src/admin/hr.ts
+  s_55e774cf7959af::t_a682978e0d34c8 830-833,1032-1045,1079-1092,1150,1402-1405,1619-1620,1804-1817,1832-1855
+  s_55e774cf7959af::t_5eaf3e213e7c31 2142-2144
+  s_55e774cf7959af::t_faff962480b852 631-638,781,1830-1831
+  s_55e774cf7959af::t_912df3ac7e8690 2145
+packages/i18n/src/admin/es.ts
+  s_55e774cf7959af::t_5eaf3e213e7c31 2127-2129
+  s_55e774cf7959af::t_a682978e0d34c8 109,199-202,235-248,305-318,1387-1390,1604-1605,1789-1802,1817-1840
+  s_55e774cf7959af::t_faff962480b852 830-837,1142,1815-1816
+  s_55e774cf7959af::t_ab932cd5a57067 2130
+docs/admin-redesign/README.md
+  s_55e774cf7959af::t_b78c001d8088eb 65
+  s_55e774cf7959af::t_2ddc3372b5b7ff 68
+  s_55e774cf7959af::t_82586195a5eb00 67
+  s_55e774cf7959af::t_541b5332adad83 66
+  s_55e774cf7959af::t_fcfd6419994e4a 61-64
+  s_55e774cf7959af::t_81344e33da8150 1-60,69-71
+apps/web/src/lib/exporters.ts
+  s_55e774cf7959af::t_eb9ada0b2b755f 2,183-185,187-189,386-387,396
+docs/admin-redesign/09-payments.md
+  s_55e774cf7959af::t_0e366e7f6d76f5 1-50
+packages/i18n/src/admin/no.ts
+  s_55e774cf7959af::t_faff962480b852 834-841,1146,1827-1828
+  s_55e774cf7959af::t_a682978e0d34c8 109,199-202,235-248,305-318,1399-1402,1616-1617,1801-1814,1829-1852
+  s_55e774cf7959af::t_5eaf3e213e7c31 2139-2141
+  s_55e774cf7959af::t_1b83102deb35ba 2142
+packages/i18n/src/admin/de.ts
+  s_55e774cf7959af::t_faff962480b852 830-837,1142,1820-1821
+  s_55e774cf7959af::t_a682978e0d34c8 109,199-202,235-248,305-318,1392-1395,1609-1610,1794-1807,1822-1845
+  s_55e774cf7959af::t_5eaf3e213e7c31 2132-2134
+  s_55e774cf7959af::t_c0cca96a6bf6cc 2135
+apps/web/src/app/admin/settings/appearance/_components/appearance-form.tsx
+  s_55e774cf7959af::t_b92c964336a05b 43-52
+  s_55e774cf7959af::t_ef2bfbe32792be 1-2,4-9,11-38,66-68,70-127
+  s_55e774cf7959af::t_5e23ce5c538b94 3,54
+  s_55e774cf7959af::t_b02ea086a9417e 10,39-42,53,55-65,69
+packages/i18n/src/admin/bg.ts
+  s_55e774cf7959af::t_5eaf3e213e7c31 2144-2146
+  s_55e774cf7959af::t_faff962480b852 629-636,779,1832-1833
+  s_55e774cf7959af::t_a682978e0d34c8 828-831,1030-1043,1077-1090,1148,1404-1407,1621-1622,1806-1819,1834-1857
+  s_55e774cf7959af::t_649e961e330c60 2147
+packages/i18n/src/admin/th.ts
+  s_55e774cf7959af::t_5eaf3e213e7c31 2145-2147
+  s_55e774cf7959af::t_a682978e0d34c8 829-832,1031-1044,1078-1091,1149,1405-1408,1622-1623,1807-1820,1835-1858
+  s_55e774cf7959af::t_faff962480b852 630-637,780,1833-1834
+  s_55e774cf7959af::t_2df1c528ff9bd3 2148
+packages/i18n/src/admin/el.ts
+  s_55e774cf7959af::t_a682978e0d34c8 109,199-202,235-248,305-318,1389-1392,1606-1607,1791-1804,1819-1842
+  s_55e774cf7959af::t_faff962480b852 830-837,1142,1817-1818
+  s_55e774cf7959af::t_5eaf3e213e7c31 2129-2131
+  s_55e774cf7959af::t_e4acdac920c5a1 2132
+apps/web/src/app/admin/page.tsx
+  s_55e774cf7959af::t_663b15e5bd2cac 23
+  s_55e774cf7959af::t_a950b59f7ba51a 28,33-36,38,56-58,76
+  s_55e774cf7959af::t_4c5ed5e6f06291 158,160-166
+packages/commerce/src/catalog/products.ts
+  s_55e774cf7959af::t_940fbfd9a1f7b9 1342-1351,1353-1357,1362-1364,1366-1380,1382-1384,1396,1401-1403,1405-1416,1418
+  s_55e774cf7959af::t_68d0a025a47829 1267-1341,1352,1358-1361,1365,1381,1385-1395,1397-1400,1404,1417
+  s_55e774cf7959af::t_7606211a50e3cd 12
+  s_55e774cf7959af::t_cdcc1f6b3e82c2 1419-1420
+apps/web/src/app/admin/settings/_components/settings-shell.tsx
+  s_55e774cf7959af::t_ddaa651b1d2728 295-298
+  s_55e774cf7959af::t_2b20b036bf702b 70
+  s_55e774cf7959af::t_bdf9bdb18f7521 8,10,16,69,76-77
+  s_55e774cf7959af::t_aee62201e9f8c6 5,19,27,44-56,91-102,163-199,242-259,299-300
+  s_55e774cf7959af::t_812094ebd3a56a 79-80
+apps/web/src/app/admin/products/_components/image-uploader.tsx
+  s_55e774cf7959af::t_6abbdf2ea14aee 65
+  s_55e774cf7959af::t_86a1b03a34edc5 24,27-28,30-34,39,41-57,59-64,77-97,143
+apps/web/src/app/admin/layout.tsx
+  s_55e774cf7959af::t_2b20b036bf702b 68
+  s_55e774cf7959af::t_3d4d2ad5eda6bc 11,102,142
+  s_55e774cf7959af::t_bdf9bdb18f7521 69
+  s_55e774cf7959af::t_c254ca5cde38c6 53-54
+  s_55e774cf7959af::t_6e1da01cfb450e 75
+apps/web/src/app/admin/coupons/_components/coupon-form.tsx
+  s_55e774cf7959af::t_e2a2a801af641b 78-107,109,111,118,134,156,185
+  s_55e774cf7959af::t_133d11d5c46e0a 4,6,21-35,38,47,70-77,108,110,112-117,119-133,135-136,151-155,157-159,170,179-184,186-192,316-349
+  s_55e774cf7959af::t_828cf79d4e69df 350-352
+packages/i18n/src/admin/ko.ts
+  s_55e774cf7959af::t_a682978e0d34c8 830-833,1032-1045,1079-1092,1150,1404-1407,1621-1622,1806-1819,1834-1857
+  s_55e774cf7959af::t_5eaf3e213e7c31 2144-2146
+  s_55e774cf7959af::t_faff962480b852 631-638,781,1832-1833
+  s_55e774cf7959af::t_34e5ddba858e4d 2147
+docs/admin-redesign/05-products.md
+  s_55e774cf7959af::t_665b1dcf0167b6 1-53
+  s_55e774cf7959af::t_b78c001d8088eb 54-58
+packages/i18n/src/admin/zh.ts
+  s_55e774cf7959af::t_a682978e0d34c8 109,199-202,235-248,305-318,1390-1393,1607-1608,1792-1805,1820-1843
+  s_55e774cf7959af::t_faff962480b852 831-838,1143,1818-1819
+  s_55e774cf7959af::t_5eaf3e213e7c31 2130-2132
+  s_55e774cf7959af::t_79019a84fa35b0 2133
+apps/web/src/app/admin/analytics/page.tsx
+  s_55e774cf7959af::t_2f8394bc35619d 1-339,342-358,361-362,364-394,397-414
+  s_55e774cf7959af::t_b8e07001093dbf 340-341,359-360,363,395-396
+packages/i18n/src/admin/uk.ts
+  s_55e774cf7959af::t_faff962480b852 831-838,1143,1818-1819
+  s_55e774cf7959af::t_a682978e0d34c8 109,199-202,235-248,305-318,1390-1393,1607-1608,1792-1805,1820-1843
+  s_55e774cf7959af::t_5eaf3e213e7c31 2130-2132
+  s_55e774cf7959af::t_2841011db09f85 2133
+apps/web/src/app/admin/settings/_components/settings-form.tsx
+  s_55e774cf7959af::t_ed3fa9aebdc359 3
+  s_55e774cf7959af::t_a10ca34be10d18 7
+apps/web/src/app/admin/orders/page.tsx
+  s_55e774cf7959af::t_61458e7722bb1f 9,11,40-45,111-113,140-144,164-166,169,172-174,188,200-207,213-214,217-218,281
+  s_55e774cf7959af::t_dc60f9ac031ed2 1-2,289-290
+docs/admin-redesign/02-settings.md
+  s_55e774cf7959af::t_15a6a9c370b582 1-80
+apps/web/src/app/admin/settings/_components/booking-card.tsx
+  s_55e774cf7959af::t_6abbdf2ea14aee 5
+apps/web/src/app/admin/_components/command-palette.tsx
+  s_55e774cf7959af::t_c254ca5cde38c6 161
+packages/i18n/src/admin/sv.ts
+  s_55e774cf7959af::t_5eaf3e213e7c31 2130-2132
+  s_55e774cf7959af::t_a682978e0d34c8 109,199-202,235-248,305-318,1390-1393,1607-1608,1792-1805,1820-1843
+  s_55e774cf7959af::t_faff962480b852 831-838,1143,1818-1819
+  s_55e774cf7959af::t_9396790ebc9bc8 2133
+packages/i18n/src/admin/hu.ts
+  s_55e774cf7959af::t_a682978e0d34c8 109,199-202,235-248,305-318,1387-1390,1604-1605,1789-1802,1817-1840
+  s_55e774cf7959af::t_faff962480b852 832-839,1144,1815-1816
+  s_55e774cf7959af::t_5eaf3e213e7c31 2127-2129
+  s_55e774cf7959af::t_915bfdf623bc21 2130
+packages/i18n/src/admin/cs.ts
+  s_55e774cf7959af::t_faff962480b852 830-837,1142,1817-1818
+  s_55e774cf7959af::t_5eaf3e213e7c31 2129-2131
+  s_55e774cf7959af::t_a682978e0d34c8 109,199-202,235-248,305-318,1389-1392,1606-1607,1791-1804,1819-1842
+  s_55e774cf7959af::t_9e422601aa8b9d 2132
+apps/web/src/app/admin/_components/topbar-center.tsx
+  s_55e774cf7959af::t_cb9fe1d3e9e02a 1-22
+apps/web/src/app/admin/orders/[id]/_components/order-menu.tsx
+  s_55e774cf7959af::t_a57cc478b5b342 1-109
+apps/web/src/app/admin/payments/page.tsx
+  s_55e774cf7959af::t_642de234366103 1-2,277-278
+apps/web/src/app/admin/_components/save-bar.tsx
+  s_55e774cf7959af::t_7d65f36bf05d7e 77
+  s_55e774cf7959af::t_c25abad568c667 1-64,71-76,90-91,93,95-154
+  s_55e774cf7959af::t_ac5f368dec8443 65-70,81-89,92,94
+  s_55e774cf7959af::t_5e23ce5c538b94 78-80
+packages/i18n/src/admin/pl.ts
+  s_55e774cf7959af::t_5eaf3e213e7c31 2139-2141
+  s_55e774cf7959af::t_faff962480b852 834-841,1146,1827-1828
+  s_55e774cf7959af::t_a682978e0d34c8 109,199-202,235-248,305-318,1399-1402,1616-1617,1801-1814,1829-1852
+  s_55e774cf7959af::t_74079c63779fba 2142
+packages/i18n/src/admin/id.ts
+  s_55e774cf7959af::t_faff962480b852 631-638,781,1832-1833
+  s_55e774cf7959af::t_a682978e0d34c8 830-833,1032-1045,1079-1092,1150,1404-1407,1621-1622,1806-1819,1834-1857
+  s_55e774cf7959af::t_5eaf3e213e7c31 2144-2146
+  s_55e774cf7959af::t_d3809598044993 2147
+packages/i18n/src/admin/ru.ts
+  s_55e774cf7959af::t_5eaf3e213e7c31 2139-2141
+  s_55e774cf7959af::t_faff962480b852 834-841,1146,1827-1828
+  s_55e774cf7959af::t_a682978e0d34c8 109,199-202,235-248,305-318,1399-1402,1616-1617,1801-1814,1829-1852
+  s_55e774cf7959af::t_15dd85821fd84f 2142
+docs/admin-redesign/03-dashboard.md
+  s_55e774cf7959af::t_f836109fd69193 1-40
+  s_55e774cf7959af::t_541b5332adad83 41-44
+docs/admin-redesign/07-growth.md
+  s_55e774cf7959af::t_788b40ee7bb010 1-48
+apps/web/src/app/admin/products/_components/product-form.tsx
+  s_55e774cf7959af::t_150b90dc16c3d9 108,165-170,264-330,396-410,561-564,682-684,686-705
+apps/web/src/lib/actions/products.ts
+  s_55e774cf7959af::t_df01273c05cf95 30,36-37,594-619
+  s_55e774cf7959af::t_cc2830aca947a9 620-621
+apps/web/src/lib/queries/orders.ts
+  s_55e774cf7959af::t_83cb2c1f7bb166 53-77
+  s_55e774cf7959af::t_6e45b189ab000c 52
+apps/web/src/lib/order-lines.ts
+  s_55e774cf7959af::t_59af6868849a15 16-28
+packages/i18n/src/admin/vi.ts
+  s_55e774cf7959af::t_a682978e0d34c8 829-832,1031-1044,1078-1091,1149,1405-1408,1622-1623,1807-1820,1835-1858
+  s_55e774cf7959af::t_faff962480b852 630-637,780,1833-1834
+  s_55e774cf7959af::t_5eaf3e213e7c31 2145-2147
+  s_55e774cf7959af::t_d0b62634972b42 2148
+packages/i18n/src/admin/en.ts
+  s_55e774cf7959af::t_642de234366103 1589-1597
+  s_55e774cf7959af::t_a2e3dbe0d4464b 1265-1266
+  s_55e774cf7959af::t_0c6a6898bac022 104-111
+  s_55e774cf7959af::t_dfcd4743e43e99 14-15
+  s_55e774cf7959af::t_dc60f9ac031ed2 21-22
+  s_55e774cf7959af::t_e6b90b0bb103f9 13,644-662
+  s_55e774cf7959af::t_83cb2c1f7bb166 133-149,164-188
+  s_55e774cf7959af::t_fe379cfb4b91be 2349-2353
+  s_55e774cf7959af::t_e94cba7a01e470 1518-1523
+  s_55e774cf7959af::t_e8babb44364dcb 201-209
+  s_55e774cf7959af::t_8e26aae8739f31 467-468
+  s_55e774cf7959af::t_2b20b036bf702b 1838-1839,2029-2034,2040-2041
+  s_55e774cf7959af::t_de456b6eecb015 663-665
+  s_55e774cf7959af::t_1d422356fbd9a8 302-304,454-466
+  s_55e774cf7959af::t_1c6a2d7339a082 103
+docs/admin-redesign/01-shell.md
+  s_55e774cf7959af::t_15a6a9c370b582 1-51
+packages/analytics/src/dashboard.ts
+  s_55e774cf7959af::t_3b16170d28211d 45-52,118-119
+apps/web/src/lib/actions/bulk-orders.ts
+  s_55e774cf7959af::t_50adc1867d3fa8 45-49,53-54,57,59,108-116,177-185,218-226
+  s_55e774cf7959af::t_e2181a52947f44 1-12,14-44,50-52,55-56,58,60-107,117-176,186-217,227
+  s_55e774cf7959af::t_2ed1ea64267ca8 13
+apps/web/src/app/admin/_components/range-picker.tsx
+  s_55e774cf7959af::t_663b15e5bd2cac 3,71-73,75-77,79,83-88
+  s_55e774cf7959af::t_98039f11651cb0 5,55-61,96,127
+apps/web/src/app/admin/settings/layout.tsx
+  s_55e774cf7959af::t_fafcfa626bff48 1,6-13,15,18-30
+apps/web/src/app/admin/_components/setup-checklist.tsx
+  s_55e774cf7959af::t_e89b642a13f7ec 6-12,18-21,98-118,124-164,176,178,181-183,187-201,207-231,233
+packages/design-system/src/web/chart/chart-plot.tsx
+  s_55e774cf7959af::t_015964678e2515 81-82
+apps/web/src/app/admin/products/page.tsx
+  s_55e774cf7959af::t_ec570fd186331f 57-66
+  s_55e774cf7959af::t_dc60f9ac031ed2 1-2,7,256-257
+apps/web/src/app/admin/payments/_components/stripe-card.tsx
+  s_55e774cf7959af::t_642de234366103 3,136-158
+packages/design-system/src/web/empty-art.tsx
+  s_55e774cf7959af::t_c5f674f83ba913 4-5,7,101-155
+apps/web/src/app/admin/orders/_components/bulk-select.tsx
+  s_55e774cf7959af::t_75588b86d24433 1-290
+packages/i18n/src/admin/sr.ts
+  s_55e774cf7959af::t_5eaf3e213e7c31 2145-2147
+  s_55e774cf7959af::t_faff962480b852 630-637,780,1833-1834
+  s_55e774cf7959af::t_a682978e0d34c8 829-832,1031-1044,1078-1091,1149,1405-1408,1622-1623,1807-1820,1835-1858
+  s_55e774cf7959af::t_55304a473af6d8 2148
+apps/web/src/lib/queries/products.ts
+  s_55e774cf7959af::t_111a05734de04d 415-444
+packages/design-system/src/web/feedback.tsx
+  s_55e774cf7959af::t_1f45aefe1312c9 172-173
+apps/web/src/app/api/admin/palette/route.ts
+  s_55e774cf7959af::t_59af6868849a15 7-8,58-61,64
+packages/i18n/src/admin/fr.ts
+  s_55e774cf7959af::t_a682978e0d34c8 109,199-202,235-248,305-318,1392-1395,1609-1610,1794-1807,1822-1845
+  s_55e774cf7959af::t_5eaf3e213e7c31 2132-2134
+  s_55e774cf7959af::t_faff962480b852 832-839,1144,1820-1821
+  s_55e774cf7959af::t_973a982a429008 2135
+apps/web/src/app/admin/settings/_components/orders-contact-card.tsx
+  s_55e774cf7959af::t_d4e2524b48605a 3,60-64
+  s_55e774cf7959af::t_b04a6f87e059e0 65-66
+packages/i18n/src/admin/da.ts
+  s_55e774cf7959af::t_faff962480b852 830-837,1142,1817-1818
+  s_55e774cf7959af::t_5eaf3e213e7c31 2129-2131
+  s_55e774cf7959af::t_a682978e0d34c8 109,199-202,235-248,305-318,1389-1392,1606-1607,1791-1804,1819-1842
+  s_55e774cf7959af::t_a652e8290cbb73 2132
+docs/admin-redesign/06-customers.md
+  s_55e774cf7959af::t_665b1dcf0167b6 1-31
+apps/web/src/app/globals.css
+  s_55e774cf7959af::t_6dd0854cc1a033 121,297-302
+  s_55e774cf7959af::t_0eb2ceb055b9cd 303-305
+packages/i18n/src/admin/mk.ts
+  s_55e774cf7959af::t_a682978e0d34c8 830-833,1032-1045,1079-1092,1150,1404-1407,1621-1622,1806-1819,1834-1857
+  s_55e774cf7959af::t_faff962480b852 631-638,781,1832-1833
+  s_55e774cf7959af::t_5eaf3e213e7c31 2144-2146
+  s_55e774cf7959af::t_02b074d10bb3d8 2147
+apps/web/src/app/admin/settings/notifications/_components/notifications-form.tsx
+  s_9406ab3eb8c4ae::t_387786b19df9d8 3-7,9-10,14-16,18-36,38-42,44-62,64,67-76,78-82,84-85
+apps/web/src/app/admin/settings/notifications/page.tsx
+  s_9406ab3eb8c4ae::t_f7efd60ff9ba96 1-27
+apps/web/src/app/admin/settings/page.tsx
+  s_55e774cf7959af::t_48822c583c6509 10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "d3654a7a69685dfe8b24f66636cd903452c90d92",
+  "prompts": {},
+  "sessions": {
+    "s_55e774cf7959af": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c11c1133-9671-4ded-9eeb-6f8ca64b8091",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_9406ab3eb8c4ae": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5882dfc1-6729-4b0f-9035-6f19621709d8",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
