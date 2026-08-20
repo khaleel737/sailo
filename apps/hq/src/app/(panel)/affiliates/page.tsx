@@ -8,15 +8,15 @@ import { Mono, ShopCell } from "@/app/_components/hq-ui";
 import { Badge } from "@sailo/design-system/web";
 import { first, getPlatformAffiliates, pageNumber } from "@/lib/platform";
 import { formatMoney } from "@sailo/core/currency";
+import {
+  AFFILIATE_STATUS_TONES,
+  type AffiliateStatus,
+} from "@sailo/commerce/shop-views";
 
 export const metadata: Metadata = { title: "Affiliates" };
 
-const STATUS_TONE = {
-  active: "green",
-  pending: "amber",
-  disabled: "neutral",
-} as const;
-
+/* The status→tone map is `AFFILIATE_STATUS_TONES`, shared with the seller's
+   page; only the labels are this panel's own — staff read the feature name. */
 const SOURCE_LABELS: Record<string, string> = {
   manual: "Added by the seller",
   signup: "Applied on the shop",
@@ -132,8 +132,8 @@ export default async function HqAffiliatesPage({
               <Td label="Status">
                 <Badge
                   tone={
-                    STATUS_TONE[
-                      row.affiliate.status as keyof typeof STATUS_TONE
+                    AFFILIATE_STATUS_TONES[
+                      row.affiliate.status as AffiliateStatus
                     ] ?? "neutral"
                   }
                 >

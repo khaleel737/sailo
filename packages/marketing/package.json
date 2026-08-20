@@ -16,6 +16,7 @@
     "./automations/server": "./src/automations/server.ts",
     "./lifecycle/server": "./src/lifecycle/server.ts",
     "./contact": "./src/contact.ts",
+    "./campaign-status": "./src/campaign-status.ts",
     "./newsletter": "./src/newsletter/index.ts",
     "./newsletter/server": "./src/newsletter/server.ts",
     "./leads/server": "./src/leads/server.ts",

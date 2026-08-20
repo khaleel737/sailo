@@ -22,6 +22,10 @@ import { CopyLink } from "@sailo/design-system/web";
 import { ensurePortalToken, portalUrl } from "@sailo/partners/portal";
 import { getT, getAdminT } from "@/i18n/server";
 import { appOrigin } from "@sailo/core/origin";
+import {
+  AFFILIATE_STATUS_TONES,
+  type AffiliateStatus,
+} from "@sailo/commerce/shop-views";
 
 export const metadata: Metadata = { title: "Affiliates" };
 
@@ -146,13 +150,19 @@ export default async function AdminAffiliatesPage() {
                             {affiliate.code}
                           </code>
                           <Badge tone="blue">{bpToPercent(rate)}%</Badge>
-                          {affiliate.status === "active" ? (
-                            <Badge tone="green">{a.common.active}</Badge>
-                          ) : affiliate.status === "pending" ? (
-                            <Badge tone="amber">{a.common.pending}</Badge>
-                          ) : (
-                            <Badge>{a.common.disabled}</Badge>
-                          )}
+                          <Badge
+                            tone={
+                              AFFILIATE_STATUS_TONES[
+                                affiliate.status as AffiliateStatus
+                              ] ?? "neutral"
+                            }
+                          >
+                            {affiliate.status === "active"
+                              ? a.common.active
+                              : affiliate.status === "pending"
+                                ? a.common.pending
+                                : a.common.disabled}
+                          </Badge>
                           <Badge>
                             {SOURCE_LABEL[affiliate.source] ?? affiliate.source}
                           </Badge>

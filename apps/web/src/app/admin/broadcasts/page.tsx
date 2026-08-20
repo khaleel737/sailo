@@ -21,18 +21,13 @@ import { LockedFeature } from "@/app/admin/_components/locked-feature";
 import { Badge, Button, Card, EmptyState } from "@sailo/design-system/web";
 import { formatMoney } from "@sailo/core/currency";
 import { interpolate } from "@sailo/i18n";
+import { campaignTone } from "@sailo/marketing/campaign-status";
 import { GrowCard } from "./_components/grow-card";
 import { SubscriberList } from "./_components/subscriber-list";
 
 export const metadata: Metadata = { title: "Broadcasts" };
 
-const TONES = {
-  draft: "neutral",
-  scheduled: "blue",
-  queuing: "amber",
-  sending: "amber",
-  sent: "green",
-} as const;
+/* The status→tone map lives beside the vocabulary — shared with /hq. */
 
 /**
  * How many of the list to show before "see everyone".
@@ -254,7 +249,7 @@ export default async function BroadcastsPage() {
                     : ""}
                 </span>
               </span>
-              <Badge tone={TONES[row.status as keyof typeof TONES] ?? "neutral"}>
+              <Badge tone={campaignTone(row.status)}>
                 {a.broadcastStatus[row.status as keyof typeof a.broadcastStatus] ??
                   row.status}
               </Badge>
