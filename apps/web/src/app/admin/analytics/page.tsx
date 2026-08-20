@@ -18,6 +18,7 @@ import { ConversionFunnelPanel } from "@/app/admin/_components/conversion-funnel
 import { RangePicker } from "@/app/admin/_components/range-picker";
 import { analyticsLimit, planFor } from "@sailo/core/plans";
 import { resolveAnalyticsWindow, type DateWindow } from "@sailo/analytics/window";
+import { deltaPercent } from "@sailo/analytics/delta";
 import { Card, PageHeader, Sparkline, Stat } from "@sailo/design-system/web";
 import { formatMoney } from "@sailo/core/currency";
 import { getAdminT, getLocale, getT } from "@/i18n/server";
@@ -45,10 +46,14 @@ function DefTitle({ def, children }: { def: string; children: React.ReactNode })
   );
 }
 
-/** "+12%", "−8%", or nothing when the previous period has nothing to compare. */
+/**
+ * "+12%", "−8%", or nothing when the previous period is too small to take an
+ * honest ratio of — `deltaPercent` owns that floor, learned in HQ when one
+ * signup against two hundred and eleven rendered as "+21000%".
+ */
 function deltaLabel(now: number, then: number): string | null {
-  if (then <= 0) return null;
-  const pct = Math.round(((now - then) / then) * 100);
+  const pct = deltaPercent(now, then);
+  if (pct === null) return null;
   return pct === 0 ? "±0%" : pct > 0 ? `+${pct}%` : `−${Math.abs(pct)}%`;
 }
 

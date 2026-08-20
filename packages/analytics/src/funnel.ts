@@ -64,6 +64,12 @@ export async function getConversionFunnel(
     sessions,
     reachedCheckout: Number(checkoutRow?.n ?? 0),
     completed,
-    conversion: sessions > 0 ? completed / sessions : null,
+    /*
+     * Capped at 1. `sessions` is client-recorded and ad-block suppressed,
+     * while checkouts and orders are server-recorded — a shop whose visitors
+     * block analytics can genuinely record more orders than sessions, and
+     * "conversion over 100%" is a measurement artefact, not a rate.
+     */
+    conversion: sessions > 0 ? Math.min(completed / sessions, 1) : null,
   };
 }

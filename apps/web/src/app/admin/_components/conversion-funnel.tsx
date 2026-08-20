@@ -42,7 +42,11 @@ export async function ConversionFunnelPanel({ funnel }: { funnel: ConversionFunn
       ) : (
         <div className="space-y-3">
           {stages.map((stage) => {
-            const share = funnel.sessions > 0 ? stage.count / funnel.sessions : 0;
+            /* Capped at 1: sessions are client-recorded and ad-block
+               suppressed, the other stages are server-recorded — see the
+               matching cap on `conversion` in @sailo/analytics/funnel. */
+            const share =
+              funnel.sessions > 0 ? Math.min(stage.count / funnel.sessions, 1) : 0;
             return (
               <div key={stage.label}>
                 <div className="mb-1 flex items-baseline justify-between gap-2 text-xs">

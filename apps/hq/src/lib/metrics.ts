@@ -9,6 +9,7 @@
  */
 import { isPlanId, PLANS, type PlanId } from "@sailo/core/plans";
 import { formatMoney } from "@sailo/core/currency";
+import { deltaPercent } from "@sailo/analytics/delta";
 
 /** The billing columns every calculation here needs. */
 export type BillingRow = {
@@ -229,10 +230,10 @@ export type Delta = { value: string; direction: "up" | "down" | "flat" };
  * a number the overview really did display. It reads as a data error, and the
  * fact underneath it — "211, against 1" — is both smaller and more useful.
  *
- * Ten, because that is roughly where a percentage stops swinging wildly on one
- * extra event. Under it, the counts are reported instead.
+ * The floor itself lives in `@sailo/analytics/delta` now, shared with the
+ * seller analytics page — which had its own copy of the arithmetic without
+ * this guard, and displayed the "+21000%" this comment describes.
  */
-const MIN_BASE_FOR_PERCENT = 10;
 
 /**
  * Period-on-period change, phrased for a tile.
@@ -254,14 +255,14 @@ export function deltaOf(current: number, previous: number): Delta {
     };
   }
 
-  if (previous < MIN_BASE_FOR_PERCENT) {
+  const percent = deltaPercent(current, previous);
+  if (percent === null) {
     return {
       value: `${current.toLocaleString()} vs ${previous.toLocaleString()}`,
       direction: diff > 0 ? "up" : "down",
     };
   }
 
-  const percent = Math.round((diff / previous) * 100);
   return {
     value: `${sign}${Math.abs(percent)}% vs previous`,
     direction: diff > 0 ? "up" : "down",
