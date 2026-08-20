@@ -98,7 +98,16 @@ export async function GET(
      * an abandoned checkout's calendar entry carries the date and not the link.
      */
     url: event.joinUrl,
-    timeZone: record.product?.eventTimeZone ?? record.shop.timeZone,
+    /*
+     * This event's own zone, falling back to the shop's.
+     *
+     * From `event`, not from `record.product` — that is the *order header's*
+     * product, and a basket holding a mug and a webinar would have labelled the
+     * webinar with whatever zone the mug's row carried. `DTSTART` is UTC either
+     * way, so the instant was never wrong; the label a reader in London sees
+     * beside it was.
+     */
+    timeZone: event.timeZone ?? record.shop.timeZone,
     organizer: {
       name: record.shop.name,
       email: record.shop.contactEmail,

@@ -1014,6 +1014,82 @@ describe("giving a ticket back", () => {
     expect(await tierSold(vip.id)).toBe(0);
   });
 
+  /*
+   * A preorder holds no seat, so cancelling it must give none back.
+   *
+   * `takesPreorders` is `preorderEnabled === true` with no restriction on kind,
+   * so an event whose room is full can still take orders — and the band may
+   * have seats even when the room does not. That line claims the tier, fails on
+   * the room, and `claimEventCapacity` compensates: net zero, correctly.
+   *
+   * The trap is what gets *written*. `order_items.tier_id` is the restock
+   * path's only evidence, and a row carrying it is indistinguishable months
+   * later from one whose seat was really claimed — so a cancelled preorder
+   * would decrement `event_tiers.sold` for a seat this order never held, taking
+   * it from somebody who did. Every cancelled preorder drifts the band down by
+   * one, and the band oversells by that many on the night.
+   *
+   * Invisible in every other direction: the order is right, the ticket is
+   * right, the room is right, and the counter is wrong.
+   */
+  it("gives a band nothing back for a preorder that never held a seat", async () => {
+    const shop = await makeSellingShop();
+    // A room of one, so the second buyer preorders. The band has thirty.
+    const event = await makeEvent(shop.id, 1, { preorderEnabled: true });
+    const vip = await makeTier(event.id, "VIP", 30);
+
+    // Somebody real takes the last seat in the room, against the band.
+    const sold = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: event.id, quantity: 1, tierId: vip.id }],
+      ...buyer,
+    });
+    if (!sold.ok) throw new Error(sold.error);
+    expect(await tierSold(vip.id)).toBe(1);
+
+    // The room is empty now, so this one is a preorder: the band is claimed,
+    // the room refuses, and the compensation hands the band's seat straight
+    // back. Net zero — the counter still reads the one real holder.
+    const pre = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: event.id, quantity: 1, tierId: vip.id }],
+      ...buyer,
+    });
+    if (!pre.ok) throw new Error(pre.error);
+    expect(await tierSold(vip.id)).toBe(1);
+
+    // So the line must not claim to hold one.
+    const [item] = await db.query.orderItems.findMany({
+      where: eq(orderItems.orderId, pre.orderId),
+    });
+    expect(item?.tierId).toBeNull();
+
+    // The ticket still knows which band was bought — that is not the restock's
+    // evidence, and losing it would take the band off the door list.
+    const [minted] = await db.query.tickets.findMany({
+      where: eq(tickets.orderId, pre.orderId),
+    });
+    expect(minted?.tier).toBe("VIP");
+
+    const order = await db.query.orders.findFirst({
+      where: eq(orders.id, pre.orderId),
+    });
+    if (!order) throw new Error("order vanished");
+    await restoreStock(order);
+
+    /*
+     * **The seat belonging to the real buyer is still theirs.**
+     *
+     * This is the assertion the whole test exists for, and it needs the sale
+     * above to be meaningful: with nobody holding a seat the counter is already
+     * zero and `greatest(sold - n, 0)` floors the theft out of sight. One real
+     * holder is what makes the drift visible — without the fix this reads 0,
+     * the band believes it has thirty seats free when it has twenty-nine, and
+     * one person arrives to a seat that was sold twice.
+     */
+    expect(await tierSold(vip.id)).toBe(1);
+  });
+
   it("takes the seat off again when the seller un-cancels", async () => {
     const shop = await makeSellingShop();
     const event = await makeEvent(shop.id, 100, { sessionMode: "pick_one" });

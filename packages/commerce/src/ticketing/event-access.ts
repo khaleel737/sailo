@@ -49,6 +49,15 @@ export type EventAccess = {
   online: boolean;
   /** True when the order has not been released — so the buyer can be told. */
   locked: boolean;
+  /**
+   * The zone the seller means, for a calendar entry's `TZID` — spec 50.
+   *
+   * Carried on the row rather than looked up by the caller, because the caller
+   * has the *order* and an order may hold two events: reading
+   * `order.productId`'s zone would label a webinar with the zone of the mug
+   * that happened to be the order's first line. Null falls back to the shop's.
+   */
+  timeZone: string | null;
 };
 
 export async function eventAccessForOrder(order: Order): Promise<EventAccess[]> {
@@ -78,6 +87,7 @@ export async function eventAccessForOrder(order: Order): Promise<EventAccess[]> 
       eventStartsAt: true,
       eventEndsAt: true,
       eventJoinUrl: true,
+      eventTimeZone: true,
       serviceMode: true,
       serviceLocation: true,
     },
@@ -136,6 +146,8 @@ export async function eventAccessForOrder(order: Order): Promise<EventAccess[]> 
       title: product.title,
       online,
       locked: !released,
+      // This event's own zone, not the order header product's.
+      timeZone: product.eventTimeZone,
     };
 
     const dates = datesByProduct.get(product.id);

@@ -8,7 +8,11 @@ import { upsertClient } from "@sailo/commerce/orders/server";
 import { saveAnswers } from "@sailo/marketing/contacts/server";
 import { markSessionPaid } from "@sailo/commerce/recovery/server";
 import { referralFor } from "@sailo/workflows/orders";
-import type { OrderIntentInput, OrderIntentResult } from "@sailo/commerce/orders";
+import type {
+  OrderIntentInput,
+  OrderIntentResult,
+  ResolvedLine,
+} from "@sailo/commerce/orders";
 import { firstRow } from "@sailo/core/invariant";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
@@ -26,7 +30,6 @@ import { bankDetailLines, buildHandoff, type Handoff } from "@/lib/payments";
 import { COUPON_MESSAGES, toChargeableTotals } from "@sailo/core/pricing";
 import { createInvoiceForOrder, newInvoiceToken } from "@/lib/invoices";
 import { can } from "@sailo/core/plans";
-import { type QuoteLine } from "@sailo/core/quote";
 import { variantLabel } from "@sailo/core/variants";
 import { releaseStock, reserveStock } from "@sailo/commerce/catalog";
 import { handOffSubscription, handOffToStripe } from "@sailo/commerce/orders/server";
@@ -86,7 +89,7 @@ import { emitOrderWebhook } from "@sailo/webhooks/emit";
  * (`@sailo/commerce`, `@sailo/payments`, `@sailo/workflows`). What is left is the order they
  * happen in.
 */
-async function releaseStockFor(lines: QuoteLine[]): Promise<void> {
+async function releaseStockFor(lines: ResolvedLine[]): Promise<void> {
   for (const line of lines) {
     /*
      * A ticket gives back every level it took — spec 50.
@@ -129,12 +132,16 @@ async function releaseStockFor(lines: QuoteLine[]): Promise<void> {
  * in the product today — those take the ordinary `reserveStock` path unchanged,
  * and `claimEventCapacity` would do exactly that anyway. The branch exists so
  * the non-event path keeps the shape `orders.test.ts` pins by source position.
+ *
+ * **Takes a `ResolvedLine`, not a `QuoteLine`, and that is load-bearing.** Two
+ * of the four fields come off `line.product` — whether the product counts units
+ * at all, and whether a pass admits every date — and a `QuoteLine` has no
+ * product. Typed loosely with an optional `product`, a caller handing over
+ * `priced.lines` would compile, silently default `allAccess` to false, and
+ * release a session seat an `all_access` pass never took. `taken` carries
+ * resolved lines, so this is what it already is; the type now says so.
  */
-function eventClaimFor(
-  line: Pick<QuoteLine, "productId" | "variantId" | "quantity" | "tierId" | "sessionId"> & {
-    product?: { trackInventory: boolean; sessionMode: string | null };
-  },
-): EventCapacityClaim | null {
+function eventClaimFor(line: ResolvedLine): EventCapacityClaim | null {
   if (!line.tierId && !line.sessionId) return null;
   return {
     productId: line.productId,
@@ -149,12 +156,12 @@ function eventClaimFor(
      * add units to a product that is not tracking, and `reserveStock` is only
      * ever called from here with the real row, in `createOrderIntent` below.
      */
-    trackInventory: line.product?.trackInventory ?? true,
+    trackInventory: line.product.trackInventory,
     /*
      * A pass claims the room, not a day of it — and it never carries a session
      * id, so this is belt and braces on a line that already cannot name one.
      */
-    allAccess: line.product?.sessionMode === "all_access",
+    allAccess: line.product.sessionMode === "all_access",
   };
 }
 
@@ -170,7 +177,7 @@ function eventClaimFor(
  * Rethrows rather than swallowing — the caller still failed, and the buyer
  * still needs to hear so.
  */
-function releasingStock(taken: QuoteLine[]) {
+function releasingStock(taken: ResolvedLine[]) {
   return async (error: unknown): Promise<never> => {
     await releaseStockFor(taken);
     throw error;
@@ -528,7 +535,7 @@ export async function createOrderIntent(
     }),
   );
 
-  const taken: QuoteLine[] = reservations.filter((r) => r.ok).map((r) => r.line);
+  const taken: ResolvedLine[] = reservations.filter((r) => r.ok).map((r) => r.line);
 
   /*
    * A failed reservation on a preorder line is the expected outcome, not a
@@ -575,6 +582,28 @@ export async function createOrderIntent(
     .filter((r) => !r.ok && r.line.preorder)
     .map((r) => r.line);
   const isPreorderOrder = preordered.length > 0;
+
+  /**
+   * Lines that hold no capacity, because their claim was refused.
+   *
+   * Only a preorder reaches here — every other refusal returned above — and a
+   * preorder is precisely a line that took nothing. `releaseStockFor` already
+   * knows: such a line is absent from `taken`, so it gives nothing back.
+   *
+   * **`restoreStock` cannot know, and that is what this set is for.** It reads
+   * `order_items` months later, and a row carrying `tier_id` is indistinguishable
+   * from one whose seat was actually claimed — so a cancelled preorder would
+   * decrement `event_tiers.sold` for a seat this order never held, handing the
+   * band a seat belonging to somebody who did. Every cancelled preorder drifts
+   * the counter down by one and the band oversells by that many on the night.
+   *
+   * Stock drift a seller can see and correct; `sold` drift is invisible until
+   * the door. So the columns are left null for these lines — which is what the
+   * comment on `order_items.tier_id` already asks for, since it names the
+   * restock path as their reason for existing. Which band was preordered is not
+   * lost: the ticket carries it, both as its `tier` snapshot and its `tier_id`.
+   */
+  const unclaimed = new Set(reservations.filter((r) => !r.ok).map((r) => r.line));
 
   /*
    * The ceiling on preorders, before anything irreversible.
@@ -906,42 +935,55 @@ export async function createOrderIntent(
   // The authoritative list of what was sold, in the same transaction as the
   // header so nothing can ever read the order in a one-line-only state.
   db.insert(orderItems).values(
-    priced.lines.map((line, position) => ({
-      orderId,
-      productId: line.productId,
-      variantId: line.variantId,
-      title: line.title,
-      variantLabel: line.label || null,
-      sku: line.sku,
-      kind: line.kind,
-      imageUrl: line.imageUrl,
-      unitPriceCents: line.unitPriceCents,
-      quantity: line.quantity,
-      subtotalCents: line.subtotalCents,
-      scheduledFor: lines[position]?.scheduledFor ?? null,
-      serviceMode:
-        line.kind === "service"
-          ? (lines[position]?.product.serviceMode ?? null)
-          : null,
-      serviceLocation:
-        line.kind === "service"
-          ? (lines[position]?.product.serviceLocation ?? null)
-          : null,
+    priced.lines.map((line, position) => {
       /*
-       * Which band and which date this line bought — spec 50, and the two
-       * columns that have been on this table since the wave landed with nothing
-       * writing them.
-       *
-       * Not decoration and not analytics: `restoreStock` reads them to know
-       * which band to give the seat back to. Without them a refunded VIP ticket
-       * returns a unit to the room and leaves `event_tiers.sold` at thirty for
-       * ever, so the band is sold out and the room is not — which is the
-       * failure nobody sees until the next on-sale.
+       * The resolved line behind this priced one. `quote` maps its input 1:1,
+       * so the index pairs — the same pairing `scheduledFor` below already
+       * relies on.
        */
-      tierId: line.tierId ?? null,
-      sessionId: line.sessionId ?? null,
-      position,
-    })),
+      const resolved = lines[position];
+      const heldNothing = resolved ? unclaimed.has(resolved) : false;
+      return {
+        orderId,
+        productId: line.productId,
+        variantId: line.variantId,
+        title: line.title,
+        variantLabel: line.label || null,
+        sku: line.sku,
+        kind: line.kind,
+        imageUrl: line.imageUrl,
+        unitPriceCents: line.unitPriceCents,
+        quantity: line.quantity,
+        subtotalCents: line.subtotalCents,
+        scheduledFor: lines[position]?.scheduledFor ?? null,
+        serviceMode:
+          line.kind === "service"
+            ? (lines[position]?.product.serviceMode ?? null)
+            : null,
+        serviceLocation:
+          line.kind === "service"
+            ? (lines[position]?.product.serviceLocation ?? null)
+            : null,
+        /*
+         * Which band and which date this line bought — spec 50, and the two
+         * columns that have been on this table since the wave landed with nothing
+         * writing them.
+         *
+         * Not decoration and not analytics: `restoreStock` reads them to know
+         * which band to give the seat back to. Without them a refunded VIP ticket
+         * returns a unit to the room and leaves `event_tiers.sold` at thirty for
+         * ever, so the band is sold out and the room is not — which is the
+         * failure nobody sees until the next on-sale.
+         *
+         * Null for a line that never claimed — see `unclaimed` above. Writing them
+         * for a preorder would make the restock give away a seat this order never
+         * held.
+         */
+        tierId: heldNothing ? null : (line.tierId ?? null),
+        sessionId: heldNothing ? null : (line.sessionId ?? null),
+        position,
+      };
+    }),
   ),
   // Admissions, one row each, valid only once the release timestamp is set.
   ...(ticketRows.length ? [db.insert(tickets).values(ticketRows)] : []),
