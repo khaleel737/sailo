@@ -1,0 +1,30 @@
+packages/core/src/money/regional.ts
+  s_5a74b4ec056616::t_d1a14d2b574612 27-33,41-42,49-52,85-93
+packages/core/src/money/regional.test.ts
+  s_55e774cf7959af::t_746a32eab09413 271
+  s_5a74b4ec056616::t_3075a741ea04cf 55-58,293
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "f4a4faa89bcfbf2e64c226cb65b4c56d141adf7b",
+  "prompts": {},
+  "sessions": {
+    "s_55e774cf7959af": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c11c1133-9671-4ded-9eeb-6f8ca64b8091",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_5a74b4ec056616": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "09d9ff8c-792d-4483-a67b-d14f394f16c7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
