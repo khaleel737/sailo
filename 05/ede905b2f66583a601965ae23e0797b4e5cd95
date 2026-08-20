@@ -1,0 +1,38 @@
+apps/api/vitest.config.mts
+  s_a7bbf59e767e8f::t_ea1bdc11a3df76 17
+apps/api/src/app/api/v1/contacts/[id]/lists/route.ts
+  s_a7bbf59e767e8f::t_efbf59dbcb901c 67-73,79
+  s_a7bbf59e767e8f::t_cf8d84b33e036d 23
+apps/hq/vitest.scenarios.mts
+  s_a7bbf59e767e8f::t_ea1bdc11a3df76 22
+apps/api/vitest.e2e.mts
+  s_a7bbf59e767e8f::t_ea1bdc11a3df76 18
+apps/web/vitest.scenarios.mts
+  s_a7bbf59e767e8f::t_ea1bdc11a3df76 20
+packages/email/vitest.config.mts
+  s_a7bbf59e767e8f::t_ea1bdc11a3df76 31
+apps/web/vitest.config.mts
+  s_a7bbf59e767e8f::t_ea1bdc11a3df76 18
+apps/docs/vitest.config.mts
+  s_a7bbf59e767e8f::t_ea1bdc11a3df76 26
+apps/hq/vitest.config.mts
+  s_a7bbf59e767e8f::t_ea1bdc11a3df76 23
+knip.json
+  s_a7bbf59e767e8f::t_7acd9798498dad 53,58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "05ede905b2f66583a601965ae23e0797b4e5cd95",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
