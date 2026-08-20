@@ -169,6 +169,7 @@ export const ru: Dictionary = {
     title: "Ваши билеты",
     notReady: "Билеты откроются, когда {shop} подтвердит оплату.",
     admitOne: "Вход для одного",
+    addToCalendar: "Добавить в календарь",
     showAtDoor: "Покажите это на входе.",
     used: "Использован",
     online: "Онлайн-мероприятие",

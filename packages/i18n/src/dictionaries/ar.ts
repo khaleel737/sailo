@@ -201,6 +201,7 @@ export const ar: Dictionary = {
     title: "تذاكرك",
     notReady: "تُفتح تذاكرك بعد أن يؤكّد {shop} دفعتك.",
     admitOne: "دخول لشخص واحد",
+    addToCalendar: "أضف إلى التقويم",
     showAtDoor: "أبرِز هذه التذكرة عند الباب.",
     used: "مستخدمة",
     online: "حدث عبر الإنترنت",

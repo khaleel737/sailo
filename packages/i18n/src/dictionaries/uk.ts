@@ -170,6 +170,7 @@ export const uk: Dictionary = {
     title: "Ваші квитки",
     notReady: "Квитки відкриються, коли {shop} підтвердить оплату.",
     admitOne: "На одну особу",
+    addToCalendar: "Додати в календар",
     showAtDoor: "Покажіть це на вході.",
     used: "Використано",
     online: "Онлайн-подія",

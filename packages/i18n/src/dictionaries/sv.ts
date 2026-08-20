@@ -170,6 +170,7 @@ export const sv: Dictionary = {
     title: "Dina biljetter",
     notReady: "Dina biljetter låses upp när {shop} bekräftar din betalning.",
     admitOne: "Gäller en person",
+    addToCalendar: "Lägg till i kalendern",
     showAtDoor: "Visa den här i dörren.",
     used: "Använd",
     online: "Digitalt evenemang",

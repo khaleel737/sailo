@@ -157,6 +157,7 @@ export const vi: Dictionary = {
     title: "Vé của bạn",
     notReady: "Vé sẽ mở khoá khi {shop} xác nhận thanh toán của bạn.",
     admitOne: "Dành cho một người",
+    addToCalendar: "Thêm vào lịch",
     showAtDoor: "Xuất trình vé này ở cửa vào.",
     used: "Đã dùng",
     online: "Sự kiện trực tuyến",

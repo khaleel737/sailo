@@ -155,6 +155,7 @@ export const fil: Dictionary = {
     title: "Iyong mga ticket",
     notReady: "Mabubuksan ang mga ticket mo kapag kinumpirma ng {shop} ang bayad mo.",
     admitOne: "Para sa isang tao",
+    addToCalendar: "Idagdag sa kalendaryo",
     showAtDoor: "Ipakita ito sa pintuan.",
     used: "Nagamit na",
     online: "Online na event",

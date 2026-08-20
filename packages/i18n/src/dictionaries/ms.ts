@@ -156,6 +156,7 @@ export const ms: Dictionary = {
     title: "Tiket anda",
     notReady: "Tiket terbuka apabila {shop} mengesahkan bayaran anda.",
     admitOne: "Masuk untuk seorang",
+    addToCalendar: "Tambah ke kalendar",
     showAtDoor: "Tunjukkan ini di pintu masuk.",
     used: "Telah digunakan",
     online: "Acara dalam talian",

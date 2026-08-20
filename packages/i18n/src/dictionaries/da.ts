@@ -170,6 +170,7 @@ export const da: Dictionary = {
     title: "Dine billetter",
     notReady: "Dine billetter låses op, når {shop} bekræfter din betaling.",
     admitOne: "Adgang for én",
+    addToCalendar: "Tilføj til kalender",
     showAtDoor: "Vis den her ved indgangen.",
     used: "Brugt",
     online: "Online begivenhed",

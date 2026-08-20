@@ -169,6 +169,7 @@ export const fi: Dictionary = {
     title: "Lippusi",
     notReady: "Lippusi avautuvat, kun {shop} vahvistaa maksusi.",
     admitOne: "Yksi sisäänpääsy",
+    addToCalendar: "Lisää kalenteriin",
     showAtDoor: "Näytä tämä ovella.",
     used: "Käytetty",
     online: "Verkkotapahtuma",

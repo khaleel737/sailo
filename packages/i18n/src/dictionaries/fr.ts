@@ -178,6 +178,7 @@ export const fr: Dictionary = {
     title: "Vos billets",
     notReady: "Vos billets se débloquent dès que {shop} confirme votre paiement.",
     admitOne: "Valable pour une personne",
+    addToCalendar: "Ajouter au calendrier",
     showAtDoor: "Présentez-le à l'entrée.",
     used: "Utilisé",
     online: "Événement en ligne",

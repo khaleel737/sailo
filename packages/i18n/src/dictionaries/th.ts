@@ -155,6 +155,7 @@ export const th: Dictionary = {
     title: "บัตรของคุณ",
     notReady: "บัตรจะปลดล็อกเมื่อ {shop} ยืนยันการชำระเงินของคุณ",
     admitOne: "เข้าได้ 1 คน",
+    addToCalendar: "เพิ่มลงในปฏิทิน",
     showAtDoor: "แสดงบัตรนี้ที่หน้างาน",
     used: "ใช้แล้ว",
     online: "กิจกรรมออนไลน์",

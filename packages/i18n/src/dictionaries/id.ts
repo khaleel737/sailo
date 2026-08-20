@@ -154,6 +154,7 @@ export const id: Dictionary = {
     title: "Tiket Anda",
     notReady: "Tiket terbuka saat {shop} mengonfirmasi pembayaran Anda.",
     admitOne: "Berlaku untuk satu orang",
+    addToCalendar: "Tambahkan ke kalender",
     showAtDoor: "Tunjukkan ini di pintu masuk.",
     used: "Terpakai",
     online: "Acara online",

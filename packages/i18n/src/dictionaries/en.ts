@@ -483,6 +483,7 @@ export const en = {
     title: "Your tickets",
     notReady: "Your tickets unlock once {shop} confirms your payment.",
     admitOne: "Admit one",
+    addToCalendar: "Add to calendar",
     showAtDoor: "Show this at the door.",
     used: "Used",
     online: "Online event",

@@ -156,6 +156,7 @@ export const sq: Dictionary = {
     title: "Biletat tuaja",
     notReady: "Biletat hapen kur {shop} ta konfirmojë pagesën tuaj.",
     admitOne: "Vlen për një person",
+    addToCalendar: "Shto në kalendar",
     showAtDoor: "Tregojeni këtë në hyrje.",
     used: "E përdorur",
     online: "Event online",

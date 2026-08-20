@@ -156,6 +156,7 @@ export const sl: Dictionary = {
     title: "Vaše vstopnice",
     notReady: "Vstopnice se odklenejo, ko {shop} potrdi vaše plačilo.",
     admitOne: "Velja za eno osebo",
+    addToCalendar: "Dodaj v koledar",
     showAtDoor: "Pokažite to ob vhodu.",
     used: "Uporabljena",
     online: "Spletni dogodek",

@@ -170,6 +170,7 @@ export const cs: Dictionary = {
     title: "Vaše vstupenky",
     notReady: "Vstupenky se odemknou, jakmile {shop} potvrdí vaši platbu.",
     admitOne: "Vstup pro jednoho",
+    addToCalendar: "Přidat do kalendáře",
     showAtDoor: "Ukažte to u vchodu.",
     used: "Použitá",
     online: "Online událost",

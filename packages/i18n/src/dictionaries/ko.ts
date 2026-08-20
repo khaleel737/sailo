@@ -154,6 +154,7 @@ export const ko: Dictionary = {
     title: "티켓",
     notReady: "{shop}에서 결제를 확인하면 티켓이 열립니다.",
     admitOne: "1인 입장",
+    addToCalendar: "캘린더에 추가",
     showAtDoor: "입장할 때 이 화면을 보여주세요.",
     used: "사용됨",
     online: "온라인 이벤트",

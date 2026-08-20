@@ -22,6 +22,7 @@ import {
 } from "@sailo/commerce/ticketing";
 import { createOrderIntent } from "@/lib/actions/orders";
 import { previewOrder } from "@/lib/actions/order-preview";
+import { GET } from "@/app/download/[token]/calendar/route";
 import { restoreStock, retakeStock } from "@sailo/commerce/catalog";
 
 /**
@@ -854,6 +855,113 @@ describe("buying a date", () => {
     expect(access[0]?.startsAt?.getTime()).toBe(fourth.startsAt.getTime());
     // And the date's own room, when it has one.
     expect(access[0]?.location).toBe("The big room");
+  });
+
+  /*
+   * The calendar file, served — spec 50.
+   *
+   * `ics.ts` shipped with the wave and had no callers at all: a stable UID, a
+   * SEQUENCE, a VTIMEZONE, and nothing anywhere produced a file. This exercises
+   * the route the delivery page links, through a real order.
+   */
+  it("hands a buyer a calendar entry for the date they bought", async () => {
+    const shop = await makeSellingShop();
+    const event = await makeEvent(shop.id, 100, {
+      sessionMode: "pick_one",
+      serviceMode: "in_person",
+      serviceLocation: "The usual room",
+    });
+    await makeSession(event.id, 10);
+    const second = await makeSession(event.id, 10, {
+      startsAt: new Date(Date.now() + 14 * 24 * 3600 * 1000),
+      location: "The big room",
+    });
+
+    const placed = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: event.id, quantity: 1, sessionId: second.id }],
+      ...buyer,
+    });
+    if (!placed.ok) throw new Error(placed.error);
+
+    const order = await db.query.orders.findFirst({
+      where: eq(orders.id, placed.orderId),
+    });
+    if (!order?.downloadToken) throw new Error("no delivery token");
+
+    const response = await GET(
+      new Request(
+        `http://localhost/download/${order.downloadToken}/calendar` +
+          `?product=${event.id}&session=${second.id}`,
+      ),
+      { params: Promise.resolve({ token: order.downloadToken }) },
+    );
+    expect(response.status).toBe(200);
+    expect(response.headers.get("content-type")).toContain("text/calendar");
+
+    const body = await response.text();
+    // RFC 5545 wants CRLF, and several clients enforce it by refusing the file.
+    expect(body).toContain("\r\n");
+    expect(body).toContain("BEGIN:VCALENDAR");
+    expect(body).toContain("END:VCALENDAR");
+    expect(body).toContain("SUMMARY:Rooftop Show");
+    // The date they bought, not the first of the series — and its own room.
+    expect(body).toContain(
+      `DTSTART:${second.startsAt.toISOString().replace(/[-:]/g, "").split(".")[0]}Z`,
+    );
+    expect(body).toContain("LOCATION:The big room");
+
+    /*
+     * Unfolded before the UID is read, which is how an `.ics` is *meant* to be
+     * parsed and is not a convenience here.
+     *
+     * `UID:<order>-<session>@sailo.store` is 89 octets and the spec's limit is
+     * 75, so `buildIcs` folds it across two lines with a leading space — and a
+     * naive `toContain` on the whole id fails against a file that is perfectly
+     * correct. Asserting on the folded form instead would pin the wrap column,
+     * so the next id one character longer would break the test rather than the
+     * code.
+     */
+    const unfolded = body.replace(/\r\n /g, "");
+    /*
+     * Stable per (order, date). A resend has to update the entry the attendee
+     * already holds rather than adding a second one to their diary, and every
+     * calendar client keys on this.
+     */
+    expect(unfolded).toContain(`UID:${placed.orderId}-${second.id}@sailo.store`);
+  });
+
+  it("refuses a calendar entry for an order that is not this token's", async () => {
+    const shop = await makeSellingShop();
+    const mine = await makeEvent(shop.id, 100);
+    const theirs = await makeEvent(shop.id, 100);
+
+    const placed = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: mine.id, quantity: 1 }],
+      ...buyer,
+    });
+    if (!placed.ok) throw new Error(placed.error);
+    const order = await db.query.orders.findFirst({
+      where: eq(orders.id, placed.orderId),
+    });
+    if (!order?.downloadToken) throw new Error("no delivery token");
+
+    // A product this order never bought is not this order's to put in a diary.
+    const response = await GET(
+      new Request(
+        `http://localhost/download/${order.downloadToken}/calendar?product=${theirs.id}`,
+      ),
+      { params: Promise.resolve({ token: order.downloadToken }) },
+    );
+    expect(response.status).toBe(404);
+
+    // And a token nobody issued gets nothing at all.
+    const forged = await GET(
+      new Request("http://localhost/download/not-a-token/calendar"),
+      { params: Promise.resolve({ token: "not-a-token" }) },
+    );
+    expect(forged.status).toBe(404);
   });
 
   it("takes the room and no date's seats for an all-access pass", async () => {

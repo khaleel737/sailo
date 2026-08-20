@@ -171,6 +171,7 @@ export const tr: Dictionary = {
     title: "Biletleriniz",
     notReady: "{shop} ödemenizi onayladığında biletleriniz açılır.",
     admitOne: "Tek kişilik",
+    addToCalendar: "Takvime ekle",
     showAtDoor: "Bunu kapıda gösterin.",
     used: "Kullanıldı",
     online: "Çevrimiçi etkinlik",

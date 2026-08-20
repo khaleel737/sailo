@@ -168,6 +168,7 @@ export const ro: Dictionary = {
     title: "Biletele tale",
     notReady: "Biletele se deblochează după ce {shop} confirmă plata.",
     admitOne: "Valabil pentru o persoană",
+    addToCalendar: "Adaugă în calendar",
     showAtDoor: "Arată asta la intrare.",
     used: "Folosit",
     online: "Eveniment online",

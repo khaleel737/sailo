@@ -154,6 +154,7 @@ export const bs: Dictionary = {
     title: "Vaše ulaznice",
     notReady: "Ulaznice se otključavaju kada {shop} potvrdi vašu uplatu.",
     admitOne: "Vrijedi za jednu osobu",
+    addToCalendar: "Dodaj u kalendar",
     showAtDoor: "Pokažite ovo na ulazu.",
     used: "Iskorištena",
     online: "Online događaj",

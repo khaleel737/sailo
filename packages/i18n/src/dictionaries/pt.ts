@@ -172,6 +172,7 @@ export const pt: Dictionary = {
     title: "Os seus bilhetes",
     notReady: "Os seus bilhetes ficam disponíveis quando {shop} confirmar o pagamento.",
     admitOne: "Válido para uma pessoa",
+    addToCalendar: "Adicionar ao calendário",
     showAtDoor: "Mostre isto à porta.",
     used: "Utilizado",
     online: "Evento online",

@@ -156,6 +156,7 @@ export const mk: Dictionary = {
     title: "Вашите билети",
     notReady: "Билетите се отклучуваат кога {shop} ќе ја потврди вашата уплата.",
     admitOne: "Влез за едно лице",
+    addToCalendar: "Додај во календар",
     showAtDoor: "Покажете го ова на влезот.",
     used: "Искористен",
     online: "Онлајн настан",

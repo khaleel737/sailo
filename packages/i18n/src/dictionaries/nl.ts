@@ -172,6 +172,7 @@ export const nl: Dictionary = {
     title: "Jouw tickets",
     notReady: "Je tickets komen vrij zodra {shop} je betaling bevestigt.",
     admitOne: "Geldig voor één persoon",
+    addToCalendar: "Toevoegen aan agenda",
     showAtDoor: "Laat dit bij de deur zien.",
     used: "Gebruikt",
     online: "Online evenement",

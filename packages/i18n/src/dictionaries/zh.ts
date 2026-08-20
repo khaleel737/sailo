@@ -201,6 +201,7 @@ export const zh: Dictionary = {
     title: "你的门票",
     notReady: "{shop} 确认收款后，门票即可使用。",
     admitOne: "单人入场",
+    addToCalendar: "添加到日历",
     showAtDoor: "入场时出示此票。",
     used: "已使用",
     online: "线上活动",

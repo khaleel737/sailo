@@ -28,6 +28,16 @@ import { orderLines } from "../orders/order-lines";
 
 export type EventAccess = {
   productId: string;
+  /**
+   * Which date this row is, when the order named one — spec 50.
+   *
+   * Null for an event that runs once, which is every event without sessions.
+   * It is also what makes a row *identifiable*: this list used to hold at most
+   * one entry per product and is now one per date, so `productId` alone is no
+   * longer unique and anything keying on it — a React list, a calendar UID —
+   * would collapse two dates into one.
+   */
+  sessionId: string | null;
   title: string;
   startsAt: Date | null;
   /** When it is over, when the seller said. Null when they did not. */
@@ -116,7 +126,10 @@ export async function eventAccessForOrder(order: Order): Promise<EventAccess[]> 
     datesByProduct.set(session.productId, list);
   }
 
-  return rows.flatMap((product) => {
+  // Annotated, because the two branches below infer as a union of two array
+  // types rather than one array of the union — `sessionId: string` from the
+  // dated branch and `sessionId: null` from the fallback.
+  return rows.flatMap((product): EventAccess[] => {
     const online = product.serviceMode === "online";
     const base = {
       productId: product.id,
@@ -129,6 +142,7 @@ export async function eventAccessForOrder(order: Order): Promise<EventAccess[]> 
     if (dates?.length) {
       return dates.map((session) => ({
         ...base,
+        sessionId: session.id,
         startsAt: session.startsAt,
         endsAt: session.endsAt,
         /*
@@ -146,6 +160,7 @@ export async function eventAccessForOrder(order: Order): Promise<EventAccess[]> 
     return [
       {
         ...base,
+        sessionId: null,
         startsAt: product.eventStartsAt,
         endsAt: product.eventEndsAt,
         joinUrl: released && online ? product.eventJoinUrl : null,

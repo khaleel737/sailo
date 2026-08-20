@@ -169,6 +169,7 @@ export const no: Dictionary = {
     title: "Billettene dine",
     notReady: "Billettene dine låses opp når {shop} bekrefter betalingen din.",
     admitOne: "Gjelder for én person",
+    addToCalendar: "Legg til i kalenderen",
     showAtDoor: "Vis denne ved døren.",
     used: "Brukt",
     online: "Digitalt arrangement",

@@ -201,6 +201,7 @@ export const ja: Dictionary = {
     title: "チケット",
     notReady: "{shop}が入金を確認するとチケットが開きます。",
     admitOne: "1名様入場",
+    addToCalendar: "カレンダーに追加",
     showAtDoor: "入場時にこちらをご提示ください。",
     used: "使用済み",
     online: "オンラインイベント",

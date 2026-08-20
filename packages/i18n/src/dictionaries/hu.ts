@@ -170,6 +170,7 @@ export const hu: Dictionary = {
     title: "A jegyeid",
     notReady: "A jegyeid akkor nyílnak meg, ha a(z) {shop} visszaigazolja a fizetést.",
     admitOne: "Egy fő belépésére jogosít",
+    addToCalendar: "Hozzáadás a naptárhoz",
     showAtDoor: "Mutasd fel a bejáratnál.",
     used: "Felhasználva",
     online: "Online esemény",
