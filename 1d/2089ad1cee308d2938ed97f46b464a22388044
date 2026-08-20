@@ -1,0 +1,65 @@
+apps/web/src/app/admin/_components/command-palette.tsx
+  s_5a74b4ec056616::t_52d0076cccde10 23,75
+apps/web/src/app/admin/flows/[id]/page.tsx
+  s_5a74b4ec056616::t_7ddeea54a7c424 181-183
+apps/web/src/lib/actions/recovery.ts
+  s_5a74b4ec056616::t_9419bc9d3558b7 1-26
+packages/analytics/src/queries.ts
+  s_5a74b4ec056616::t_340bc5bbc0ff70 26
+apps/web/src/app/admin/_components/sidebar.tsx
+  s_5a74b4ec056616::t_52d0076cccde10 25,91-94,147
+apps/web/src/lib/session.test.ts
+  s_5a74b4ec056616::t_7279ed39cb3f4d 62,96-101,105,122,124
+apps/web/src/app/admin/flows/_components/new-flow-form.tsx
+  s_5a74b4ec056616::t_a959d5c44eac51 83,90-91,98,115,129,139-143
+  s_5a74b4ec056616::t_93490dbc7cc3e7 20
+  s_9406ab3eb8c4ae::t_0e9adbbe9c5cad 144-145
+apps/web/src/app/admin/layout.tsx
+  s_5a74b4ec056616::t_52d0076cccde10 47
+apps/web/src/app/admin/_components/conversion-funnel.tsx
+  s_5a74b4ec056616::t_8cd6ba43bfa828 1-71
+apps/web/src/replica.test.ts
+  s_5a74b4ec056616::t_4d6324861fb5c4 156-161
+apps/web/src/lib/actions/flows.ts
+  s_5a74b4ec056616::t_6e96daab6f6137 109-121
+  s_5a74b4ec056616::t_f4bbc66e7a3754 52-53,58-59
+  s_5a74b4ec056616::t_a05e498abf0ba5 144-145
+  s_9406ab3eb8c4ae::t_07c18baf74cc9e 60
+apps/web/src/app/admin/flows/_components/flow-editor.tsx
+  s_5a74b4ec056616::t_7ddeea54a7c424 72,123-124,190
+packages/analytics/src/funnel.ts
+  s_5a74b4ec056616::t_35020bc21bff31 1-69
+apps/web/src/app/admin/page.tsx
+  s_5a74b4ec056616::t_9a16d3df0944a8 9,24,85,103,333
+  s_5a74b4ec056616::t_c0c98686dcad83 334
+apps/web/src/app/admin/abandoned/page.tsx
+  s_5a74b4ec056616::t_1cc45b6cf04a73 1-158
+apps/web/src/app/admin/flows/page.tsx
+  s_5a74b4ec056616::t_7ddeea54a7c424 68
+apps/web/src/app/admin/abandoned/_components/recovery-toggle.tsx
+  s_5a74b4ec056616::t_8efad9251a4a41 1-30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "1d2089ad1cee308d2938ed97f46b464a22388044",
+  "prompts": {},
+  "sessions": {
+    "s_5a74b4ec056616": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "09d9ff8c-792d-4483-a67b-d14f394f16c7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_9406ab3eb8c4ae": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5882dfc1-6729-4b0f-9035-6f19621709d8",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
