@@ -1,0 +1,34 @@
+packages/analytics/src/funnel.ts
+  s_a7bbf59e767e8f::t_041f7f03f57731 67-73
+apps/web/src/app/admin/analytics/page.tsx
+  s_a7bbf59e767e8f::t_20c298971dcc07 21
+  s_a7bbf59e767e8f::t_f03b9b0c5abbd5 49-53,55-56
+packages/analytics/package.json
+  s_a7bbf59e767e8f::t_4de10e0f67ec38 18-19
+apps/hq/src/lib/metrics.ts
+  s_a7bbf59e767e8f::t_d50931cfa63f92 258-259
+  s_a7bbf59e767e8f::t_754c5013110521 233-235
+  s_a7bbf59e767e8f::t_96fb829474a9cc 12
+apps/web/src/app/admin/_components/conversion-funnel.tsx
+  s_a7bbf59e767e8f::t_f4e17900747368 45-49
+packages/analytics/src/delta.ts
+  s_a7bbf59e767e8f::t_378639c5db19ad 1-26
+packages/analytics/src/delta.test.ts
+  s_a7bbf59e767e8f::t_76ff088c1e4b90 1-21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "503d03a0d415a48ada51e51b2cfa308c49c7f7cd",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
