@@ -134,14 +134,23 @@ function TestimonialBody({
           title={item.authorName}
           loading="lazy"
           /*
-           * Sandboxed, and the omissions are the point: no `allow-same-origin`,
-           * no `allow-top-navigation`, no `allow-popups`. A video host is not a
-           * party this page trusts with the document around it, and this
-           * document is already inside somebody else's.
+           * Sandboxed, and the omissions are still the point: no popups, no
+           * top navigation — the video plays where it is, inside somebody
+           * else's page. `allow-same-origin` is load-bearing, not a loosening:
+           * without it the frame runs under an opaque origin, the player's own
+           * scripts cannot reach their storage, and YouTube renders a dead
+           * box. The dangerous scripts+same-origin combo only voids a sandbox
+           * when the framed page is your own; this one is youtube-nocookie's.
            */
-          sandbox="allow-scripts allow-presentation"
-          allow="encrypted-media; picture-in-picture"
-          referrerPolicy="no-referrer"
+          sandbox="allow-scripts allow-same-origin allow-presentation"
+          allow="encrypted-media; fullscreen; picture-in-picture"
+          allowFullScreen
+          /*
+           * `origin`, not `no-referrer`: YouTube refuses referrer-less embeds
+           * outright (player error 153). The origin alone satisfies it, and
+           * the path — which on the wall carries the embed key — never leaves.
+           */
+          referrerPolicy="origin"
           className="mb-3 aspect-video w-full rounded-xl border-0"
         />
       ) : null}

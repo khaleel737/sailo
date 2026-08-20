@@ -255,8 +255,11 @@ const nextConfig: NextConfig = {
        */
       `connect-src 'self' https://api.stripe.com https://*.stripe.com ${PIXEL_HOSTS.connect.join(" ")}`,
       // Checkout, the billing portal and Connect onboarding are iframed or
-      // opened by Stripe.js.
-      "frame-src https://js.stripe.com https://hooks.stripe.com https://*.stripe.com",
+      // opened by Stripe.js. The two video hosts are the storefront
+      // testimonial strip's players — the same allowlist the embed wall
+      // carries, because a strip that passes the sandbox and then dies on
+      // frame-src is a black box nobody can diagnose from the page.
+      "frame-src https://js.stripe.com https://hooks.stripe.com https://*.stripe.com https://www.youtube-nocookie.com https://player.vimeo.com",
       "form-action 'self' https://checkout.stripe.com https://*.stripe.com",
       // Nothing here should ever be framed by someone else.
       "frame-ancestors 'none'",

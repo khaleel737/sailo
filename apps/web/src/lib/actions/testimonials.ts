@@ -40,7 +40,8 @@ import type { ActionState } from "@sailo/core/action-state";
 const SUBMIT_MESSAGES: Record<SubmitFailure, string> = {
   name: "Add your name so the shop knows who this is from.",
   empty: "Write a few words, or add a video link.",
-  video: "That video link isn't one we can show — YouTube or Vimeo, please.",
+  video:
+    "That video can't be shown here — it isn't a YouTube or Vimeo link, or its owner has turned off embedding.",
   avatar: "That photo couldn't be used. Try uploading it again.",
   /*
    * One sentence for three causes — no such link, already used, expired. A page

@@ -205,6 +205,9 @@ export async function submitTestimonial(
     isImage: isRenderableImageUrl,
   });
   if (!parsed.ok) return { ok: false, reason: parsed.reason };
+  if (!(await videoAllowsEmbedding(parsed.value.videoUrl))) {
+    return { ok: false, reason: "video" };
+  }
 
   const claimed = maybeRow(
     await db
@@ -391,6 +394,9 @@ export async function addManualTestimonial(
     isImage: isRenderableImageUrl,
   });
   if (!parsed.ok) return { ok: false, reason: parsed.reason };
+  if (!(await videoAllowsEmbedding(parsed.value.videoUrl))) {
+    return { ok: false, reason: "video" };
+  }
 
   const [row] = await getDb()
     .insert(testimonials)
@@ -481,4 +487,52 @@ export async function askableClients(shopId: string, limit = 100) {
     .where(and(eq(clients.shopId, shopId), sql`${clients.email} is not null`))
     .orderBy(desc(clients.createdAt))
     .limit(limit);
+}
+
+/* --------------------------------------------------------------------------
+   Whether the host will actually serve the video in a frame
+-------------------------------------------------------------------------- */
+
+/**
+ * Asks the video's own host whether an embed would play, at the write.
+ *
+ * `isEmbeddableVideoUrl` checks the *shape*; this checks the *fact*. A video
+ * whose owner disabled embedding passes every shape check and then renders as
+ * "Video unavailable" on the seller's wall — a black box on a public page,
+ * discovered by a visitor rather than the person who pasted the link. Both
+ * hosts answer the question over oEmbed with a definitive 4xx.
+ *
+ * Fails open on anything that is not a definitive no — a timeout, a 5xx, a
+ * rate limit. The host's outage is not the seller's mistake, and the render
+ * path re-checks the URL's shape regardless.
+ */
+async function videoAllowsEmbedding(videoUrl: string | null): Promise<boolean> {
+  if (!videoUrl) return true;
+
+  let probe: string;
+  try {
+    const url = new URL(videoUrl);
+    const host = url.hostname.toLowerCase();
+    if (host === "youtu.be" || host.endsWith("youtube.com")) {
+      probe = `https://www.youtube.com/oembed?format=json&url=${encodeURIComponent(videoUrl)}`;
+    } else {
+      // Vimeo's oEmbed wants the canonical page URL, not the player's.
+      const id = url.pathname.replace(/^\/(video\/)?/, "");
+      if (!/^\d+$/.test(id)) return true;
+      probe = `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(`https://vimeo.com/${id}`)}`;
+    }
+  } catch {
+    return true; // Shape problems are readSubmission's refusal, not this one's.
+  }
+
+  try {
+    const answer = await fetch(probe, {
+      signal: AbortSignal.timeout(4_000),
+      headers: { accept: "application/json" },
+    });
+    // Private, embedding disabled, or no such video — the host said no.
+    return ![401, 403, 404].includes(answer.status);
+  } catch {
+    return true;
+  }
 }

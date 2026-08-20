@@ -57,9 +57,23 @@ export function TestimonialStrip({
                   src={video}
                   title={item.authorName}
                   loading="lazy"
-                  sandbox="allow-scripts allow-presentation"
-                  allow="encrypted-media; picture-in-picture"
-                  referrerPolicy="no-referrer"
+                  /*
+                   * `allow-same-origin` is load-bearing: without it the frame
+                   * gets an opaque origin, the player's own scripts cannot
+                   * reach their storage, and YouTube renders a dead box. It is
+                   * safe *because* the frame is cross-origin — the combo only
+                   * voids a sandbox when the framed page is your own. Still no
+                   * popups and no top navigation: the video plays where it is.
+                   */
+                  sandbox="allow-scripts allow-same-origin allow-presentation"
+                  allow="encrypted-media; fullscreen; picture-in-picture"
+                  allowFullScreen
+                  /*
+                   * `origin`, not `no-referrer`: YouTube refuses referrer-less
+                   * embeds outright (player error 153). The origin alone
+                   * satisfies it; the page path never leaves.
+                   */
+                  referrerPolicy="origin"
                   className="mb-3 aspect-video w-full rounded-xl border-0"
                 />
               ) : null}
