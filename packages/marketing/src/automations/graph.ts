@@ -66,6 +66,13 @@ export const TRIGGER_TYPES = [
   "contact.updated",
   "product.purchased",
   "waitlist.signup",
+  /*
+   * Fired by the recovery pass when a checkout crosses the abandonment
+   * threshold — independently of whether the built-in recovery email is on,
+   * because a seller building their own sequence is replacing it, not
+   * supplementing it. Once per session, stamped on the row.
+   */
+  "checkout.abandoned",
 ] as const;
 export type TriggerType = (typeof TRIGGER_TYPES)[number];
 

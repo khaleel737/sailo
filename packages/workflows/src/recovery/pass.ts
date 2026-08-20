@@ -31,6 +31,7 @@ import {
   resumeUrl,
 } from "@sailo/commerce/recovery/server";
 import { unsubscribePostUrl, unsubscribeToken, unsubscribeUrl } from "@sailo/marketing/broadcasts/server";
+import { enrolIfMatching } from "@sailo/marketing/automations/server";
 
 /**
  * One pass over abandoned checkouts.
@@ -63,6 +64,8 @@ export type RecoveryPassResult = {
   skipped: number;
   failed: number;
   expired: number;
+  /** Sessions whose abandonment was announced to the flows engine this pass. */
+  flowsEnrolled: number;
 };
 
 export async function runRecoveryPass(
@@ -77,6 +80,7 @@ export async function runRecoveryPass(
     skipped: 0,
     failed: 0,
     expired: 0,
+    flowsEnrolled: 0,
   };
 
   /*
@@ -89,6 +93,17 @@ export async function runRecoveryPass(
   result.expired = await expireSessions(now);
 
   const due = new Date(now.getTime() - RECOVERY_AFTER_MS);
+
+  /*
+   * The flows announcement, before the built-in email and unfiltered by
+   * `shops.recoveryEnabled` — a seller composing their own sequence has
+   * replaced the built-in mail, not supplemented it, and switching one off
+   * must not silence the other. Claimed by conditional UPDATE so a session is
+   * announced exactly once; sessions with no typed address are stamped and
+   * skipped, because the consent rule for the built-in email binds a flow
+   * identically — the address must come from *this* checkout.
+   */
+  result.flowsEnrolled = await announceAbandonments(now, due);
 
   const candidates = await db
     .select({ session: checkoutSessions, shop: shops })
@@ -432,4 +447,54 @@ export async function pendingRecoveries(shopId: string, limit = 100) {
     .where(eq(checkoutSessions.shopId, shopId))
     .orderBy(sql`${checkoutSessions.openedAt} desc`)
     .limit(limit);
+}
+
+/**
+ * Announces every newly-abandoned session to the flows engine, once each.
+ *
+ * `enrolIfMatching` applies its own rules after this — the plan flag, the
+ * suppression list and the re-entry floor are all its questions — so this
+ * claims and hands over, and nothing more. Enrolment failures are logged and
+ * do not unwind the claim: the stamp records "announced", and an engine that
+ * refused is an answer, not an error to retry into a double send.
+ */
+async function announceAbandonments(now: Date, due: Date): Promise<number> {
+  const db = getDb();
+  const claimed = await db
+    .update(checkoutSessions)
+    .set({ flowEnrolledAt: now })
+    .where(
+      and(
+        inArray(checkoutSessions.status, ["opened", "error"]),
+        lt(checkoutSessions.openedAt, due),
+        isNull(checkoutSessions.flowEnrolledAt),
+        isNull(checkoutSessions.orderId),
+      ),
+    )
+    .returning({
+      id: checkoutSessions.id,
+      shopId: checkoutSessions.shopId,
+      email: checkoutSessions.email,
+      clientId: checkoutSessions.clientId,
+      productId: checkoutSessions.productId,
+    });
+
+  for (const session of claimed) {
+    if (!session.email) continue;
+    try {
+      await enrolIfMatching({
+        shopId: session.shopId,
+        trigger: "checkout.abandoned",
+        subject: { email: session.email, clientId: session.clientId },
+        context: {
+          sessionId: session.id,
+          productIds: session.productId ? [session.productId] : [],
+        },
+        now,
+      });
+    } catch (error) {
+      console.error("[sailo] checkout.abandoned enrolment failed", error);
+    }
+  }
+  return claimed.length;
 }

@@ -143,6 +143,15 @@ function triggerMatches(
       return !wanted || wanted === context.productId;
     }
 
+    case "checkout.abandoned": {
+      // The same vocabulary as `product.purchased`: an empty config means any
+      // abandoned checkout, ids mean only checkouts holding one of them.
+      const wanted = config.productIds;
+      if (!Array.isArray(wanted) || wanted.length === 0) return true;
+      const held = Array.isArray(context.productIds) ? context.productIds : [];
+      return held.some((id) => wanted.includes(id));
+    }
+
     case "contact.updated": {
       const watched = config.fields;
       if (!Array.isArray(watched) || watched.length === 0) return true;

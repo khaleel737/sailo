@@ -97,6 +97,14 @@ export const checkoutSessions = pgTable(
 
     recoverySentAt: timestamp("recovery_sent_at"),
     recoveredAt: timestamp("recovered_at"),
+    /**
+     * When the abandonment was announced to the flows engine — spec 30's
+     * `checkout.abandoned` trigger. Its own stamp, deliberately not
+     * `recovery_sent_at`: the built-in email and a seller's own sequence are
+     * separate decisions, and a shop with recovery off still gets its flows.
+     * Conditional-UPDATE-claimed, so two ticks cannot announce one session.
+     */
+    flowEnrolledAt: timestamp("flow_enrolled_at"),
 
     openedAt: timestamp("opened_at").defaultNow().notNull(),
     lastSeenAt: timestamp("last_seen_at").defaultNow().notNull(),
@@ -130,5 +138,12 @@ export const checkoutSessions = pgTable(
     index("checkout_sessions_expiry_idx")
       .on(t.expiresAt)
       .where(sql`${t.expiresAt} is not null`),
+    /* The flow-enrolment claim's own scan: overdue, unclaimed, unordered.
+       Partial, so it holds only the rows a pass could still announce. */
+    index("checkout_sessions_flow_due_idx")
+      .on(t.openedAt)
+      .where(
+        sql`${t.status} in ('opened','error') and ${t.flowEnrolledAt} is null and ${t.orderId} is null`,
+      ),
   ],
 );
