@@ -58,3 +58,24 @@ export const ACTIVE_SUBSCRIPTION_STATUSES = [
 export function isActiveSubscriptionStatus(value: string): boolean {
   return (ACTIVE_SUBSCRIPTION_STATUSES as readonly string[]).includes(value);
 }
+
+/**
+ * The statuses Stripe will never raise another invoice for.
+ *
+ * Exported as the list as well as the test because the fee sweep asks this
+ * question in SQL and in TypeScript, and two hand-written copies of a status
+ * set is how one of them quietly stops matching. It lived in
+ * `@sailo/commerce/memberships` after this module claimed to have gathered
+ * the vocabulary — the exact drift the header above warns about.
+ */
+export const SETTLED_STATUSES = ["canceled", "incomplete_expired"] as const;
+
+/**
+ * Whether this subscription can still be invoiced, and so can still charge
+ * the wrong fee. Deliberately neither the access set above nor a webhook's
+ * terminal set — access and billing are different questions about the same
+ * column.
+ */
+export function canStillInvoice(status: string): boolean {
+  return !(SETTLED_STATUSES as readonly string[]).includes(status);
+}

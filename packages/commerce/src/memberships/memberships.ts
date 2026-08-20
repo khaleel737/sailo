@@ -1,4 +1,8 @@
 import type { Product, Subscription } from "@sailo/db/schema";
+import {
+  ACTIVE_SUBSCRIPTION_STATUSES,
+  type SubscriptionStatus,
+} from "@sailo/core/subscription-status";
 
 /**
  * What a membership is, in rules rather than in Stripe calls.
@@ -154,29 +158,23 @@ export function feePercentFromBp(bp: number): number {
 }
 
 /**
- * The statuses Stripe will never raise another invoice for.
+ * The statuses Stripe will never raise another invoice for, and the test the
+ * fee sweep asks in SQL and TypeScript alike.
  *
- * Exported as the list as well as the test because the fee sweep asks this
- * question in SQL and in TypeScript, and two hand-written copies of a status
- * set is how one of them quietly stops matching.
- */
-export const SETTLED_STATUSES = ["canceled", "incomplete_expired"] as const;
-
-/**
- * Whether this subscription can still be invoiced, and so can still charge the
- * wrong fee.
+ * From `@sailo/core/subscription-status`, which owns the whole vocabulary —
+ * this file carried its own hand-written copy for a while after that module
+ * claimed to have consolidated them, which is exactly the drift the core
+ * module's own header warns about.
  *
- * Deliberately neither `OPEN_STATUSES` above nor the webhook's `TERMINAL`.
- * Those answer "does the door open" and "may this row be resurrected", and
- * both are wrong here in opposite directions: a `past_due` member is not being
- * let in while Stripe is still retrying their card, and an `unpaid` one is no
- * longer being retried while the subscription still exists and can be revived.
- * Access and billing are different questions about the same column, which is
- * the mistake this file exists to stop.
+ * `canStillInvoice` is deliberately neither `OPEN_STATUSES` below nor the
+ * webhook's `TERMINAL`. Those answer "does the door open" and "may this row
+ * be resurrected", and both are wrong here in opposite directions: a
+ * `past_due` member is not being let in while Stripe is still retrying their
+ * card, and an `unpaid` one is no longer being retried while the
+ * subscription still exists and can be revived. Access and billing are
+ * different questions about the same column.
  */
-export function canStillInvoice(status: string): boolean {
-  return !(SETTLED_STATUSES as readonly string[]).includes(status);
-}
+export { SETTLED_STATUSES, canStillInvoice } from "@sailo/core/subscription-status";
 
 /**
  * How long before a period ends the next order is raised.
@@ -333,7 +331,7 @@ export function membershipSellable(product: MembershipProduct): boolean {
  * paid for is the boundary that actually matters, and `currentPeriodEnd`
  * enforces it below; status alone never does.
  */
-const OPEN_STATUSES = new Set(["trialing", "active", "past_due"]);
+const OPEN_STATUSES = new Set<string>(ACTIVE_SUBSCRIPTION_STATUSES);
 
 /**
  * Frozen — spec 49.
@@ -354,7 +352,7 @@ const OPEN_STATUSES = new Set(["trialing", "active", "past_due"]);
  * *how long*, which a status cannot. They are read by the resume sweep and by
  * the seller's list; they are not read by anything that decides entitlement.
  */
-export const PAUSED_STATUS = "paused";
+export const PAUSED_STATUS: SubscriptionStatus = "paused";
 
 export type MembershipAccess = {
   /** Whether the door opens right now. */
