@@ -161,6 +161,12 @@ describe("read replica", () => {
       "../../packages/analytics/src/funnel.ts",
       "../../packages/analytics/src/performance.ts",
       "../../packages/analytics/src/series.ts",
+      /*
+       * The dashboard's expansion tiles — flow-run and checkout-session
+       * counts per load, the same reporting shape as its five siblings. It
+       * read the primary only because it was written later than the rule.
+       */
+      "../../packages/analytics/src/tiles.ts",
 
       // The /hq dashboard: full-table counts over the three biggest tables,
       // behind `requireStaff`, informing nothing but what is on screen. The

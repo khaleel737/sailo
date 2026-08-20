@@ -1,7 +1,7 @@
 import "server-only";
 import { requireStaff } from "@/lib/session";
 import { and, desc, eq, isNotNull, ne, or, sql } from "drizzle-orm";
-import { getDb } from "@sailo/db";
+import { getReadDb } from "@sailo/db";
 import { shops, user } from "@sailo/db/schema";
 import { num } from "./pagination";
 import { paymentMethods } from "@sailo/db/schema";
@@ -22,7 +22,7 @@ export type SubscriptionRow = {
  */
 export async function getPaidAccounts(): Promise<SubscriptionRow[]> {
   await requireStaff();
-  const rows = await getDb()
+  const rows = await getReadDb()
     .select({ shop: shops, ownerName: user.name, ownerEmail: user.email })
     .from(shops)
     .innerJoin(user, eq(user.id, shops.userId))
@@ -58,7 +58,7 @@ export function renewalsWithin(rows: SubscriptionRow[], days = 30) {
 /** How sellers are taking money, across the platform. */
 export async function getRailAdoption() {
   await requireStaff();
-  const rows = await getDb()
+  const rows = await getReadDb()
     .select({
       type: paymentMethods.type,
       shops: sql<string>`count(*)`,

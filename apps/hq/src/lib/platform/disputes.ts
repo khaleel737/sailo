@@ -1,6 +1,6 @@
 import "server-only";
 import { and, asc, desc, eq, gte, isNotNull, sql } from "drizzle-orm";
-import { getDb } from "@sailo/db";
+import { getReadDb } from "@sailo/db";
 import { disputes, earlyFraudWarnings, orders, shops, user } from "@sailo/db/schema";
 import { requireStaff } from "@/lib/session";
 import {
@@ -94,7 +94,7 @@ export const DISPUTE_QUEUE_PAGE = 25;
  */
 export async function getDisputeQueue(opts: { all?: boolean; limit?: number } = {}) {
   await requireStaff();
-  const db = getDb();
+  const db = getReadDb();
   const now = new Date();
 
   const rows = await db
@@ -195,7 +195,7 @@ export type ShopExposureRow = {
  */
 export async function getShopExposure() {
   await requireStaff();
-  const db = getDb();
+  const db = getReadDb();
 
   const rows = await db
     .select({
@@ -274,7 +274,7 @@ export async function getShopExposure() {
  */
 export async function getPlatformDisputeHealth() {
   await requireStaff();
-  const db = getDb();
+  const db = getReadDb();
   const now = new Date();
 
   const [months, coverage, openRow, efwRow] = await Promise.all([
@@ -345,7 +345,7 @@ export async function getShopDisputes(shopId: string) {
   await requireStaff();
   const now = new Date();
 
-  const rows = await getDb()
+  const rows = await getReadDb()
     .select()
     .from(disputes)
     .where(eq(disputes.shopId, shopId))
@@ -373,7 +373,7 @@ export async function getDisputeOrders(disputeIds: readonly string[]) {
   if (disputeIds.length === 0) return new Map<string, { id: string; title: string }>();
   await requireStaff();
 
-  const rows = await getDb()
+  const rows = await getReadDb()
     .select({
       disputeId: disputes.id,
       orderId: orders.id,
@@ -395,7 +395,7 @@ export async function getDisputeOrders(disputeIds: readonly string[]) {
 export async function getOpenFraudWarnings() {
   await requireStaff();
 
-  return getDb()
+  return getReadDb()
     .select({
       warning: earlyFraudWarnings,
       shopHandle: shops.handle,
@@ -423,7 +423,7 @@ export async function getOpenFraudWarnings() {
  */
 export async function getDisputeDetail(id: string) {
   await requireStaff();
-  const db = getDb();
+  const db = getReadDb();
 
   const dispute = await db.query.disputes.findFirst({ where: eq(disputes.id, id) });
   if (!dispute) return null;

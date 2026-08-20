@@ -1,7 +1,7 @@
 import "server-only";
 import { requireStaff } from "@/lib/session";
 import { and, desc, eq, gte, ilike, or, sql, type SQL } from "drizzle-orm";
-import { getDb } from "@sailo/db";
+import { getReadDb } from "@sailo/db";
 import { affiliates, clients, orders, products, shops, user } from "@sailo/db/schema";
 import { HQ_PAGE_SIZE, like, num, paginate } from "./pagination";
 import { daysAgo } from "./pagination";
@@ -23,7 +23,7 @@ export type ListFilters = {
 
 export async function getPlatformOrders(filters: ListFilters = {}) {
   await requireStaff();
-  const db = getDb();
+  const db = getReadDb();
 
   const clauses: (SQL | undefined)[] = [];
   if (filters.q?.trim()) {
@@ -109,7 +109,7 @@ export async function getPlatformOrders(filters: ListFilters = {}) {
 
 export async function getPlatformProducts(filters: ListFilters = {}) {
   await requireStaff();
-  const db = getDb();
+  const db = getReadDb();
 
   const clauses: (SQL | undefined)[] = [];
   if (filters.q?.trim()) {
@@ -166,7 +166,7 @@ export async function getPlatformProducts(filters: ListFilters = {}) {
 
 export async function getPlatformAffiliates(filters: ListFilters = {}) {
   await requireStaff();
-  const db = getDb();
+  const db = getReadDb();
 
   const clauses: (SQL | undefined)[] = [];
   if (filters.q?.trim()) {
@@ -236,7 +236,7 @@ export async function getPlatformAffiliates(filters: ListFilters = {}) {
 
 export async function getPlatformBuyers(filters: ListFilters = {}) {
   await requireStaff();
-  const db = getDb();
+  const db = getReadDb();
 
   const clauses: (SQL | undefined)[] = [];
   if (filters.q?.trim()) {

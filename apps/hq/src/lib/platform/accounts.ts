@@ -1,7 +1,7 @@
 import "server-only";
 import { requireStaff } from "@/lib/session";
 import { and, asc, desc, eq, ilike, isNotNull, isNull, or, sql, type SQL } from "drizzle-orm";
-import { getDb } from "@sailo/db";
+import { getReadDb } from "@sailo/db";
 import { products, shops, user, type Shop } from "@sailo/db/schema";
 import { stateFilter } from "./billing-state";
 import type { BillingState } from "@/lib/metrics";
@@ -204,7 +204,7 @@ function accountWhere(filters: AccountFilters): SQL | undefined {
  */
 export async function getAccounts(filters: AccountFilters = {}) {
   await requireStaff();
-  const db = getDb();
+  const db = getReadDb();
   // Customers only: the staff account is a user like any other, but it is not
   // an account we acquired, so it has no place in a list of them.
   const where = and(notStaff(), accountWhere(filters));
@@ -294,7 +294,7 @@ export async function getAccounts(filters: AccountFilters = {}) {
 /** The owner and their shop. What every tab needs and no tab is built from. */
 export async function getAccountHeader(userId: string) {
   await requireStaff();
-  const db = getDb();
+  const db = getReadDb();
 
   const owner = await db.query.user.findFirst({ where: eq(user.id, userId) });
   if (!owner) return null;
@@ -330,7 +330,7 @@ export async function getAccountOverview(shopId: string) {
 /** The commerce tab: what this shop sells, to whom, and how it takes the money. */
 export async function getAccountCommerce(shopId: string) {
   await requireStaff();
-  const db = getDb();
+  const db = getReadDb();
 
   const [
     recentOrders,
@@ -390,7 +390,7 @@ export async function getAccountCommerce(shopId: string) {
 /** The money tab: what they pay us, what Stripe says, and every payment taken. */
 export async function getAccountMoney(shopId: string) {
   await requireStaff();
-  const db = getDb();
+  const db = getReadDb();
 
   const [payments, [extras]] = await Promise.all([
     getShopPayments(shopId, 30),
@@ -443,7 +443,7 @@ export type ShopProductRow = {
 
 /** A shop's catalogue, light — no images or variants, just what a table shows. */
 async function getShopProductRows(shopId: string, limit = 12) {
-  const rows = await getDb()
+  const rows = await getReadDb()
     .select({
       id: products.id,
       title: products.title,

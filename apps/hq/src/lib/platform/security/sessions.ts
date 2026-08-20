@@ -8,7 +8,7 @@
 
 import "server-only";
 import { and, desc, eq, gte, ilike, isNotNull, or, sql, type SQL } from "drizzle-orm";
-import { getDb } from "@sailo/db";
+import { getReadDb } from "@sailo/db";
 import { session as sessionTable, shops, user } from "@sailo/db/schema";
 import { parseUserAgent } from "@sailo/analytics/traffic";
 import { requireStaff } from "@/lib/session";
@@ -90,7 +90,7 @@ function sessionWhere(filters: SessionFilters): SQL | undefined {
  */
 export async function getSessions(filters: SessionFilters = {}) {
   await requireStaff();
-  const db = getDb();
+  const db = getReadDb();
   const where = sessionWhere(filters);
 
   const result = await paginate(
@@ -156,7 +156,7 @@ export async function getSessions(filters: SessionFilters = {}) {
 export async function getAllSessionsForExport(limit = 10_000) {
   await requireStaff();
 
-  const rows = await getDb()
+  const rows = await getReadDb()
     .select({
       userId: sessionTable.userId,
       name: user.name,
@@ -189,7 +189,7 @@ export async function getAllSessionsForExport(limit = 10_000) {
 /** The countries the filter offers — only ones that actually appear. */
 export async function getSessionCountryOptions() {
   await requireStaff();
-  const rows = await getDb()
+  const rows = await getReadDb()
     .selectDistinct({ country: sessionTable.country })
     .from(sessionTable)
     .where(and(live(), isNotNull(sessionTable.country)));

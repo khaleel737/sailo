@@ -1,6 +1,6 @@
 import "server-only";
 import { and, eq, gte, sql } from "drizzle-orm";
-import { getDb } from "@sailo/db";
+import { getReadDb } from "@sailo/db";
 import {
   automationRuns,
   automations,
@@ -48,7 +48,7 @@ export async function expansionTiles(
   shopId: string,
   since: Date,
 ): Promise<ExpansionTiles> {
-  const db = getDb();
+  const db = getReadDb();
 
   const [sessions, runs] = await Promise.all([
     db
@@ -119,7 +119,7 @@ export async function hasExpansionSources(shopId: string): Promise<{
   sessions: boolean;
   automations: boolean;
 }> {
-  const db = getDb();
+  const db = getReadDb();
   const [session, flow] = await Promise.all([
     db.query.checkoutSessions.findFirst({
       where: eq(checkoutSessions.shopId, shopId),
