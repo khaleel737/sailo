@@ -1,0 +1,23 @@
+packages/workflows/src/recovery/pass.ts
+  s_a7bbf59e767e8f::t_d3ba8527dc17d5 360-361,368,377-379
+  s_a7bbf59e767e8f::t_a26d71aef9c5a8 483-499,506-528
+  s_a7bbf59e767e8f::t_ccdb5a17f73558 248-263
+  s_a7bbf59e767e8f::t_7789961e1a1fc9 2
+  s_a7bbf59e767e8f::t_f15a5d453dbad2 286,288
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "3709c6b720cc57718acb99cdabe56f33521b68b0",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
