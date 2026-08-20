@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq, inArray, isNull, lt, sql } from "drizzle-orm";
+import { and, eq, inArray, isNull, lt, notExists, or, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import {
   checkoutSessions,
@@ -245,7 +245,22 @@ async function recoverOne(
     roll: roll(),
   });
 
-  const code = offer ? await mintCoupon(shop, session, offer, now) : null;
+  /*
+   * The currency the buyer was quoted in — `subtotalCents` was recorded in it
+   * (spec 53), so everything this email says about money must say it too. A
+   * JPY-browsing buyer of a EUR shop abandoned ¥5,000, not €5,000.
+   *
+   * It also gates the offer: a fixed-amount coupon is priced in the shop's
+   * currency, and the checkout's own `couponAtCurrency` refuses a fixed
+   * coupon with no entry in the buyer's presentment currency — so minting one
+   * here would promise a discount the resume link cannot honour. Percent
+   * offers price anywhere and pass through.
+   */
+  const sessionCurrency = session.currency ?? shop.currency;
+  const usableOffer =
+    offer?.kind === "fixed" && sessionCurrency !== shop.currency ? null : offer;
+
+  const code = usableOffer ? await mintCoupon(shop, session, usableOffer, now) : null;
   if (code) await attachDiscount(session.id, code);
 
   const expiresAt = session.expiresAt ?? new Date(now.getTime() + 30 * 86_400_000);
@@ -268,8 +283,9 @@ async function recoverOne(
       shop,
       resumeHref: resumeUrl(shop.handle, token),
       code,
-      offer,
+      offer: usableOffer,
       subtotalCents: session.subtotalCents,
+      currency: sessionCurrency,
       unsubscribeHref: unsub ? unsubscribeUrl(unsub) : null,
     }),
     replyTo: shop.contactEmail ?? undefined,
@@ -341,13 +357,15 @@ function recoveryEmail(opts: {
   code: string | null;
   offer: RecoveryOffer;
   subtotalCents: number | null;
+  /** What the buyer was quoted in, which is what `subtotalCents` is in. */
+  currency: string;
   unsubscribeHref: string | null;
 }): string {
   const { shop, offer } = opts;
 
   const amount =
     opts.subtotalCents && opts.subtotalCents > 0
-      ? formatMoney(opts.subtotalCents, shop.currency)
+      ? formatMoney(opts.subtotalCents, opts.currency)
       : null;
 
   const discountLine =
@@ -356,7 +374,9 @@ function recoveryEmail(opts: {
           `Here's <strong>${
             offer.kind === "percent"
               ? `${(offer.basisPoints / 100).toFixed(0)}%`
-              : esc(formatMoney(offer.cents, shop.currency))
+              : // Fixed offers are only sent when the buyer was quoted in the
+                // shop's own currency, so this is the currency of both.
+                esc(formatMoney(offer.cents, opts.currency))
           }</strong> off if you finish today — the code <strong>${esc(opts.code)}</strong> is already waiting at the checkout.`,
         )
       : "";
@@ -460,15 +480,52 @@ export async function pendingRecoveries(shopId: string, limit = 100) {
  */
 async function announceAbandonments(now: Date, due: Date): Promise<number> {
   const db = getDb();
-  const claimed = await db
-    .update(checkoutSessions)
-    .set({ flowEnrolledAt: now })
+  /*
+   * Bounded like the email half, and for the same reason: the stamp records
+   * "announced" the moment it is written, so every session claimed beyond
+   * what this invocation can process before the cron's 60-second ceiling is
+   * an enrolment lost forever. The first pass after a deploy would otherwise
+   * claim the entire 30-day backlog in one statement and then be killed
+   * mid-loop. What this pass does not claim, the next one will.
+   *
+   * The handoff check is the email half's rule (see `sendRecovery`): a buyer
+   * who sent the WhatsApp message and paid has a settled order behind this
+   * session — it stays `opened` with `orderId` null because the platform
+   * never sees the money — and enrolling them in "you left something behind"
+   * is chasing a completed sale.
+   */
+  const dueIds = db
+    .select({ id: checkoutSessions.id })
+    .from(checkoutSessions)
     .where(
       and(
         inArray(checkoutSessions.status, ["opened", "error"]),
         lt(checkoutSessions.openedAt, due),
         isNull(checkoutSessions.flowEnrolledAt),
         isNull(checkoutSessions.orderId),
+        notExists(
+          db
+            .select({ one: sql`1` })
+            .from(orders)
+            .where(
+              and(
+                eq(orders.id, checkoutSessions.handoffOrderId),
+                or(eq(orders.paymentStatus, "paid"), eq(orders.status, "cancelled")),
+              ),
+            ),
+        ),
+      ),
+    )
+    .limit(MAX_PER_PASS);
+
+  const claimed = await db
+    .update(checkoutSessions)
+    .set({ flowEnrolledAt: now })
+    .where(
+      and(
+        inArray(checkoutSessions.id, dueIds),
+        // Re-checked at the write, so two overlapping crons cannot both claim.
+        isNull(checkoutSessions.flowEnrolledAt),
       ),
     )
     .returning({
