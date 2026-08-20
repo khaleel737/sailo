@@ -18,6 +18,8 @@ import {
   shopMomentFrom,
   usableVariants,
   type FileRow,
+  type SessionRow,
+  type TierRow,
   type VariantRow,
 } from "@/lib/products/form-fields";
 import { categories, type CurrencyPrices, type ProductOption } from "@sailo/db/schema";
@@ -99,6 +101,15 @@ function sentenceFor(refusal: SaveProductRefusal): string {
       return "An in-person event needs an address before you publish it.";
     case "event_needs_join_url":
       return "An online event needs a join link before you publish it.";
+    /*
+     * Named and counted, because the number is the whole instruction: a seller
+     * looking at eight bands cannot act on "a capacity is too low", and the
+     * database's own refusal is an exception with a constraint name in it.
+     */
+    case "capacity_below_sold":
+      return refusal.level === "tier"
+        ? `You've already sold ${refusal.sold} of ${refusal.name}. A tier can't hold fewer seats than it has sold.`
+        : `You've already sold ${refusal.sold} tickets for ${refusal.name}. A date can't hold fewer seats than it has sold.`;
     case "sell_window_inverted":
       return "Sales have to close after they open. Check the two dates.";
     case "pwyw_not_for_membership":
@@ -122,7 +133,20 @@ function sentenceFor(refusal: SaveProductRefusal): string {
  * kind of drift that makes an end land before its own start.
  */
 function readMoment(formData: FormData, name: string): Date | null {
-  const raw = String(formData.get(name) ?? "").trim();
+  return momentFrom(formData.get(name));
+}
+
+/**
+ * The same, out of a value rather than out of the bag.
+ *
+ * Two entry points and one parser, for the reason `readShopMoment` states
+ * below: an event's start arrives as a `FormData` field and each of its
+ * sessions' arrives as a string inside that row's JSON blob, and two parsers
+ * that differed by an hour would put a class an hour away from the event it
+ * belongs to.
+ */
+function momentFrom(value: FormDataEntryValue | string | undefined | null): Date | null {
+  const raw = typeof value === "string" ? value.trim() : "";
   if (!raw) return null;
   const parsed = new Date(raw);
   return Number.isNaN(parsed.getTime()) ? null : parsed;
@@ -375,6 +399,50 @@ function readProduct(
     eventRefundPolicy: text(formData.get("eventRefundPolicy"), 2000),
     eventRefundCutoffHours: optionalCount(formData.get("eventRefundCutoffHours"), 8760),
     eventAllowSelfCancel: formData.get("eventAllowSelfCancel") === "on",
+
+    /*
+     * The event's price bands and its dates — spec 50.
+     *
+     * One JSON blob per row, exactly as the variant and file editors post
+     * theirs and for the same reason: a browser omits an unchecked checkbox
+     * entirely, so parallel `name[]` / `hidden[]` arrays would shift every
+     * later row's "hidden" onto the wrong band the moment one was unticked.
+     *
+     * Always an array and never undefined, which is the signal `saveProduct`
+     * reads: this form renders the editors whenever the product is an event on
+     * a plan that has them, so an empty list here means the seller removed the
+     * last row. A caller that never sees the list — the phone — sends nothing
+     * at all and leaves the rows alone.
+     */
+    tiers: readJsonRows<TierRow>(formData, "tiers").map((row) => ({
+      // Blank creates; an id belonging to another product cannot match, so it
+      // creates too. `saveProduct` decides that from this product's own rows.
+      id: text(row.id, 40),
+      name: String(row.name ?? ""),
+      /* Blank is free, not "inherit". A comp or press band costs nothing and
+         `event_tiers.price_cents` is NOT NULL, so there is no third state. */
+      priceCents: optionalCents(row.price, currency) ?? 0,
+      // Blank shares the room's capacity — the hint under the field says so.
+      capacity: optionalCount(row.capacity, 1_000_000),
+      isHidden: row.hidden === true,
+    })),
+    sessions: readJsonRows<SessionRow>(formData, "sessions").flatMap((row) => {
+      /* Read against the server's clock, like the event's own start and
+         deliberately not like a sell window: the form labels both with the
+         shop's zone, and one parser is what keeps a session from landing an
+         hour away from the event it belongs to. */
+      const startsAt = momentFrom(row.startsAt);
+      if (!startsAt) return [];
+      return [
+        {
+          id: text(row.id, 40),
+          startsAt,
+          endsAt: momentFrom(row.endsAt),
+          capacity: optionalCount(row.capacity, 1_000_000),
+          isCancelled: row.cancelled === true,
+        },
+      ];
+    }),
 
     /* ---- Spec 51 ------------------------------------------------------- */
     /*

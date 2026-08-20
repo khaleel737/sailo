@@ -765,6 +765,7 @@ export const adminAr: PartialAdminDictionary = {
     currencyGapVariants: "{count} خيارًا",
     currencyGapDelivery: "{count} تعرفة توصيل",
     currencyGapCoupons: "{count} رمز خصم",
+    currencyGapTiers: "{count} فئات تذاكر — لا يمكن للفئات حمل عملة ثانية بعد",
     currencyLive: "{currency} تعمل الآن في واجهة متجرك",
     tabTeam: "الفريق",
     teamTitle: "من يمكنه العمل في هذا المتجر",

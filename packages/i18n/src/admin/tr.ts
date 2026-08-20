@@ -766,6 +766,7 @@ export const adminTr: PartialAdminDictionary = {
     currencyGapVariants: "{count} varyantta",
     currencyGapDelivery: "{count} teslimat ücretinde",
     currencyGapCoupons: "{count} indirim kodunda",
+    currencyGapTiers: "{count} bilet kategorisi — kategoriler henüz ikinci bir para birimi taşıyamıyor",
     currencyLive: "{currency} dükkânında yayında",
     tabTeam: "Ekip",
     teamTitle: "Bu dükkânda kimler çalışabilir",

@@ -765,6 +765,7 @@ export const adminFi: PartialAdminDictionary = {
     currencyGapVariants: "{count} varianttia",
     currencyGapDelivery: "{count} toimitushintaa",
     currencyGapCoupons: "{count} alennuskoodia",
+    currencyGapTiers: "{count} lippuluokkaa — luokat eivät vielä kanna toista valuuttaa",
     currencyLive: "{currency} on käytössä kaupassasi",
     tabTeam: "Tiimi",
     teamTitle: "Ketkä saavat työskennellä tässä kaupassa",

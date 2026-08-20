@@ -94,22 +94,48 @@ export function foldScanCode(raw: string): string {
 export function ticketValues(
   lines: Pick<
     QuoteLine,
-    "kind" | "productId" | "quantity" | "variantOptions" | "options"
+    | "kind"
+    | "productId"
+    | "quantity"
+    | "variantOptions"
+    | "options"
+    | "tierId"
+    | "sessionId"
+    | "tierName"
   >[],
   ids: { orderId: string; shopId: string },
 ) {
   return lines
     .filter((line) => line.kind === "event")
     .flatMap((line) => {
-      const tier = line.variantOptions
-        ? variantLabel(line.variantOptions, line.options)
-        : null;
+      /*
+       * The band's name, from the band the buyer actually picked — spec 50.
+       *
+       * `tickets.tier` has been a column since 0014 and this function has been
+       * filling it from `variantLabel`, which is null for every event sold
+       * without options — so `eventTiers()` in `door-list.ts` selected distinct
+       * over a column of nulls and the door's tier filter was permanently
+       * empty. A seller running Early bird / General / VIP had no way to stand
+       * at a door and ask who was in which.
+       *
+       * Written down rather than joined, and that is the older rule this only
+       * extends: a band renamed between the on-sale and the night, or deleted
+       * after it, must not change what prints beside a name on a past event's
+       * list. `tierId` beside it is the reference the restock path resolves.
+       */
+      const tier =
+        line.tierName ??
+        (line.variantOptions
+          ? variantLabel(line.variantOptions, line.options)
+          : null);
       return Array.from({ length: Math.max(0, line.quantity) }, () => ({
         shopId: ids.shopId,
         orderId: ids.orderId,
         productId: line.productId,
         code: newTicketCode(),
         tier,
+        tierId: line.tierId ?? null,
+        sessionId: line.sessionId ?? null,
         source: "order",
       }));
     });

@@ -769,6 +769,7 @@ export const adminRo: PartialAdminDictionary = {
     currencyGapVariants: "{count} variante",
     currencyGapDelivery: "{count} tarife de livrare",
     currencyGapCoupons: "{count} coduri de reducere",
+    currencyGapTiers: "{count} categorii de bilete — categoriile nu pot purta încă o a doua monedă",
     currencyLive: "{currency} e activă în magazinul tău",
     tabTeam: "Echipă",
     teamTitle: "Cine poate lucra în acest magazin",

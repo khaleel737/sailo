@@ -107,10 +107,23 @@ export function CartSheet({
               <CartRow
                 key={lineKey(line)}
                 line={line}
+                /*
+                 * Paired on the whole of the line's identity, which since spec
+                 * 50 includes the band and the date.
+                 *
+                 * Product plus variant was enough while a product had one
+                 * price. An event with bands has no variant, so a basket
+                 * holding a VIP and a General ticket had two rows with equal
+                 * identities — `find` returned the first for both, and the
+                 * drawer showed one price twice against an order that charged
+                 * two. `lineKey` is the same four values, one row above.
+                 */
                 priced={preview?.lines.find(
                   (l) =>
                     l.productId === line.productId &&
-                    (l.variantId ?? null) === (line.variantId ?? null),
+                    (l.variantId ?? null) === (line.variantId ?? null) &&
+                    (l.tierId ?? null) === (line.tierId ?? null) &&
+                    (l.sessionId ?? null) === (line.sessionId ?? null),
                 )}
                 // A line is only missing once the server has answered; before
                 // that it's just not priced yet.

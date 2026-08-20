@@ -58,6 +58,10 @@ export default async function NewProductPage() {
         licensing={can(shop, "licensing")}
         membershipTerms={can(shop, "membershipTerms")}
         staffResources={can(shop, "staffResources")}
+        /* Spec 50. A product being added has neither bands nor dates yet, so
+           only the two gates travel — the editors start empty. */
+        eventTiers={can(shop, "eventTiers")}
+        eventSessions={can(shop, "eventSessions")}
         roster={roster}
         cardReady={connectState(shop) === "active" && can(shop, "cardRails")}
         /* Spec 53. Gated here and again in `saveProduct`: a form is not a

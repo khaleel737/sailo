@@ -599,6 +599,7 @@ export const adminKo: PartialAdminDictionary = {
     currencyGapVariants: "옵션 {count}개",
     currencyGapDelivery: "배송비 {count}개",
     currencyGapCoupons: "할인 코드 {count}개",
+    currencyGapTiers: "티켓 등급 {count}개 — 등급은 아직 두 번째 통화를 가질 수 없습니다",
     currencyLive: "{currency}가 스토어프론트에 적용됐습니다",
     tabTeam: "팀",
     teamTitle: "이 가게에서 일할 수 있는 사람",

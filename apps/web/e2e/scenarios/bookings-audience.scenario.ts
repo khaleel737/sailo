@@ -8,6 +8,7 @@ import {
   clients,
   emailSuppressions,
   eventReminders,
+  eventSessions,
   orders,
   paymentMethods,
   products,
@@ -378,6 +379,95 @@ describe("event reminders", () => {
     db.query.eventReminders.findMany({
       where: eq(eventReminders.orderId, orderId),
     });
+
+  /*
+   * A weekly class, and the buyer holds the fourth Tuesday — spec 50.
+   *
+   * `products.event_starts_at` is the *first* date of a series, so keying the
+   * window on it reminded this buyer twenty-four hours before a date three
+   * weeks before theirs, and then never again — the claim row was spent by that
+   * send. `event_reminders.session_id` has existed since 0045 with a
+   * `NULLS NOT DISTINCT` unique index and nothing wrote it.
+   *
+   * Against a real database on purpose. The unit suite mocks the comparators,
+   * so it cannot see a bound that no row matches — which is exactly the defect
+   * the first version of this shipped with.
+   */
+  it("reminds on the date the buyer booked, not the first of the series", async () => {
+    const shop = await makeShop();
+    const klass = await makeEvent(shop.id, {
+      sessionMode: "pick_one",
+      // Weeks ago: on the old rule this row was outside every window for ever.
+      eventStartsAt: new Date(Date.now() - 21 * 24 * 3600 * 1000),
+    });
+    const [soon] = await db
+      .insert(eventSessions)
+      .values({
+        productId: klass.id,
+        startsAt: new Date(Date.now() + 30 * 60_000),
+        capacity: 10,
+      })
+      .returning();
+    if (!soon) throw new Error("fixture: session was not inserted");
+
+    const r = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: klass.id, quantity: 1, sessionId: soon.id }],
+      paymentMethod: "bank_transfer",
+      ...buyer,
+    });
+    if (!r.ok) throw new Error(`order refused: ${r.error}`);
+    await releaseDownloads(r.orderId);
+
+    await sendDueEventReminders();
+    await sendDueEventReminders();
+
+    const rows = await remindersFor(r.orderId);
+    expect(rows).toHaveLength(1);
+    expect(rows[0]?.lead).toBe("1h");
+    // The date is part of the claim, or two dates of one class collapse to one.
+    expect(rows[0]?.sessionId).toBe(soon.id);
+  });
+
+  /*
+   * And a date the seller called off reminds nobody to come to it. Its holders
+   * hear about the cancellation instead — "your event starts in an hour" sent
+   * to somebody whose class was cancelled is the worst mail this system can
+   * produce.
+   */
+  it("sends nothing for a date the seller cancelled", async () => {
+    const shop = await makeShop();
+    const klass = await makeEvent(shop.id, {
+      sessionMode: "pick_one",
+      eventStartsAt: new Date(Date.now() - 21 * 24 * 3600 * 1000),
+    });
+    const [soon] = await db
+      .insert(eventSessions)
+      .values({
+        productId: klass.id,
+        startsAt: new Date(Date.now() + 30 * 60_000),
+        capacity: 10,
+      })
+      .returning();
+    if (!soon) throw new Error("fixture: session was not inserted");
+
+    const r = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: klass.id, quantity: 1, sessionId: soon.id }],
+      paymentMethod: "bank_transfer",
+      ...buyer,
+    });
+    if (!r.ok) throw new Error(`order refused: ${r.error}`);
+    await releaseDownloads(r.orderId);
+
+    await db
+      .update(eventSessions)
+      .set({ isCancelled: true })
+      .where(eq(eventSessions.id, soon.id));
+
+    await sendDueEventReminders();
+    expect(await remindersFor(r.orderId)).toHaveLength(0);
+  });
 
   it("claims each lead exactly once, however many times the cron runs", async () => {
     const { orderId } = await readyToRemind(30);

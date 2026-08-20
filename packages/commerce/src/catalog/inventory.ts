@@ -2,12 +2,25 @@ import "server-only";
 import { publishShopEvent } from "@sailo/events";
 import { maybeRow } from "@sailo/core/invariant";
 import { releaseCouponRedemption } from "../coupons/redemption";
-import { and, asc, eq, gte, inArray, isNull, isNotNull, lt, ne, or, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, isNull, isNotNull, lt, ne, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { releaseSlots, retakeSlots } from "../booking/claim";
+/*
+ * The undo half of the event claim — spec 50.
+ *
+ * One direction only, now that the two stock primitives are in `./stock`:
+ * `capacity.ts` reaches down to those, this file reaches across to `capacity`,
+ * and nothing points back. Before the split the two imported each other, which
+ * `import/no-cycle` refuses — rightly, on the one path where evaluation order
+ * deciding whether a function is defined would be a stock claim that silently
+ * did nothing.
+ */
+import { releaseEventCapacity } from "../ticketing/capacity";
 import { spentCodesByProduct } from "./code-pool";
 import {
   bookingClaims,
+  eventSessions,
+  eventTiers,
   orderItems,
   orders,
   products,
@@ -16,120 +29,17 @@ import {
 } from "@sailo/db/schema";
 
 /**
- * Stock movements. A null quantity means nobody is counting, and Postgres
- * carries that through arithmetic untouched — `null - 2` is still null — so
- * untracked rows fall out of these statements on their own.
+ * Order-level stock movements — what a status change implies for the shelf.
+ *
+ * The two conditional statements these are built on live in `./stock`, which
+ * imports nothing but the schema. That split is not tidiness: an event's
+ * capacity claim needs `reserveStock`, and this file's restock needs to give a
+ * refunded ticket's seat back to its band — a cycle, until the primitives moved
+ * below both of them. They are re-exported here so every existing caller of
+ * `@sailo/commerce/catalog` is untouched.
  */
-
-export type StockLine = {
-  productId: string | null;
-  variantId: string | null;
-  quantity: number;
-};
-
-/**
- * Takes units off the shelf, or reports that they weren't there. The guard is
- * part of the WHERE clause rather than a read followed by a write, so two
- * buyers racing for the last one can't both be told yes.
- */
-export async function reserveStock(input: {
-  productId: string;
-  variantId: string | null;
-  quantity: number;
-  trackInventory: boolean;
-}): Promise<boolean> {
-  if (!input.trackInventory || input.quantity <= 0) return true;
-  const db = getDb();
-
-  if (input.variantId) {
-    const rows = await db
-      .update(productVariants)
-      .set({
-        stockQuantity: sql`${productVariants.stockQuantity} - ${input.quantity}`,
-        updatedAt: new Date(),
-      })
-      .where(
-        and(
-          eq(productVariants.id, input.variantId),
-          or(
-            isNull(productVariants.stockQuantity),
-            gte(productVariants.stockQuantity, input.quantity),
-          ),
-        ),
-      )
-      .returning({ id: productVariants.id });
-    return rows.length > 0;
-  }
-
-  const rows = await db
-    .update(products)
-    .set({
-      stockQuantity: sql`${products.stockQuantity} - ${input.quantity}`,
-      updatedAt: new Date(),
-    })
-    .where(
-      and(
-        eq(products.id, input.productId),
-        or(
-          isNull(products.stockQuantity),
-          gte(products.stockQuantity, input.quantity),
-        ),
-      ),
-    )
-    .returning({ id: products.id });
-  return rows.length > 0;
-}
-
-/**
- * Puts units back, unconditionally. Used both to undo a half-reserved cart and
- * to restock a cancelled order — neither can be refused the way a purchase can.
- */
-export async function releaseStock(line: StockLine) {
-  const db = getDb();
-  if (line.quantity <= 0) return;
-
-  if (line.variantId) {
-    /*
-     * The same two conditions the product branch below applies, because
-     * `reserveStock` never took these units in the first place: it returns
-     * early for an untracked product, and a null count means nobody is
-     * counting. Adding units back regardless drifts the number upward on
-     * every cancel, refund and failed handoff — and the drift only becomes
-     * visible the day a seller turns tracking on.
-     *
-     * Tracking lives on the parent product, so the variant is judged by it.
-     */
-    await db
-      .update(productVariants)
-      .set({
-        stockQuantity: sql`${productVariants.stockQuantity} + ${line.quantity}`,
-        updatedAt: new Date(),
-      })
-      .where(
-        and(
-          eq(productVariants.id, line.variantId),
-          isNotNull(productVariants.stockQuantity),
-          sql`exists (select 1 from ${products} where ${products.id} = ${productVariants.productId} and ${products.trackInventory})`,
-        ),
-      );
-    return;
-  }
-
-  if (!line.productId) return;
-  await db
-    .update(products)
-    .set({
-      stockQuantity: sql`${products.stockQuantity} + ${line.quantity}`,
-      updatedAt: new Date(),
-    })
-    .where(
-      and(
-        eq(products.id, line.productId),
-        eq(products.trackInventory, true),
-        isNotNull(products.stockQuantity),
-      ),
-    );
-}
+export { releaseStock, reserveStock, type StockLine } from "./stock";
+import { releaseStock, type StockLine } from "./stock";
 
 /**
  * The lines an order took off the shelf. Falls back to the header columns for
@@ -146,6 +56,8 @@ async function stockLinesFor(order: Order): Promise<StockLine[]> {
       productId: i.productId,
       variantId: i.variantId,
       quantity: i.quantity,
+      tierId: i.tierId,
+      sessionId: i.sessionId,
     }));
   }
 
@@ -203,6 +115,31 @@ export async function restoreStock(order: Order): Promise<boolean> {
     const burned = line.productId ? (spent.get(line.productId) ?? 0) : 0;
     const quantity = Math.max(0, line.quantity - burned);
     if (quantity === 0) continue;
+    /*
+     * Every level the ticket took, not only the room — spec 50.
+     *
+     * This is the second half of the claim, and the reason `order_items` was
+     * given `tier_id` and `session_id` at all. A refund that put the unit back
+     * on the product and left `event_tiers.sold` where it was would leave the
+     * band permanently full: the room reads as having a seat, the tier refuses
+     * to sell it, and no screen anywhere says which of the two is lying.
+     *
+     * `releaseEventCapacity` ends at the same `releaseStock` this branch calls,
+     * so the product level is released exactly once either way — and the
+     * counters are floored at zero, so this staying idempotent is not left to
+     * the `restockedAt` claim alone.
+     */
+    if (line.tierId || line.sessionId) {
+      await releaseEventCapacity({
+        productId: line.productId ?? "",
+        tierId: line.tierId ?? null,
+        sessionId: line.sessionId ?? null,
+        variantId: line.variantId,
+        quantity,
+        trackInventory: true,
+      });
+      continue;
+    }
     await releaseStock({ ...line, quantity });
   }
   return true;
@@ -256,6 +193,44 @@ export async function retakeStock(order: Order): Promise<boolean> {
     const burned = spent.get(productId) ?? 0;
     const line = { ...rawLine, productId, quantity: Math.max(0, rawLine.quantity - burned) };
     if (line.quantity === 0) continue;
+
+    /*
+     * The band and the date come back with the unit — spec 50.
+     *
+     * Symmetrical with `restoreStock`, and unguarded for the same reason
+     * everything else in this function is: the seller is reversing their own
+     * decision, and refusing would leave the counter reading a seat that is
+     * about to be occupied. Deliberately **not** `claimEventCapacity`: that is
+     * a purchase, it can be refused, and a refusal here would silently
+     * un-cancel a ticket whose seat was never taken back — the band would sell
+     * one more than the room can hold, on the night, which is the failure this
+     * whole feature exists to prevent.
+     *
+     * An overshoot past `capacity` is possible if somebody bought the seat in
+     * between, and it is the honest outcome: the seller has two people holding
+     * one seat and a number on screen that says so, rather than a silent
+     * double-booking. The CHECK constraint is on the seller editing capacity
+     * down, not on this.
+     */
+    if (line.tierId) {
+      await db
+        .update(eventTiers)
+        .set({
+          sold: sql`${eventTiers.sold} + ${line.quantity}`,
+          updatedAt: new Date(),
+        })
+        .where(eq(eventTiers.id, line.tierId));
+    }
+    if (line.sessionId) {
+      await db
+        .update(eventSessions)
+        .set({
+          sold: sql`${eventSessions.sold} + ${line.quantity}`,
+          updatedAt: new Date(),
+        })
+        .where(eq(eventSessions.id, line.sessionId));
+    }
+
     // Deliberately unguarded: the seller is reversing their own decision, and
     // refusing to take the units back would leave the count too high.
     if (line.variantId) {

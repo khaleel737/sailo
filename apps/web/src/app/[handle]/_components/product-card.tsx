@@ -116,8 +116,18 @@ export function ProductCard({
             Never for a membership: it needs a subscription-mode checkout that
             a basket cannot be, so a quick-add would build a cart the buyer
             only finds out is unpayable after filling in the whole form. The
-            product page's Subscribe button is the only way in. */}
-        {sellable && layout === "grid" && product.kind !== "membership" ? (
+            product page's Subscribe button is the only way in.
+
+            Never for an event either, and for the same shape of reason — spec
+            50. A ticket is a band and a date as much as it is a product, and
+            those are questions a card has no room to ask: one tap would put a
+            line in the basket that `resolveLines` refuses for naming no band,
+            and the buyer would meet "some items are no longer available" about
+            something that is very much on sale. The product page asks. */}
+        {sellable &&
+        layout === "grid" &&
+        product.kind !== "membership" &&
+        product.kind !== "event" ? (
           <QuickAdd
             productId={product.id}
             productTitle={product.title}
@@ -148,8 +158,12 @@ export function ProductCard({
         className="absolute end-2 top-2 z-[2] size-8 pointer-coarse:size-11"
       />
       {/* In a list row the photo is a thumbnail, so the bag takes the row's
-          own corner instead of covering a third of the picture. */}
-      {sellable && layout === "list" ? (
+          own corner instead of covering a third of the picture. The same two
+          kinds stay out of it, for the same reasons. */}
+      {sellable &&
+      layout === "list" &&
+      product.kind !== "membership" &&
+      product.kind !== "event" ? (
         <QuickAdd
           productId={product.id}
           productTitle={product.title}

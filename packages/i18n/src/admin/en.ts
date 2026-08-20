@@ -1788,6 +1788,11 @@ export const adminEn = {
     currencyGapVariants: "{count} variants",
     currencyGapDelivery: "{count} delivery rates",
     currencyGapCoupons: "{count} discount codes",
+    /* Not a "needs a price" item like the four above, and worded so a seller
+       does not go looking for a field that is not there: `event_tiers` has no
+       per-currency price, so a shop selling banded tickets cannot offer a
+       second currency at all until it does. */
+    currencyGapTiers: "{count} ticket bands \u2014 bands can't carry a second currency yet",
     currencyLive: "{currency} is live on your storefront",
     calendarFeedUrl: "Calendar link",
     calendarFeedUrlHint: "In Google Calendar: Settings → your calendar → Secret address in iCal format. Apple and Outlook publish one too.",

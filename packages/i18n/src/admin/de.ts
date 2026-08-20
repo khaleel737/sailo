@@ -765,6 +765,7 @@ export const adminDe: PartialAdminDictionary = {
     currencyGapVariants: "{count} Varianten",
     currencyGapDelivery: "{count} Versandkosten",
     currencyGapCoupons: "{count} Rabattcodes",
+    currencyGapTiers: "{count} Ticketkategorien — Kategorien können noch keine zweite Währung tragen",
     currencyLive: "{currency} ist in deinem Shop live",
     tabTeam: "Team",
     teamTitle: "Wer in diesem Shop arbeiten darf",

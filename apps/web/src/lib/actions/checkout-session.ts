@@ -9,12 +9,7 @@ import { liveShop } from "@/lib/shop-visibility";
 import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 import { SESSION_TTL_MS } from "@sailo/commerce/recovery";
-import {
-  clientForEmail,
-  markSessionError,
-  markRevisited,
-  openSession,
-} from "@sailo/commerce/recovery/server";
+import { clientForEmail, openSession } from "@sailo/commerce/recovery/server";
 
 /**
  * A row for every checkout a buyer opens — spec 32.
@@ -133,33 +128,20 @@ export async function recordCheckoutOpened(input: {
   return { sessionId: session?.id ?? null };
 }
 
-/**
- * A payment attempt failed.
+/*
+ * `recordCheckoutFailed` and `recordCheckoutRetried` were here and are gone.
  *
- * Called from the checkout panel with Stripe's decline code, which is
- * allowlisted in `sanitizeDecline` before it is stored — a raw provider string
- * rendered into the seller's panel is untrusted input on a page with a session
- * behind it.
+ * They were client-callable wrappers over `markSessionError` and
+ * `markRevisited`, and nothing called them — the panel never had a Stripe
+ * decline code to pass, because a card is declined on Stripe's own page after
+ * the redirect rather than in this browser. The comment above them claimed the
+ * checkout panel as their caller, which read as wired and was not, and `knip`
+ * is what said so out loud.
  *
- * Deliberately no rate limit of its own: it can only ever narrow an existing
- * row, and the session id is a uuid the caller must already hold.
+ * **The feature underneath is untouched.** `markSessionError` and
+ * `markRevisited` live in `@sailo/commerce/recovery` and are exercised by
+ * `recovery.scenario.ts`; only the dead doors onto them came out. Whoever
+ * wires the failure path — most likely the payment webhook, which is where a
+ * decline code actually exists — adds the wrapper back beside the call site,
+ * where its comment can be true.
  */
-export async function recordCheckoutFailed(input: {
-  shopId: string;
-  sessionId: string;
-  decline?: string | null;
-}): Promise<void> {
-  await markSessionError({
-    shopId: input.shopId,
-    sessionId: input.sessionId,
-    decline: input.decline ?? null,
-  });
-}
-
-/** The buyer came back after a failure — `error` returns to `opened`. */
-export async function recordCheckoutRetried(input: {
-  shopId: string;
-  sessionId: string;
-}): Promise<void> {
-  await markRevisited(input);
-}

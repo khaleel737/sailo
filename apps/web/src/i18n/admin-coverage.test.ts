@@ -133,53 +133,24 @@ for (const file of files) {
  * neither: the table, the arithmetic and the scenario tests exist and the admin
  * screen does not, so the translation is correct, wanted, and waiting.
  *
- * Named one by one rather than folded into a larger ceiling, because a number
- * hides what it is covering. Fifteen free slots would absorb the next
- * accidental hardcoded string in silence; this list absorbs exactly these
- * fifteen and fails on the sixteenth.
+ * **It is empty, and that is the mechanism working rather than a courtesy.**
+ * Both of its entries were removed by the commits that built their screens,
+ * from two branches at once:
  *
- * **Event tiers** (`tier*`, `tiersTitle`, `tiersBody`) — `event_tiers` is a
- * table, `claimEventCapacity` enforces the two-level ceiling narrower-first,
- * and `event-depth.scenario.ts` proves it. Nothing in `apps/web` calls it: no
- * editor writes a tier and the checkout claims product stock only. Deliberately
- * *not* variants — the note over `eventTiers` explains why a tier forced into
- * an option group becomes a fake option that renders in the picker.
+ * - **Spec 50's fifteen** — the tier repeater and the sessions editor, in
+ *   `event-tier-editor.tsx` and `event-session-editor.tsx`, writing through
+ *   `ProductInput.tiers` / `.sessions` and `syncTiers` / `syncSessions`. The
+ *   checkout that claims a band's seats came after, on the same branch.
+ * - **Spec 51's eleven** — `/admin/settings/staff` writes `staff_resources`,
+ *   the service card writes `product_staff`, and the buyer's calendar asks
+ *   `staffCalendars` for the union of everybody's free time.
  *
- * **Event sessions** (`sessionMode*`, `sessions*`, `sessionGenerate*`,
- * `sessionCapacity`) — `event_sessions` exists and `saveProduct` already reads
- * and gates `sessionMode`, so half of this is wired: what is missing is the
- * editor that creates the dates and the checkout that claims one.
- *
- * **Staff rosters** (`staff*`) were the third entry here and are now built:
- * `/admin/settings/staff` writes `staff_resources`, the service card writes
- * `product_staff`, and the buyer's calendar asks `staffCalendars` for the union
- * of everybody's free time. The eleven keys came out of this list in the commit
- * that referenced them, which is the mechanism working rather than a courtesy —
- * the assertion below fails while a built screen is still excused.
- *
- * Each entry is asserted to exist and to still be unreferenced below, so the
- * list cannot rot: renaming one fails, and *building* the screen fails until
- * the entry is deleted, which is the point.
+ * Each entry was asserted to exist *and* to still be unreferenced, so the list
+ * could not rot: renaming one failed, and building the screen failed until the
+ * entry was deleted. Both did exactly that. An empty set is the honest state
+ * and the next entry to go in has to earn its place the same way.
  */
-const UNBUILT = new Set([
-  // Spec 50 — ticket tiers.
-  "productForm.tiersTitle",
-  "productForm.tiersBody",
-  "productForm.tierName",
-  "productForm.tierPrice",
-  "productForm.tierCapacity",
-  "productForm.tierCapacityHint",
-  "productForm.tierHidden",
-  // Spec 50 — several dates on one event.
-  "productForm.sessionMode",
-  "productForm.sessionModeSingle",
-  "productForm.sessionModePickOne",
-  "productForm.sessionModeAllAccess",
-  "productForm.sessionsTitle",
-  "productForm.sessionGenerate",
-  "productForm.sessionGenerateCount",
-  "productForm.sessionCapacity",
-]);
+const UNBUILT = new Set<string>([]);
 
 const unreferenced = KEYS.filter(
   (k) =>

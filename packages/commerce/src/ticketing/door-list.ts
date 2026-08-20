@@ -85,10 +85,19 @@ export async function eventDoorStats(
 }
 
 /**
- * Seats still for sale, across variants when the event has tiers.
+ * Seats still for sale.
  *
  * Returns null when the event isn't tracking inventory at all — which for an
  * event means uncapped, not zero.
+ *
+ * **"Tier" here means a product *variant*, not an `event_tiers` band.** The two
+ * are different things and the older one keeps this code: before spec 50 an
+ * event's price bands were option combinations, and those rows carry their own
+ * `stock_quantity`, so for such an event the variants hold the count and the
+ * product column does not. A spec 50 band does the opposite — it rations its
+ * own seats against `event_tiers.capacity` while the *room* stays
+ * `products.stock_quantity` — so a banded event has no variant rows, falls
+ * through below, and is counted off the room, which is the right answer for it.
  */
 async function unsoldSeats(
   shopId: string,
@@ -110,8 +119,9 @@ async function unsoldSeats(
     .from(productVariants)
     .where(eq(productVariants.productId, productId));
 
-  // Tiers hold the stock when they exist; the product column is only
-  // meaningful for an event sold as a single admission type.
+  // Variants hold the stock when the seller used them as admission types; the
+  // product column is what counts for everything else, spec 50's bands
+  // included — see the note above.
   if (tiers && tiers.rows > 0) return tiers.total;
   return product.stockQuantity ?? null;
 }

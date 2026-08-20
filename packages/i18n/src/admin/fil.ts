@@ -599,6 +599,7 @@ export const adminFil: PartialAdminDictionary = {
     currencyGapVariants: "{count} variant",
     currencyGapDelivery: "{count} delivery rate",
     currencyGapCoupons: "{count} discount code",
+    currencyGapTiers: "{count} kategorya ng tiket — hindi pa kayang magdala ng pangalawang pera ang mga kategorya",
     currencyLive: "Live na ang {currency} sa storefront mo",
     tabTeam: "Pangkat",
     teamTitle: "Sino ang puwedeng magtrabaho sa tindahang ito",

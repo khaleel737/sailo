@@ -599,6 +599,7 @@ export const adminMk: PartialAdminDictionary = {
     currencyGapVariants: "{count} варијанти",
     currencyGapDelivery: "{count} цени за достава",
     currencyGapCoupons: "{count} кодови за попуст",
+    currencyGapTiers: "{count} категории билети — категориите сè уште не можат да носат втора валута",
     currencyLive: "{currency} е активна во твојата продавница",
     tabTeam: "Тим",
     teamTitle: "Кој смее да работи во оваа продавница",

@@ -766,6 +766,7 @@ export const adminZh: PartialAdminDictionary = {
     currencyGapVariants: "{count} 个规格",
     currencyGapDelivery: "{count} 项配送费",
     currencyGapCoupons: "{count} 个折扣码",
+    currencyGapTiers: "{count} 个票种 — 票种暂时还不能带第二种货币",
     currencyLive: "{currency} 已在你的店铺上线",
     tabTeam: "团队",
     teamTitle: "谁可以在这家店铺里工作",

@@ -24,6 +24,16 @@ export type CartLine = {
    * outright rather than validated.
    */
   priceCents?: number;
+  /**
+   * Which ticket tier and which date — spec 50.
+   *
+   * Identity, not a cache, and that is why they are part of `lineKey` below:
+   * a VIP ticket and a general one are the same product and the same (absent)
+   * variant, so without them the basket merges the two into whichever was
+   * added first and the buyer pays one price for both.
+   */
+  tierId?: string | null;
+  sessionId?: string | null;
 
   // Cached for first paint only.
   title: string;
@@ -43,7 +53,8 @@ export function cartKey(shopId: string) {
 }
 
 /**
- * Two lines are the same line when they're the same variant of the same product.
+ * Two lines are the same line when they're the same variant of the same product
+ * — and, on an event, the same band on the same date.
  *
  * Deliberately unchanged by pay-what-you-want. A buyer who adds the same
  * name-your-price download twice at two different amounts gets one line at the
@@ -52,9 +63,19 @@ export function cartKey(shopId: string) {
  * for one product in the drawer, which reads as a bug, and neither reading is
  * more correct than the other: the buyer is looking at the number either way,
  * and the server prices whatever the line finally says.
+ *
+ * **The tier and the session are the opposite case — spec 50.** They change
+ * what the line costs and which seat it takes, and `addLine` spreads the
+ * incoming line over the matching one: a buyer adding a £50 VIP after a £20
+ * general would otherwise get two tickets at whichever price arrived last, one
+ * seat claimed against the wrong band, and no way to tell from the drawer. Two
+ * lines that differ only by tier are different lines.
  */
-export function lineKey(line: Pick<CartLine, "productId" | "variantId">) {
-  return `${line.productId}:${line.variantId ?? ""}`;
+export function lineKey(
+  line: Pick<CartLine, "productId" | "variantId"> &
+    Partial<Pick<CartLine, "tierId" | "sessionId">>,
+) {
+  return `${line.productId}:${line.variantId ?? ""}:${line.tierId ?? ""}:${line.sessionId ?? ""}`;
 }
 
 export function readCart(shopId: string): CartLine[] {
@@ -171,6 +192,13 @@ export function toOrderItems(lines: CartLine[]) {
     quantity: line.quantity,
     scheduledFor: line.scheduledFor,
     priceCents: line.priceCents,
+    /*
+     * Ids, and only ids — spec 50. The band's price and its remaining seats are
+     * re-read from `event_tiers` in `resolveLines`, exactly as the product's
+     * price is, so this says *which* ticket and never what it costs.
+     */
+    tierId: line.tierId ?? undefined,
+    sessionId: line.sessionId ?? undefined,
   }));
 }
 

@@ -70,8 +70,16 @@ export function CurrenciesCard({
         {choices.map((code) => {
           const on = ticked.has(code);
           const gap = gapFor.get(code);
+          /*
+           * `gap.tiers` counts here too — spec 50. It is the one entry a seller
+           * cannot close by typing a number: `event_tiers` has no
+           * `currency_prices`, so a shop selling banded tickets cannot quote
+           * them in a second currency at all. Leaving it out of this sum would
+           * paint the currency green while `liveCurrencies` refuses it, which
+           * is the disagreement this card exists to prevent.
+           */
           const missing = gap
-            ? gap.products + gap.variants + gap.delivery + gap.coupons
+            ? gap.products + gap.variants + gap.delivery + gap.coupons + gap.tiers
             : 0;
 
           return (
@@ -120,6 +128,11 @@ export function CurrenciesCard({
                           gap && gap.coupons > 0
                             ? interpolate(a.settings.currencyGapCoupons, {
                                 count: String(gap.coupons),
+                              })
+                            : null,
+                          gap && gap.tiers > 0
+                            ? interpolate(a.settings.currencyGapTiers, {
+                                count: String(gap.tiers),
                               })
                             : null,
                         ]

@@ -3,7 +3,10 @@
 import { useState } from "react";
 import { Card, Field, Input, Select, Textarea } from "@sailo/design-system/web";
 import { Toggle } from "./toggle";
+import { EventSessionEditor } from "./event-session-editor";
+import { EventTierEditor } from "./event-tier-editor";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
+import type { EventSession, EventTier } from "@sailo/db/schema";
 import type { ProductWithRelations } from "./product.types";
 
 /** When the event happens, where to turn up, and when tickets unlock. */
@@ -23,12 +26,39 @@ export function EventSettingsCard({
   releaseOnPayment,
   onReleaseOnPaymentChange,
   timeZone,
+  currency,
+  tiers = [],
+  sessions = [],
+  eventTiers = false,
+  eventSessions = false,
+  basePrice = "",
 }: {
   product?: ProductWithRelations;
   releaseOnPayment: boolean;
   onReleaseOnPaymentChange: (next: boolean) => void;
   /** The shop's own zone, named so "19:00" means a particular 19:00. */
   timeZone: string;
+  /** The shop's currency, for the price a band is typed in. */
+  currency: string;
+  /** The bands this event already has — spec 50. Empty on a new product. */
+  tiers?: EventTier[];
+  /** The dates it already runs on — spec 50. */
+  sessions?: EventSession[];
+  /**
+   * Whether the plan includes price bands, and whether it includes several
+   * dates — spec 50. Two flags because they are two plans: tiers are Pro and
+   * sessions are Business.
+   *
+   * Decided here *and* in `saveProduct`, like every other gate on this form: a
+   * form is not a gate, and a hand-rolled POST does not render this card. Both
+   * fall back rather than refusing — a downgraded shop keeps its bands and its
+   * dates in the table and simply stops editing them, because a refusal would
+   * leave a seller unable to change a title.
+   */
+  eventTiers?: boolean;
+  eventSessions?: boolean;
+  /** The product's own price, shown as the placeholder a band inherits. */
+  basePrice?: string;
 }) {
   const a = useAdminT();
   const [collectAttendees, setCollectAttendees] = useState(
@@ -64,6 +94,18 @@ export function EventSettingsCard({
    * round trip.
    */
   const [startsAt, setStartsAt] = useState(() => toLocalInput(product?.eventStartsAt));
+
+  /*
+   * How a buyer meets the dates — spec 50. Blank is a single date, which is
+   * every event today and deliberately not a third named value: a mode that had
+   * to be written to every existing row is what `sessionMode`'s own nullability
+   * exists to avoid.
+   *
+   * Held in state because the list below is only worth showing once the answer
+   * is "several".
+   */
+  const [sessionMode, setSessionMode] = useState(() => product?.sessionMode ?? "");
+  const severalDates = sessionMode !== "";
 
   return (
     <Card className="space-y-4 p-5">
@@ -189,6 +231,75 @@ export function EventSettingsCard({
       />
 
       <p className="text-xs text-ink-500">{a.productForm.eventCapacityHint}</p>
+
+      {/*
+        Several dates on one event — spec 50, Business.
+        Above the bands because it is the wider question: a seller decides
+        whether this is one night or eight before they decide what a seat in the
+        room costs.
+      */}
+      {eventSessions ? (
+        <div className="space-y-4 border-t border-black/5 pt-4">
+          <h3 className="text-[13px] font-medium text-ink-800">
+            {a.productForm.sessionsTitle}
+          </h3>
+
+          {/*
+            Named by the heading above it rather than by a label beside it. The
+            dictionary gives `sessionsTitle` and `sessionMode` the same word —
+            "Dates" — because they are the same subject, and printing it twice
+            in two type sizes reads as a bug. The `aria-label` keeps the control
+            named for anybody who is not looking at the heading.
+          */}
+          <Select
+            id="sessionMode"
+            name="sessionMode"
+            aria-label={a.productForm.sessionMode}
+            value={sessionMode}
+            onChange={(e) => setSessionMode(e.target.value)}
+            className="sm:w-96"
+          >
+            {/* Blank, not "single" — `isSessionMode` refuses anything that is
+                not one of the two, and null is what the column already holds
+                on every event ever saved. */}
+            <option value="">{a.productForm.sessionModeSingle}</option>
+            <option value="pick_one">{a.productForm.sessionModePickOne}</option>
+            <option value="all_access">
+              {a.productForm.sessionModeAllAccess}
+            </option>
+          </Select>
+
+          <EventSessionEditor
+            sessions={sessions}
+            visible={severalDates}
+            eventStartsAt={startsAt}
+          />
+        </div>
+      ) : null}
+
+      {/*
+        Early bird, General, VIP against one room — spec 50, Pro.
+
+        Not variants, and the schema note over `eventTiers` says why at length:
+        a tier forced into `products.options` becomes a fake option group that
+        renders in the buyer's picker and appears in every variant matrix.
+      */}
+      {eventTiers ? (
+        <div className="space-y-4 border-t border-black/5 pt-4">
+          <div>
+            <h3 className="text-[13px] font-medium text-ink-800">
+              {a.productForm.tiersTitle}
+            </h3>
+            <p className="mt-0.5 text-xs text-ink-500">{a.productForm.tiersBody}</p>
+          </div>
+
+          <EventTierEditor
+            tiers={tiers}
+            currency={currency}
+            basePrice={basePrice}
+          />
+        </div>
+      ) : null}
 
       {/*
         Venue, zone and policy — spec 50. None of it is plan-gated: a buyer's

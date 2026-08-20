@@ -44,6 +44,21 @@ export type OrderLineInput = {
    * shape of the defect that overcharged a KWD buyer tenfold.
    */
   priceCents?: number;
+  /**
+   * Which ticket tier and which date the buyer picked — spec 50.
+   *
+   * Ids and nothing else: the price, the seats left and the name all come back
+   * out of `event_tiers` and `event_sessions` in `resolveLines`, so a forged
+   * body can name a different band but cannot name a different price for one.
+   * A tier that does not belong to this product is refused rather than ignored,
+   * because ignoring it would sell a VIP ticket at the general price.
+   *
+   * Absent on every product that has no bands or no dates, which is every
+   * product today — and an event with tiers refuses a line that names none,
+   * rather than falling back to the product's own price.
+   */
+  tierId?: string;
+  sessionId?: string;
 };
 
 export type OrderIntentInput = {
@@ -197,6 +212,17 @@ export type PreviewTax = {
 export type PreviewLine = {
   productId: string;
   variantId: string | null;
+  /**
+   * Which band and which date this priced line is — spec 50.
+   *
+   * The drawer pairs its stored basket line to a priced one by identity, and
+   * before these that identity was product plus variant. An event with bands
+   * has no variant, so a basket holding a VIP and a General ticket had two
+   * lines whose identities were equal: `find` returned the first for both, and
+   * the drawer showed the buyer one price twice while the order charged two.
+   */
+  tierId: string | null;
+  sessionId: string | null;
   title: string;
   label: string;
   kind: string;
@@ -224,7 +250,12 @@ export type OrderPreview = {
   tax: PreviewTax;
   lines: PreviewLine[];
   /** Lines that have gone since they were added, so the cart can say so. */
-  unavailable: { productId: string; variantId: string | null }[];
+  unavailable: {
+    productId: string;
+    variantId: string | null;
+    tierId: string | null;
+    sessionId: string | null;
+  }[];
   needsDelivery: boolean;
   needsAddress: boolean;
   /**

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { toString as qrSvg } from "qrcode";
 import {
   ArrowUpRight,
+  CalendarPlus,
   Clock,
   Download,
   FileDown,
@@ -472,7 +473,13 @@ export default async function DownloadPage({
         {events.length > 0 ? (
           <ul className="mt-6 space-y-3">
             {events.map((event) => (
-              <li key={event.productId} className="surface-card rounded-2xl p-4">
+              // Product *and* date — spec 50. One product can now be two rows,
+              // a Tuesday and a Thursday of the same class, and keying on the
+              // product alone would have React treat them as one.
+              <li
+                key={`${event.productId}:${event.sessionId ?? ""}`}
+                className="surface-card rounded-2xl p-4"
+              >
                 <p className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide opacity-60">
                   {event.online ? (
                     <Video className="size-3.5" />
@@ -507,17 +514,46 @@ export default async function DownloadPage({
                   </span>
                 ) : null}
 
-                {event.joinUrl ? (
-                  <a
-                    href={event.joinUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="accent-bg mt-3 inline-flex h-10 items-center gap-1.5 rounded-lg px-4 text-sm font-semibold"
-                  >
-                    <Video className="size-4" />
-                    {t.tickets.join}
-                  </a>
-                ) : null}
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  {event.joinUrl ? (
+                    <a
+                      href={event.joinUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="accent-bg inline-flex h-10 items-center gap-1.5 rounded-lg px-4 text-sm font-semibold"
+                    >
+                      <Video className="size-4" />
+                      {t.tickets.join}
+                    </a>
+                  ) : null}
+
+                  {/*
+                    The calendar entry — spec 50, and the one thing a buyer
+                    reliably does on this page.
+
+                    `ics.ts` shipped with the wave carrying a stable UID, a
+                    SEQUENCE and a VTIMEZONE, and nothing served a file, so none
+                    of it reached anybody. Offered whether or not the order is
+                    released: the date and the room were never the secret, and
+                    the route hands over the join link only once
+                    `eventAccessForOrder` says the order has earned it.
+
+                    A plain link rather than a download attribute — the route
+                    sets `content-disposition`, which is what iOS and Android
+                    read to open the file in a calendar rather than show it.
+                  */}
+                  {event.startsAt ? (
+                    <a
+                      href={`/download/${token}/calendar?product=${event.productId}${
+                        event.sessionId ? `&session=${event.sessionId}` : ""
+                      }`}
+                      className="surface-elevated inline-flex h-10 items-center gap-1.5 rounded-lg px-4 text-sm font-semibold hover:opacity-70"
+                    >
+                      <CalendarPlus className="size-4" />
+                      {t.tickets.addToCalendar}
+                    </a>
+                  ) : null}
+                </div>
 
                 {event.online && !event.joinUrl ? (
                   <p className="text-muted mt-2 flex items-center gap-1.5 text-xs">

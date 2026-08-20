@@ -597,6 +597,7 @@ export const adminMs: PartialAdminDictionary = {
     currencyGapVariants: "{count} varian",
     currencyGapDelivery: "{count} kadar penghantaran",
     currencyGapCoupons: "{count} kod diskaun",
+    currencyGapTiers: "{count} kategori tiket — kategori belum boleh membawa mata wang kedua",
     currencyLive: "{currency} sudah aktif di kedai anda",
     tabTeam: "Pasukan",
     teamTitle: "Siapa yang boleh bekerja di kedai ini",
