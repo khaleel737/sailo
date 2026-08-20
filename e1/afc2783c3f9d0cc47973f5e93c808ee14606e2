@@ -1,0 +1,126 @@
+apps/web/src/app/admin/settings/layout.tsx
+  s_55e774cf7959af::t_ebc7f61756ee32 1,3-9,12
+apps/web/src/app/admin/settings/billing/page.tsx
+  s_55e774cf7959af::t_b175c83b275a0a 11-19
+  s_55e774cf7959af::t_5be009c5d4fb7b 57-67
+  s_55e774cf7959af::t_fd16a00a4d8d81 213-222
+  s_55e774cf7959af::t_045bb8fcb29dc8 223-225
+  s_55e774cf7959af::t_1707b1549ec833 226
+apps/web/src/app/admin/clients/page.tsx
+  s_55e774cf7959af::t_c502dccc8fde28 7,102
+apps/web/src/app/admin/products/page.tsx
+  s_55e774cf7959af::t_c502dccc8fde28 10,68
+  s_55e774cf7959af::t_d2fc92d585d802 5
+apps/web/src/app/admin/_components/topbar.tsx
+  s_55e774cf7959af::t_82d99fb41f0068 1-119
+apps/web/src/app/admin/_components/sidebar.tsx
+  s_55e774cf7959af::t_284b3a2e81d1b5 12,33,37,41-45,47-49,73,138,158,162-177,187,192,194,196-197,208,225-227,241-242,247-256,259,275,278,284,287,289-290,296-297,315,320,331-332,337,349,351-373,375-385,387-389,391-396,398-429,433-441,447-449,451-469,472-474,479-529,531-533
+  s_55e774cf7959af::t_187012410aff42 530
+  s_55e774cf7959af::t_98ec491cc5a974 534
+apps/web/src/lib/queries/orders.ts
+  s_55e774cf7959af::t_12ece76f51e476 2
+  s_55e774cf7959af::t_5e628fa382ade6 52-76
+  s_55e774cf7959af::t_3e6f91746c8cf1 77
+apps/web/src/app/admin/page.tsx
+  s_55e774cf7959af::t_b5e85f6fe21838 29
+  s_55e774cf7959af::t_48090ed239707f 236-242,247-252,258-263
+  s_55e774cf7959af::t_de02b3db613e04 294-299
+apps/web/src/app/api/admin/palette/route.ts
+  s_55e774cf7959af::t_222ecd1ca2a244 1-73
+apps/web/src/app/admin/settings/legal/page.tsx
+  s_55e774cf7959af::t_b3213d6318d81d 1-48
+apps/web/src/app/admin/broadcasts/page.tsx
+  s_55e774cf7959af::t_70ef3b7e789ee2 1-2,219
+  s_55e774cf7959af::t_c502dccc8fde28 19
+apps/web/src/app/admin/layout.tsx
+  s_55e774cf7959af::t_b3213d6318d81d 68
+  s_55e774cf7959af::t_e0ec1ee1c7554c 4-5,35-67,69-89,93-97,99-101,103-119,121,130
+apps/web/src/app/admin/delivery/page.tsx
+  s_55e774cf7959af::t_d2fc92d585d802 2
+  s_55e774cf7959af::t_c502dccc8fde28 18,72
+apps/web/src/app/admin/_components/notification-bell.tsx
+  s_55e774cf7959af::t_0c11d3cb438c89 68,73-74
+  s_55e774cf7959af::t_6c4f09a6196e70 132-136
+apps/web/src/app/admin/products/_components/product-form.tsx
+  s_55e774cf7959af::t_d27cc79c591e54 587-588,592-594
+  s_55e774cf7959af::t_18f6d69f90b24b 148-190
+  s_55e774cf7959af::t_0ebcfcd5d6892b 616-658
+  s_55e774cf7959af::t_c1520ede99f20f 504-505,509-510
+  s_55e774cf7959af::t_c5aa83c52cd976 59-74
+  s_55e774cf7959af::t_c1e28b61640fd3 351-352,354-356
+  s_55e774cf7959af::t_7f6418816315a1 3,15,18
+  s_55e774cf7959af::t_a8b59b8f1b9819 297-300,303-316,320-322
+  s_55e774cf7959af::t_c84e66a5e0a0e2 262-287
+  s_55e774cf7959af::t_2c0150f1b4b9fd 218-238
+  s_16f404b29c0075::t_de49434297ab84 191
+apps/web/src/app/admin/_components/account-menu.tsx
+  s_55e774cf7959af::t_da977b4bd120e2 1-127
+apps/web/src/app/admin/members/page.tsx
+  s_55e774cf7959af::t_c502dccc8fde28 12
+  s_55e774cf7959af::t_4b89653bff8c39 98
+apps/web/src/app/admin/_components/command-palette.tsx
+  s_55e774cf7959af::t_5a8a5eb73bc36a 210-212,215
+  s_55e774cf7959af::t_e39711d396c1ca 1-28,30-37,42-55,69-87,94-95,100,102-110,113-115,124-128,137-142,191-199,236,238-241,258-259,261,264-274,276-277,279,282-284,296-298,300,303,305-306,308-311,313-319,326-340,342-352,354-389,391-395,403-409,411-415,419-431
+  s_55e774cf7959af::t_5c12e9a9353dbe 242-244,251-253
+  s_55e774cf7959af::t_4fdc953f418b0a 396
+  s_55e774cf7959af::t_27f8d93a9cfd87 143-190
+  s_55e774cf7959af::t_1cf80058841950 29,38-41,56-68,88-93,96-99,101,111-112,120,133,200-209,213-214,216-235,237,245-250,254-257,260,262-263,275,278,280-281,285-295,299,301-302,304,307,312,320-325,390,397-402,410,416-418
+  s_55e774cf7959af::t_366faa1dbf8ff7 116-119,121-123,129-132,134-136
+  s_55e774cf7959af::t_ec9df148a01742 341,353
+apps/web/src/app/admin/settings/fields/page.tsx
+  s_55e774cf7959af::t_70b9dd7efcbc60 27-30
+apps/web/src/app/admin/orders/_components/order-tabs.tsx
+  s_55e774cf7959af::t_b795e3d759fbae 34,60-61,64-82,86
+  s_55e774cf7959af::t_e74d36434ae6aa 5
+apps/web/src/app/admin/settings/_components/settings-shell.tsx
+  s_55e774cf7959af::t_6285bab0c51a46 91-100,116
+  s_55e774cf7959af::t_3920de9ea75a5f 202-209
+  s_55e774cf7959af::t_6304d5c1e4288d 161-177
+  s_55e774cf7959af::t_1aecbba9ba76f7 59-64
+  s_55e774cf7959af::t_3e868322bba18a 1-7,9-14,16-19,21-58,65-90,101-115,117-160,178-201,210-225
+  s_55e774cf7959af::t_35f043f115f159 8,15,20
+apps/web/src/app/admin/broadcasts/subscribers/page.tsx
+  s_55e774cf7959af::t_c502dccc8fde28 11,98
+  s_55e774cf7959af::t_d2fc92d585d802 3
+apps/web/src/components/shared/language-switcher.tsx
+  s_55e774cf7959af::t_137e4d3ae9ef8d 209-212
+  s_55e774cf7959af::t_16e78b6eb0f43d 51,62-68
+apps/web/src/app/admin/orders/page.tsx
+  s_55e774cf7959af::t_d2fc92d585d802 4
+  s_55e774cf7959af::t_a0c7a176a4fb65 33-34
+  s_55e774cf7959af::t_70ef3b7e789ee2 254
+  s_55e774cf7959af::t_c502dccc8fde28 32
+apps/web/src/app/admin/_components/help-link.tsx
+  s_55e774cf7959af::t_95370668e206e3 12,20-24
+apps/web/src/app/admin/coupons/page.tsx
+  s_55e774cf7959af::t_c502dccc8fde28 7,69
+apps/web/src/app/admin/products/_components/toggle.tsx
+  s_55e774cf7959af::t_35fb589fafc541 47,49
+  s_55e774cf7959af::t_8e4c9d89d4ca00 3-16,36,43,45-46,48,50
+apps/web/src/app/admin/legal/page.tsx
+  s_55e774cf7959af::t_213616ab98cfba 1,4-6,8-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "e1afc2783c3f9d0cc47973f5e93c808ee14606e2",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_55e774cf7959af": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c11c1133-9671-4ded-9eeb-6f8ca64b8091",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
