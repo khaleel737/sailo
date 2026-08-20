@@ -1,0 +1,33 @@
+packages/db/src/schema/automations.ts
+  s_a7bbf59e767e8f::t_e35bf74fe15889 182-187
+  s_a7bbf59e767e8f::t_9f428ecb270a4a 181
+packages/db/src/schema/auth.ts
+  s_a7bbf59e767e8f::t_209f17816e12a1 109-111,118-121
+  s_a7bbf59e767e8f::t_b469cadb69dfe8 48-56,58-60,76-79
+packages/db/src/schema/recovery.ts
+  s_a7bbf59e767e8f::t_f22f7c00cab50e 135-141
+packages/db/src/schema/orders.ts
+  s_a7bbf59e767e8f::t_228b43d246f545 489-500,503-538
+packages/db/src/schema/catalog.ts
+  s_a7bbf59e767e8f::t_3e0c28b7da354f 672-674
+apps/web/drizzle/0062_load_indexes.sql
+  s_a7bbf59e767e8f::t_931e3561d1943d 1-92
+packages/db/src/schema/shop.ts
+  s_a7bbf59e767e8f::t_2204d3a9cadd82 756-760
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "32c7dc2045aa29b10fcb95385884f430ade880f7",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
