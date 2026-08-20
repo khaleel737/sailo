@@ -1,7 +1,15 @@
 import "server-only";
 import { and, asc, eq, inArray } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { productImages, productVariants, products } from "@sailo/db/schema";
+import {
+  eventSessions,
+  eventTiers,
+  productImages,
+  productVariants,
+  products,
+} from "@sailo/db/schema";
+import type { EventSession, EventTier } from "@sailo/db/schema";
+import { sessionSeatsLeft, tierSeatsLeft } from "../ticketing/capacity";
 import { clampQuantity, isSellable, maxOrderable } from "@sailo/core/variants";
 import {
   isPwyw,
@@ -193,6 +201,49 @@ export async function resolveLines(
     else variantsByProduct.set(v.productId, [v]);
   }
 
+  /*
+   * The bands and the dates, for the events in this basket — spec 50.
+   *
+   * A fourth and fifth query, and both are skipped entirely by a basket with no
+   * event in it — which is almost every basket. Batched over the event ids for
+   * the same reason the three above are: this runs on every quantity change and
+   * every coupon keystroke, and a per-line lookup would be two more round trips
+   * per ticket.
+   *
+   * Read here rather than trusted from the request. The browser sends an id; the
+   * price, the seats left, the name and the window all come back out of these
+   * rows, so a forged body can name a different band and still cannot name a
+   * different price for one.
+   */
+  const eventIds = priced
+    .filter((product) => product.kind === "event")
+    .map((product) => product.id);
+  const [allTiers, allSessions] = eventIds.length
+    ? await Promise.all([
+        db.query.eventTiers.findMany({
+          where: inArray(eventTiers.productId, eventIds),
+          orderBy: [asc(eventTiers.position), asc(eventTiers.createdAt)],
+        }),
+        db.query.eventSessions.findMany({
+          where: inArray(eventSessions.productId, eventIds),
+          orderBy: [asc(eventSessions.startsAt)],
+        }),
+      ])
+    : [[] as EventTier[], [] as EventSession[]];
+
+  const tiersByProduct = new Map<string, EventTier[]>();
+  for (const tier of allTiers) {
+    const list = tiersByProduct.get(tier.productId);
+    if (list) list.push(tier);
+    else tiersByProduct.set(tier.productId, [tier]);
+  }
+  const sessionsByProduct = new Map<string, EventSession[]>();
+  for (const session of allSessions) {
+    const list = sessionsByProduct.get(session.productId);
+    if (list) list.push(session);
+    else sessionsByProduct.set(session.productId, [session]);
+  }
+
   for (const item of wanted) {
     const product = byId.get(item.productId);
     /*
@@ -314,6 +365,135 @@ export async function resolveLines(
       );
       if (stop) return stop;
       continue;
+    }
+
+    /*
+     * The band and the date — spec 50, and the whole of the money path for an
+     * event that has either.
+     *
+     * Everything here is decided from the rows read above, never from the
+     * request: the request names an id, and if that id is not one of this
+     * product's bands the line is refused rather than quietly priced at the
+     * product's own number. That refusal is the feature. A seller who typed
+     * "VIP, £50, 30 seats" believes they are selling VIP at £50, and a checkout
+     * that ignored the id would take £20 for it and claim no seat against the
+     * band — a revenue bug wearing a feature's costume.
+     *
+     * A hidden tier is *reachable* here and merely unlisted on the storefront.
+     * That is what "comp or press tier, reachable by direct link only" means: a
+     * link is the credential, and refusing it at the checkout would make the
+     * link go nowhere.
+     */
+    let tier: EventTier | null = null;
+    let session: EventSession | null = null;
+    if (product.kind === "event") {
+      const tiers = tiersByProduct.get(product.id) ?? [];
+      const sessions = sessionsByProduct.get(product.id) ?? [];
+
+      if (tiers.length > 0) {
+        tier = tiers.find((row) => row.id === item.tierId) ?? null;
+        if (!tier) {
+          const stop = fail(item, `Choose a ticket type for ${product.title}.`);
+          if (stop) return stop;
+          continue;
+        }
+
+        /*
+         * The band's own window, narrowed by the product's — spec 43's
+         * mechanism, which is why `event_tiers` carries the same two columns.
+         *
+         * Early bird closing while General keeps selling is the case this
+         * exists for, and it is the one an events seller notices: the product
+         * is open, so the page and every other check say yes, and only this
+         * refuses. Named with the band rather than the product, or the buyer
+         * reads "the event is not on sale" about an event that is.
+         */
+        if (tier.sellFrom && tier.sellFrom.getTime() > opts.now.getTime()) {
+          const stop = fail(item, `${tier.name} isn't on sale yet.`);
+          if (stop) return stop;
+          continue;
+        }
+        if (tier.sellUntil && tier.sellUntil.getTime() <= opts.now.getTime()) {
+          const stop = fail(item, `${tier.name} is no longer on sale.`);
+          if (stop) return stop;
+          continue;
+        }
+
+        /*
+         * Sold out, as the rows read *now*.
+         *
+         * Racy on its own and deliberately not the guard: two buyers for the
+         * last VIP seat both read a one here. `claimEventCapacity` is what
+         * decides, in a conditional UPDATE, and it names the level it refused
+         * so the loser is told "VIP is sold out" rather than that the event
+         * is. This check is what stops the ordinary case — a band that has
+         * been full for a week — from reaching a claim at all.
+         */
+        if (tierSeatsLeft(tier) === 0) {
+          const stop = fail(item, `${tier.name} is sold out.`);
+          if (stop) return stop;
+          continue;
+        }
+
+        /*
+         * A band has one price and no `currency_prices` row behind it — spec
+         * 53's table is on products and variants only.
+         *
+         * So an order priced in a currency the shop does not keep its books in
+         * cannot quote this line at all, and it is refused rather than filled
+         * in from the product: the product's euro price is a price for a
+         * *different* ticket, and charging it would sell VIP at the general
+         * rate in exactly the shape this whole feature exists to stop. Same
+         * sentence an unpriceable variant gets, so there is one code path.
+         */
+        if (regional) {
+          const stop = fail(item, `${product.title} isn't available right now.`);
+          if (stop) return stop;
+          continue;
+        }
+      }
+
+      /*
+       * The date, under `pick_one` — and only under it.
+       *
+       * An `all_access` pass admits every session and therefore claims none:
+       * naming one would take a seat the pass does not occupy, and eight days
+       * of a conference would each lose a seat to the same person. So the id is
+       * dropped rather than refused — the buyer of a pass has no date to pick,
+       * and a stale form that sent one is not an attack.
+       */
+      if (product.sessionMode === "pick_one" && sessions.length > 0) {
+        session = sessions.find((row) => row.id === item.sessionId) ?? null;
+        if (!session) {
+          const stop = fail(item, `Choose a date for ${product.title}.`);
+          if (stop) return stop;
+          continue;
+        }
+        if (session.isCancelled) {
+          const stop = fail(
+            item,
+            `That date for ${product.title} has been cancelled. Pick another.`,
+          );
+          if (stop) return stop;
+          continue;
+        }
+        if (session.startsAt.getTime() <= opts.now.getTime()) {
+          const stop = fail(
+            item,
+            `That date for ${product.title} has passed. Pick another.`,
+          );
+          if (stop) return stop;
+          continue;
+        }
+        if (sessionSeatsLeft(session) === 0) {
+          const stop = fail(
+            item,
+            `That date for ${product.title} is sold out.`,
+          );
+          if (stop) return stop;
+          continue;
+        }
+      }
     }
 
     /*
@@ -443,9 +623,34 @@ export async function resolveLines(
      * a card statement disagreeing forever, on the one kind of sale where the
      * disagreement repeats. Nobody subscribes to the same gym twice.
      */
+    /*
+     * …and an event is bounded by its band and its date as well as its room —
+     * spec 50.
+     *
+     * Three more ceilings on the same number, and every one of them is a
+     * separate promise the seller made: thirty VIP seats, twelve on Tuesday,
+     * four to a customer in this band. Applied here rather than left to the
+     * claim, because `claimEventCapacity` refuses a party of five for four
+     * seats outright — all levels or none — so a basket the buyer could have
+     * had at four would come back as "sold out" instead of as four tickets.
+     *
+     * Still not the guard. These numbers are a read and the claim is a
+     * conditional UPDATE; this only stops a quantity nobody could ever have.
+     */
+    const ceilings = [maxOrderable(product, variant)];
+    if (tier) {
+      if (tier.maxPerOrder && tier.maxPerOrder > 0) ceilings.push(tier.maxPerOrder);
+      const left = tierSeatsLeft(tier);
+      if (left !== null) ceilings.push(left);
+    }
+    if (session) {
+      const left = sessionSeatsLeft(session);
+      if (left !== null) ceilings.push(left);
+    }
+
     const quantity = isMembership(product)
       ? 1
-      : clampQuantity(item.quantity, maxOrderable(product, variant));
+      : clampQuantity(item.quantity, Math.min(...ceilings));
 
     lines.push({
       productId: product.id,
@@ -501,12 +706,41 @@ export async function resolveLines(
        * matters more here than anywhere: a buyer typing 12.345 KWD into an
        * amount field is naming a number their own card cannot pay.
        */
+      /*
+       * …or, on an event with bands, from the band — spec 50.
+       *
+       * The same override the variant already applies one level up, and for
+       * the same reason: the buyer picked a thing, and the thing has a price.
+       * Without this line the seller's "VIP, £50" is decoration — the buyer
+       * sees the product price, pays the product price, and the tier's only
+       * effect is a row nobody reads.
+       *
+       * Above `resolvedUnitPriceCents` rather than inside it because that
+       * function is pure and takes a product and a variant; a tier is neither,
+       * and threading a third row through it would put spec 50 into every one
+       * of its callers. A tiered event is never pay-what-you-want — a band
+       * *is* a chosen price — so there is nothing here to clamp.
+       */
       unitPriceCents: toStripeAmount(
-        resolvedUnitPriceCents(product, variant, item.priceCents),
+        tier
+          ? Math.max(0, tier.priceCents)
+          : resolvedUnitPriceCents(product, variant, item.priceCents),
         opts.currency ?? "USD",
       ),
       quantity,
       preorder,
+      /*
+       * Which band and which date, carried the rest of the way — spec 50.
+       *
+       * Set once, here, so the seat that is claimed, the price that is charged,
+       * the `order_items` row and the ticket's printed band are all the same
+       * three values. `previewOrder` and `createOrderIntent` are both built on
+       * this function, which is what stops the basket and the charge disagreeing
+       * about which ticket this is.
+       */
+      tierId: tier?.id ?? null,
+      sessionId: session?.id ?? null,
+      tierName: tier?.name ?? null,
       /*
        * What one of these weighs, for a rate priced by weight — spec 51.
        *

@@ -36,6 +36,23 @@ export type QuoteLine = {
    * differ between the basket and the charge.
    */
   weightGrams?: number | null;
+  /**
+   * Which price band this line bought, and which date — spec 50.
+   *
+   * Optional for the same reason `weightGrams` is: the type is built by hand in
+   * a dozen tests and two projections, and absent means the same as null. Set
+   * once, in `resolveLines`, from the rows the buyer's choice names — so the
+   * basket, the order line, the ticket and the seat that is claimed against the
+   * tier are all the same three values rather than four derivations of them.
+   *
+   * `tierName` travels beside the id and is not a convenience. It is what gets
+   * written onto `tickets.tier`, which the door list prints: a band renamed or
+   * deleted between the on-sale and the night must not change what appears
+   * beside somebody's name, so the name is snapshotted at the moment of sale.
+   */
+  tierId?: string | null;
+  sessionId?: string | null;
+  tierName?: string | null;
 };
 
 export type QuoteInput = {
@@ -110,9 +127,18 @@ export function quote(input: QuoteInput): Quote {
   const lines = input.lines.map((line) => ({
     ...line,
     subtotalCents: lineSubtotal(line),
+    /*
+     * The combination the buyer picked, and on an event that is the band.
+     *
+     * A tier is deliberately not a variant — see the note on `event_tiers` —
+     * so it has no `variantOptions` to render, and without this an order for
+     * "VIP" reached the drawer, the order line, Stripe's page and the seller's
+     * inbox as a bare product title. Three of those four are what a buyer
+     * checks the price against.
+     */
     label: line.variantOptions
       ? variantLabel(line.variantOptions, line.options)
-      : "",
+      : (line.tierName ?? ""),
   }));
 
   const needsDelivery = cartNeedsDelivery(lines);
