@@ -1,0 +1,64 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "copyright": "2026 Khaleel Musleh",
+    "categories": ["BUSINESS", "SHOPPING"],
+    "release": {
+      "automaticRelease": false,
+      "phasedRelease": true
+    },
+    "advisory": {
+      "alcoholTobaccoOrDrugUseOrReferences": "NONE",
+      "contests": "NONE",
+      "gamblingSimulated": "NONE",
+      "horrorOrFearThemes": "NONE",
+      "matureOrSuggestiveThemes": "NONE",
+      "medicalOrTreatmentInformation": "NONE",
+      "profanityOrCrudeHumor": "NONE",
+      "sexualContentGraphicAndNudity": "NONE",
+      "sexualContentOrNudity": "NONE",
+      "violenceCartoonOrFantasy": "NONE",
+      "violenceRealistic": "NONE",
+      "violenceRealisticProlongedGraphicOrSadistic": "NONE",
+      "gambling": false,
+      "unrestrictedWebAccess": false,
+      "kidsAgeBand": null,
+      "ageRatingOverride": "NONE",
+      "koreaAgeRatingOverride": "NONE"
+    },
+    "review": {
+      "firstName": "Khaleel",
+      "lastName": "Musleh",
+      "email": "support@sailo.store",
+      "phone": "REPLACE_BEFORE_FIRST_SUBMIT",
+      "demoRequired": true,
+      "demoUsername": "review@sailo.store",
+      "demoPassword": "REPLACE_BEFORE_FIRST_SUBMIT",
+      "notes": "Sailo is a seller tool. The account below is a seller, not a shopper — it owns a demo shop that is already stocked with products, past orders and a live event with issued tickets, so every screen has real content and no empty state blocks you.\n\nWHAT TO TRY\n1. Sign in with the account below. The Home tab opens on the shop's setup checklist and today's takings.\n2. Orders — tap any order to see its lines, totals and buyer. Orders are historical demo data.\n3. Store — tap a product to see its variants, stock and photos.\n4. Insights — the shop's numbers over the last 30 days.\n5. Settings — the signed-in account, notifications, sign out, and Delete account. Delete account is two taps from the Settings tab; it is destructive, so please do not confirm it on the demo account.\n\nTHERE IS NO PURCHASE ANYWHERE IN THIS APP\nSailo has paid plans, and they are sold only on the website. The app has no prices, no upgrade button and no link to a checkout page, and it never unlocks anything in exchange for money.\n\nSTRIPE CONNECT IS NOT A PURCHASE\nSettings may offer to connect a Stripe account. That is a seller onboarding their own business so their buyers can pay them — it is account setup for receiving money, not the sale of anything to the person using the app. It opens Stripe's own hosted onboarding in a browser.\n\nCAMERA\nThe camera is used for two things: scanning a buyer's ticket at check-in, and photographing a product. Both are explained at the prompt.\n\nQuestions: support@sailo.store."
+    },
+    "info": {
+      "en-US": {
+        "title": "Sailo",
+        "subtitle": "Run your shop from your phone",
+        "promoText": "Your shop, in your pocket. An order arrives as a notification, and you can answer it before you have put the phone down.",
+        "keywords": [
+          "shop",
+          "orders",
+          "seller",
+          "storefront",
+          "inventory",
+          "bookings",
+          "tickets",
+          "ecommerce",
+          "invoice",
+          "checkin"
+        ],
+        "description": "Sailo is the phone half of your shop.\n\nOpen it and you are looking at what happened while you were away — the orders that came in, what is running low, and what the day was worth. Everything you do here is the same shop your buyers see on the web, so a price you change on the bus is live by the time you get off it.\n\nORDERS, ANSWERED FROM ANYWHERE\nEvery order lands with its lines, its totals and the buyer's details exactly as they were at checkout. Move it through packed, shipped and completed with a tap. Turn on notifications and an order reaches you the moment it is placed, not the next time you happen to open a laptop.\n\nYOUR CATALOGUE, IN YOUR HAND\nProducts, variants, stock and photos. Take a photo of the thing you just made and it is on sale in under a minute. Options are priced and counted per combination, so a small in green can be sold out while a large in black is not.\n\nTICKETS SCANNED AT THE DOOR\nIf you sell tickets or take bookings, the door is where the phone earns its place. Scan a buyer's ticket to check them in, see who has already arrived, and keep working when the venue's wifi does not.\n\nNUMBERS THAT DO NOT FLATTER YOU\nWhat sold, what did not, where visitors came from and what they were worth. Empty is shown as empty rather than as a flattering zero, and anything the view has clipped says so instead of quietly rounding it off.\n\nTHIRTY-FIVE LANGUAGES, BOTH DIRECTIONS\nSailo is translated into thirty-five languages, and right-to-left layouts are the real thing rather than a mirrored afterthought.\n\nBUILT ON THE SHOP YOU ALREADY HAVE\nSailo gives every seller a storefront on the web with its own link, a catalogue, checkout, delivery options, coupons and invoices. This app is that shop, on your phone. Sign in with the account you already use.\n\nGood for makers, market stalls, studios, bakeries, salons, tutors, event organisers, and anyone else who sells something and would rather not be tied to a desk.\n\nAccount deletion lives in Settings, and it deletes for real.\n\nPaid Sailo plans are sold on sailo.store, not in this app.\n\nPrivacy policy: https://sailo.store/privacy\nTerms: https://sailo.store/terms",
+        "releaseNotes": "First release.\n\nOrders, products, check-in and your shop's numbers, on a phone.",
+        "marketingUrl": "https://sailo.store",
+        "supportUrl": "https://sailo.store/support",
+        "privacyPolicyUrl": "https://sailo.store/privacy"
+      }
+    }
+  }
+}
