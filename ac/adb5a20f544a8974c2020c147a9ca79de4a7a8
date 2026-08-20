@@ -1,0 +1,21 @@
+apps/web/src/lib/session.test.ts
+  s_5a74b4ec056616::t_9041a4d8421cf4 62
+  s_5a74b4ec056616::t_5a38663f7ff163 85-89,93
+  s_5a74b4ec056616::t_7b2fee95e9df17 111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "acadb5a20f544a8974c2020c147a9ca79de4a7a8",
+  "prompts": {},
+  "sessions": {
+    "s_5a74b4ec056616": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "09d9ff8c-792d-4483-a67b-d14f394f16c7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
