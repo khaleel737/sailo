@@ -4,14 +4,13 @@ import { rateLimit } from "@sailo/rate-limit";
 import { ipFromHeaders } from "@sailo/rate-limit/client-ip";
 import { publishShopEvent } from "@sailo/events";
 import { headers } from "next/headers";
-import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { liveShop } from "@/lib/shop-visibility";
-import { CLICK_KINDS, clicks, products, shops, visits, type ClickKind } from "@sailo/db/schema";
+import { CLICK_KINDS, clicks, visits, type ClickKind } from "@sailo/db/schema";
 import { classifyVisit, outboundHost, parseUserAgent } from "@sailo/analytics/traffic";
 import { ensurePartition } from "@sailo/analytics/partitions";
 import { visitorId } from "@sailo/analytics/visitor";
 import { isUuid } from "@sailo/core/uuid";
+import { beaconTarget } from "@/lib/track-liveness";
 
 
 export async function POST(request: Request) {
@@ -61,35 +60,14 @@ export async function POST(request: Request) {
   const db = getDb();
 
   /*
-   * One round trip, not two — this is the hottest endpoint in the app, and
-   * the validation reads are most of what it costs the primary. When the
-   * beacon names a product, a single join answers both questions: is the
-   * shop reachable (a shop that isn't can't have been visited, so a beacon
-   * naming one is stale or forged), and does the product belong to it. A
-   * product that doesn't is ignored rather than refused — the shop's own
-   * visit is still worth counting — and only an id shaped like a uuid is
-   * looked at, because Postgres raises on a malformed comparison.
+   * `beaconTarget` answers "is the shop live, and is this its product" from
+   * the shop's cache — a shop that isn't reachable can't have been visited,
+   * so a beacon naming one is stale or forged. Only an id shaped like a uuid
+   * is looked at, because Postgres raises on a malformed comparison.
    */
-  let validProductId: string | null = null;
-  if (isUuid(productId)) {
-    const [row] = await db
-      .select({ productId: products.id })
-      .from(shops)
-      .leftJoin(
-        products,
-        and(eq(products.id, productId), eq(products.shopId, shops.id)),
-      )
-      .where(liveShop(eq(shops.id, shopId)))
-      .limit(1);
-    if (!row) return NextResponse.json({ ok: false }, { status: 404 });
-    validProductId = row.productId ?? null;
-  } else {
-    const shop = await db.query.shops.findFirst({
-      where: liveShop(eq(shops.id, shopId)),
-      columns: { id: true },
-    });
-    if (!shop) return NextResponse.json({ ok: false }, { status: 404 });
-  }
+  const target = await beaconTarget(shopId, isUuid(productId) ? productId : null);
+  if (!target.live) return NextResponse.json({ ok: false }, { status: 404 });
+  const validProductId = target.productId;
 
   const h = await headers();
 
@@ -207,12 +185,10 @@ async function recordClick(
   if (!isUuid(payload.shopId)) return done;
 
   const db = getDb();
-  const shop = await db.query.shops.findFirst({
-    // The same bar a visit has to clear.
-    where: liveShop(eq(shops.id, payload.shopId)),
-    columns: { id: true },
-  });
-  if (!shop) return done;
+  // The same bar a visit has to clear, from the same shop cache.
+  const target = await beaconTarget(payload.shopId, null);
+  if (!target.live) return done;
+  const shop = { id: payload.shopId };
 
   const h = await headers();
   const targetHost = outboundHost(payload.url, h.get("host"));
