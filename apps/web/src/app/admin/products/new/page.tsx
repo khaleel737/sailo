@@ -6,6 +6,7 @@ import { PageHeader } from "@sailo/design-system/web";
 import { getAdminT } from "@/i18n/server";
 import { connectState } from "@sailo/commerce/orders/server";
 import { can, cheapestPlanWith } from "@sailo/core/plans";
+import { listStaff } from "@sailo/commerce/booking/server";
 
 export const metadata: Metadata = { title: "Add product" };
 
@@ -13,6 +14,20 @@ export default async function NewProductPage() {
   const { a } = await getAdminT();
   const { shop } = await requireShop("products:write");
   const categories = await getShopCategories(shop.id);
+
+  /*
+   * The roster, for the service card's "who takes this one" — spec 51. Read
+   * here rather than in the card so the card stays a client component with no
+   * database of its own, and narrowed to three fields so a person's hours and
+   * calendar address never reach the browser.
+   */
+  const roster = can(shop, "staffResources")
+    ? (await listStaff(shop.id)).map((person) => ({
+        id: person.id,
+        name: person.name,
+        isActive: person.isActive,
+      }))
+    : [];
 
   return (
     <>
@@ -43,6 +58,7 @@ export default async function NewProductPage() {
         licensing={can(shop, "licensing")}
         membershipTerms={can(shop, "membershipTerms")}
         staffResources={can(shop, "staffResources")}
+        roster={roster}
         cardReady={connectState(shop) === "active" && can(shop, "cardRails")}
         /* Spec 53. Gated here and again in `saveProduct`: a form is not a
            gate, and a downgraded shop keeps every price it typed. */

@@ -11,6 +11,7 @@ import { getAdminT } from "@/i18n/server";
 import { connectState } from "@sailo/commerce/orders/server";
 import { can, cheapestPlanWith } from "@sailo/core/plans";
 import { poolCounts } from "@sailo/commerce/catalog";
+import { listStaff, staffIdsFor } from "@sailo/commerce/booking/server";
 import { CodePoolCard } from "@/app/admin/products/_components/code-pool-card";
 
 export const metadata: Metadata = { title: "Edit product" };
@@ -38,6 +39,20 @@ export default async function EditProductPage({
     product.codeSource === "pool" || product.codeSource === "generated"
       ? await poolCounts(product.id)
       : null;
+
+  /*
+   * Who may take this service, and who already does — spec 51.
+   *
+   * Read here rather than in the card so the card stays a client component
+   * with no database of its own, and narrowed to three fields: a person's
+   * hours and calendar address are not the browser's business. Only for a
+   * service, because nothing else has a diary.
+   */
+  const staff =
+    product.kind === "service" && can(shop, "staffResources")
+      ? await listStaff(shop.id)
+      : [];
+  const assignedStaffIds = staff.length > 0 ? await staffIdsFor(product.id) : [];
 
   return (
     <>
@@ -78,6 +93,12 @@ export default async function EditProductPage({
         licensing={can(shop, "licensing")}
         membershipTerms={can(shop, "membershipTerms")}
         staffResources={can(shop, "staffResources")}
+        roster={staff.map((person) => ({
+          id: person.id,
+          name: person.name,
+          isActive: person.isActive,
+        }))}
+        assignedStaffIds={assignedStaffIds}
         cardReady={connectState(shop) === "active" && can(shop, "cardRails")}
         /* Spec 53. Gated here and again in `saveProduct`: a form is not a
            gate, and a downgraded shop keeps every price it typed. */

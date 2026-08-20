@@ -10,7 +10,7 @@ import { markSessionPaid } from "@sailo/commerce/recovery/server";
 import { referralFor } from "@sailo/workflows/orders";
 import type { OrderIntentInput, OrderIntentResult } from "@sailo/commerce/orders";
 import { firstRow } from "@sailo/core/invariant";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { liveShop } from "@/lib/shop-visibility";
 import { rateLimit } from "@sailo/rate-limit";
@@ -846,8 +846,15 @@ export async function createOrderIntent(
    */
   const slots = await Promise.all(
     lines
-      .filter((line) => line.scheduledFor && line.productId)
-      .map(async (line) => {
+      /*
+       * The position is carried through the filter, because the order line
+       * this slot belongs to has to be findable again once a person has been
+       * chosen — `orderItems.position` is the index into `lines`, which is
+       * what the insert above wrote.
+       */
+      .map((line, position) => ({ line, position }))
+      .filter(({ line }) => line.scheduledFor && line.productId)
+      .map(async ({ line, position }) => {
         const startsAt = line.scheduledFor as Date;
         const endsAt = slotEnd(startsAt, line.product.durationMinutes);
         /*
@@ -872,6 +879,7 @@ export async function createOrderIntent(
         });
 
         return {
+          position,
           productId: line.productId as string,
           startsAt,
           // The range, not just the start: two appointments that overlap are
@@ -911,6 +919,39 @@ export async function createOrderIntent(
       ok: false,
       error: "That time has just been taken. Pick another and try again.",
     };
+  }
+
+  /*
+   * And the appointment says who it is with — spec 51.
+   *
+   * The claim already carries the person; that is what the exclusion
+   * constraint keys on and it is the guarantee. This copies the answer onto
+   * the order line as well, which is what `busyFor`'s staff-keyed read looks
+   * at and what a seller opening an order needs to see. Written after the
+   * claim rather than with the insert, because who is free is only settled at
+   * the moment the claim is taken.
+   *
+   * No rows for a shop with no roster, so nothing about today's checkout
+   * changes. Best-effort: a failure here loses a label, and undoing a paid
+   * booking over a label would be the worse trade.
+   */
+  const assigned = slots.filter((slot) => slot.staffId);
+  if (assigned.length > 0) {
+    await Promise.all(
+      assigned.map((slot) =>
+        db
+          .update(orderItems)
+          .set({ staffId: slot.staffId })
+          .where(
+            and(
+              eq(orderItems.orderId, order.id),
+              eq(orderItems.position, slot.position),
+            ),
+          ),
+      ),
+    ).catch((error: unknown) => {
+      console.error("[sailo] could not record who took the appointment:", error);
+    });
   }
 
   /*

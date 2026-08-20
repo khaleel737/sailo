@@ -20,6 +20,12 @@ export function SettingsNav() {
     { href: "/admin/settings/billing", label: a.settings.tabBilling },
     { href: "/admin/settings/tax", label: a.tax.title },
     { href: "/admin/settings/team", label: a.settings.tabTeam },
+    /*
+     * Who a buyer books, which is not who logs in — spec 51. Next to the team
+     * tab because a seller looking for "the people" will try that one first,
+     * and one click apart is cheaper than a third meaning of the word.
+     */
+    { href: "/admin/settings/staff", label: a.productForm.staffTitle },
     { href: "/admin/settings/integrations", label: a.integrations.title },
     { href: "/admin/settings/fields", label: a.broadcasts.fieldsTitle },
     { href: "/admin/settings/security", label: a.settings.tabSecurity },

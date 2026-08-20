@@ -5,7 +5,11 @@ import { products, shops } from "@sailo/db/schema";
 import { isUuid } from "@sailo/core/uuid";
 import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
-import { BOOKING_HORIZON_DAYS, calendarFor, isBookable } from "@sailo/commerce/booking/server";
+import {
+  BOOKING_HORIZON_DAYS,
+  calendarWithStaff,
+  isBookable,
+} from "@sailo/commerce/booking/server";
 
 /**
  * The times a buyer may pick, for one bookable service.
@@ -85,7 +89,20 @@ export async function GET(
     : 14;
 
   const now = new Date();
-  const calendar = await calendarFor(shop, product, { days, now });
+  /*
+   * `calendarWithStaff` and not `calendarFor` — spec 51.
+   *
+   * A service with people on it offers the union of *their* free time. The
+   * product-keyed calendar reads every order line for the service whoever took
+   * it, so a salon with three stylists lost ten o'clock for all three the
+   * moment one of them was booked — it offered less than the shop could sell,
+   * which is the whole gap the roster exists to close.
+   *
+   * A shop with no `staff_resources` rows — which is every shop the day this
+   * ships — gets `calendarFor` unchanged, and the fallback is the data rather
+   * than a branch anybody has to remember.
+   */
+  const calendar = await calendarWithStaff(shop, product, { days, now });
 
   return Response.json(
     {
