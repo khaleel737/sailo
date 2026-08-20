@@ -360,6 +360,7 @@ export const it: Dictionary = {
     viewShop: "Vedi negozio", signOut: "Esci", upgrade: "Passa a un piano superiore",
     openMenu: "Apri menu", closeMenu: "Chiudi menu",
     broadcasts: "Invii",
+    flows: "Automazioni",
     members: "Membri",
     legal: "Pagine legali",
     dataRequests: "Richieste sui dati",

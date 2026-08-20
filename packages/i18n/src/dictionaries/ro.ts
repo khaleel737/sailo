@@ -351,6 +351,7 @@ export const ro: Dictionary = {
     viewShop: "Vezi magazinul", signOut: "Deconectare", upgrade: "Schimbă planul",
     openMenu: "Deschide meniul", closeMenu: "Închide meniul",
     broadcasts: "Trimiteri",
+    flows: "Automatizări",
     members: "Membri",
     legal: "Pagini juridice",
     dataRequests: "Cereri privind datele",

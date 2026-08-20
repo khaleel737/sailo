@@ -351,6 +351,7 @@ export const fi: Dictionary = {
     viewShop: "Näytä kauppa", signOut: "Kirjaudu ulos", upgrade: "Päivitä",
     openMenu: "Avaa valikko", closeMenu: "Sulje valikko",
     broadcasts: "Joukkoviestit",
+    flows: "Automaatiot",
     members: "Jäsenet",
     legal: "Lakisivut",
     dataRequests: "Tietopyynnöt",

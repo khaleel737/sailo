@@ -352,6 +352,7 @@ export const da: Dictionary = {
     viewShop: "Se butik", signOut: "Log ud", upgrade: "Opgradér",
     openMenu: "Åbn menu", closeMenu: "Luk menu",
     broadcasts: "Udsendelser",
+    flows: "Automatiseringer",
     members: "Medlemmer",
     legal: "Juridiske sider",
     dataRequests: "Dataanmodninger",

@@ -312,6 +312,7 @@ export const sr: Dictionary = {
     checkin: "Провера улазница", viewShop: "Погледај продавницу",
     signOut: "Одјава", upgrade: "Надогради", openMenu: "Отвори мени", closeMenu: "Затвори мени",
     broadcasts: "Кампање",
+    flows: "Аутоматизације",
     members: "Чланови",
     legal: "Правне странице",
     dataRequests: "Захтеви за податке",

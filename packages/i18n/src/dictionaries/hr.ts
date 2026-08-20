@@ -310,6 +310,7 @@ export const hr: Dictionary = {
     payments: "Plaćanja", delivery: "Dostava", settings: "Postavke", checkin: "Provjera ulaznica", viewShop: "Pogledaj trgovinu",
     signOut: "Odjava", upgrade: "Nadogradi", openMenu: "Otvori izbornik", closeMenu: "Zatvori izbornik",
     broadcasts: "Kampanje",
+    flows: "Automatizacije",
     members: "Članovi",
     legal: "Pravne stranice",
     dataRequests: "Zahtjevi za podatke",

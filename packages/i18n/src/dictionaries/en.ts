@@ -758,6 +758,7 @@ export const en = {
     openMenu: "Open menu",
     closeMenu: "Close menu",
     broadcasts: "Broadcasts",
+    flows: "Automations",
     members: "Members",
     /** Spec 41 — the seller's own terms, privacy policy, refunds, about, FAQ. */
     legal: "Legal pages",

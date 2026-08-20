@@ -356,6 +356,7 @@ export const pl: Dictionary = {
     viewShop: "Zobacz sklep", signOut: "Wyloguj", upgrade: "Ulepsz plan",
     openMenu: "Otwórz menu", closeMenu: "Zamknij menu",
     broadcasts: "Wysyłki",
+    flows: "Automatyzacje",
     members: "Członkowie",
     legal: "Strony prawne",
     dataRequests: "Wnioski o dane",

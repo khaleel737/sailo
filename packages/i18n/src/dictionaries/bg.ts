@@ -312,6 +312,7 @@ export const bg: Dictionary = {
     viewShop: "Виж магазина",
     signOut: "Изход", upgrade: "Надгради", openMenu: "Отвори менюто", closeMenu: "Затвори менюто",
     broadcasts: "Съобщения",
+    flows: "Автоматизации",
     members: "Членове",
     legal: "Правни страници",
     dataRequests: "Заявки за данни",

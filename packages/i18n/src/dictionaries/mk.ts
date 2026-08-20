@@ -312,6 +312,7 @@ export const mk: Dictionary = {
     payments: "Плаќања", delivery: "Достава", settings: "Поставки", checkin: "Чек-ин", viewShop: "Погледни ја продавницата",
     signOut: "Одјава", upgrade: "Надгради", openMenu: "Отвори мени", closeMenu: "Затвори мени",
     broadcasts: "Кампањи",
+    flows: "Автоматизации",
     members: "Членови",
     legal: "Правни страници",
     dataRequests: "Барања за податоци",

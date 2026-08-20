@@ -356,6 +356,7 @@ export const tr: Dictionary = {
     viewShop: "Mağazayı gör", signOut: "Çıkış yap", upgrade: "Yükselt",
     openMenu: "Menüyü aç", closeMenu: "Menüyü kapat",
     broadcasts: "Toplu e-postalar",
+    flows: "Otomasyonlar",
     members: "Üyeler",
     legal: "Hukuki sayfalar",
     dataRequests: "Veri talepleri",

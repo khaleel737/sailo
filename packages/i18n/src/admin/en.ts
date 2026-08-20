@@ -236,6 +236,105 @@ export const adminEn = {
     setup: "Setup",
   },
 
+  /**
+   * Spec 30's builder — the seller-facing half of the automations engine.
+   * The engine's vocabulary (triggers, steps, entry policy) is named here in
+   * the seller's words, not the runner's: "Buys a product", not
+   * `product.purchased`.
+   */
+  flows: {
+    title: "Automations",
+    subtitle:
+      "Sequences that run on their own: a trigger enrols a contact, then the steps send, wait and filter.",
+    create: "New flow",
+    lockedBody:
+      "Build sequences that send on their own — a welcome series when somebody joins a list, a nudge after a purchase. Triggers, timed waits and audience filters, with every send consented, suppression-checked and one-click unsubscribable.",
+    empty: "No flows yet",
+    emptyBody:
+      "Create one sequence — a trigger, an email, a wait — and it works while you sleep.",
+
+    statusDraft: "Draft",
+    statusActive: "Active",
+    statusPaused: "Paused",
+
+    runsSummary: "{queued} queued · {waiting} waiting · {done} completed",
+    runsNone: "Nobody has entered yet",
+
+    triggerLabel: "Trigger",
+    triggerHint: "Who enters the flow, and the moment they do.",
+    triggerListJoined: "Joins a list",
+    triggerProductPurchased: "Buys a product",
+    triggerWaitlistSignup: "Joins a waitlist",
+    triggerContactUpdated: "Contact is updated",
+    anyList: "Any list",
+    anyProduct: "Any product",
+
+    entryLabel: "Re-entry",
+    entryOnce: "Once ever",
+    entryRepeat: "May re-enter",
+    entryRepeatHint:
+      "Never while their previous run is still live, and never twice within 24 hours.",
+
+    nameLabel: "Name",
+    namePlaceholder: "Welcome series",
+    stepsTitle: "Steps",
+    addEmail: "Email",
+    addWait: "Wait",
+    addFilter: "Filter",
+    stepEmail: "Send an email",
+    stepWait: "Wait",
+    stepFilter: "Only continue if",
+    emailName: "Internal name",
+    emailNameHint: "What the builder calls it. Never sent.",
+    emailSubject: "Subject",
+    emailPreheader: "Preheader",
+    emailBody: "Body",
+    emailBodyHint: "Markdown, with merge tags — {{first_name}}, {{shop}}.",
+    waitFor: "Wait for",
+    unitMinutes: "minutes",
+    unitHours: "hours",
+    unitDays: "days",
+    filterTag: "Contacts tagged",
+    filterTagHint:
+      "Only contacts carrying this tag continue. Everyone else stops here, quietly.",
+    removeStep: "Remove step",
+    moveUp: "Move up",
+    moveDown: "Move down",
+
+    save: "Save",
+    saved: "Saved.",
+    activate: "Activate",
+    pause: "Pause",
+    delete: "Delete flow",
+    deleteConfirm:
+      "Delete this flow? The record of what it sent is kept; the sequence stops for everyone still walking it.",
+    pauseToEdit:
+      "Pause the flow to edit it. Contacts mid-sequence keep their place and carry on when you activate it again.",
+    advanced:
+      "This flow holds steps this editor cannot draw yet — branches or integration actions. It can still be activated, paused or deleted.",
+
+    problems: "The flow cannot be saved yet:",
+    problemEmpty: "Add at least one step.",
+    problemNeedsSend:
+      "Add at least one email before activating — a flow that never sends does nothing.",
+    problemBadStep: "Step {n} is incomplete.",
+    problemTimerRange: "A wait must be between one minute and 180 days.",
+    problemEmailFields: "Every email needs a subject and a body.",
+
+    statsTitle: "Runs",
+    statQueued: "Queued",
+    statWaiting: "Waiting",
+    statDone: "Completed",
+    statFailed: "Failed",
+    statCancelled: "Stopped",
+    hereNow: "{count} here now",
+    activeSince: "Active since {date}",
+    neverActivated: "Not activated yet",
+
+    createTitle: "New flow",
+    createBody: "Name it and pick what starts it. The steps come next.",
+  },
+
   dashboard: {
     /*
      * Spec 07. Shown beside the orders count rather than as a fifth tile: a

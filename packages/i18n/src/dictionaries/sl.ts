@@ -310,6 +310,7 @@ export const sl: Dictionary = {
     checkin: "Preverjanje vstopnic", viewShop: "Poglej trgovino",
     signOut: "Odjava", upgrade: "Nadgradi", openMenu: "Odpri meni", closeMenu: "Zapri meni",
     broadcasts: "Kampanje",
+    flows: "Avtomatizacije",
     members: "Člani",
     legal: "Pravne strani",
     dataRequests: "Zahteve za podatke",

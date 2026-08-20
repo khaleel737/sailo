@@ -354,6 +354,7 @@ export const ru: Dictionary = {
     viewShop: "Открыть магазин", signOut: "Выйти", upgrade: "Улучшить тариф",
     openMenu: "Открыть меню", closeMenu: "Закрыть меню",
     broadcasts: "Рассылки",
+    flows: "Автоматизации",
     members: "Участники",
     legal: "Правовые страницы",
     dataRequests: "Запросы данных",

@@ -312,6 +312,7 @@ export const th: Dictionary = {
     checkin: "เช็คอิน", viewShop: "ดูร้าน",
     signOut: "ออกจากระบบ", upgrade: "อัปเกรด", openMenu: "เปิดเมนู", closeMenu: "ปิดเมนู",
     broadcasts: "อีเมลกลุ่ม",
+    flows: "ระบบอัตโนมัติ",
     members: "สมาชิก",
     legal: "หน้าข้อกำหนด",
     dataRequests: "คำขอข้อมูล",

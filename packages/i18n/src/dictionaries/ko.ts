@@ -310,6 +310,7 @@ export const ko: Dictionary = {
     payments: "결제", delivery: "배송", settings: "설정", checkin: "체크인", viewShop: "가게 보기",
     signOut: "로그아웃", upgrade: "업그레이드", openMenu: "메뉴 열기", closeMenu: "메뉴 닫기",
     broadcasts: "브로드캐스트",
+    flows: "자동화",
     members: "회원",
     legal: "법률 페이지",
     dataRequests: "데이터 요청",

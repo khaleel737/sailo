@@ -352,6 +352,7 @@ export const cs: Dictionary = {
     viewShop: "Zobrazit obchod", signOut: "Odhlásit se", upgrade: "Vylepšit tarif",
     openMenu: "Otevřít menu", closeMenu: "Zavřít menu",
     broadcasts: "Hromadné e-maily",
+    flows: "Automatizace",
     members: "Členové",
     legal: "Právní stránky",
     dataRequests: "Žádosti o údaje",

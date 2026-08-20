@@ -354,6 +354,7 @@ export const sv: Dictionary = {
     viewShop: "Visa butik", signOut: "Logga ut", upgrade: "Uppgradera",
     openMenu: "Öppna meny", closeMenu: "Stäng meny",
     broadcasts: "Utskick",
+    flows: "Automatiseringar",
     members: "Medlemmar",
     legal: "Juridiska sidor",
     dataRequests: "Dataförfrågningar",

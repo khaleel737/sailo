@@ -352,6 +352,7 @@ export const hu: Dictionary = {
     viewShop: "Bolt megtekintése", signOut: "Kijelentkezés", upgrade: "Csomagváltás",
     openMenu: "Menü megnyitása", closeMenu: "Menü bezárása",
     broadcasts: "Körlevelek",
+    flows: "Automatizálások",
     members: "Tagok",
     legal: "Jogi oldalak",
     dataRequests: "Adatkérelmek",

@@ -311,6 +311,7 @@ export const bs: Dictionary = {
     viewShop: "Pogledaj prodavnicu",
     signOut: "Odjava", upgrade: "Nadogradi", openMenu: "Otvori meni", closeMenu: "Zatvori meni",
     broadcasts: "Kampanje",
+    flows: "Automatizacije",
     members: "Članovi",
     legal: "Pravne stranice",
     dataRequests: "Zahtjevi za podatke",

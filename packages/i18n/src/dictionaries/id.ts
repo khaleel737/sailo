@@ -310,6 +310,7 @@ export const id: Dictionary = {
     payments: "Pembayaran", delivery: "Pengiriman", settings: "Pengaturan", checkin: "Check-in", viewShop: "Lihat toko",
     signOut: "Keluar", upgrade: "Tingkatkan", openMenu: "Buka menu", closeMenu: "Tutup menu",
     broadcasts: "Siaran email",
+    flows: "Otomatisasi",
     members: "Anggota",
     legal: "Halaman hukum",
     dataRequests: "Permintaan data",

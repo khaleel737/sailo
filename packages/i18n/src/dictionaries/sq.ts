@@ -313,6 +313,7 @@ export const sq: Dictionary = {
     checkin: "Kontrolli i biletave", viewShop: "Shiko dyqanin",
     signOut: "Dil", upgrade: "Përmirëso", openMenu: "Hap menunë", closeMenu: "Mbyll menunë",
     broadcasts: "Dërgesa",
+    flows: "Automatizimet",
     members: "Anëtarët",
     legal: "Faqet ligjore",
     dataRequests: "Kërkesat për të dhëna",

@@ -358,6 +358,7 @@ export const nl: Dictionary = {
     viewShop: "Winkel bekijken", signOut: "Uitloggen", upgrade: "Upgraden",
     openMenu: "Menu openen", closeMenu: "Menu sluiten",
     broadcasts: "Mailings",
+    flows: "Automatiseringen",
     members: "Leden",
     legal: "Juridische pagina's",
     dataRequests: "Gegevensverzoeken",

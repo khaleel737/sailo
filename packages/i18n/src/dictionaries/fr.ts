@@ -363,6 +363,7 @@ export const fr: Dictionary = {
     viewShop: "Voir la boutique", signOut: "Déconnexion", upgrade: "Changer de forfait",
     openMenu: "Ouvrir le menu", closeMenu: "Fermer le menu",
     broadcasts: "Envois groupés",
+    flows: "Automatisations",
     members: "Membres",
     legal: "Pages légales",
     dataRequests: "Demandes de données",

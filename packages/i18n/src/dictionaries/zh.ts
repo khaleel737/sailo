@@ -391,6 +391,7 @@ export const zh: Dictionary = {
     viewShop: "查看店铺", signOut: "退出登录", upgrade: "升级",
     openMenu: "打开菜单", closeMenu: "关闭菜单",
     broadcasts: "群发邮件",
+    flows: "自动化",
     members: "会员",
     legal: "法律页面",
     dataRequests: "数据请求",

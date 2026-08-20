@@ -391,6 +391,7 @@ export const ar: Dictionary = {
     viewShop: "عرض المتجر", signOut: "تسجيل الخروج", upgrade: "ترقية",
     openMenu: "فتح القائمة", closeMenu: "إغلاق القائمة",
     broadcasts: "الرسائل الجماعية",
+    flows: "الأتمتة",
     members: "الأعضاء",
     legal: "الصفحات القانونية",
     dataRequests: "طلبات البيانات",

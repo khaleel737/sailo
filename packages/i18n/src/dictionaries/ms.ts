@@ -309,6 +309,7 @@ export const ms: Dictionary = {
     payments: "Pembayaran", delivery: "Penghantaran", settings: "Tetapan", checkin: "Daftar masuk", viewShop: "Lihat kedai",
     signOut: "Log keluar", upgrade: "Naik taraf", openMenu: "Buka menu", closeMenu: "Tutup menu",
     broadcasts: "Siaran",
+    flows: "Automasi",
     members: "Ahli",
     legal: "Halaman undang-undang",
     dataRequests: "Permintaan data",

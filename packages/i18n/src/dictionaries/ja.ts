@@ -392,6 +392,7 @@ export const ja: Dictionary = {
     viewShop: "ショップを見る", signOut: "ログアウト", upgrade: "アップグレード",
     openMenu: "メニューを開く", closeMenu: "メニューを閉じる",
     broadcasts: "一斉配信",
+    flows: "自動化",
     members: "メンバー",
     legal: "法務ページ",
     dataRequests: "データ請求",

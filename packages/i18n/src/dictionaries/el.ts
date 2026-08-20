@@ -357,6 +357,7 @@ export const el: Dictionary = {
     viewShop: "Προβολή καταστήματος", signOut: "Αποσύνδεση", upgrade: "Αναβάθμιση",
     openMenu: "Άνοιγμα μενού", closeMenu: "Κλείσιμο μενού",
     broadcasts: "Αποστολές",
+    flows: "Αυτοματισμοί",
     members: "Μέλη",
     legal: "Νομικές σελίδες",
     dataRequests: "Αιτήματα δεδομένων",
