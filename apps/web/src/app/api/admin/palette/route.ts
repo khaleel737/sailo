@@ -6,6 +6,7 @@ import { requireShop } from "@/lib/session";
 import { getShopOrders } from "@/lib/queries";
 import { orderNumber, orderSummaryTitle } from "@/lib/order-lines";
 import { getInvoiceMap } from "@/lib/queries";
+import { likePattern } from "@sailo/db/like";
 
 /**
  * What ⌘K finds beyond pages: this shop's own orders, products and clients.
@@ -29,7 +30,7 @@ export async function GET(request: Request) {
     return Response.json({ orders: [], products: [], clients: [] });
   }
   // `%` and `_` are match syntax inside ILIKE, not text.
-  const term = `%${q.replace(/[\\%_]/g, "\\$&")}%`;
+  const term = likePattern(q);
   const db = getDb();
 
   const [orderRows, productRows, clientRows] = await Promise.all([

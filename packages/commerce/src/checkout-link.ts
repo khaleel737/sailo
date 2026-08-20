@@ -27,6 +27,8 @@
  * silent caps.
  */
 
+import { isUuid } from "@sailo/core/uuid";
+
 /** Every parameter this vocabulary knows. Unknown ones are ignored silently. */
 export const CHECKOUT_PARAMS = [
   "variant",
@@ -68,9 +70,6 @@ export type CheckoutLink = {
   email: string | null;
 };
 
-/** A uuid, loosely — enough to refuse anything that is not an id. */
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
 /** What a coupon code may be. The same shape the coupon form accepts. */
 const CODE = /^[A-Z0-9_-]{2,32}$/;
 
@@ -108,7 +107,7 @@ export function readCheckoutLink(
   const { qty, clamped } = readQty(get("qty"), limits);
 
   return {
-    variantId: UUID.test(variant) ? variant : null,
+    variantId: isUuid(variant) ? variant : null,
     couponPrefill: CODE.test(coupon) ? coupon : null,
     qty,
     qtyClamped: clamped,

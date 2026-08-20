@@ -15,6 +15,7 @@ import { CountriesCard } from "./_components/countries-card";
 import { ReportCard } from "./_components/report-card";
 import { Alert } from "@sailo/design-system/web";
 import { countriesByName } from "@sailo/core/countries";
+import { searchParam } from "@sailo/core/search-params";
 
 export const metadata: Metadata = { title: "Tax & jurisdictions" };
 
@@ -118,8 +119,7 @@ export default async function TaxSettingsPage(
  */
 function reportPeriod(params: Record<string, string | string[] | undefined>) {
   const read = (key: string) => {
-    const raw = params[key];
-    const value = Array.isArray(raw) ? raw[0] : raw;
+    const value = searchParam(params[key]);
     return value && /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : null;
   };
 

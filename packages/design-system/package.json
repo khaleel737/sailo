@@ -7,6 +7,7 @@
     ".": "./src/tokens/index.ts",
     "./chart": "./src/chart/index.ts",
     "./chart/palette": "./src/chart/palette.ts",
+    "./initials": "./src/initials.ts",
     "./web": "./src/web/index.ts",
     "./web/cn": "./src/web/cn.ts",
     "./web/chart": "./src/web/chart/index.tsx",

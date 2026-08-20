@@ -2,6 +2,7 @@
 
 import { MapPin } from "lucide-react";
 import { formatMoney } from "@sailo/core/currency";
+import { initials } from "@sailo/design-system/initials";
 
 /**
  * The shop being described, as it will look. It updates on every keystroke, so
@@ -28,12 +29,7 @@ export function ShopPreview({
   fallbackName: string;
 }) {
   const shopName = name.trim() || fallbackName;
-  const initials = shopName
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((word) => word[0] ?? "")
-    .join("")
-    .toUpperCase();
+  const monogram = initials(shopName);
 
   return (
     <div className="overflow-hidden rounded-2xl border border-ink-200 bg-white shadow-sm">
@@ -52,7 +48,7 @@ export function ShopPreview({
 
       <div className="flex flex-col items-center px-4 pb-4 pt-5 text-center">
         <div className="flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-brand-800 text-sm font-semibold text-white shadow-md">
-          {initials || "S"}
+          {monogram || "S"}
         </div>
         <p className="mt-2.5 truncate text-sm font-bold tracking-tight text-ink-900">
           {shopName}

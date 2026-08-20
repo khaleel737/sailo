@@ -10,17 +10,11 @@ export const num = (value: unknown) => Number(value ?? 0);
 export const daysAgo = (days: number) => new Date(Date.now() - days * DAY_MS);
 
 /**
- * A search param, as a single string.
- *
- * `?state=paying&state=free` is legal and arrives as an array; taking the
- * first is the same thing every browser form would have sent.
+ * A search param, as a single string — `searchParam` from core, under the
+ * name every screen in this panel already uses.
  */
-export function first(
-  value: string | string[] | undefined,
-): string | undefined {
-  const raw = Array.isArray(value) ? value[0] : value;
-  return raw?.trim() ? raw : undefined;
-}
+import { searchParam as first } from "@sailo/core/search-params";
+export { first };
 
 /** A positive page number from a query string, defaulting to the first. */
 export function pageNumber(value: string | string[] | undefined): number {
@@ -61,9 +55,7 @@ export async function paginate<Row>(
 }
 
 /** Escapes the wildcards so a search for "50%" doesn't match everything. */
-export function like(term: string) {
-  return `%${term.trim().replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
-}
+export { likePattern as like } from "@sailo/db/like";
 
 export { utcDayWindow } from "@sailo/core/time";
 

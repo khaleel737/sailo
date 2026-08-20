@@ -2,6 +2,7 @@ import { Text as RNText, View } from "react-native";
 import { Image } from "expo-image";
 import { useTheme } from "./theme";
 import type { Size } from "./types";
+import { initials } from "../initials";
 
 /**
  * A shop's or a buyer's picture, with something to show when there isn't one.
@@ -96,11 +97,4 @@ export function Avatar({ name, uri, size = "md", shape = "circle", testID }: Ava
   );
 }
 
-/** Up to two letters, taken by word so "Forno Rossi" reads FR. */
-function initials(name: string): string {
-  const words = name.trim().split(/\s+/).filter(Boolean);
-  if (words.length === 0) return "";
-  const first = [...(words[0] ?? "")][0] ?? "";
-  const last = words.length > 1 ? ([...(words.at(-1) ?? "")][0] ?? "") : "";
-  return (first + last).toUpperCase();
-}
+

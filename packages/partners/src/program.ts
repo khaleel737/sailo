@@ -13,6 +13,8 @@
  * and `./settings.ts`.
  */
 
+import { formatPercent } from "@sailo/core/pricing";
+
 /* -------------------------------------------------------------------------- */
 /*  The terms                                                                  */
 /* -------------------------------------------------------------------------- */
@@ -133,7 +135,7 @@ export function commissionCents(
 
 /** "30%", for copy that must not write the number itself. */
 export function shareLabel(commissionBp: number): string {
-  return `${Number((commissionBp / 100).toFixed(2))}%`;
+  return `${formatPercent(commissionBp)}%`;
 }
 
 /**

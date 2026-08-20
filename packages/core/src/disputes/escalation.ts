@@ -28,6 +28,7 @@ import {
   EMERGING_RISK_CHARGEBACKS,
   RATE_FLOORS,
   SAILO_THRESHOLDS,
+  formatBp,
   meetsFloor,
   type DisputeTally,
 } from "./rate";
@@ -278,10 +279,9 @@ export function assessShop(risk: ShopRisk): EscalationDecision {
     };
   }
 
-  const pct = (bp / 100).toFixed(2);
   const basis =
     `${risk.tally.chargebacks} chargebacks on ${risk.settledOrders} settled orders ` +
-    `(${pct}%), measured against the orders they came from`;
+    `(${formatBp(bp)}), measured against the orders they came from`;
 
   if (
     bp >= SAILO_THRESHOLDS.payoutHoldBp &&
@@ -290,7 +290,7 @@ export function assessShop(risk: ShopRisk): EscalationDecision {
     return {
       level: "payout_hold",
       reason:
-        `${basis}, over the ${(SAILO_THRESHOLDS.payoutHoldBp / 100).toFixed(2)}% ` +
+        `${basis}, over the ${formatBp(SAILO_THRESHOLDS.payoutHoldBp)} ` +
         `payout-hold threshold. Payouts held pending review; the storefront stays open.`,
       automatic: true,
       unrecoverableCents: shortfall,
@@ -300,7 +300,7 @@ export function assessShop(risk: ShopRisk): EscalationDecision {
   if (bp >= SAILO_THRESHOLDS.reviewBp) {
     return {
       level: "review",
-      reason: `${basis}, over the ${(SAILO_THRESHOLDS.reviewBp / 100).toFixed(2)}% review threshold.`,
+      reason: `${basis}, over the ${formatBp(SAILO_THRESHOLDS.reviewBp)} review threshold.`,
       automatic: true,
       unrecoverableCents: shortfall,
     };

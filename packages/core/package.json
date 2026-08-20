@@ -32,6 +32,7 @@
     "./handle": "./src/identity/handle.ts",
     "./badge": "./src/identity/badge.ts",
     "./uuid": "./src/identity/uuid.ts",
+    "./search-params": "./src/search-params.ts",
     "./phone": "./src/identity/phone.ts",
     "./place": "./src/place/index.ts",
     "./countries": "./src/place/countries.ts",

@@ -1,6 +1,6 @@
 import type { Dictionary } from "@sailo/i18n";
 import type { Shop } from "@sailo/db/schema";
-import { taxOn } from "../money/pricing";
+import { formatPercent, taxOn } from "../money/pricing";
 
 /**
  * What each plan costs, unlocks and limits — read by both apps.
@@ -542,9 +542,10 @@ export const PLATFORM_FEE_RANGE_LABEL = (() => {
  * which reads like a rate quoted to two decimals for a reason.
  */
 /** "2%" — a rate stated to a seller. Exported for the plan cards, which
- *  state every tier's rate side by side rather than only this shop's own. */
+ *  state every tier's rate side by side rather than only this shop's own.
+ *  Delegates to `formatPercent`, which owns the zero-trimming. */
 export function formatFeeBp(bp: number): string {
-  return `${Number((bp / 100).toFixed(2))}%`;
+  return `${formatPercent(bp)}%`;
 }
 
 /**

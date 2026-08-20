@@ -1,6 +1,7 @@
 import "server-only";
 import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
+import { likePattern } from "@sailo/db/like";
 import {
   affiliates,
   orders,
@@ -42,6 +43,22 @@ export type AffiliateRow = Affiliate & {
   earnedCents: number;
   unpaidCents: number;
 };
+
+/**
+ * The affiliate lifecycle, coloured the same way in both panels.
+ *
+ * The seller's page and /hq each carried a copy of this mapping — the
+ * duplicated-constant shape, where a fourth status added to the lifecycle
+ * shows green on one screen and grey on the other with nothing failing.
+ * The *labels* stay per app on purpose: the seller's are translated and
+ * staff's name the feature.
+ */
+export const AFFILIATE_STATUS_TONES = {
+  active: "green",
+  pending: "amber",
+  disabled: "neutral",
+} as const;
+export type AffiliateStatus = keyof typeof AFFILIATE_STATUS_TONES;
 
 /** The referral programme: who promotes a shop and what they have earned. */
 export async function getShopAffiliates(shopId: string): Promise<AffiliateRow[]> {
@@ -116,9 +133,7 @@ function orderConditions(shopId: string, filters: OrderFilters) {
    * "100%" must be findable by typing exactly that, so the input's own
    * wildcards are escaped before ours go on.
    */
-  const term = filters.search
-    ? `%${filters.search.replace(/[\\%_]/g, "\\$&")}%`
-    : null;
+  const term = filters.search ? likePattern(filters.search) : null;
 
   return and(
     eq(orders.shopId, shopId),

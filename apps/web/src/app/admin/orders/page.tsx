@@ -47,12 +47,13 @@ import { OrderFilters } from "./_components/order-filters";
 import { Badge, EmptyState } from "@sailo/design-system/web";
 import { EmptyRow, Table, Td, Th, Tr } from "@sailo/design-system/web";
 import { formatMoney } from "@sailo/core/currency";
+import { searchParam } from "@sailo/core/search-params";
 
 export const metadata: Metadata = { title: "Orders" };
 
 /** One search param, whatever shape the URL gave it. */
 function one(value: string | string[] | undefined): string {
-  return (Array.isArray(value) ? value[0] : value) ?? "";
+  return searchParam(value) ?? "";
 }
 
 /**

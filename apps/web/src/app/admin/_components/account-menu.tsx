@@ -6,19 +6,13 @@ import { signOutSeller } from "@/lib/actions/auth";
 import type { Dictionary } from "@sailo/i18n";
 import { useAdminT } from "./admin-i18n";
 import { cn } from "@sailo/design-system/web/cn";
+import { initials as monogram } from "@sailo/design-system/initials";
 
-/** The first letters of up to two words — "Clay & Co." → "CC". */
+/** The first letters of up to two words — "Clay & Co." → "CC". The rule
+ *  itself is the design system's, shared with the native avatar; "S" is this
+ *  chip's own stand-in for a name with no letters in it. */
 export function initials(name: string): string {
-  const words = name
-    .split(/\s+/)
-    .map((w) => w.replace(/[^\p{L}\p{N}]/gu, ""))
-    .filter(Boolean);
-  return (
-    words
-      .slice(0, 2)
-      .map((w) => w.charAt(0).toUpperCase())
-      .join("") || "S"
-  );
+  return monogram(name, "S");
 }
 
 /**

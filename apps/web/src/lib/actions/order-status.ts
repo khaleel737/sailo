@@ -6,6 +6,7 @@ import { orders } from "@sailo/db/schema";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 import { rateLimit } from "@sailo/rate-limit";
 import type { CheckoutOutcome } from "@sailo/commerce/orders";
+import { isUuid } from "@sailo/core/uuid";
 
 /**
  * One question, asked by a storefront that sent a buyer to Stripe and never
@@ -22,9 +23,6 @@ import type { CheckoutOutcome } from "@sailo/commerce/orders";
  * no amounts, no items, no names — which is less than the invoice URL the
  * confirmation already gave them.
  */
-const UUID =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
 export async function checkoutOutcome(
   orderId: string,
 ): Promise<CheckoutOutcome> {
@@ -33,7 +31,7 @@ export async function checkoutOutcome(
   if (!gate.allowed) return "pending";
 
   // A marker that was never an id will never become an order.
-  if (typeof orderId !== "string" || !UUID.test(orderId)) return "gone";
+  if (!isUuid(orderId)) return "gone";
 
   const order = await getDb().query.orders.findFirst({
     where: eq(orders.id, orderId),

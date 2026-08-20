@@ -8,6 +8,7 @@
     "./schema": "./src/schema/index.ts",
     "./schema/json-types": "./src/schema/json-types.ts",
     "./local-database": "./src/local-database.ts",
+    "./like": "./src/like.ts",
     "./keys": "./src/keys.ts"
   },
   "scripts": {

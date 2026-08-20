@@ -3,14 +3,14 @@ import Link from "next/link";
 import { getT } from "@/i18n/server";
 import { AuthError, AuthHeader } from "@/components/auth/auth-kit";
 import { ResetPasswordForm } from "./reset-password-form";
+import { searchParam as first } from "@sailo/core/search-params";
 
 export const metadata: Metadata = {
   title: "Choose a new password",
   robots: { index: false, follow: false },
 };
 
-const first = (v: string | string[] | undefined) =>
-  Array.isArray(v) ? v[0] : v;
+
 
 /**
  * Where the emailed link ends up.
