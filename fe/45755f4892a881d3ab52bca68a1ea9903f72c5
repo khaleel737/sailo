@@ -1,0 +1,261 @@
+packages/i18n/src/dictionaries/ko.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 47-49,157
+knip.json
+  s_5a74b4ec056616::t_5b4b05d0376bde 28-29
+apps/mobile/package.json
+  s_5a74b4ec056616::t_5b4b05d0376bde 31,33,46,62,65,69-75
+packages/i18n/src/dictionaries/sq.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 47-49,159
+packages/i18n/src/admin/bg.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 600
+packages/workflows/src/ticketing/reminders.test.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 67-71,126-131,168-179,181,234-269,313-362
+  s_5a74b4ec056616::t_9a716b6c528e0d 363
+packages/i18n/src/dictionaries/mk.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 47-49,159
+packages/i18n/src/admin/uk.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 769
+packages/i18n/src/dictionaries/tr.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 48-50,174
+apps/web/src/app/admin/products/_components/event-session-editor.tsx
+  s_5a74b4ec056616::t_5b4b05d0376bde 1-278
+packages/commerce/src/catalog/products.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 17-18,54,56-58,294-483,648-671,1122-1131,1194-1200
+  s_5a74b4ec056616::t_97ba4ee9dea6ee 1201
+packages/i18n/src/dictionaries/en.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 77-79,486
+packages/i18n/src/admin/sl.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 600
+apps/web/src/app/download/[token]/page.tsx
+  s_5a74b4ec056616::t_5b4b05d0376bde 8,476-482,517-556
+packages/core/package.json
+  s_5a74b4ec056616::t_5b4b05d0376bde 28
+packages/i18n/src/admin/hu.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 770
+packages/i18n/src/dictionaries/da.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 46-48,173
+packages/i18n/src/dictionaries/ru.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 47-49,172
+packages/i18n/src/admin/sq.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 601
+packages/i18n/src/dictionaries/hr.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 47-49,157
+apps/web/src/app/[handle]/p/[slug]/_components/buy-box.tsx
+  s_5a74b4ec056616::t_5b4b05d0376bde 16-17,47-59,79-80,126-138,222-264,275-280,324-337,386-393,396-399,493-523,702-707
+packages/i18n/src/admin/sv.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 769
+packages/i18n/src/dictionaries/de.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 49-51,181
+apps/web/src/app/admin/products/_components/event-settings-card.tsx
+  s_5a74b4ec056616::t_5b4b05d0376bde 6-7,9,29-34,41-61,98-109,235-302
+  s_5a74b4ec056616::t_8f2db1b95954f5 303
+packages/i18n/src/admin/ar.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 768
+apps/web/src/lib/products/form-fields.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 37-63
+packages/i18n/src/dictionaries/no.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 46-48,172
+packages/i18n/src/admin/ms.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 600
+packages/i18n/src/admin/tr.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 769
+apps/web/src/app/admin/products/new/page.tsx
+  s_5a74b4ec056616::t_5b4b05d0376bde 61-64
+packages/i18n/src/admin/zh.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 769
+packages/i18n/src/admin/ru.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 772
+apps/web/src/lib/actions/products.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 21-22,104-112,136-149,403-445
+  s_5a74b4ec056616::t_aaddcd5b11f6c3 446
+packages/i18n/src/admin/fil.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 602
+packages/i18n/src/admin/da.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 768
+apps/web/knip.json
+  s_5a74b4ec056616::t_5b4b05d0376bde 12
+apps/web/src/lib/actions/checkout-session.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 12,131-132,134-139,141-146
+packages/i18n/src/admin/fi.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 768
+packages/commerce/src/ticketing/tickets.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 97-104,111-130,137-138
+packages/i18n/src/admin/no.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 772
+packages/core/src/catalog/tickets.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 1-209
+packages/i18n/src/dictionaries/ja.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 56-58,204
+packages/commerce/src/orders/types.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 47-61,215-225,253-258
+packages/i18n/src/dictionaries/pt.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 48-50,175
+packages/i18n/src/dictionaries/es.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 49-51,180
+packages/commerce/src/ticketing/event-access.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 2,4-10,31-40,52-60,90,98-142,144,149-150,152-181
+packages/i18n/src/dictionaries/sv.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 46-48,173
+packages/i18n/src/admin/nl.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 772
+packages/i18n/src/dictionaries/fr.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 49-51,181
+packages/i18n/src/dictionaries/sl.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 47-49,159
+apps/web/e2e/scenarios/regional-pricing.scenario.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 8,18,356-395
+  s_5a74b4ec056616::t_223c06bdf80871 396
+apps/web/src/lib/actions/orders.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 11-15,50-57,92,94-114,123-167,180,389-399,401,498-512,514-535,538,555,559-567,570,586-607,767-774,777,938-986,1341-1342,1345
+packages/i18n/src/dictionaries/bg.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 47-49,158
+packages/i18n/src/dictionaries/ms.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 47-49,159
+packages/i18n/src/admin/pl.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 772
+packages/i18n/src/dictionaries/th.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 47-49,158
+packages/core/src/money/quote.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 39-55,130-138,141
+apps/web/src/lib/queries/regional.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 5-11,104-132,193-203,223-224,256-261,270
+apps/web/src/app/[handle]/_components/cart/custom-fields.test.tsx
+  s_5a74b4ec056616::t_5b4b05d0376bde 1-81
+packages/commerce/src/catalog/stock.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 1-146
+packages/i18n/src/dictionaries/bs.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 47-49,157
+packages/i18n/src/admin/mk.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 602
+packages/i18n/src/dictionaries/it.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 48-50,177
+packages/i18n/src/admin/id.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 602
+apps/web/e2e/scenarios/event-depth.scenario.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 8-10,13,18,23-26,98-127,130,136-140,143,471-1127
+packages/i18n/src/dictionaries/id.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 47-49,157
+packages/i18n/src/dictionaries/sr.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 47-49,158
+packages/i18n/src/dictionaries/pl.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 48-50,174
+packages/i18n/src/admin/el.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 768
+packages/core/src/catalog/index.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 29-36
+apps/web/src/app/admin/products/_components/product-form.tsx
+  s_5a74b4ec056616::t_5b4b05d0376bde 35,101-104,129-145,574-582
+apps/web/src/lib/actions/order-preview.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 272-276,301-302
+packages/i18n/src/admin/fr.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 770
+packages/i18n/src/dictionaries/hu.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 46-48,173
+apps/web/src/lib/cart.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 27-36,56-57,66-72,74-78,195-201
+packages/i18n/src/dictionaries/vi.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 47-49,160
+packages/i18n/src/dictionaries/fil.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 47-49,158
+packages/i18n/src/admin/bs.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 600
+packages/commerce/src/ticketing/door-list.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 88,92-100,122-124
+packages/i18n/src/admin/vi.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 601
+apps/web/src/app/admin/settings/_components/currencies-card.tsx
+  s_5a74b4ec056616::t_5b4b05d0376bde 73-80,82,133-135
+  s_5a74b4ec056616::t_5cd439200cb8fe 136-137
+packages/i18n/src/admin/it.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 770
+packages/i18n/src/admin/sr.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 601
+packages/i18n/src/admin/ro.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 772
+packages/i18n/src/admin/en.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 1791-1795
+packages/i18n/src/admin/ja.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 770
+packages/i18n/src/dictionaries/ar.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 56-58,204
+apps/web/src/i18n/admin-coverage.test.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 136-138,140-146,148-151,153
+apps/web/src/app/[handle]/p/[slug]/page.tsx
+  s_5a74b4ec056616::t_5b4b05d0376bde 43-44,107,187-248,253,448-450,461-462
+packages/i18n/src/dictionaries/cs.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 46-48,173
+packages/i18n/src/admin/cs.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 768
+packages/i18n/src/dictionaries/uk.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 47-49,173
+packages/i18n/src/admin/de.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 768
+packages/i18n/src/dictionaries/fi.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 46-48,172
+packages/i18n/src/dictionaries/zh.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 56-58,204
+packages/i18n/src/dictionaries/el.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 48-50,176
+apps/web/src/app/[handle]/p/[slug]/_components/ticket-picker.tsx
+  s_5a74b4ec056616::t_5b4b05d0376bde 1-234
+packages/core/src/catalog/tickets.test.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 1-192
+apps/web/src/app/admin/products/[id]/page.tsx
+  s_5a74b4ec056616::t_5b4b05d0376bde 14,44-63,117-123
+apps/web/src/app/admin/products/_components/event-tier-editor.tsx
+  s_5a74b4ec056616::t_5b4b05d0376bde 1-224
+packages/i18n/src/admin/hr.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 602
+apps/web/src/app/download/[token]/calendar/route.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 1-128
+packages/i18n/src/admin/ko.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 602
+packages/commerce/src/catalog/product-input.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 20-29,62-112,260-271,387-402
+apps/web/src/app/[handle]/_components/cart/express-checkout.tsx
+  s_5a74b4ec056616::t_5b4b05d0376bde 53-55,82-96,140-143,224-227
+apps/web/src/app/[handle]/_components/product-card.tsx
+  s_5a74b4ec056616::t_5b4b05d0376bde 119-130,161-166
+packages/i18n/src/admin/th.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 601
+packages/commerce/src/catalog/inventory.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 5,8-18,22-23,32-39,41-42,59-60,118-142,196-233
+packages/workflows/src/ticketing/reminders.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 6,11,63-67,70-100,119-126,130,136-138,142-153,169,211-218,232-240,242-247
+packages/commerce/src/ticketing/capacity.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 11,57-70,118,145,150-182
+  s_5a74b4ec056616::t_9329cd9b18c85e 183-184
+apps/web/e2e/scenarios/bookings-audience.scenario.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 11,383-470
+  s_5a74b4ec056616::t_52ef64a6daf482 471
+packages/i18n/src/admin/es.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 768
+packages/i18n/src/admin/pt.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 772
+packages/i18n/src/dictionaries/ro.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 46-48,171
+packages/commerce/src/orders/resolve-lines.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 4-12,205-247,371-499,648-672,675,731-745,747-749,754-765
+apps/web/src/app/[handle]/_components/cart/cart-sheet.tsx
+  s_5a74b4ec056616::t_5b4b05d0376bde 110-120,124-126
+packages/i18n/src/dictionaries/nl.ts
+  s_5a74b4ec056616::t_5b4b05d0376bde 48-50,175
+pnpm-lock.yaml
+  s_5a74b4ec056616::t_0510942552b03a 32,105,163,302,308,311,335,352-353,356,358-359,362,365,368,371,374,377,380,383,386,389,395,397-398,401,449-450,465,664,700,734,768,847,853,887,921,973,979,1001,1026,1057,1063,1099,1102,1148,1179,1223,1238,1278,1321,1355,1367,1373,1389,1423,1463,1497,1537,1565,1596,1654,2831-2832,2880-2882,2937-2944,3700-3702,4407-4414,4419-4420,4425-4426,4431-4432,4437-4438,4443-4444,4450-4451,4457-4458,4464-4465,4471-4472,4478-4479,4485-4486,4491-4492,4497-4498,5574-5578,7013-7018,7032-7033,7091-7092,7181-7182,7195-7196,7967-7968,9835-9836,10313-10317,11682,11690-11693,12059,12067,12070,12074,12083,12094,12127,12136,12144,12147,12151,12160,12171,12204,12316-12328,12344,12368,12374,12377,12386,12389,12439,12444,12448,12466-12475,12486,12488,12492,12494,13180-13181,13778,13784,14150-14153,14156,14159,14162,14165,14168,14171,14174,14177,14180,14183,14186,14189,14192,14315,14326,14331,14342,15212,15215,15231,15242,15248,15319-15320,15577,15604,15656,16638-16639,16661,16672,16676,16683,16687,16698,16919,16921,16923,16926-16927,16934,16937-16938,16945,16947,16952,16956-16965,16970,16974,16979,16981,16988,16990,16993,16995,16998,17000,17005,17007,17012,17014,17016,17018,17020,17022-17023,17025,17027,17031,17033,17039,17041,17044,17046,17049,17051,17059,17061,17070,17073,17078,17098,17100,17103,17105,17109,17116-17118,17125,17127,17137-17139,17168,17170,17180-17182,17212,17214,17226,17230,17235,17237,17239,17247,17249,17251,17261,17263,17266,17268,17272,17275,17281-17282,17284-17290,17298,17308,17311,17317-17318,17320-17326,17334,18285,18292,19270,21301,21303,21306-21320,21841-21847,22302,22307,22314,22318,22321,22338
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "fe45755f4892a881d3ab52bca68a1ea9903f72c5",
+  "prompts": {},
+  "sessions": {
+    "s_5a74b4ec056616": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "09d9ff8c-792d-4483-a67b-d14f394f16c7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
