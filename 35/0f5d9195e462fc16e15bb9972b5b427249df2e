@@ -1,0 +1,26 @@
+packages/rate-limit/src/client-ip.ts
+  s_a7bbf59e767e8f::t_d44cb45d1b955e 2,4-7,10
+packages/api/src/license/handlers.ts
+  s_a7bbf59e767e8f::t_e30d7acb4e6c0c 45
+  s_a7bbf59e767e8f::t_2842f1b6b25bf1 280-286,289-290
+packages/rate-limit/src/ip.ts
+  s_a7bbf59e767e8f::t_044fa6dd1d2baa 1-27
+packages/rate-limit/package.json
+  s_a7bbf59e767e8f::t_f0e8a9d54ac9e8 9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "350f5d9195e462fc16e15bb9972b5b427249df2e",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
