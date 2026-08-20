@@ -1,0 +1,19 @@
+packages/commerce/src/ticketing/door-list.ts
+  s_16f404b29c0075::t_01c45f1be8d57b 88,92-100,122-124
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "2d69649ff013c16f8aeebb3a18332534a44a64ed",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
