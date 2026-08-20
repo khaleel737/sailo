@@ -1,0 +1,33 @@
+apps/web/next.config.ts
+  s_5a74b4ec056616::t_0de3f976252e26 258-262
+apps/web/src/app/embed/wall/[key]/page.tsx
+  s_5a74b4ec056616::t_dfeca60e32e75d 137-143,145-147
+  s_5a74b4ec056616::t_1bb335a1919fc7 148-153
+apps/web/src/app/[handle]/_components/testimonial-strip.tsx
+  s_5a74b4ec056616::t_ac3172fc32d2bf 75-76
+  s_5a74b4ec056616::t_1126c33c9af28c 60-70
+  s_5a74b4ec056616::t_1bb335a1919fc7 71
+  s_5a74b4ec056616::t_869a4e9ccf73ce 72-74
+packages/marketing/src/testimonials/server.ts
+  s_5a74b4ec056616::t_6f319fe5d0e943 208-210
+  s_5a74b4ec056616::t_28c86a3dd3c479 397-399
+  s_5a74b4ec056616::t_781d371fac855d 491-538
+apps/web/src/lib/actions/testimonials.ts
+  s_5a74b4ec056616::t_c33bfdbf0747bc 43-44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "d110d0f0c9bea498946c9a9e7891164ec383ab30",
+  "prompts": {},
+  "sessions": {
+    "s_5a74b4ec056616": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "09d9ff8c-792d-4483-a67b-d14f394f16c7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
