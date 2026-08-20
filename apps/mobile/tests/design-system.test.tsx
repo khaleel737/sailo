@@ -3,7 +3,7 @@
  */
 
 import { render, screen } from "@testing-library/react-native";
-import { Button, Chart, Progress, StatusPill, Text } from "@sailo/design-system/native";
+import { Button, Chart, Progress, Text } from "@sailo/design-system/native";
 
 /**
  * The design system's behaviour, tested where the React Native environment

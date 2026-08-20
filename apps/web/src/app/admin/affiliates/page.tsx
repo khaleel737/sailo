@@ -29,6 +29,12 @@ import {
 
 export const metadata: Metadata = { title: "Affiliates" };
 
+/*
+ * KNOWN GAP: hardcoded English on a page that otherwise speaks 34 languages.
+ * Fixing it means three keys through the i18n batch tooling; the tones are
+ * already shared with /hq via AFFILIATE_STATUS_TONES, and the *wording*
+ * deliberately differs per audience (staff read the feature name).
+ */
 const SOURCE_LABEL: Record<string, string> = {
   manual: "Added by you",
   signup: "Applied",

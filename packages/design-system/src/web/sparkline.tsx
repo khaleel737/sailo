@@ -36,7 +36,9 @@ export function Sparkline({
   const points = values.map((v, i) => `${x(i).toFixed(2)},${y(v).toFixed(2)}`);
   const area = `M${PAD},${H - PAD} L${points.join(" L")} L${W - PAD},${H - PAD} Z`;
   const lastX = x(values.length - 1);
-  const lastY = y(values[values.length - 1]!);
+  // The guard above promises at least two values, so `at(-1)` cannot miss;
+  // the fallback keeps that promise visible to the type system.
+  const lastY = y(values.at(-1) ?? 0);
 
   return (
     <svg
