@@ -1,0 +1,22 @@
+packages/api/src/routers/categories.ts
+  s_a7bbf59e767e8f::t_56a7e36bd4687f 136,138-148
+  s_a7bbf59e767e8f::t_2dfb3d84b32074 137
+packages/api/src/no-transactions.test.ts
+  s_a7bbf59e767e8f::t_cf86d3e435b132 1-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "89bbb0da5b56f940e13f7314fd1e16e6be5518c0",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
