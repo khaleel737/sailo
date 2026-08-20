@@ -1,0 +1,40 @@
+apps/web/src/components/shared/lottie/envelope.json
+  s_55e774cf7959af::t_8a97e71985332d 1-104
+packages/design-system/src/web/sparkline.tsx
+  s_55e774cf7959af::t_af11d933e29ac8 1-61
+packages/design-system/src/web/index.ts
+  s_55e774cf7959af::t_6c26f6d62a85e8 41
+  s_55e774cf7959af::t_8becfda15fd56b 42
+packages/core/src/shop/plans.ts
+  s_55e774cf7959af::t_3b453b151bf210 544-546
+apps/web/src/components/shared/lottie/parcel.json
+  s_55e774cf7959af::t_26580ac7a7a4bc 1-106
+packages/design-system/src/web/feedback.tsx
+  s_55e774cf7959af::t_2b03917d711979 210
+  s_55e774cf7959af::t_9bb9c512718321 112,119-124,137-139
+  s_55e774cf7959af::t_e887ca5886a964 169,179-180
+packages/design-system/src/web/empty-art.tsx
+  s_55e774cf7959af::t_af7a40f7552704 1-99
+apps/web/package.json
+  s_55e774cf7959af::t_b8f06a316d6834 96
+apps/web/src/components/shared/lottie-art.tsx
+  s_55e774cf7959af::t_b6927f72d3cae0 1-80
+pnpm-lock.yaml
+  s_55e774cf7959af::t_49ff338edd9208 592-594,8362-8364,16570-16571,16593,16604,16608,16615,16619,16630,16937,18735-18736
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "7675572a98fabe0df65ba8f22bda1ccc9791ba29",
+  "prompts": {},
+  "sessions": {
+    "s_55e774cf7959af": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c11c1133-9671-4ded-9eeb-6f8ca64b8091",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
