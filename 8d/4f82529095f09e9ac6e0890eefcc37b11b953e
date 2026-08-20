@@ -1,0 +1,23 @@
+apps/mobile/store/screenshots/README.md
+  s_5a74b4ec056616::t_16f5aa500c2cab 10-13,18,20-21,23-25
+apps/mobile/store/README.md
+  s_5a74b4ec056616::t_6899a9ce1e636f 114
+apps/mobile/store/preflight.sh
+  s_5a74b4ec056616::t_7dbf07c5d25faa 125-128
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "8d4f82529095f09e9ac6e0890eefcc37b11b953e",
+  "prompts": {},
+  "sessions": {
+    "s_5a74b4ec056616": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "09d9ff8c-792d-4483-a67b-d14f394f16c7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
