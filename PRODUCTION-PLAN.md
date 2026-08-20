@@ -258,3 +258,67 @@ forwarded webhook, so the whole `checkout.session.completed` path — settlement
 invoice numbering, the confirmation email, download release — is still
 exercised only by unit tests of its pure rules. That is the next thing worth
 building, and it is now a much smaller step: the database is already there.
+
+---
+
+## 7. 2026-08-20 — the monorepo cleanup pass
+
+Twenty-seven commits from five parallel audits (duplication, test redundancy,
+post-cutover bugs, database/load, hygiene), every finding re-verified by
+reading the code before acting. Measured at the end of the pass:
+
+```bash
+pnpm turbo test typecheck lint --concurrency=1 --force   # 89/89 tasks green
+                                                         # 4,314 vitest + 188 jest tests
+DATABASE_URL=postgres://k:k@localhost/k npx knip         # 0
+pnpm turbo boundaries                                    # 2,020 files, 31 packages, clean
+pnpm build --concurrency=1                               # read the exit code
+```
+
+**Closed — money, security, data.** The neon-http driver throws on
+transactions, so every mobile category drag-reorder had 500'd since the
+endpoint shipped (now one `db.batch`, with a source scan refusing the shape
+package-wide). The dispute-evidence split left apps/web's staff branch behind
+a capability-less `requireStaff` with the preview route defaulting to it —
+seller-only now. `saveFlow` destroyed a seller's email copy on a *refused*
+save; validation now completes before the first write. Dispute evidence
+narratives rebuilt `cents/100` five times, stating a ¥100,000 dispute as
+"1000.00 JPY" to the card issuer. The abandoned-checkout tile summed
+pre-discount presentment-currency baskets into a shop-currency figure; the
+recovery email did the same and promised fixed coupons the presentment
+checkout refuses; `announceAbandonments` claimed the whole backlog unbounded
+inside a 60-second cron and enrolled buyers who had already paid over the
+chat rail. The ship gates read `order.productKind` — the header's first line,
+this module's eighth bug — leaving mixed baskets impossible to mark shipped.
+REST and webhooks serialized legacy orders with `items: []`.
+
+**Load.** Migration `0062`: the orders keyset 0060 skipped, the dashboard's
+open-tail partial (whose predicate matched every order a no-affiliate shop
+ever took), status tabs, affiliate and email-filter indexes, the funnel and
+flows-tile date pairs, the better-auth FK indexes, and `stripe_events`
+retention (a new prune in the sweep cron — the one table nothing bounded).
+HQ's platform screens moved to the read replica with their own allowlist
+test; `clients.list` aggregates the visible page instead of the shop's
+lifetime; the visit beacon pays one validation read instead of two.
+
+**DRY.** One home each for: evidence text helpers, `formatBytes` (the same
+file read "4.3 MB" and "4.5 MB" on two screens), the client-IP parser, the
+web origin (eleven raw env reads, three fallbacks), basis-point percentages,
+the ILIKE escape, the search-param collapse, `initials` (one shop, two
+monograms), the campaign and affiliate status tones, the subscription status
+vocabulary, the `server-only` vitest stub (×5), and the cross-package test
+doubles. ~15 redundant test cases deleted where the rule is pinned at its
+home; the currency-table audit moved from apps/web into core beside the table.
+
+**Still open, ranked.**
+
+| # | What | Why not yet |
+|---|---|---|
+| 1 | `0062` must be applied (CONCURRENTLY by hand on large tables) before this tree's dashboard predicate ships | A schema change is not shipped until the migration has run. |
+| 2 | Rate limits fail open when Redis is cold | Unchanged product decision from §3. |
+| 3 | apps/web still imports `stripe` in four modules and `@vercel/blob` beside `@sailo/storage` | Seam-completion on the money path; gated on the checkout e2e suite per house rules. |
+| 4 | REST `keysetWhere`/`paginate` vs commerce `olderThan`/`pageOf` remain two drizzle halves | The dangerous half (the codec) is unified; merging tested halves is churn without a bug. |
+| 5 | `roster.ts` aggregates lifetime orders because it *sorts* by `max(created_at)` | Wants denormalized `clients.last_order_at`/counters — a feature, not a cleanup. |
+| 6 | Cart sessions never match product-filtered `checkout.abandoned` flows | Sessions don't record cart lines; guessing would email the wrong buyers. Documented at both code sites. |
+| 7 | Affiliate source labels are English on a 34-language page | Three keys through the i18n batch tooling. |
+| 8 | Scenario suites not run this pass | No local DB infra in this session; unit/typecheck/lint/knip/boundaries/build were the verified gates. |
