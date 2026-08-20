@@ -115,7 +115,7 @@ function Submit({ label, busy }: { label: string; busy: string }) {
     <button
       type="submit"
       disabled={pending}
-      className="press h-12 w-full rounded-xl bg-[var(--accent)] text-sm font-semibold text-[var(--accent-ink)] disabled:opacity-60"
+      className="press h-12 w-full rounded-xl bg-[var(--accent)] text-sm font-semibold text-[var(--accent-contrast)] disabled:opacity-60"
     >
       {pending ? busy : label}
     </button>

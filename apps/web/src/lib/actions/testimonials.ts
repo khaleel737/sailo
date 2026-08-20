@@ -62,7 +62,14 @@ export async function submitTestimonialAction(
    * hour of unbounded testimonial spam under somebody else's shop name — the
    * same argument `submitReview` makes, with a wider blast radius.
    */
-  const gate = await rateLimit(`testimonial:${await callerIp()}`, 5, 3_600, {
+  /*
+   * 10 per 15 minutes, not 5 per hour. Every link is single-use, so this
+   * ceiling only binds token-guessers and shared addresses — an office NAT,
+   * a seller testing their own form — and an hour-long lockout punished the
+   * second group far harder than the first. The queue is moderated either
+   * way; nothing here goes public on its own.
+   */
+  const gate = await rateLimit(`testimonial:${await callerIp()}`, 10, 900, {
     onOutage: "closed",
   });
   if (!gate.allowed) {
