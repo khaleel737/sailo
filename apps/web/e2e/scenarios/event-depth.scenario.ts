@@ -15,6 +15,7 @@ import {
 } from "@sailo/db/schema";
 import {
   claimEventCapacity,
+  eventAccessForOrder,
   eventHasFutureDate,
   generateSessions,
   releaseEventCapacity,
@@ -130,10 +131,14 @@ async function makeTier(
   return t;
 }
 
-async function makeSession(productId: string, capacity: number | null) {
+async function makeSession(
+  productId: string,
+  capacity: number | null,
+  over: Partial<typeof eventSessions.$inferInsert> = {},
+) {
   const [s] = await db
     .insert(eventSessions)
-    .values({ productId, startsAt: inAWeek(), capacity })
+    .values({ productId, startsAt: inAWeek(), capacity, ...over })
     .returning();
   if (!s) throw new Error("fixture: session was not inserted");
   return s;
@@ -776,6 +781,45 @@ describe("buying a date", () => {
         })
       ).ok,
     ).toBe(true);
+  });
+
+  /*
+   * The date the buyer is *told* about, which until now was the first date of
+   * the series whatever they picked. Somebody who bought the fourth Tuesday
+   * would have turned up three weeks early to a locked door — not a display
+   * bug anybody reports.
+   */
+  it("tells the buyer the date they bought, not the first one in the series", async () => {
+    const shop = await makeSellingShop();
+    const event = await makeEvent(shop.id, 100, {
+      sessionMode: "pick_one",
+      eventStartsAt: inAWeek(),
+      serviceMode: "in_person",
+      serviceLocation: "The usual room",
+    });
+    await makeSession(event.id, 10);
+    const fourth = await makeSession(event.id, 10, {
+      startsAt: new Date(Date.now() + 28 * 24 * 3600 * 1000),
+      location: "The big room",
+    });
+
+    const placed = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: event.id, quantity: 1, sessionId: fourth.id }],
+      ...buyer,
+    });
+    if (!placed.ok) throw new Error(placed.error);
+
+    const order = await db.query.orders.findFirst({
+      where: eq(orders.id, placed.orderId),
+    });
+    if (!order) throw new Error("order vanished");
+
+    const access = await eventAccessForOrder(order);
+    expect(access).toHaveLength(1);
+    expect(access[0]?.startsAt?.getTime()).toBe(fourth.startsAt.getTime());
+    // And the date's own room, when it has one.
+    expect(access[0]?.location).toBe("The big room");
   });
 
   it("takes the room and no date's seats for an all-access pass", async () => {

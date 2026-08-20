@@ -735,9 +735,17 @@ export async function createOrderIntent(
       variantId: head.variantId,
       clientId,
       productTitle: head.title,
+      /*
+       * The band's name when the first line is a ticket — spec 50.
+       *
+       * This column is what the seller's order list, their notification and
+       * every export print beside the title, and a tier is not a variant, so
+       * without the fallback an order for VIP read as "Rooftop Show" with a
+       * price nobody could account for.
+       */
       variantLabel: head.variantOptions
         ? variantLabel(head.variantOptions, head.options)
-        : null,
+        : (head.tierName ?? null),
       variantSku: head.sku,
       productKind: head.kind,
       unitPriceCents: head.unitPriceCents,
@@ -1247,9 +1255,11 @@ export async function createOrderIntent(
         toCheckoutLine(
           {
             title: line.title,
+            // And on Stripe's own page, which is the last thing a buyer reads
+            // before their card is charged — spec 50.
             variantLabel: line.variantOptions
               ? variantLabel(line.variantOptions, line.options)
-              : null,
+              : (line.tierName ?? null),
             kind: line.kind,
             sku: line.sku,
             imageUrl: line.imageUrl,

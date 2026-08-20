@@ -1,7 +1,13 @@
 import "server-only";
-import { inArray } from "drizzle-orm";
+import { and, asc, eq, inArray, isNotNull } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { products, type Order } from "@sailo/db/schema";
+import {
+  eventSessions,
+  orderItems,
+  products,
+  type EventSession,
+  type Order,
+} from "@sailo/db/schema";
 import { orderLines } from "../orders/order-lines";
 
 /**
@@ -69,18 +75,83 @@ export async function eventAccessForOrder(order: Order): Promise<EventAccess[]> 
 
   const released = order.downloadReleasedAt !== null;
 
-  return rows.map((product) => {
+  /*
+   * The date this buyer actually bought, on an event that runs several — spec
+   * 50.
+   *
+   * `products.event_starts_at` is the *first* date of a series, so a buyer who
+   * picked the fourth Tuesday of a weekly class was shown the first Tuesday
+   * here — in their confirmation, on their delivery page and in the calendar
+   * entry built from it — and would have turned up three weeks early. That is
+   * not a display bug anybody reports; it is somebody standing outside a
+   * locked door.
+   *
+   * One row per date rather than one per product, because a buyer who bought
+   * two dates of one class bought two things to turn up to. A line naming no
+   * session falls back to the product's own date, which is every event today.
+   *
+   * Two extra reads, and the second is skipped unless this order names a date.
+   */
+  const named = await getDb()
+    .select({ sessionId: orderItems.sessionId })
+    .from(orderItems)
+    .where(and(eq(orderItems.orderId, order.id), isNotNull(orderItems.sessionId)));
+
+  const sessionIds = [
+    ...new Set(
+      named.map((row) => row.sessionId).filter((id): id is string => Boolean(id)),
+    ),
+  ];
+  const sessionRows = sessionIds.length
+    ? await getDb().query.eventSessions.findMany({
+        where: inArray(eventSessions.id, sessionIds),
+        orderBy: [asc(eventSessions.startsAt)],
+      })
+    : [];
+
+  const datesByProduct = new Map<string, EventSession[]>();
+  for (const session of sessionRows) {
+    const list = datesByProduct.get(session.productId) ?? [];
+    list.push(session);
+    datesByProduct.set(session.productId, list);
+  }
+
+  return rows.flatMap((product) => {
     const online = product.serviceMode === "online";
-    return {
+    const base = {
       productId: product.id,
       title: product.title,
-      startsAt: product.eventStartsAt,
-      endsAt: product.eventEndsAt,
-      joinUrl: released && online ? product.eventJoinUrl : null,
-      location: online ? null : product.serviceLocation,
       online,
       locked: !released,
     };
+
+    const dates = datesByProduct.get(product.id);
+    if (dates?.length) {
+      return dates.map((session) => ({
+        ...base,
+        startsAt: session.startsAt,
+        endsAt: session.endsAt,
+        /*
+         * The date's own link and room when it has them, the product's
+         * otherwise. A conference that moves one day online, or a class that
+         * changes rooms for a week, says so on the row for that day rather
+         * than on all of them — and the gate is unchanged: a link is handed
+         * over only once the order is released.
+         */
+        joinUrl: released && online ? (session.joinUrl ?? product.eventJoinUrl) : null,
+        location: online ? null : (session.location ?? product.serviceLocation),
+      }));
+    }
+
+    return [
+      {
+        ...base,
+        startsAt: product.eventStartsAt,
+        endsAt: product.eventEndsAt,
+        joinUrl: released && online ? product.eventJoinUrl : null,
+        location: online ? null : product.serviceLocation,
+      },
+    ];
   });
 }
 
