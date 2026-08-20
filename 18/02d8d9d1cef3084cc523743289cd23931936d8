@@ -1,0 +1,168 @@
+packages/i18n/src/admin/sr.ts
+  s_5a74b4ec056616::t_bc1f99383ceab8 2019-2055
+packages/i18n/src/dictionaries/bg.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 316
+packages/i18n/src/dictionaries/ru.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 358
+packages/i18n/src/admin/tr.ts
+  s_5a74b4ec056616::t_edb186e5e106b3 2004-2040
+packages/i18n/src/dictionaries/el.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 361
+packages/i18n/src/dictionaries/hr.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 314
+packages/i18n/src/dictionaries/mk.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 316
+packages/i18n/src/admin/pl.ts
+  s_5a74b4ec056616::t_bc1f99383ceab8 2013-2049
+packages/i18n/src/admin/en.ts
+  s_5a74b4ec056616::t_0031668f0218b7 344-373,383
+  s_5a74b4ec056616::t_e83f3802631588 374-382
+  s_5a74b4ec056616::t_14f28e413acb1a 267,272-276
+  s_9406ab3eb8c4ae::t_a0854c10631817 384
+packages/i18n/src/admin/pt.ts
+  s_5a74b4ec056616::t_11f68a83b9f48c 2013-2049
+packages/i18n/src/admin/bs.ts
+  s_5a74b4ec056616::t_bc1f99383ceab8 2018-2054
+packages/i18n/src/admin/de.ts
+  s_5a74b4ec056616::t_11f68a83b9f48c 2006-2042
+packages/i18n/src/dictionaries/vi.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 318
+packages/i18n/src/admin/ar.ts
+  s_5a74b4ec056616::t_11f68a83b9f48c 2005-2041
+packages/i18n/src/admin/no.ts
+  s_5a74b4ec056616::t_11f68a83b9f48c 2013-2049
+packages/i18n/src/dictionaries/ja.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 396
+packages/i18n/src/admin/hu.ts
+  s_5a74b4ec056616::t_bc1f99383ceab8 2001-2037
+packages/i18n/src/dictionaries/zh.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 395
+packages/i18n/src/admin/nl.ts
+  s_5a74b4ec056616::t_11f68a83b9f48c 2013-2049
+packages/i18n/src/admin/sv.ts
+  s_5a74b4ec056616::t_11f68a83b9f48c 2004-2040
+packages/i18n/src/admin/mk.ts
+  s_5a74b4ec056616::t_edb186e5e106b3 2018-2054
+packages/i18n/src/admin/cs.ts
+  s_5a74b4ec056616::t_bc1f99383ceab8 2003-2039
+packages/i18n/src/admin/da.ts
+  s_5a74b4ec056616::t_11f68a83b9f48c 2003-2039
+packages/i18n/src/admin/vi.ts
+  s_5a74b4ec056616::t_edb186e5e106b3 2019-2055
+packages/i18n/src/dictionaries/bs.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 315
+packages/i18n/src/dictionaries/cs.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 356
+packages/i18n/src/dictionaries/pl.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 360
+packages/i18n/src/dictionaries/es.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 366
+packages/i18n/src/dictionaries/no.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 356
+packages/i18n/src/admin/id.ts
+  s_5a74b4ec056616::t_edb186e5e106b3 2018-2054
+packages/i18n/src/dictionaries/de.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 367
+packages/i18n/src/admin/ja.ts
+  s_5a74b4ec056616::t_edb186e5e106b3 2006-2042
+packages/i18n/src/dictionaries/id.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 314
+packages/i18n/src/dictionaries/fil.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 315
+packages/i18n/src/dictionaries/da.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 356
+packages/i18n/src/dictionaries/sl.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 314
+packages/i18n/src/dictionaries/ko.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 314
+packages/i18n/src/admin/hr.ts
+  s_5a74b4ec056616::t_bc1f99383ceab8 2016-2052
+packages/i18n/src/dictionaries/tr.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 360
+packages/i18n/src/dictionaries/sr.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 316
+packages/i18n/src/dictionaries/fr.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 367
+packages/i18n/src/admin/el.ts
+  s_5a74b4ec056616::t_bc1f99383ceab8 2003-2039
+packages/i18n/src/admin/sl.ts
+  s_5a74b4ec056616::t_bc1f99383ceab8 2018-2054
+packages/i18n/src/dictionaries/pt.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 362
+packages/i18n/src/admin/fr.ts
+  s_5a74b4ec056616::t_11f68a83b9f48c 2006-2042
+packages/i18n/src/dictionaries/fi.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 355
+packages/i18n/src/admin/sq.ts
+  s_5a74b4ec056616::t_bc1f99383ceab8 2019-2055
+packages/i18n/src/admin/es.ts
+  s_5a74b4ec056616::t_11f68a83b9f48c 2001-2037
+packages/i18n/src/dictionaries/en.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 762
+packages/i18n/src/admin/ru.ts
+  s_5a74b4ec056616::t_bc1f99383ceab8 2013-2049
+packages/i18n/src/dictionaries/th.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 316
+packages/i18n/src/dictionaries/ro.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 355
+packages/i18n/src/admin/uk.ts
+  s_5a74b4ec056616::t_edb186e5e106b3 2004-2040
+packages/i18n/src/admin/it.ts
+  s_5a74b4ec056616::t_11f68a83b9f48c 2003-2039
+packages/i18n/src/dictionaries/sq.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 317
+packages/i18n/src/dictionaries/ms.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 313
+packages/i18n/src/admin/fil.ts
+  s_5a74b4ec056616::t_edb186e5e106b3 2016-2052
+packages/i18n/src/dictionaries/it.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 364
+packages/i18n/src/admin/ms.ts
+  s_5a74b4ec056616::t_edb186e5e106b3 2018-2054
+packages/i18n/src/admin/ko.ts
+  s_5a74b4ec056616::t_edb186e5e106b3 2018-2054
+packages/i18n/src/admin/zh.ts
+  s_5a74b4ec056616::t_edb186e5e106b3 2004-2040
+packages/i18n/src/dictionaries/uk.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 359
+packages/i18n/src/admin/ro.ts
+  s_5a74b4ec056616::t_bc1f99383ceab8 2013-2049
+packages/i18n/src/admin/fi.ts
+  s_5a74b4ec056616::t_11f68a83b9f48c 2001-2037
+packages/i18n/src/dictionaries/hu.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 356
+packages/i18n/src/dictionaries/sv.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 358
+packages/i18n/src/admin/bg.ts
+  s_5a74b4ec056616::t_bc1f99383ceab8 2018-2054
+packages/i18n/src/dictionaries/nl.ts
+  s_5a74b4ec056616::t_2f3c99c5581ae6 362
+packages/i18n/src/admin/th.ts
+  s_5a74b4ec056616::t_edb186e5e106b3 2019-2055
+packages/i18n/src/dictionaries/ar.ts
+  s_5a74b4ec056616::t_4926a0fe10ddc7 391
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "1802d8d9d1cef3084cc523743289cd23931936d8",
+  "prompts": {},
+  "sessions": {
+    "s_5a74b4ec056616": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "09d9ff8c-792d-4483-a67b-d14f394f16c7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_9406ab3eb8c4ae": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5882dfc1-6729-4b0f-9035-6f19621709d8",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
