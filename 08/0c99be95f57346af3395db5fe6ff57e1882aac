@@ -1,0 +1,26 @@
+apps/web/src/app/admin/flows/[id]/page.tsx
+  s_a7bbf59e767e8f::t_f958ce73fd0366 181-184
+packages/marketing/src/automations/enrol.ts
+  s_a7bbf59e767e8f::t_b5d22b6fc5ce4f 149-153
+apps/web/src/app/admin/flows/_components/flow-editor.tsx
+  s_a7bbf59e767e8f::t_c8ca910bdc06b1 121-123,130-141,148
+  s_a7bbf59e767e8f::t_c20ffb9122a028 72-79
+packages/workflows/src/recovery/pass.ts
+  s_a7bbf59e767e8f::t_408a77408ded44 548-556
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "080c99be95f57346af3395db5fe6ff57e1882aac",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
