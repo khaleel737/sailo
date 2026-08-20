@@ -7,11 +7,25 @@ import {
   type StaffResource,
   type WeeklyHours,
 } from "@sailo/db/schema";
-import { busyFor, type BookableProduct, type BookingShop } from "./availability";
+import {
+  busyFor,
+  calendarFor,
+  isBookable,
+  BOOKING_HORIZON_DAYS,
+  type BookableProduct,
+  type BookingShop,
+} from "./availability";
 import { externalBusyFor, isCalendarFeedUrl, normalizeFeedUrl } from "./external-busy";
 import { hoursOf } from "./hours";
 import { isTimeZone, zoneOf } from "./time-zone";
-import { slotsForDays, todayIn, type Busy, type DaySlots } from "./slots";
+import {
+  isOfferedSlot,
+  slotsForDays,
+  todayIn,
+  type Busy,
+  type DaySlots,
+  type SlotOptions,
+} from "./slots";
 import { can } from "@sailo/core/plans";
 
 /**
@@ -96,19 +110,60 @@ export async function calendarForStaff(
   staff: StaffResource,
   opts: { days: number; now: Date; excludeOrderId?: string },
 ): Promise<DaySlots[]> {
-  const durationMinutes = product.durationMinutes ?? 0;
-  const days = Math.max(1, Math.min(60, opts.days));
+  const days = Math.max(1, Math.min(BOOKING_HORIZON_DAYS, opts.days));
   const from = new Date(opts.now.getTime() - 24 * 3_600_000);
   const to = new Date(opts.now.getTime() + (days + 1) * 24 * 3_600_000);
+
+  /*
+   * `includeExternal` is on here and off at checkout, which is the same split
+   * `calendarFor` makes and for the same two reasons: a time the seller has
+   * already spent must not be *offered*, and re-fetching a third party's
+   * calendar when the order arrives would put an outbound HTTP request on the
+   * money path — where a feed that answers differently from the one the buyer
+   * saw a minute ago rejects an order for a time that looked free.
+   */
+  const options = await slotOptionsForStaff(
+    shop,
+    product,
+    staff,
+    { from, to },
+    opts.now,
+    opts.excludeOrderId,
+    true,
+  );
+
+  return slotsForDays(todayIn(options.timeZone, opts.now), days, options);
+}
+
+/**
+ * Everything the pure slot generator needs, assembled for one person.
+ *
+ * The staff-shaped twin of `slotOptionsFor`, and it is a named function rather
+ * than the middle of `calendarForStaff` because two callers need it: the
+ * calendar, which renders a fortnight, and the checkout, which re-derives the
+ * one time a buyer actually picked. A second copy of "their hours if they have
+ * any, the shop's if not" is a second place for the two to drift, and the
+ * symptom would be a slot the page offered and the order refused.
+ */
+export async function slotOptionsForStaff(
+  shop: BookingShop,
+  product: BookableProduct,
+  staff: StaffResource,
+  window: { from: Date; to: Date },
+  now: Date,
+  excludeOrderId?: string,
+  includeExternal = false,
+): Promise<SlotOptions> {
+  const durationMinutes = product.durationMinutes ?? 0;
 
   const [busy, external] = await Promise.all([
     busyFor({
       productId: product.id,
       staffId: staff.id,
-      from,
-      to,
+      from: window.from,
+      to: window.to,
       durationMinutes,
-      excludeOrderId: opts.excludeOrderId,
+      excludeOrderId,
     }),
     /*
      * Their feed, not the shop's — and only when the plan includes calendar
@@ -116,27 +171,27 @@ export async function calendarForStaff(
      * appointment blocks their slots and nobody else's, which is the whole
      * reason the column is on the resource rather than on the shop.
      */
-    staff.calendarFeedUrl && can(shop, "calendarSync")
+    includeExternal && staff.calendarFeedUrl && can(shop, "calendarSync")
       ? externalBusyFor(
           { ...shop, calendarFeedUrl: staff.calendarFeedUrl },
-          { from, to },
-          opts.now,
+          window,
+          now,
         )
       : Promise.resolve<Busy[]>([]),
   ]);
 
   const timeZone = zoneOf(staff.timeZone ?? shop.timeZone);
 
-  return slotsForDays(todayIn(timeZone, opts.now), days, {
+  return {
     hours: hoursOf(staff.hours ?? shop.bookingHours),
     timeZone,
     durationMinutes,
     leadHours: product.bookingLeadHours,
     stepMinutes: shop.bookingSlotMinutes ?? undefined,
     bufferMinutes: product.bookingBufferMinutes,
-    now: opts.now,
+    now,
     busy: [...busy, ...external],
-  });
+  };
 }
 
 export type StaffDay = {
@@ -198,6 +253,93 @@ export function unionOfDays(perStaff: StaffDay[]): DaySlots[] {
       ),
     }))
     .sort((a, b) => a.date.localeCompare(b.date));
+}
+
+/**
+ * The calendar a buyer sees, with the roster consulted — spec 51.
+ *
+ * **This is the function that makes the roster real, and the one every buyer
+ * path should call instead of `calendarFor`.** Until it existed, a shop could
+ * put three stylists on the screen and the storefront went on asking the
+ * product-keyed question: `busyFor` without a `staffId` reads *every* order
+ * line for the product, so the moment one stylist was booked at ten, ten
+ * vanished for all three. A salon that paid for staff got a calendar that
+ * offered less than it could sell.
+ *
+ * The fallback is the data and not a flag. `staffCalendars` answers with an
+ * empty list when a shop has no rows — which is every shop the day this ships —
+ * and then this is `calendarFor` unchanged, byte for byte.
+ *
+ * Which *person* a slot came from is deliberately dropped here. A buyer who
+ * books "10:00 with anyone" is making a different promise from one who books
+ * "10:00 with Sam", and only `firstFreeStaff` — asked at the instant the claim
+ * is taken — can settle the first honestly. `staffCalendars` still returns the
+ * rows for the day a storefront lets a buyer choose.
+ */
+export async function calendarWithStaff(
+  shop: BookingShop,
+  product: BookableProduct,
+  opts: { days: number; now: Date; excludeOrderId?: string },
+): Promise<DaySlots[]> {
+  if (!isBookable(product)) return [];
+
+  const perStaff = await staffCalendars(shop, product, opts);
+  if (perStaff.length === 0) return calendarFor(shop, product, opts);
+
+  return unionOfDays(perStaff);
+}
+
+/**
+ * Whether *somebody* can take this exact time — the roster's answer to the
+ * question `isOfferedSlot` asks of a shop with no staff.
+ *
+ * The checkout's half of `calendarWithStaff`, and it has to exist for the same
+ * reason that one does: `resolveLines` re-derives the slot server-side before
+ * writing anything, and the product-keyed re-derivation would refuse a time
+ * another stylist had taken. A buyer would be offered ten o'clock by the page
+ * and told at checkout that it had just gone, with nobody having booked it.
+ *
+ * `{ roster: false }` rather than `false`, because "this shop has no staff" and
+ * "nobody is free" are different answers and only the first means *ask the old
+ * question instead*. Collapsing them would refuse every booking in every shop
+ * that has no roster, which is nearly all of them.
+ *
+ * The external feed is **not** subtracted here, exactly as it is not in
+ * `slotOptionsFor`'s checkout path: a third party's calendar on the money path
+ * is a slow checkout at best and, at worst, an order refused for a time that
+ * looked free a minute ago.
+ */
+export async function offeredByStaff(
+  shop: BookingShop,
+  product: BookableProduct,
+  startsAt: Date,
+  opts: { now: Date; excludeOrderId?: string },
+): Promise<{ roster: false } | { roster: true; offered: boolean }> {
+  const people = await staffFor(shop.id, product.id);
+  if (people.length === 0) return { roster: false };
+
+  const window = {
+    from: new Date(startsAt.getTime() - 24 * 3_600_000),
+    to: new Date(startsAt.getTime() + 24 * 3_600_000),
+  };
+
+  const options = await Promise.all(
+    people.map((staff) =>
+      slotOptionsForStaff(
+        shop,
+        product,
+        staff,
+        window,
+        opts.now,
+        opts.excludeOrderId,
+      ),
+    ),
+  );
+
+  return {
+    roster: true,
+    offered: options.some((option) => isOfferedSlot(startsAt, option)),
+  };
 }
 
 /**
