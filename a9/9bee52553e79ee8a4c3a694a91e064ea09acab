@@ -1,0 +1,168 @@
+packages/i18n/src/admin/fr.ts
+  s_55e774cf7959af::t_757cbc7bd84043 797,1925-1930
+  s_55e774cf7959af::t_53343152f8c184 196-197,1054-1058
+  s_55e774cf7959af::t_f4be88ab9141e0 1931
+packages/i18n/src/admin/de.ts
+  s_55e774cf7959af::t_757cbc7bd84043 795,1925-1930
+  s_55e774cf7959af::t_53343152f8c184 196-197,1052-1056
+  s_55e774cf7959af::t_b365b752b2127a 1931
+packages/i18n/src/admin/ru.ts
+  s_55e774cf7959af::t_757cbc7bd84043 799,1932-1937
+  s_55e774cf7959af::t_53343152f8c184 196-197,1056-1060
+  s_55e774cf7959af::t_8342fe9949b578 1938
+packages/i18n/src/admin/ja.ts
+  s_55e774cf7959af::t_757cbc7bd84043 797,1925-1930
+  s_55e774cf7959af::t_53343152f8c184 196-197,1054-1058
+  s_55e774cf7959af::t_f704244c7d9854 1931
+packages/i18n/src/admin/uk.ts
+  s_55e774cf7959af::t_757cbc7bd84043 796,1923-1928
+  s_55e774cf7959af::t_53343152f8c184 196-197,1053-1057
+  s_55e774cf7959af::t_6fb563c93630ec 1929
+packages/i18n/src/admin/sq.ts
+  s_55e774cf7959af::t_757cbc7bd84043 628,1938-1943
+  s_55e774cf7959af::t_53343152f8c184 289-293,817-818
+  s_55e774cf7959af::t_787fad5c83caf8 1944
+packages/i18n/src/admin/it.ts
+  s_55e774cf7959af::t_757cbc7bd84043 797,1922-1927
+  s_55e774cf7959af::t_53343152f8c184 196-197,1054-1058
+  s_55e774cf7959af::t_1dd096b507cf1a 1928
+packages/i18n/src/admin/hr.ts
+  s_55e774cf7959af::t_757cbc7bd84043 629,1935-1940
+  s_55e774cf7959af::t_53343152f8c184 289-293,818-819
+  s_55e774cf7959af::t_dc5de5ebad0f6e 1941
+packages/i18n/src/admin/zh.ts
+  s_55e774cf7959af::t_757cbc7bd84043 796,1923-1928
+  s_55e774cf7959af::t_53343152f8c184 196-197,1053-1057
+  s_55e774cf7959af::t_08d7a6c586cef5 1929
+packages/i18n/src/admin/pl.ts
+  s_55e774cf7959af::t_53343152f8c184 196-197,1056-1060
+  s_55e774cf7959af::t_757cbc7bd84043 799,1932-1937
+  s_55e774cf7959af::t_ad308fc3cff655 1938
+packages/i18n/src/admin/ro.ts
+  s_55e774cf7959af::t_53343152f8c184 196-197,1056-1060
+  s_55e774cf7959af::t_757cbc7bd84043 799,1932-1937
+  s_55e774cf7959af::t_6dadaaf00500db 1938
+packages/i18n/src/admin/no.ts
+  s_55e774cf7959af::t_757cbc7bd84043 799,1932-1937
+  s_55e774cf7959af::t_53343152f8c184 196-197,1056-1060
+  s_55e774cf7959af::t_5f526822614151 1938
+packages/i18n/src/admin/cs.ts
+  s_55e774cf7959af::t_757cbc7bd84043 795,1922-1927
+  s_55e774cf7959af::t_53343152f8c184 196-197,1052-1056
+  s_55e774cf7959af::t_bc1c335ca6a978 1928
+packages/i18n/src/admin/ko.ts
+  s_55e774cf7959af::t_53343152f8c184 289-293,818-819
+  s_55e774cf7959af::t_757cbc7bd84043 629,1937-1942
+  s_55e774cf7959af::t_577453df1b6c57 1943
+packages/i18n/src/admin/mk.ts
+  s_55e774cf7959af::t_53343152f8c184 289-293,818-819
+  s_55e774cf7959af::t_757cbc7bd84043 629,1937-1942
+  s_55e774cf7959af::t_a29f897fe29539 1943
+packages/i18n/src/admin/ar.ts
+  s_55e774cf7959af::t_53343152f8c184 196-197,1052-1056
+  s_55e774cf7959af::t_757cbc7bd84043 795,1924-1929
+  s_55e774cf7959af::t_b27c1b87bc10a2 1930
+packages/i18n/src/admin/id.ts
+  s_55e774cf7959af::t_53343152f8c184 289-293,818-819
+  s_55e774cf7959af::t_757cbc7bd84043 629,1937-1942
+  s_55e774cf7959af::t_2c4932bd1a5cb1 1943
+packages/i18n/src/admin/nl.ts
+  s_55e774cf7959af::t_53343152f8c184 196-197,1056-1060
+  s_55e774cf7959af::t_757cbc7bd84043 799,1932-1937
+  s_55e774cf7959af::t_64155ae8370570 1938
+packages/i18n/src/admin/da.ts
+  s_55e774cf7959af::t_757cbc7bd84043 795,1922-1927
+  s_55e774cf7959af::t_53343152f8c184 196-197,1052-1056
+  s_55e774cf7959af::t_d6d3f484cac766 1928
+packages/i18n/src/admin/sr.ts
+  s_55e774cf7959af::t_53343152f8c184 289-293,817-818
+  s_55e774cf7959af::t_757cbc7bd84043 628,1938-1943
+  s_55e774cf7959af::t_46102ad87b33d1 1944
+packages/i18n/src/admin/tr.ts
+  s_55e774cf7959af::t_757cbc7bd84043 796,1923-1928
+  s_55e774cf7959af::t_53343152f8c184 196-197,1053-1057
+  s_55e774cf7959af::t_52f3cf68b79f2f 1929
+packages/i18n/src/admin/ms.ts
+  s_55e774cf7959af::t_53343152f8c184 289-293,816-817
+  s_55e774cf7959af::t_757cbc7bd84043 627,1937-1942
+  s_55e774cf7959af::t_512e4defaa406b 1943
+packages/i18n/src/admin/es.ts
+  s_55e774cf7959af::t_53343152f8c184 196-197,1052-1056
+  s_55e774cf7959af::t_757cbc7bd84043 795,1920-1925
+  s_55e774cf7959af::t_e79649c103e2fc 1926
+packages/i18n/src/admin/bs.ts
+  s_55e774cf7959af::t_53343152f8c184 289-293,816-817
+  s_55e774cf7959af::t_757cbc7bd84043 627,1937-1942
+  s_55e774cf7959af::t_e34e720dc97d22 1943
+packages/i18n/src/admin/en.ts
+  s_55e774cf7959af::t_09d585c658638e 1570-1571
+  s_55e774cf7959af::t_10ae61d142dcd2 1847-1853
+  s_55e774cf7959af::t_4d8a8111ba950d 99-109
+  s_55e774cf7959af::t_d00199d77daa8c 16-17
+  s_55e774cf7959af::t_ceaf596ed52050 518-523
+  s_16f404b29c0075::t_8505d72bc176ee 98
+packages/i18n/src/admin/fil.ts
+  s_55e774cf7959af::t_757cbc7bd84043 629,1935-1940
+  s_55e774cf7959af::t_53343152f8c184 289-293,818-819
+  s_55e774cf7959af::t_c00121335aaa11 1941
+packages/i18n/src/admin/th.ts
+  s_55e774cf7959af::t_757cbc7bd84043 628,1938-1943
+  s_55e774cf7959af::t_53343152f8c184 289-293,817-818
+  s_55e774cf7959af::t_310178dc68b134 1944
+packages/i18n/src/admin/sv.ts
+  s_55e774cf7959af::t_757cbc7bd84043 796,1923-1928
+  s_55e774cf7959af::t_53343152f8c184 196-197,1053-1057
+  s_55e774cf7959af::t_1e2de1c8b6eb41 1929
+packages/i18n/src/admin/fi.ts
+  s_55e774cf7959af::t_53343152f8c184 196-197,1052-1056
+  s_55e774cf7959af::t_757cbc7bd84043 795,1920-1925
+  s_55e774cf7959af::t_3431778f9d0a0a 1926
+packages/i18n/src/admin/el.ts
+  s_55e774cf7959af::t_53343152f8c184 196-197,1052-1056
+  s_55e774cf7959af::t_757cbc7bd84043 795,1922-1927
+  s_55e774cf7959af::t_dacba1a7355fc4 1928
+packages/i18n/src/admin/pt.ts
+  s_55e774cf7959af::t_757cbc7bd84043 799,1932-1937
+  s_55e774cf7959af::t_53343152f8c184 196-197,1056-1060
+  s_55e774cf7959af::t_205507b781428e 1938
+packages/i18n/src/admin/vi.ts
+  s_55e774cf7959af::t_53343152f8c184 289-293,817-818
+  s_55e774cf7959af::t_757cbc7bd84043 628,1938-1943
+  s_55e774cf7959af::t_40cf544b0160f2 1944
+packages/i18n/src/admin/bg.ts
+  s_55e774cf7959af::t_757cbc7bd84043 627,1937-1942
+  s_55e774cf7959af::t_53343152f8c184 289-293,816-817
+  s_55e774cf7959af::t_be471a4be02df2 1943
+packages/i18n/src/admin/hu.ts
+  s_55e774cf7959af::t_757cbc7bd84043 797,1920-1925
+  s_55e774cf7959af::t_53343152f8c184 196-197,1054-1058
+  s_55e774cf7959af::t_003b0b61754c3a 1926
+packages/i18n/src/admin/sl.ts
+  s_55e774cf7959af::t_757cbc7bd84043 627,1937-1942
+  s_55e774cf7959af::t_53343152f8c184 289-293,816-817
+  s_55e774cf7959af::t_4ea83a5059d075 1943
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "a99bee52553e79ee8a4c3a694a91e064ea09acab",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_55e774cf7959af": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c11c1133-9671-4ded-9eeb-6f8ca64b8091",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
