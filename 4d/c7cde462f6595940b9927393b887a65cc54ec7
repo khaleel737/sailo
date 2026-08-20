@@ -1,0 +1,33 @@
+apps/hq/src/lib/platform/accounts.ts
+  s_a7bbf59e767e8f::t_61aea1446e06e5 4,207,297,333,393,446
+apps/web/src/replica.test.ts
+  s_a7bbf59e767e8f::t_cf376e4786e1ca 164-169
+apps/hq/src/lib/platform/lists.ts
+  s_a7bbf59e767e8f::t_61aea1446e06e5 4,26,112,169,239
+packages/analytics/src/tiles.ts
+  s_a7bbf59e767e8f::t_61aea1446e06e5 3,51,122
+apps/hq/src/lib/platform/disputes.ts
+  s_a7bbf59e767e8f::t_61aea1446e06e5 3,97,198,277,348,376,398,426
+apps/hq/src/lib/platform/subscriptions.ts
+  s_a7bbf59e767e8f::t_61aea1446e06e5 4,25,61
+apps/hq/src/lib/platform/security/sessions.ts
+  s_a7bbf59e767e8f::t_61aea1446e06e5 11,93,159,192
+apps/hq/src/replica.test.ts
+  s_a7bbf59e767e8f::t_db4e90d76a7b90 1-54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "4dc7cde462f6595940b9927393b887a65cc54ec7",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
