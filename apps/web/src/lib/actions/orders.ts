@@ -44,7 +44,14 @@ import {
 } from "@sailo/commerce/booking/server";
 import { downloadUrl, newDownloadToken, releasesImmediately } from "@/lib/downloads";
 import { resolveDigitalDelivery } from "@sailo/commerce/orders/server";
-import { eventSalesOpen, ticketValues } from "@sailo/commerce/ticketing";
+import {
+  capacityRefusal,
+  claimEventCapacity,
+  eventSalesOpen,
+  releaseEventCapacity,
+  ticketValues,
+  type EventCapacityClaim,
+} from "@sailo/commerce/ticketing";
 import { preorderRoom } from "@sailo/commerce/catalog";
 import { attributeBumps } from "@sailo/commerce/orders/server";
 import { preorderExpectedAt } from "@sailo/core/preorders";
@@ -81,12 +88,74 @@ import { emitOrderWebhook } from "@sailo/webhooks/emit";
 */
 async function releaseStockFor(lines: QuoteLine[]): Promise<void> {
   for (const line of lines) {
+    /*
+     * A ticket gives back every level it took — spec 50.
+     *
+     * Seven call sites reach this function and all seven are an abandonment:
+     * a line that sold out, a preorder ceiling, a slot lost, a coupon spent, a
+     * membership that would not start, a throw between the reservation and the
+     * order row. Every one of them has to undo the *whole* claim, because
+     * `claimEventCapacity` took the whole claim — the band, the date and the
+     * room. Releasing only the room leaves `event_tiers.sold` counting seats
+     * for an order that does not exist, and there is nothing anywhere that
+     * would ever notice: the band reads as sold out for good.
+     *
+     * Routed by the same predicate that decided the claim, so the two cannot
+     * drift into a shape where one level is taken and a different set given
+     * back.
+     */
+    const claim = eventClaimFor(line);
+    if (claim) {
+      await releaseEventCapacity(claim);
+      continue;
+    }
     await releaseStock({
       productId: line.productId,
       variantId: line.variantId,
       quantity: line.quantity,
     });
   }
+}
+
+/**
+ * The claim a line makes on an event's capacity, or null when it makes none.
+ *
+ * One predicate, read by the reservation and by every release, because the
+ * failure this shape prevents is the two disagreeing: a line claimed at three
+ * levels and released at one is capacity held for ever by an order that was
+ * refused a second later.
+ *
+ * Null for every line that names neither a band nor a date, which is every line
+ * in the product today — those take the ordinary `reserveStock` path unchanged,
+ * and `claimEventCapacity` would do exactly that anyway. The branch exists so
+ * the non-event path keeps the shape `orders.test.ts` pins by source position.
+ */
+function eventClaimFor(
+  line: Pick<QuoteLine, "productId" | "variantId" | "quantity" | "tierId" | "sessionId"> & {
+    product?: { trackInventory: boolean; sessionMode: string | null };
+  },
+): EventCapacityClaim | null {
+  if (!line.tierId && !line.sessionId) return null;
+  return {
+    productId: line.productId,
+    tierId: line.tierId ?? null,
+    sessionId: line.sessionId ?? null,
+    variantId: line.variantId,
+    quantity: line.quantity,
+    /*
+     * True when the product row is not to hand — `QuoteLine` does not carry
+     * one, and `releaseStockFor` is given the priced lines rather than the
+     * resolved ones. Harmless in both directions: `releaseStock` refuses to
+     * add units to a product that is not tracking, and `reserveStock` is only
+     * ever called from here with the real row, in `createOrderIntent` below.
+     */
+    trackInventory: line.product?.trackInventory ?? true,
+    /*
+     * A pass claims the room, not a day of it — and it never carries a session
+     * id, so this is belt and braces on a line that already cannot name one.
+     */
+    allAccess: line.product?.sessionMode === "all_access",
+  };
 }
 
 /**
@@ -310,8 +379,19 @@ export async function createOrderIntent(
 
   // A ticket sold after the doors open is one for an event already happening.
   // Judged here, before any stock is taken, so refusing costs nothing.
+  /*
+   * …unless the buyer picked a date, in which case that date is the doors —
+   * spec 50.
+   *
+   * `eventSalesOpen` reads `products.eventStartsAt`, which on a multi-session
+   * event describes the *first* date and nothing else. A weekly class whose
+   * first Tuesday has been and gone would otherwise refuse every ticket for
+   * every remaining week, which is the whole feature broken by a column that
+   * predates it. `resolveLines` has already refused a session in the past, so
+   * a line that names one names a future one.
+   */
   const closedEvent = lines.find(
-    (line) => !eventSalesOpen(line.product, now),
+    (line) => !line.sessionId && !eventSalesOpen(line.product, now),
   );
   if (closedEvent) {
     return {
@@ -408,16 +488,44 @@ export async function createOrderIntent(
    * All-or-nothing is unchanged, only later: whatever succeeded goes back on
    * the shelf if anything failed.
    */
+  /*
+   * …and a ticket claims three of them at once — spec 50.
+   *
+   * A room of 200 with 30 VIP seats is a product stock of 200 **and** a tier
+   * capacity of 30, and both have to hold or thirty-one people arrive holding a
+   * VIP ticket for thirty seats. `claimEventCapacity` takes the narrowest level
+   * first, gives back what it took if a later one refuses, and reports which
+   * level said no — see the three rules at the head of `capacity.ts`.
+   *
+   * The ordinary `reserveStock` call is still here, and still the whole of the
+   * claim for every line that names no band and no date. That is not only
+   * caution: one stock claim in the codebase is the property this file has been
+   * defending since the first double-booking defect, and `claimEventCapacity`
+   * ends at the same function rather than beside it.
+   */
   const reservations = await Promise.all(
-    lines.map(async (line) => ({
-      line,
-      ok: await reserveStock({
-        productId: line.productId,
-        variantId: line.variantId,
-        quantity: line.quantity,
-        trackInventory: line.product.trackInventory,
-      }),
-    })),
+    lines.map(async (line) => {
+      const claim = eventClaimFor(line);
+      if (claim) {
+        const took = await claimEventCapacity({
+          ...claim,
+          trackInventory: line.product.trackInventory,
+          allAccess: line.product.sessionMode === "all_access",
+        });
+        return { line, ok: took.ok, level: took.ok ? null : took.level };
+      }
+
+      return {
+        line,
+        ok: await reserveStock({
+          productId: line.productId,
+          variantId: line.variantId,
+          quantity: line.quantity,
+          trackInventory: line.product.trackInventory,
+        }),
+        level: "product" as const,
+      };
+    }),
   );
 
   const taken: QuoteLine[] = reservations.filter((r) => r.ok).map((r) => r.line);
@@ -437,16 +545,22 @@ export async function createOrderIntent(
    * it is not in `taken`, and `releaseStockFor` must not "return" units that
    * were never held, which would drift the count upward on every abandonment.
    */
-  const shortfall = reservations.find((r) => !r.ok && !r.line.preorder)?.line;
+  const shortfall = reservations.find((r) => !r.ok && !r.line.preorder);
 
   if (shortfall) {
     await releaseStockFor(taken);
+    /*
+     * Told which level refused, because the buyer's next move differs — spec 50.
+     *
+     * "VIP is sold out" sends them to General and the shop keeps the sale;
+     * "this event is sold out" sends them away from a room with a hundred and
+     * seventy empty seats in it. The sentence lives in `capacityRefusal` so a
+     * scenario can assert the one a losing buyer actually receives, which is
+     * the only way this is ever checked under contention.
+     */
     return {
       ok: false,
-      error:
-        shortfall.quantity > 1
-          ? `There isn't that much ${shortfall.title} left. Try a smaller quantity.`
-          : `${shortfall.title} just sold out.`,
+      error: capacityRefusal(shortfall.level ?? "product", shortfall.line),
     };
   }
 
@@ -805,6 +919,19 @@ export async function createOrderIntent(
         line.kind === "service"
           ? (lines[position]?.product.serviceLocation ?? null)
           : null,
+      /*
+       * Which band and which date this line bought — spec 50, and the two
+       * columns that have been on this table since the wave landed with nothing
+       * writing them.
+       *
+       * Not decoration and not analytics: `restoreStock` reads them to know
+       * which band to give the seat back to. Without them a refunded VIP ticket
+       * returns a unit to the room and leaves `event_tiers.sold` at thirty for
+       * ever, so the band is sold out and the room is not — which is the
+       * failure nobody sees until the next on-sale.
+       */
+      tierId: line.tierId ?? null,
+      sessionId: line.sessionId ?? null,
       position,
     })),
   ),

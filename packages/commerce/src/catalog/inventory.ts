@@ -5,9 +5,23 @@ import { releaseCouponRedemption } from "../coupons/redemption";
 import { and, asc, eq, gte, inArray, isNull, isNotNull, lt, ne, or, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { releaseSlots, retakeSlots } from "../booking/claim";
+/*
+ * The undo half of the event claim — spec 50.
+ *
+ * `capacity.ts` imports `reserveStock` and `releaseStock` from this file, so
+ * this import closes a cycle. It is safe and it is deliberate: both modules
+ * export nothing but hoisted function declarations, so neither reads the
+ * other's bindings while it is being evaluated, and the alternative — a third
+ * module holding the two conditional UPDATEs — would put the narrowest and the
+ * widest level of one claim in different files. The whole safety argument for
+ * this feature is that the levels are claimed and released together.
+ */
+import { releaseEventCapacity } from "../ticketing/capacity";
 import { spentCodesByProduct } from "./code-pool";
 import {
   bookingClaims,
+  eventSessions,
+  eventTiers,
   orderItems,
   orders,
   products,
@@ -25,6 +39,18 @@ export type StockLine = {
   productId: string | null;
   variantId: string | null;
   quantity: number;
+  /**
+   * The band and the date this line took a seat from — spec 50.
+   *
+   * Optional because the type is built by hand at half a dozen call sites and
+   * absent means the same as null: an ordinary line, with nothing above the
+   * product to give back. Present, they are the whole of why `order_items`
+   * carries the two columns — a refunded VIP ticket has to return its seat to
+   * VIP, and a unit put back on the room while `event_tiers.sold` stays at
+   * thirty leaves the band sold out for ever with the room half empty.
+   */
+  tierId?: string | null;
+  sessionId?: string | null;
 };
 
 /**
@@ -146,6 +172,8 @@ async function stockLinesFor(order: Order): Promise<StockLine[]> {
       productId: i.productId,
       variantId: i.variantId,
       quantity: i.quantity,
+      tierId: i.tierId,
+      sessionId: i.sessionId,
     }));
   }
 
@@ -203,6 +231,31 @@ export async function restoreStock(order: Order): Promise<boolean> {
     const burned = line.productId ? (spent.get(line.productId) ?? 0) : 0;
     const quantity = Math.max(0, line.quantity - burned);
     if (quantity === 0) continue;
+    /*
+     * Every level the ticket took, not only the room — spec 50.
+     *
+     * This is the second half of the claim, and the reason `order_items` was
+     * given `tier_id` and `session_id` at all. A refund that put the unit back
+     * on the product and left `event_tiers.sold` where it was would leave the
+     * band permanently full: the room reads as having a seat, the tier refuses
+     * to sell it, and no screen anywhere says which of the two is lying.
+     *
+     * `releaseEventCapacity` ends at the same `releaseStock` this branch calls,
+     * so the product level is released exactly once either way — and the
+     * counters are floored at zero, so this staying idempotent is not left to
+     * the `restockedAt` claim alone.
+     */
+    if (line.tierId || line.sessionId) {
+      await releaseEventCapacity({
+        productId: line.productId ?? "",
+        tierId: line.tierId ?? null,
+        sessionId: line.sessionId ?? null,
+        variantId: line.variantId,
+        quantity,
+        trackInventory: true,
+      });
+      continue;
+    }
     await releaseStock({ ...line, quantity });
   }
   return true;
@@ -256,6 +309,44 @@ export async function retakeStock(order: Order): Promise<boolean> {
     const burned = spent.get(productId) ?? 0;
     const line = { ...rawLine, productId, quantity: Math.max(0, rawLine.quantity - burned) };
     if (line.quantity === 0) continue;
+
+    /*
+     * The band and the date come back with the unit — spec 50.
+     *
+     * Symmetrical with `restoreStock`, and unguarded for the same reason
+     * everything else in this function is: the seller is reversing their own
+     * decision, and refusing would leave the counter reading a seat that is
+     * about to be occupied. Deliberately **not** `claimEventCapacity`: that is
+     * a purchase, it can be refused, and a refusal here would silently
+     * un-cancel a ticket whose seat was never taken back — the band would sell
+     * one more than the room can hold, on the night, which is the failure this
+     * whole feature exists to prevent.
+     *
+     * An overshoot past `capacity` is possible if somebody bought the seat in
+     * between, and it is the honest outcome: the seller has two people holding
+     * one seat and a number on screen that says so, rather than a silent
+     * double-booking. The CHECK constraint is on the seller editing capacity
+     * down, not on this.
+     */
+    if (line.tierId) {
+      await db
+        .update(eventTiers)
+        .set({
+          sold: sql`${eventTiers.sold} + ${line.quantity}`,
+          updatedAt: new Date(),
+        })
+        .where(eq(eventTiers.id, line.tierId));
+    }
+    if (line.sessionId) {
+      await db
+        .update(eventSessions)
+        .set({
+          sold: sql`${eventSessions.sold} + ${line.quantity}`,
+          updatedAt: new Date(),
+        })
+        .where(eq(eventSessions.id, line.sessionId));
+    }
+
     // Deliberately unguarded: the seller is reversing their own decision, and
     // refusing to take the units back would leave the count too high.
     if (line.variantId) {

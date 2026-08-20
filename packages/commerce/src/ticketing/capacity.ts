@@ -54,6 +54,20 @@ export type EventCapacityClaim = {
   tierId: string | null;
   /** Which date, under `sessionMode: "pick_one"`. */
   sessionId: string | null;
+  /**
+   * Which combination, when the seller sells one *and* runs bands.
+   *
+   * Tiers are deliberately not variants — see `event_tiers` — but nothing stops
+   * a seller having both, and the product-level claim below is `reserveStock`,
+   * which counts a variant's units when it is given one and the product's when
+   * it is not. Passing null for a line that has a variant would take the room's
+   * stock while leaving the combination's untouched, which is the level-skipped
+   * oversell this file exists to prevent, one level further down.
+   *
+   * Null for every event today, and null is what every caller before this
+   * feature passed.
+   */
+  variantId?: string | null;
   quantity: number;
   /** Whether the product itself counts units at all. */
   trackInventory: boolean;
@@ -101,7 +115,7 @@ export async function claimEventCapacity(
   /* --- 3. The product's own stock, which is the room ---------------------- */
   const took = await reserveStock({
     productId: claim.productId,
-    variantId: null,
+    variantId: claim.variantId ?? null,
     quantity: claim.quantity,
     trackInventory: claim.trackInventory,
   });
@@ -128,9 +142,44 @@ export async function releaseEventCapacity(
   }
   await releaseStock({
     productId: claim.productId,
-    variantId: null,
+    variantId: claim.variantId ?? null,
     quantity: claim.quantity,
   });
+}
+
+/**
+ * What the buyer is told when a level refused.
+ *
+ * **"VIP is sold out" and "this event is sold out" are different sentences and
+ * a seller loses a sale to the wrong one.** A buyer told the event has gone
+ * leaves; a buyer told the band has gone picks another band, and the room still
+ * has a hundred and seventy seats in it. `claimEventCapacity` already answers
+ * with the level it refused for exactly this reason, and this is the only place
+ * that turns that answer into words — so the checkout, the preview and anything
+ * else that claims capacity cannot phrase it two ways.
+ *
+ * Pure, and here rather than at the checkout, so a scenario can assert the
+ * sentence a losing buyer actually receives under contention.
+ */
+export function capacityRefusal(
+  level: "tier" | "session" | "product",
+  line: { title: string; quantity: number; tierName?: string | null },
+): string {
+  const several = line.quantity > 1;
+
+  if (level === "tier" && line.tierName) {
+    return several
+      ? `There aren't that many ${line.tierName} tickets left. Try a smaller quantity.`
+      : `${line.tierName} is sold out.`;
+  }
+  if (level === "session") {
+    return several
+      ? `There aren't that many tickets left for that date. Try a smaller quantity.`
+      : `That date for ${line.title} is sold out.`;
+  }
+  return several
+    ? `There isn't that much ${line.title} left. Try a smaller quantity.`
+    : `${line.title} just sold out.`;
 }
 
 /**
