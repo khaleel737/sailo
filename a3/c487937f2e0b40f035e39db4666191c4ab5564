@@ -1,0 +1,131 @@
+packages/i18n/src/dictionaries/sr.ts
+  s_16f404b29c0075::t_9175d6735c5324 47-49
+apps/web/src/app/[handle]/p/[slug]/page.tsx
+  s_16f404b29c0075::t_03c9c77d987981 107
+  s_16f404b29c0075::t_feed1ecafeb075 43-44
+  s_16f404b29c0075::t_cea0bfd207bd03 436-437
+  s_16f404b29c0075::t_ad4de63a54febf 194-232
+packages/core/src/catalog/tickets.test.ts
+  s_16f404b29c0075::t_1172482d44b706 59-192
+  s_16f404b29c0075::t_a5b6fe366b8f2e 2-7
+packages/i18n/src/dictionaries/it.ts
+  s_16f404b29c0075::t_9175d6735c5324 48-50
+packages/i18n/src/dictionaries/fi.ts
+  s_16f404b29c0075::t_9175d6735c5324 46-48
+packages/i18n/src/dictionaries/ms.ts
+  s_16f404b29c0075::t_9175d6735c5324 47-49
+packages/i18n/src/dictionaries/mk.ts
+  s_16f404b29c0075::t_9175d6735c5324 47-49
+packages/i18n/src/dictionaries/sv.ts
+  s_16f404b29c0075::t_9175d6735c5324 46-48
+packages/i18n/src/dictionaries/da.ts
+  s_16f404b29c0075::t_9175d6735c5324 46-48
+packages/i18n/src/dictionaries/fr.ts
+  s_16f404b29c0075::t_9175d6735c5324 49-51
+packages/i18n/src/dictionaries/tr.ts
+  s_16f404b29c0075::t_9175d6735c5324 48-50
+apps/web/src/app/[handle]/p/[slug]/_components/buy-box.tsx
+  s_16f404b29c0075::t_2df0c2d61d07f7 494-523
+  s_16f404b29c0075::t_345dce20f8461b 79-80
+  s_16f404b29c0075::t_830c7a7a47b05c 47-59
+  s_16f404b29c0075::t_7cc87b03b5e9f6 275-280
+  s_16f404b29c0075::t_daa3c6aad0e879 126-138
+  s_16f404b29c0075::t_05254b5770a07f 222-264
+  s_16f404b29c0075::t_74e1a02ab36ee8 16-17
+  s_16f404b29c0075::t_847c4f10053da0 324-337
+  s_16f404b29c0075::t_115353f63c8bf4 386-393,396-399
+  s_16f404b29c0075::t_48ecca4f7d0a71 702-707
+  s_16f404b29c0075::t_575ace1eae9540 493
+apps/web/src/app/[handle]/_components/cart/express-checkout.tsx
+  s_16f404b29c0075::t_c25ef6d6aa5a34 53-55
+  s_16f404b29c0075::t_60af636ac67e37 224-227
+  s_16f404b29c0075::t_6a8759e9d2cbca 140-143
+  s_16f404b29c0075::t_9b9d52c66b7ca1 82-96
+packages/i18n/src/dictionaries/de.ts
+  s_16f404b29c0075::t_9175d6735c5324 49-51
+packages/i18n/src/dictionaries/vi.ts
+  s_16f404b29c0075::t_9175d6735c5324 47-49
+packages/i18n/src/dictionaries/en.ts
+  s_16f404b29c0075::t_9175d6735c5324 77-79
+packages/i18n/src/dictionaries/hu.ts
+  s_16f404b29c0075::t_9175d6735c5324 46-48
+packages/i18n/src/dictionaries/th.ts
+  s_16f404b29c0075::t_9175d6735c5324 47-49
+apps/web/src/app/[handle]/p/[slug]/_components/ticket-picker.tsx
+  s_16f404b29c0075::t_b886b10fe570e6 1-234
+packages/commerce/src/ticketing/capacity.ts
+  s_16f404b29c0075::t_91d2e6baa7d495 11
+packages/i18n/src/dictionaries/pl.ts
+  s_16f404b29c0075::t_9175d6735c5324 48-50
+packages/i18n/src/dictionaries/id.ts
+  s_16f404b29c0075::t_9175d6735c5324 47-49
+packages/i18n/src/dictionaries/sl.ts
+  s_16f404b29c0075::t_9175d6735c5324 47-49
+packages/i18n/src/dictionaries/fil.ts
+  s_16f404b29c0075::t_9175d6735c5324 47-49
+packages/i18n/src/dictionaries/es.ts
+  s_16f404b29c0075::t_9175d6735c5324 49-51
+packages/i18n/src/dictionaries/bg.ts
+  s_16f404b29c0075::t_9175d6735c5324 47-49
+packages/i18n/src/dictionaries/hr.ts
+  s_16f404b29c0075::t_9175d6735c5324 47-49
+packages/i18n/src/dictionaries/ja.ts
+  s_16f404b29c0075::t_9175d6735c5324 56-58
+packages/core/src/catalog/tickets.ts
+  s_16f404b29c0075::t_32a83bf76c8e12 70-201
+apps/web/src/app/[handle]/_components/cart/cart-sheet.tsx
+  s_16f404b29c0075::t_fb9bea00f28397 110-120,124-126
+packages/i18n/src/dictionaries/ar.ts
+  s_16f404b29c0075::t_9175d6735c5324 56-58
+packages/i18n/src/dictionaries/zh.ts
+  s_16f404b29c0075::t_9175d6735c5324 56-58
+packages/commerce/src/catalog/stock.ts
+  s_16f404b29c0075::t_3da94b7d1b41f2 1-146
+packages/i18n/src/dictionaries/nl.ts
+  s_16f404b29c0075::t_9175d6735c5324 48-50
+packages/i18n/src/dictionaries/sq.ts
+  s_16f404b29c0075::t_9175d6735c5324 47-49
+packages/i18n/src/dictionaries/cs.ts
+  s_16f404b29c0075::t_9175d6735c5324 46-48
+packages/i18n/src/dictionaries/ro.ts
+  s_16f404b29c0075::t_9175d6735c5324 46-48
+packages/commerce/src/orders/types.ts
+  s_16f404b29c0075::t_c5072030cbc1b1 215-225
+  s_16f404b29c0075::t_bf6f8935f9d7f5 253-258
+apps/web/src/lib/actions/order-preview.ts
+  s_16f404b29c0075::t_b836f87e8ed57c 301-302
+  s_16f404b29c0075::t_10efa9596b4cc7 272-276
+packages/i18n/src/dictionaries/uk.ts
+  s_16f404b29c0075::t_9175d6735c5324 47-49
+packages/commerce/src/catalog/inventory.ts
+  s_16f404b29c0075::t_21a1ea599cbf62 5
+  s_16f404b29c0075::t_d95d8de00d6b51 11-16,32-39,41-42
+packages/i18n/src/dictionaries/bs.ts
+  s_16f404b29c0075::t_9175d6735c5324 47-49
+packages/i18n/src/dictionaries/no.ts
+  s_16f404b29c0075::t_9175d6735c5324 46-48
+packages/i18n/src/dictionaries/el.ts
+  s_16f404b29c0075::t_9175d6735c5324 48-50
+packages/i18n/src/dictionaries/ko.ts
+  s_16f404b29c0075::t_9175d6735c5324 47-49
+packages/i18n/src/dictionaries/ru.ts
+  s_16f404b29c0075::t_9175d6735c5324 47-49
+packages/i18n/src/dictionaries/pt.ts
+  s_16f404b29c0075::t_9175d6735c5324 48-50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "a3c487937f2e0b40f035e39db4666191c4ab5564",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
