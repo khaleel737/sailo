@@ -1,0 +1,30 @@
+package.json
+  s_a7bbf59e767e8f::t_8c6851bff00f13 22
+turbo.json
+  s_a7bbf59e767e8f::t_59577ee45cc5c3 17-18,21
+PRODUCTION-PLAN.md
+  s_a7bbf59e767e8f::t_246f3440df0aa4 12-16,18-21
+packages/api/package.json
+  s_a7bbf59e767e8f::t_49fa4ed262b3b1 36,41
+README.md
+  s_a7bbf59e767e8f::t_b8714269329a9f 131-135
+  s_a7bbf59e767e8f::t_90887cac982703 145,150-153,157-162
+pnpm-lock.yaml
+  s_a7bbf59e767e8f::t_880157bb780b1a 22,794,809
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "22b1ae1e44a5d94337d41060300cde213ad746b3",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
