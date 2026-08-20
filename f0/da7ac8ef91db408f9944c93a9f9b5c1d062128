@@ -1,0 +1,32 @@
+packages/commerce/src/ticketing/event-access.ts
+  s_16f404b29c0075::t_29b13c5d1f5af2 52-60,90,149-150
+apps/web/e2e/scenarios/event-depth.scenario.ts
+  s_16f404b29c0075::t_3e5da19cc2bb5c 1065
+  s_16f404b29c0075::t_ab60b2da8a960b 1037-1038,1041-1042,1047-1048,1050-1059,1063,1068,1070,1075,1079-1090
+  s_16f404b29c0075::t_397d2299c0c1de 1017-1036,1039-1040,1043-1046,1049,1060-1062,1064,1066-1067,1069,1071-1074,1076-1078,1091-1092
+apps/web/src/lib/actions/orders.ts
+  s_16f404b29c0075::t_3e5da19cc2bb5c 982
+  s_16f404b29c0075::t_fa6ea9706ca937 586-607
+  s_16f404b29c0075::t_7859347615c600 11-15,92,180,538
+  s_16f404b29c0075::t_425d016f59a11a 135-142,144,159,164
+  s_16f404b29c0075::t_10dda79f3c79a2 938,940-942,944-946,985-986
+  s_16f404b29c0075::t_76fb92cb44ba9d 947-981,983-984
+apps/web/src/app/download/[token]/calendar/route.ts
+  s_16f404b29c0075::t_644392f2bb4b52 101-110
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "f0da7ac8ef91db408f9944c93a9f9b5c1d062128",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
