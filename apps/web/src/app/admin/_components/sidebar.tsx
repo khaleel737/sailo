@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
+  BarChart3,
   BadgeCheck,
   Code,
   CreditCard,
@@ -68,8 +69,13 @@ type NavSection = {
   children?: NavChild[];
 } & (
   | { href: string; key: NavKey; labelFrom: "nav" }
-  /** A section that is only a door — its row discloses, not navigates. */
-  | { href?: undefined; key: GroupKey; labelFrom: "groups" }
+  /**
+   * Labelled from the admin dictionary's `navGroups`. Without an href the
+   * row is only a door and discloses; with one (Analytics) it navigates like
+   * any nav entry — the admin dictionary is where a label can be added
+   * without touching thirty-five shop locale files at once.
+   */
+  | { href?: string; key: GroupKey; labelFrom: "groups" }
 );
 
 const SECTIONS: NavSection[] = [
@@ -120,6 +126,18 @@ const SECTIONS: NavSection[] = [
        */
       { href: "/admin/testimonials", key: "testimonials" },
     ],
+  },
+  {
+    /*
+     * The numbers' own door — P6 carved them out of Home
+     * (docs/admin-redesign 08). Above Growth: a seller reads how it's going
+     * before deciding what to push.
+     */
+    id: "analytics",
+    href: "/admin/analytics",
+    icon: BarChart3,
+    key: "analytics",
+    labelFrom: "groups",
   },
   {
     id: "growth",

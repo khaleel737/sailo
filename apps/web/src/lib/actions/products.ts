@@ -27,11 +27,14 @@ import { buildCurrencyPrices } from "@sailo/core/regional";
 import { can } from "@sailo/core/plans";
 import {
   deleteProduct as deleteProductRow,
+  duplicateProduct as duplicateProductRow,
   saveProduct as saveProductRow,
   toggleProductPublished as togglePublishedRow,
   type ProductInput,
   type SaveProductRefusal,
 } from "@sailo/commerce/products";
+import { redirect } from "next/navigation";
+import { interpolate } from "@sailo/i18n";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { notifySellerOfLowStock } from "@sailo/workflows/orders";
@@ -586,6 +589,34 @@ export async function deleteProduct(formData: FormData) {
 
   await deleteProductRow(shop.id, id);
   dropCatalogueCaches(shop);
+}
+
+/**
+ * A copy to edit, or the sentence saying why not.
+ *
+ * Ends in a redirect on purpose: the seller asked for a thing to work on, and
+ * landing them inside the copy — hidden, renamed, every field carried over —
+ * is the whole answer. The write and its rules live in
+ * `@sailo/commerce/products`; what stays here is the seller's language for
+ * the copy's name and for the two refusals, which reuse `sentenceFor` so the
+ * cap reads identically on both doors it guards.
+ */
+export async function duplicateProduct(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const { shop } = await requireShop("products:write");
+  const id = String(formData.get("id") ?? "");
+  if (!id) return { ok: false, error: sentenceFor({ kind: "not_found" }) };
+
+  const { a } = await getAdminT();
+  const result = await duplicateProductRow(shop, id, (title) =>
+    interpolate(a.products.copyOf, { title }),
+  );
+  if (!result.ok) return { ok: false, error: sentenceFor(result) };
+
+  dropCatalogueCaches(shop);
+  redirect(`/admin/products/${result.id}`);
 }
 
 export async function toggleProductPublished(formData: FormData) {

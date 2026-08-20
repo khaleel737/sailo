@@ -412,6 +412,36 @@ export async function getAdminProducts(shopId: string, limit = ADMIN_PRODUCT_LIM
   return sellerCatalogue({ shopId, limit });
 }
 
+/**
+ * The edit page's prev/next arrows — this product's neighbours in the
+ * catalogue, under the same ordering the list renders
+ * (`position` first, newest after; see `sellerCatalogue`).
+ *
+ * Computed from the ordered id list rather than from two window queries,
+ * because "next" must mean "the row under this one on the list page" even
+ * when positions tie — and only replaying the list's own order can promise
+ * that. Ids only, capped like the list, so a thousand-product shop pays for
+ * a thousand uuids and not a thousand products.
+ */
+export async function adjacentProductIds(
+  shopId: string,
+  productId: string,
+): Promise<{ prev: string | null; next: string | null }> {
+  const rows = await getDb()
+    .select({ id: products.id })
+    .from(products)
+    .where(eq(products.shopId, shopId))
+    .orderBy(asc(products.position), desc(products.createdAt))
+    .limit(ADMIN_PRODUCT_LIMIT);
+
+  const at = rows.findIndex((row) => row.id === productId);
+  if (at === -1) return { prev: null, next: null };
+  return {
+    prev: rows[at - 1]?.id ?? null,
+    next: rows[at + 1]?.id ?? null,
+  };
+}
+
 /** Everything the product editor needs to round-trip a product. */
 /**
  * Everything the product editor needs to round-trip a product.

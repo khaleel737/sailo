@@ -21,32 +21,48 @@ export function ImageUploader({
   const a = useAdminT();
   const [urls, setUrls] = useState<string[]>(initial);
   const [uploading, setUploading] = useState(false);
+  const [dragging, setDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  /* dragenter/leave fire per child; a counter is what "still inside" means. */
+  const dragDepth = useRef(0);
 
-  async function onFiles(files: FileList | null) {
-    if (!files?.length) return;
+  const ACCEPTED = /^image\/(jpeg|png|webp|gif|avif)$/;
+
+  async function onFiles(files: FileList | File[] | null) {
+    const picked = files ? Array.from(files).filter((f) => ACCEPTED.test(f.type)) : [];
+    if (!picked.length) return;
     setError(null);
     setUploading(true);
 
     const room = max - urls.length;
-    const batch = Array.from(files).slice(0, Math.max(room, 0));
+    const batch = picked.slice(0, Math.max(room, 0));
 
-    for (const file of batch) {
-      const body = new FormData();
-      body.append("file", file);
-      try {
-        const res = await fetch("/api/upload", { method: "POST", body });
-        const json = await res.json();
-        if (!res.ok) {
-          setError(json.error ?? a.files.failed);
-          continue;
+    /*
+     * All at once, not one after another — eight photos used to take eight
+     * round trips in a row. Uploads race freely; the append below runs in
+     * the order the seller chose them, so the first file stays the cover
+     * whatever the network decided.
+     */
+    const results = await Promise.all(
+      batch.map(async (file) => {
+        const body = new FormData();
+        body.append("file", file);
+        try {
+          const res = await fetch("/api/upload", { method: "POST", body });
+          const json = await res.json();
+          if (!res.ok) return { error: (json.error as string) ?? a.files.failed };
+          return { url: json.url as string };
+        } catch {
+          return { error: a.files.failedNetwork };
         }
-        setUrls((prev) => [...prev, json.url]);
-      } catch {
-        setError(a.files.failedNetwork);
-      }
-    }
+      }),
+    );
+
+    const uploaded = results.flatMap((r) => ("url" in r && r.url ? [r.url] : []));
+    if (uploaded.length) setUrls((prev) => [...prev, ...uploaded]);
+    const failed = results.find((r) => "error" in r);
+    if (failed && "error" in failed && failed.error) setError(failed.error);
 
     setUploading(false);
     if (inputRef.current) inputRef.current.value = "";
@@ -58,7 +74,27 @@ export function ImageUploader({
         <input key={url} type="hidden" name={name} value={url} />
       ))}
 
-      <div className="flex flex-wrap gap-2">
+      <div
+        onDragEnter={(e) => {
+          e.preventDefault();
+          dragDepth.current += 1;
+          setDragging(true);
+        }}
+        onDragOver={(e) => e.preventDefault()}
+        onDragLeave={() => {
+          dragDepth.current = Math.max(0, dragDepth.current - 1);
+          if (dragDepth.current === 0) setDragging(false);
+        }}
+        onDrop={(e) => {
+          e.preventDefault();
+          dragDepth.current = 0;
+          setDragging(false);
+          onFiles(e.dataTransfer.files);
+        }}
+        className={`-m-1.5 flex flex-wrap gap-2 rounded-2xl p-1.5 transition-colors ${
+          dragging ? "bg-brand-50 ring-2 ring-brand-500" : ""
+        }`}
+      >
         {urls.map((url, i) => (
           <div
             key={url}
@@ -104,7 +140,7 @@ export function ImageUploader({
               <ImagePlus className="size-5" />
             )}
             <span className="text-[11px] font-medium">
-              {uploading ? a.images.uploading : a.images.add}
+              {uploading ? a.images.uploading : dragging ? a.images.drop : a.images.add}
             </span>
           </button>
         ) : null}

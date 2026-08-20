@@ -78,7 +78,8 @@ export function ChartPlot({
         range: [0, xScale.bandwidth()],
         padding: members.length > 1 ? 0.12 : 0,
       });
-    const bars = shape === "bar" ? series : [];
+    // A dashed compare stays a line in bar shape, so it books no lane.
+    const bars = shape === "bar" ? series.filter((s) => !s.dashed) : [];
     return {
       above: build(bars.filter((s) => !s.negative)),
       below: build(bars.filter((s) => s.negative)),

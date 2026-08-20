@@ -1,3 +1,5 @@
+import { LearnMore } from "@/app/admin/_components/learn-more";
+import { docsUrl } from "@sailo/core/origin";
 import type { Metadata } from "next";
 import {
   AlertTriangle,
@@ -272,6 +274,8 @@ export default async function AdminPaymentsPage({
         payoutsPausedAt={shop.payoutsPausedAt}
         a={a}
       />
+
+      <LearnMore topic={a.payments.title} href={`${docsUrl()}/guides/payments`} />
     </>
   );
 }

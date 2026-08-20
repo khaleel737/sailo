@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { headers } from "next/headers";
-import { AlertTriangle, ArrowUpRight, CreditCard, Lock } from "lucide-react";
+import { AlertTriangle, ArrowUpRight, Check, CreditCard, Lock } from "lucide-react";
 import {
   isStripeAccountCountry,
   normalizeCountry,
@@ -133,6 +133,29 @@ export async function StripeCard({ shop }: { shop: Shop }) {
         </p>
       ) : state === "not_connected" ? (
         <form action={connectStripe} className="mt-4">
+          {/*
+            The pitch before the form — spec 09's hero grammar, measured off
+            the capture: an inset panel, a bold line, three ticks. Only while
+            unconnected; a working account needs no selling.
+          */}
+          <div className="mb-4 rounded-xl border border-ink-200 bg-ink-50 p-4">
+            <p className="text-sm font-semibold text-ink-900">
+              {a.payments.connectWhy}
+            </p>
+            <ul className="mt-2.5 space-y-1.5">
+              {[
+                a.payments.connectPoint1,
+                a.payments.connectPoint2,
+                a.payments.connectPoint3,
+              ].map((point) => (
+                <li key={point} className="flex gap-2 text-sm text-ink-700">
+                  <Check className="mt-0.5 size-4 shrink-0 text-brand-600" strokeWidth={3} />
+                  {point}
+                </li>
+              ))}
+            </ul>
+          </div>
+
           {/*
             Asked here, on the form that creates the account, because Stripe
             fixes an account's country at creation and provides no way to

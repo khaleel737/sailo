@@ -1,9 +1,10 @@
 /**
  * The drawings empty states stand behind — Shopify's move: a first visit
  * greets you with a picture of the thing you're about to have, not a grey
- * icon in a chip.
+ * icon in a chip. The setup task cards borrow the same hand (P6): a card
+ * stack for getting paid, a chain link for the socials.
  *
- * Four scenes cover the panel's nouns: a parcel (orders, delivery), a pair
+ * The scenes cover the panel's nouns: a parcel (orders, delivery), a pair
  * of tags (products, coupons, categories), an envelope (broadcasts), and
  * two heads (clients, members, subscribers). One stroke weight, one corner
  * radius, ink for the line work and a single brand-green accent each — so
@@ -94,6 +95,61 @@ export function PeopleArt() {
       <path d="M28 80c0-11 9-20 20-20s20 9 20 20" className="fill-white" stroke="currentColor" />
       <path d="M40 74c2-4 5-6 8-6s6 2 8 6" className="stroke-brand-600" />
       <path d="M100 52v8M96 56h8" className="stroke-brand-500" />
+    </Frame>
+  );
+}
+
+/** Two payment cards fanned, the front one brand-striped — getting paid. */
+export function CardsArt() {
+  return (
+    <Frame>
+      <ellipse cx="64" cy="84" rx="36" ry="5" className="fill-ink-100" stroke="none" />
+      <rect
+        x="40"
+        y="30"
+        width="52"
+        height="34"
+        rx="5"
+        className="fill-white"
+        stroke="currentColor"
+        transform="rotate(-6 66 47)"
+      />
+      <rect x="36" y="42" width="52" height="34" rx="5" className="fill-white" stroke="currentColor" />
+      <path d="M36 52h52" stroke="currentColor" />
+      <rect x="42" y="60" width="14" height="9" rx="2" className="fill-brand-100 stroke-brand-600" />
+      <path d="M62 68h18" stroke="currentColor" />
+      <path d="M102 26v9M97.5 30.5h9" className="stroke-brand-500" />
+    </Frame>
+  );
+}
+
+/** Two chain links joined, one brand-tipped — a shop and its socials. */
+export function LinkArt() {
+  return (
+    <Frame>
+      <ellipse cx="64" cy="82" rx="34" ry="5" className="fill-ink-100" stroke="none" />
+      <rect
+        x="30"
+        y="42"
+        width="36"
+        height="20"
+        rx="10"
+        className="fill-white"
+        stroke="currentColor"
+        transform="rotate(-14 48 52)"
+      />
+      <rect
+        x="62"
+        y="36"
+        width="36"
+        height="20"
+        rx="10"
+        className="fill-white"
+        stroke="currentColor"
+        transform="rotate(-14 80 46)"
+      />
+      <path d="M56 50l14-3.5" className="stroke-brand-600" />
+      <path d="M28 26v9M23.5 30.5h9" className="stroke-brand-500" />
     </Frame>
   );
 }

@@ -99,10 +99,43 @@ describe("requireShop, audited", () => {
      * claiming `settings:write`, because the built-in recovery email's switch
      * configures the shop the way opening hours do.
      *
+     * 159 → 163 is the settings split by responsibility (docs/admin-redesign
+     * 02): Appearance and Analytics & pixels leave the Shop-details monolith
+     * as their own sections — two pages reading `settings:read`, and their
+     * two narrow writers in `actions/shop.ts` (`updateShopAppearance`,
+     * `updateShopTracking`) claiming `settings:write`, each UPDATE naming
+     * only its own columns so a look change can never blank a tax field.
+     *
+     * 163 → 165 is the same split's second room (docs/admin-redesign 02):
+     * Notifications leaves Shop details — one page reading `settings:read`
+     * and `updateShopNotifications` in `actions/shop.ts` claiming
+     * `settings:write`, so an absent card elsewhere can never switch a
+     * seller's mail off again the way the monolith once nulled pixels.
+     *
+     * 165 → 166 is the product record's ⋯ menu (docs/admin-redesign 05):
+     * `duplicateProduct` in `actions/products.ts` claiming `products:write`.
+     * The copy itself is written by `@sailo/commerce/products`, cap and all —
+     * what the claim guards is the door, which is the only part of a
+     * duplicate a stranger could reach.
+     *
+     * 166 → 167 is the analytics split (docs/admin-redesign 08): the numbers
+     * left Home for /admin/analytics, and the new page claims `money:read` —
+     * revenue, refunds and tax are the most sensitive thing on it, and
+     * "anything that says what came in" is that resource's own definition.
+     * Home keeps its `orders:read`; a staff member who may handle orders
+     * still sees their to-do list, and only the money page asks for more.
+     *
+     * 167 → 170 is the orders list's selection bar (docs/admin-redesign 04):
+     * three bulk actions in `actions/bulk-orders.ts`, each claiming
+     * `orders:write`. Three claims and not one, because each door re-checks
+     * for itself — a shared helper that checked once would be a door two
+     * others lean through. Refund and delete are deliberately absent from
+     * that file: money-out and destruction stay one order at a time.
+     *
      * Update this deliberately when a screen is added or removed. A number that
      * moves on its own is exactly the thing this exists to notice.
      */
-    expect(sites).toHaveLength(159);
+    expect(sites).toHaveLength(170);
 
     const unknown = sites.filter(
       (s) => !(SHOP_PERMISSIONS as readonly string[]).includes(s.permission),
@@ -119,9 +152,9 @@ describe("requireShop, audited", () => {
         s.file.startsWith("src/app/") &&
         (s.file.endsWith("page.tsx") || s.file.endsWith("layout.tsx")),
     );
-    expect(inActions).toHaveLength(104);
+    expect(inActions).toHaveLength(111);
     expect(inRoutes).toHaveLength(7);
-    expect(inPages).toHaveLength(48);
+    expect(inPages).toHaveLength(52);
     expect(inActions.length + inRoutes.length + inPages.length).toBe(sites.length);
 
     /*

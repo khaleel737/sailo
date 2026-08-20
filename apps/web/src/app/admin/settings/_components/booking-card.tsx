@@ -2,10 +2,7 @@
 
 import { Card, Field, Select } from "@sailo/design-system/web";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
-import {
-  WeeklyHoursField,
-  zoneChoices,
-} from "@/app/admin/_components/weekly-hours-field";
+import { WeeklyHoursField } from "@/app/admin/_components/weekly-hours-field";
 import { clockTime } from "@sailo/commerce/booking";
 import { type WeeklyHours } from "@sailo/commerce/booking";
 import type { Shop } from "@sailo/db/schema";
@@ -28,16 +25,6 @@ export function BookingCard({ shop, hours }: { shop: Shop; hours: WeeklyHours })
         <h2 className="text-sm font-semibold text-ink-900">{a.settings.booking}</h2>
         <p className="mt-0.5 text-xs text-ink-500">{a.settings.bookingBody}</p>
       </div>
-
-      <Field label={a.settings.timeZone} hint={a.settings.timeZoneHint}>
-        <Select name="timeZone" defaultValue={shop.timeZone}>
-          {zoneChoices(shop.timeZone).map((zone) => (
-            <option key={zone} value={zone}>
-              {zone.replace(/_/g, " ")}
-            </option>
-          ))}
-        </Select>
-      </Field>
 
       <WeeklyHoursField
         name="bookingHours"

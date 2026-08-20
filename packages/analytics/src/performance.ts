@@ -134,6 +134,40 @@ export async function getProductPerformance(
   };
 }
 
+/**
+ * One product's lifetime sales, for the edit page's rail card.
+ *
+ * All-time and unwindowed on purpose — the card answers "has this thing ever
+ * earned", which is a different question from the dashboard's windowed table
+ * above. Keyed by product id: the page it serves belongs to a live product,
+ * so the deleted-product title fallback the table needs has nothing to do
+ * here. Cancelled orders are out for the same reason they are out up there.
+ */
+export async function productSalesSummary(shopId: string, productId: string) {
+  const db = getReadDb();
+  const [row] = await db
+    .select({
+      orders: sql<string>`count(distinct ${orderItems.orderId})`,
+      units: sql<string>`coalesce(sum(${orderItems.quantity}), 0)`,
+      revenueCents: sql<string>`coalesce(sum(${orderItems.subtotalCents}), 0)`,
+    })
+    .from(orderItems)
+    .innerJoin(orders, eq(orderItems.orderId, orders.id))
+    .where(
+      and(
+        eq(orders.shopId, shopId),
+        eq(orderItems.productId, productId),
+        ne(orders.status, "cancelled"),
+      ),
+    );
+
+  return {
+    orders: Number(row?.orders ?? 0),
+    units: Number(row?.units ?? 0),
+    revenueCents: Number(row?.revenueCents ?? 0),
+  };
+}
+
 export type ProductPerformance = Awaited<
   ReturnType<typeof getProductPerformance>
 >;

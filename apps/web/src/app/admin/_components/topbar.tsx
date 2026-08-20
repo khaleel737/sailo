@@ -6,7 +6,8 @@ import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { HelpLink } from "./help-link";
 import { NotificationBell } from "./notification-bell";
 import { UpgradeButton } from "./upgrade-modal";
-import { CommandPalette, type PaletteEntry } from "./command-palette";
+import { type PaletteEntry } from "./command-palette";
+import { TopbarCenter } from "./topbar-center";
 import { AccountMenu } from "./account-menu";
 import { MobileMenu, type NavProps } from "./sidebar";
 import type { Notification } from "@sailo/notifications/feed";
@@ -63,7 +64,7 @@ export function Topbar({
       </Link>
 
       <div className="flex min-w-0 flex-1 justify-center">
-        <CommandPalette entries={entries} />
+        <TopbarCenter entries={entries} />
       </div>
 
       <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">

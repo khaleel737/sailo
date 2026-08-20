@@ -374,7 +374,7 @@ export async function updateShop(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { user, shop } = await requireShop("settings:write");
+  const { shop } = await requireShop("settings:write");
 
   const name = String(formData.get("name") ?? "").trim();
   if (!name) return { ok: false, error: "Shop name can't be empty." };
@@ -385,19 +385,6 @@ export async function updateShop(
   );
   if (problem) return { ok: false, error: HANDLE_MESSAGES[problem] };
   const handleChanged = handle !== shop.handle;
-
-  const theme = String(formData.get("theme") ?? "light");
-  const layout = String(formData.get("layout") ?? "grid");
-  const accent = String(formData.get("accentColor") ?? "#111111");
-
-  /*
-   * Refused, not silently dropped. A malformed pixel id that quietly became
-   * null would save the rest of the form and leave the seller believing their
-   * campaign is measured — an empty dashboard weeks later, after the ad money
-   * was spent, is the worst possible place to learn about a typo.
-   */
-  const pixels = readPixelIds(formData);
-  if (!pixels.ok) return { ok: false, error: pixels.error };
 
   /*
    * Refused rather than nulled, for the same reason the pixel ids are.
@@ -464,9 +451,6 @@ export async function updateShop(
        */
       avatarUrl: imageUrlOrNull(formData.get("avatarUrl")),
       logoUrl: imageUrlOrNull(formData.get("logoUrl")),
-      accentColor: /^#[0-9a-f]{6}$/i.test(accent) ? accent : "#111111",
-      theme: theme === "dark" ? "dark" : "light",
-      layout: layout === "list" ? "list" : "grid",
       /*
        * Validated, not trusted. This was whatever arrived in the request, so
        * a hand-rolled POST could store any string — and every price on that
@@ -545,8 +529,6 @@ export async function updateShop(
        * account's" — never "send nothing", which is what `notificationPrefs`
        * below is for. See the column's own note.
        */
-      notificationEmail:
-        String(formData.get("notificationEmail") ?? "").trim() || null,
 
       /*
        * Booking. Both arrive as text the client composed, so both are checked
@@ -559,8 +541,6 @@ export async function updateShop(
       bookingSlotMinutes: readSlotMinutes(formData.get("bookingSlotMinutes")),
       contactEmail: String(formData.get("contactEmail") ?? "").trim() || null,
       location: String(formData.get("location") ?? "").trim() || null,
-      // Shape-checked above; what lands here can only be an id or null.
-      ...pixels.columns,
       socials: readSocials(formData),
       collectAddress: formData.get("collectAddress") === "on",
 
@@ -572,13 +552,6 @@ export async function updateShop(
       askMarketingConsent: formData.get("askMarketingConsent") === "on",
 
       isPublished: formData.get("isPublished") === "on",
-      /*
-       * Which seller emails are still wanted. Stored as the *off* switches —
-       * absence of a key means on — so a new event type ships enabled for
-       * every existing shop without a backfill. Validated above, so what
-       * lands here can only be keys the code knows about.
-       */
-      notificationPrefs: readNotificationPrefs(formData),
       updatedAt: new Date(),
     })
     .where(eq(shops.id, shop.id));
@@ -609,26 +582,110 @@ export async function updateShop(
    */
   if (calendarFeed.changed) await forgetExternalBusy(shop.id);
 
-  /*
-   * The one switch on this form that is not a shop setting.
-   *
-   * Sailo's product mail is keyed on the *account* address in
-   * `marketing_opt_outs` — platform-wide, and outliving the shop — because an
-   * unsubscribe arrives from a mail client with no session and no shop id,
-   * and has to stick whatever any column later says. So it is written through
-   * its own module rather than folded into the UPDATE above.
-   *
-   * Written after the shop, and deliberately not inside its error handling: a
-   * failure here must not roll back a saved shop, and a seller who came to
-   * this page to rename their shop should not lose that because a mailing
-   * preference did not take.
-   */
-  await setMarketingOptIn(user.email, formData.get("marketing_opt_in") === "on");
-
   return {
     ok: true,
     message: handleChanged
       ? `Saved. Your shop now lives at /${handle}.`
       : "Saved.",
   };
+}
+
+/*
+ * The three settings sections that left the Shop details form — Appearance,
+ * Analytics & pixels, and Notifications — each with an UPDATE that names
+ * only its own columns.
+ *
+ * Narrow on purpose: `updateShop` writes ~50 columns unconditionally, so a
+ * page that posts only its own fields through it would blank everyone
+ * else's. These touch what their page shows and nothing more, which is also
+ * what fixed a real loss: the old single form rendered four of the seven
+ * pixel inputs while `readPixelIds` wrote all seven, so every save nulled
+ * Google Ads, LinkedIn and Pinterest ids behind the seller's back.
+ */
+export async function updateShopAppearance(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const { shop } = await requireShop("settings:write");
+
+  const accent = String(formData.get("accentColor") ?? "");
+  const theme = String(formData.get("theme") ?? "");
+  const layout = String(formData.get("layout") ?? "");
+
+  await getDb()
+    .update(shops)
+    .set({
+      accentColor: /^#[0-9a-f]{6}$/i.test(accent) ? accent : shop.accentColor,
+      theme: theme === "dark" ? "dark" : "light",
+      layout: layout === "list" ? "list" : "grid",
+      updatedAt: new Date(),
+    })
+    .where(eq(shops.id, shop.id));
+
+  revalidatePath("/admin/settings/appearance");
+  revalidatePath(`/${shop.handle}`);
+  revalidateShop(shop.id, shop.handle);
+  after(() => publishShopEvent(shop.id, "catalog"));
+  return { ok: true, message: "Saved." };
+}
+
+export async function updateShopTracking(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const { shop } = await requireShop("settings:write");
+
+  /*
+   * Refused, not silently dropped — same reasoning as the old form: a
+   * malformed id that quietly became null leaves the seller believing their
+   * campaign is measured, and the empty dashboard arrives after the ad money
+   * was spent.
+   */
+  const pixels = readPixelIds(formData);
+  if (!pixels.ok) return { ok: false, error: pixels.error };
+
+  await getDb()
+    .update(shops)
+    .set({ ...pixels.columns, updatedAt: new Date() })
+    .where(eq(shops.id, shop.id));
+
+  // The storefront's consent banner and script tags are built from these.
+  revalidatePath("/admin/settings/analytics");
+  revalidatePath(`/${shop.handle}`);
+  revalidateShop(shop.id, shop.handle);
+  return { ok: true, message: "Saved." };
+}
+
+export async function updateShopNotifications(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const { user, shop } = await requireShop("settings:write");
+
+  await getDb()
+    .update(shops)
+    .set({
+      notificationEmail:
+        String(formData.get("notificationEmail") ?? "").trim() || null,
+      /*
+       * Which seller emails are still wanted. Stored as the *off* switches —
+       * absence of a key means on — so a new event type ships enabled for
+       * every existing shop without a backfill.
+       */
+      notificationPrefs: readNotificationPrefs(formData),
+      updatedAt: new Date(),
+    })
+    .where(eq(shops.id, shop.id));
+
+  /*
+   * Sailo's own product mail is keyed on the *account* address in
+   * `marketing_opt_outs` — platform-wide, outliving the shop — because an
+   * unsubscribe arrives from a mail client with no session and no shop id.
+   * Written after the shop and outside its error handling: a failure here
+   * must not roll back saved switches.
+   */
+  await setMarketingOptIn(user.email, formData.get("marketing_opt_in") === "on");
+
+  revalidatePath("/admin/settings/notifications");
+  return { ok: true, message: "Saved." };
 }

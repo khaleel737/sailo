@@ -9,7 +9,7 @@
  */
 
 import "server-only";
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { normalizeQuestions } from "@sailo/core/lead-questions";
 import {
@@ -1262,6 +1262,160 @@ export async function toggleProductPublished(
     .where(and(eq(products.id, productId), eq(products.shopId, shopId)))
     .returning({ isPublished: products.isPublished });
   return row ? row.isPublished : null;
+}
+
+/** What `duplicateProduct` can come back with. The cap refusal mirrors
+ * `saveProduct`'s so the two doors read the same to a caller. */
+export type DuplicateProductResult =
+  | { ok: true; id: string }
+  | { ok: false; kind: "not_found" }
+  | { ok: false; kind: "product_limit"; limit: number; planName: string };
+
+/**
+ * A copy of a product, hidden until the seller says otherwise.
+ *
+ * A column spread rather than a hand-built `ProductInput`, deliberately: an
+ * input mapping would have to name every kind's own fields and would drop the
+ * next one silently the day the schema grows. Spreading the row copies every
+ * column this build knows about, and the override list is exactly the set of
+ * facts that make the copy a different product — identity, name, slug,
+ * visibility, clock.
+ *
+ * What does not copy, and why:
+ * - **Unlock codes.** A pool is inventory, not configuration; `codeSource`
+ *   carries over and the copy's pool starts empty, which its card shows.
+ * - **Version chains on files.** `replacesFileId` names the original's
+ *   history, and pointing the copy's files at rows it does not own would let
+ *   a delete over there orphan a claim over here.
+ * - Sales, reviews and visits copy themselves nowhere — they live on their
+ *   own tables, keyed to the original, which is the truth.
+ *
+ * The plan's product cap applies: a duplicate is a new product, and the cap
+ * would be a fence with a gate in it if this door skipped the check
+ * `saveProduct` makes.
+ */
+export async function duplicateProduct(
+  shop: Shop,
+  productId: string,
+  /** Names the copy — the caller owns the language, this file owns the write. */
+  copyTitle: (title: string) => string,
+): Promise<DuplicateProductResult> {
+  const db = getDb();
+
+  const source = await db.query.products.findFirst({
+    where: and(eq(products.id, productId), eq(products.shopId, shop.id)),
+    with: {
+      images: { orderBy: [asc(productImages.position)] },
+      variants: { orderBy: [asc(productVariants.position)] },
+      files: { orderBy: [asc(productFiles.position)] },
+    },
+  });
+  if (!source) return { ok: false, kind: "not_found" };
+
+  const [counted] = await db
+    .select({ count: sql<string>`count(*)` })
+    .from(products)
+    .where(eq(products.shopId, shop.id));
+  if (atProductLimit(shop, Number(counted?.count ?? 0))) {
+    return {
+      ok: false,
+      kind: "product_limit",
+      limit: productLimit(shop) ?? 0,
+      planName: planFor(shop).name,
+    };
+  }
+
+  const title = copyTitle(source.title);
+  const slug = await uniqueSlug(shop.id, slugify(title));
+  const now = new Date();
+
+  const {
+    id: _id,
+    createdAt: _created,
+    updatedAt: _updated,
+    images,
+    variants,
+    files,
+    ...columns
+  } = source;
+
+  /*
+   * One `db.batch()` — the only atomicity neon-http offers, since
+   * `db.transaction()` throws on this driver (see `actions/orders.ts`, which
+   * set the idiom). The ids are minted here rather than read back from
+   * RETURNING, because a batch cannot feed one statement's output into the
+   * next — and the files below need the variants' new ids before anything
+   * has run.
+   */
+  const newId = crypto.randomUUID();
+  const variantIds = new Map(variants.map((v) => [v.id, crypto.randomUUID()]));
+
+  const writes: Parameters<(typeof db)["batch"]>[0][number][] = [];
+
+  if (images.length > 0) {
+    writes.push(
+      db.insert(productImages).values(
+        images.map(({ id: _i, productId: _p, createdAt: _c, ...img }) => ({
+          ...img,
+          productId: newId,
+        })),
+      ),
+    );
+  }
+
+  if (variants.length > 0) {
+    writes.push(
+      db.insert(productVariants).values(
+        variants.map(
+          ({ id, productId: _p, createdAt: _c, updatedAt: _u, ...v }) => ({
+            ...v,
+            id: variantIds.get(id),
+            productId: newId,
+            createdAt: now,
+            updatedAt: now,
+          }),
+        ),
+      ),
+    );
+  }
+
+  if (files.length > 0) {
+    writes.push(
+      db.insert(productFiles).values(
+        files.map(
+          ({
+            id: _i,
+            productId: _p,
+            createdAt: _c,
+            variantId,
+            replacesFileId: _r,
+            ...file
+          }) => ({
+            ...file,
+            productId: newId,
+            variantId: variantId ? (variantIds.get(variantId) ?? null) : null,
+            replacesFileId: null,
+            createdAt: now,
+          }),
+        ),
+      ),
+    );
+  }
+
+  await db.batch([
+    db.insert(products).values({
+      ...columns,
+      id: newId,
+      title,
+      slug,
+      isPublished: false,
+      createdAt: now,
+      updatedAt: now,
+    }),
+    ...writes,
+  ]);
+
+  return { ok: true, id: newId };
 }
 
 

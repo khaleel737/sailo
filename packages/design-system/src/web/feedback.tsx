@@ -169,7 +169,8 @@ export function Stat({
   chart,
   className,
 }: {
-  label: string;
+  /** A node, not just a string — analytics wraps it in a definition title. */
+  label: React.ReactNode;
   value: React.ReactNode;
   /** The one qualifier that stops the number being misread. */
   hint?: React.ReactNode;

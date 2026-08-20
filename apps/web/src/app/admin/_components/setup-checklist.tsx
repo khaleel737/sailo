@@ -3,13 +3,22 @@
 import { useCallback, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, X } from "lucide-react";
-import { Card, Progress } from "@sailo/design-system/web";
+import {
+  Card,
+  CardsArt,
+  LinkArt,
+  ParcelArt,
+  PeopleArt,
+} from "@sailo/design-system/web";
 import { interpolate } from "@sailo/i18n";
 import { setupProgress, type SetupStep, type SetupStepId } from "@sailo/core/onboarding";
 import { useAdminLocale, useAdminT } from "@/app/admin/_components/admin-i18n";
 
 /**
- * "Store setup — 2 of 4", on the seller's dashboard until it isn't needed.
+ * "Store setup — 2 of 4", on the seller's dashboard until it isn't needed —
+ * as Shopify's task-card grid (docs/admin-redesign 03): each step is a card
+ * with its own drawing, one act, and a progress ring in the header that
+ * draws itself once on first paint.
  *
  * The steps themselves are computed on the server (`@sailo/core/onboarding`);
  * this is only the card that draws them, and the one piece of state it owns is
@@ -86,19 +95,73 @@ export function SetupChecklist({
   // data that would untick it.
   if (complete || dismissed) return null;
 
-  const labels: Record<SetupStepId, { title: string; hint: string }> = {
-    photo: { title: a.setup.photo, hint: a.setup.photoHint },
-    product: { title: a.setup.product, hint: a.setup.productHint },
-    paid: { title: a.setup.paid, hint: a.setup.paidHint },
-    social: { title: a.setup.social, hint: a.setup.socialHint },
+  const labels: Record<SetupStepId, { title: string; hint: string; cta: string }> = {
+    photo: { title: a.setup.photo, hint: a.setup.photoHint, cta: a.setup.photoCta },
+    product: {
+      title: a.setup.product,
+      hint: a.setup.productHint,
+      cta: a.setup.productCta,
+    },
+    paid: { title: a.setup.paid, hint: a.setup.paidHint, cta: a.setup.paidCta },
+    social: {
+      title: a.setup.social,
+      hint: a.setup.socialHint,
+      cta: a.setup.socialCta,
+    },
+  };
+
+  /* One drawing per step, from the same hand as the empty states. */
+  const art: Record<SetupStepId, React.ReactNode> = {
+    photo: <PeopleArt />,
+    product: <ParcelArt />,
+    paid: <CardsArt />,
+    social: <LinkArt />,
   };
 
   return (
     <Card className="mb-6 p-5">
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <h2 className="text-sm font-semibold text-ink-900">{a.setup.title}</h2>
-          <p className="mt-0.5 text-xs text-ink-500">{a.setup.body}</p>
+        <div className="flex min-w-0 items-center gap-3">
+          {/*
+            The ring — drawn once on first paint (300–500ms, ease-out) and
+            still for everyone after that. `pathLength="1"` makes the dash
+            arithmetic unit-free; reduced motion skips straight to the value.
+          */}
+          <svg viewBox="0 0 24 24" aria-hidden className="size-9 shrink-0 -rotate-90">
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+              pathLength={1}
+              fill="none"
+              strokeWidth="2.5"
+              className="stroke-ink-100"
+            />
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+              pathLength={1}
+              fill="none"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeDasharray="1"
+              strokeDashoffset={1 - ratio}
+              className="animate-ring-draw stroke-brand-600 motion-reduce:animate-none"
+            />
+          </svg>
+          <div className="min-w-0">
+            <h2 className="text-sm font-semibold text-ink-900">
+              {a.setup.title}
+              <span className="ms-2 text-xs font-medium tabular-nums text-ink-400">
+                {interpolate(a.setup.count, {
+                  done: done.toLocaleString(locale),
+                  total: total.toLocaleString(locale),
+                })}
+              </span>
+            </h2>
+            <p className="mt-0.5 text-xs text-ink-500">{a.setup.body}</p>
+          </div>
         </div>
         <button
           type="button"
@@ -110,64 +173,64 @@ export function SetupChecklist({
         </button>
       </div>
 
-      <div className="mt-4 flex items-center gap-3">
-        <Progress
-          value={ratio}
-          label={a.setup.title}
-          className="min-w-0 flex-1"
-        />
-        <span className="shrink-0 text-xs font-medium tabular-nums text-ink-500">
-          {interpolate(a.setup.count, {
-            done: done.toLocaleString(locale),
-            total: total.toLocaleString(locale),
-          })}
-        </span>
-      </div>
-
-      <ul className="mt-4 divide-y divide-ink-100">
+      <ul className="mt-4 grid gap-3 sm:grid-cols-2">
         {steps.map((step) => {
-          const { title, hint } = labels[step.id];
+          const { title, hint, cta } = labels[step.id];
 
           /*
-           * A finished step stays on the list rather than disappearing —
-           * "2 of 4" has to be countable on the screen it describes — but it
-           * stops being a link. There is nothing left to go and do, and a
-           * chevron next to a tick invites a trip to a page that will not
-           * change anything.
+           * A finished step keeps its card — "2 of 4" has to be countable on
+           * the screen it describes — but quiets down: ticked, dimmed art,
+           * and no button, because there is nothing left to go and do.
            */
           if (step.done) {
             return (
-              <li
-                key={step.id}
-                className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0"
-              >
-                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white">
-                  <Check className="size-3" strokeWidth={3} />
-                </span>
-                <span className="min-w-0 truncate text-sm text-ink-400 line-through">
-                  {title}
-                </span>
+              <li key={step.id}>
+                <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-ink-100 bg-ink-50/60 p-4">
+                  <p className="flex items-center gap-2 pe-20 text-sm font-medium text-ink-400">
+                    <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white">
+                      <Check className="size-3" strokeWidth={3} />
+                    </span>
+                    <span className="line-through">{title}</span>
+                  </p>
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute -bottom-3 -end-3 opacity-30 grayscale [&_svg]:h-16 [&_svg]:w-auto"
+                  >
+                    {art[step.id]}
+                  </span>
+                </div>
               </li>
             );
           }
 
           return (
-            <li key={step.id} className="first:-mt-1 last:-mb-1">
-              <Link
-                href={step.href}
-                className="focus-ring group -mx-2 flex items-center gap-3 rounded-xl px-2 py-2.5 transition hover:bg-ink-50 pointer-coarse:min-h-11"
-              >
-                <span className="size-5 shrink-0 rounded-full border-2 border-ink-200 transition group-hover:border-ink-300" />
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-medium text-ink-900">
-                    {title}
-                  </span>
-                  <span className="block truncate text-xs text-ink-500">
-                    {hint}
-                  </span>
+            <li key={step.id}>
+              {/*
+                Hover lifts with shadow only — scale would shift the grid
+                (layout stability rule). One act per card, bottom-left, the
+                drawing bottom-right where Shopify parks its illustrations.
+              */}
+              <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-ink-200 bg-white p-4 transition-shadow duration-150 hover:shadow-md">
+                <h3 className="pe-16 text-sm font-semibold text-ink-900">{title}</h3>
+                <p className="mt-1 pe-24 text-xs leading-relaxed text-ink-500">
+                  {hint}
+                </p>
+                <div className="mt-auto pt-4">
+                  <Link
+                    href={step.href}
+                    className="focus-ring press inline-flex h-8 items-center gap-1.5 rounded-lg border border-ink-200 bg-white px-3 text-xs font-semibold text-ink-700 transition hover:bg-ink-50 pointer-coarse:h-11"
+                  >
+                    {cta}
+                    <ArrowRight className="size-3.5 rtl:rotate-180" />
+                  </Link>
+                </div>
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute -bottom-3 -end-3 [&_svg]:h-20 [&_svg]:w-auto"
+                >
+                  {art[step.id]}
                 </span>
-                <ArrowRight className="size-4 shrink-0 text-ink-300 transition group-hover:text-ink-500 rtl:rotate-180" />
-              </Link>
+              </div>
             </li>
           );
         })}

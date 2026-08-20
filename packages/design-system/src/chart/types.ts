@@ -32,6 +32,14 @@ export type Series = {
    */
   depth?: number;
   /**
+   * Drawn as a dashed line whatever shape the card is in — the compare
+   * series' grammar. The past is context, not a competitor: it never takes a
+   * bar lane (a lane would give last month the same visual claim on the day
+   * as this month), and the dash keeps it legible as "then" against the
+   * solid "now" without spending a second colour on it.
+   */
+  dashed?: boolean;
+  /**
    * Reported but never drawn.
    *
    * Net revenue is sales minus refunds — it is already on the card twice over,

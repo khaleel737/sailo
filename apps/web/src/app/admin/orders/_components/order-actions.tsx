@@ -2,7 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
-import { Check, FileText, Loader2, PackageCheck, RotateCcw, Truck } from "lucide-react";
+import { Check, Loader2, PackageCheck, RotateCcw, Truck } from "lucide-react";
 import {
   markOrderDelivered,
   markOrderShipped,
@@ -26,7 +26,23 @@ function Submit({ label }: { label: string }) {
 export function OrderActions({ order }: { order: Order }) {
   const a = useAdminT();
   const locale = useAdminLocale();
-  const [panel, setPanel] = useState<"ship" | "refund" | null>(null);
+
+  /*
+   * The promoted form — spec 04's literal complaint. An unfulfilled parcel's
+   * next step is recording the shipment, so the carrier/number/link fields
+   * arrive already open as the card's primary act rather than waiting behind
+   * a quiet toggle nobody found. Once it has shipped, the panel folds back
+   * to a toggle for edits.
+   */
+  const promoteShip = Boolean(
+    (order.deliveryMethod === "shipping" ||
+      (order.deliveryMethod === null && order.productKind === "physical")) &&
+      !order.shippedAt &&
+      !order.trackingNumber,
+  );
+  const [panel, setPanel] = useState<"ship" | "refund" | null>(
+    promoteShip ? "ship" : null,
+  );
   const [shipState, shipAction] = useActionState(markOrderShipped, {
     ok: false,
   });
@@ -35,7 +51,16 @@ export function OrderActions({ order }: { order: Order }) {
     ok: false,
   });
 
-  const isShipping = order.deliveryMethod === "shipping";
+  /*
+   * A parcel is a parcel even when no delivery method says so. Orders written
+   * before delivery methods existed — and shops that never configured one —
+   * carry `deliveryMethod = null` on physical goods, and the old strict
+   * equality left those sellers with no way to record a shipment at all.
+   * Explicit collection stays excluded: a pickup does not ship.
+   */
+  const isShipping =
+    order.deliveryMethod === "shipping" ||
+    (order.deliveryMethod === null && order.productKind === "physical");
   const canRefund = order.refundedCents === 0 && order.status !== "cancelled";
 
   /*
@@ -60,9 +85,10 @@ export function OrderActions({ order }: { order: Order }) {
       <div className="flex flex-wrap items-center gap-1.5">
         {isShipping ? (
           <Button
-            variant="secondary"
+            variant={promoteShip ? "primary" : "secondary"}
             size="sm"
             type="button"
+            aria-expanded={panel === "ship"}
             onClick={() => setPanel(panel === "ship" ? null : "ship")}
           >
             <Truck className="size-4" />
@@ -100,23 +126,8 @@ export function OrderActions({ order }: { order: Order }) {
           </Button>
         ) : null}
 
-        {/*
-          The evidence pack — spec 45. Offered on every order and not only on a
-          disputed one, which is the whole of "always ready": a pack full of
-          "Not on record" tells a seller what they are not recording while it is
-          still fixable, and four months later nobody remembers.
-
-          A plain link rather than an action, because it returns a PDF: the route
-          re-checks ownership and rate-limits, so the anchor is a convenience
-          rather than the control.
-        */}
-        <a
-          href={`/api/orders/${order.id}/evidence-pack`}
-          className="focus-ring text-ink-500 inline-flex h-8 items-center gap-1.5 rounded-lg px-3 text-xs font-medium transition hover:bg-ink-100 hover:text-ink-900 pointer-coarse:h-11"
-        >
-          <FileText className="size-4" />
-          {a.orders.evidencePack}
-        </a>
+        {/* The evidence pack moved to the header's ⋯ menu — an act about
+            the record, not a fulfilment step. */}
       </div>
 
       {deliveredState.error ? (

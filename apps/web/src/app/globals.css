@@ -118,6 +118,7 @@
   --animate-sheet-in: sailo-sheet-in 0.34s var(--ease-out-expo) both;
   --animate-backdrop: sailo-backdrop 0.28s var(--ease-out-quint) both;
   --animate-shimmer: sailo-shimmer 1.6s linear infinite;
+  --animate-ring-draw: sailo-ring-draw 0.5s var(--ease-out-quint) both;
 }
 
 /* --- 2. Root ------------------------------------------------------------ */
@@ -290,6 +291,15 @@ body {
   }
   to {
     opacity: 1;
+  }
+}
+
+/* The setup ring draws itself once on first paint — `pathLength="1"` on the
+   circle normalises the geometry so "empty" is always an offset of 1,
+   whatever the radius. The `to` state is the element's own inline offset. */
+@keyframes sailo-ring-draw {
+  from {
+    stroke-dashoffset: 1;
   }
 }
 

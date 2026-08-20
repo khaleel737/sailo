@@ -8,7 +8,7 @@ import { useAdminT } from "./admin-i18n";
 import { cn } from "@sailo/design-system/web/cn";
 
 /** The first letters of up to two words — "Clay & Co." → "CC". */
-function initials(name: string): string {
+export function initials(name: string): string {
   const words = name
     .split(/\s+/)
     .map((w) => w.replace(/[^\p{L}\p{N}]/gu, ""))

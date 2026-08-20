@@ -10,11 +10,16 @@
  */
 export const adminEn = {
   common: {
+    moreActions: "More actions",
+    yes: "Yes",
+    no: "No",
     save: "Save",
     saveChanges: "Save changes",
     cancel: "Cancel",
     back: "Back",
     continue: "Continue",
+    /** The quiet docs line every page ends on — spec 01. English-first until P7. */
+    learnMore: "Learn more about {topic}",
     delete: "Delete",
     edit: "Edit",
     add: "Add",
@@ -96,6 +101,15 @@ export const adminEn = {
   },
 
   /**
+   * The top bar's dirty state — spec 01. English-first until phase P7;
+   * design phases never carry translation work.
+   */
+  saveBar: {
+    unsaved: "Unsaved changes",
+    discard: "Discard",
+  },
+
+  /**
    * The ⌘K palette in the top bar — the way to anywhere. Unprotected:
    * these words open pages, they never state amounts.
    */
@@ -116,6 +130,23 @@ export const adminEn = {
    * nothing can close. These strings name controls, not amounts.
    */
   orderList: {
+    /* ---- Bulk actions — admin redesign P7 (EN until the P8 batch) ------- */
+    selected: "{count} selected",
+    clearSelection: "Clear",
+    selectAll: "Select all on this page",
+    selectOrder: "Select order",
+    markPaidBulk: "Mark as paid",
+    markShippedBulk: "Mark as shipped",
+    markCompletedBulk: "Mark as completed",
+    exportSelected: "Export selected",
+    bulkPaidTitle: "Confirm these payments?",
+    bulkPaidBody:
+      "Only orders on manual rails still waiting on money are counted — card orders settle themselves and are skipped. Downloads unlock and memberships extend, exactly as the single confirm does.",
+    bulkShipTitle: "Mark as shipped without tracking?",
+    bulkShipBody:
+      "Every buyer with an email on file is told their order is on the way. Tracking numbers are per-parcel facts — add them from each order's page.",
+    bulkDone: "{done} updated",
+    bulkSkipped: "{skipped} skipped",
     all: "All",
     searchLabel: "Search orders",
     searchPlaceholder: "Customer, email or product…",
@@ -130,6 +161,31 @@ export const adminEn = {
    * translate it.
    */
   orderDetail: {
+    /* ---- Orders v2 — admin redesign P7 (EN until the P8 batch) ---------- */
+    timeline: "Timeline",
+    tlPlaced: "Placed",
+    tlConfirmationSent: "Confirmation emailed",
+    tlTermsAccepted: "Terms accepted",
+    tlShipped: "Shipped",
+    tlDelivered: "Delivered",
+    tlRefunded: "Refunded",
+    tlRestocked: "Stock returned",
+    tlNotRestocked: "Not restocked — the seller's call",
+    tlFilesReleased: "Files released",
+    tlCoversUntil: "Membership covers until",
+    signedBy: "Signed by {name}",
+    statementDescriptor: "On their card statement",
+    buyerTaxId: "Buyer tax ID",
+    reverseCharge: "Reverse charge — the buyer accounts for the tax.",
+    viewInStripe: "View in Stripe",
+    renewal: "Renewal",
+    checkoutAnswers: "Checkout answers",
+    termsAgreed: "Agreed to the terms on {date}",
+    preorderChip: "Preorder",
+    preorderPromised: "Promised for {date}",
+    copyAddress: "Copy address",
+    addressCopied: "Copied",
+    downloadExpires: "Link expires {date}",
     payment: "Payment",
     customer: "Customer",
     fulfilment: "Fulfilment",
@@ -142,6 +198,15 @@ export const adminEn = {
     deleteTitle: "Delete this order?",
     deleteBody:
       "It comes off your records, your revenue and this buyer's history, and any stock it held goes back on the shelf. There's no undo.",
+    /**
+     * The manual-rail wait state — a WhatsApp or bank-transfer sale the
+     * platform can't see settle. The hint says what the button does; the
+     * message is a prefill the seller edits in their own app before sending.
+     */
+    chaseHint:
+      "Waiting on the money? Nudge the buyer below, and confirm here the moment it lands.",
+    chaseMessage:
+      "Hi! Quick check on your order — {item} ({amount}). Has the payment gone through on your side?",
   },
 
   shell: {
@@ -234,6 +299,9 @@ export const adminEn = {
     selling: "Selling",
     growth: "Growth",
     setup: "Setup",
+    /* The P6 door. English until the P8 batch, like every key added to an
+       existing section — and a near-universal loanword in the meantime. */
+    analytics: "Analytics",
   },
 
   /**
@@ -383,6 +451,21 @@ export const adminEn = {
   },
 
   dashboard: {
+    /* ---- The analytics split — admin redesign P6 (EN until P8 batch) ---- */
+    analyticsIntro: "Every number your shop writes — traffic, money, and where they meet.",
+    lastDays: "Last {days} days",
+    breakdownTitle: "Sales breakdown",
+    grossSales: "Gross sales",
+    taxCollected: "Tax collected",
+    previousPeriod: "Previous period",
+    vsPrevious: "vs the previous {days} days",
+    defVisits: "Page views on your shop in this range. A refresh counts again.",
+    defUniqueVisitors: "Browsers seen at least once in this range, counted once each.",
+    defOrders: "Orders placed in this range, whatever their status now.",
+    defNetRevenue: "Gross sales minus refunds. Cancelled orders never count.",
+    defBreakdown: "From gross to net — what was charged, given away, and returned.",
+    breakdownInside: "Inside gross sales",
+    discountsGiven: "Discounts given",
     /*
      * Spec 07. Shown beside the orders count rather than as a fifth tile: a
      * lead is the other thing a visitor can turn into, and four tiles is what
@@ -558,6 +641,28 @@ export const adminEn = {
     addFirst: "Add your first product",
     edit: "Edit product",
     viewOnShop: "View on shop",
+
+    /* ---- The edit page as a record — admin redesign P5 ------------------- */
+    /*
+     * English until the P8 batch fills them, like the offers block above —
+     * new keys in an existing section render in English, which is ordinary
+     * admin debt; a new section would break thirty-five files at once.
+     */
+    duplicate: "Duplicate",
+    copyOf: "Copy of {title}",
+    salesTitle: "Sales",
+    salesEmpty: "No sales yet — when this product sells, its numbers land here.",
+    unitsSold: "Units sold",
+    viewAnalytics: "View analytics",
+    storefront: "Storefront",
+    shareTitle: "Share this product",
+    shareBody: "Anyone who scans it lands on this product's page, ready to buy.",
+    organization: "Organization",
+    prevProduct: "Previous product",
+    nextProduct: "Next product",
+    deleteTitle: "Delete this product?",
+    deleteBody:
+      "It comes off your shop and out of your catalogue. Orders already placed keep their record — history is theirs, not the product's.",
     empty: "No products yet",
     emptyBody:
       "Add your first item and it appears on your shop link immediately.",
@@ -1157,6 +1262,8 @@ export const adminEn = {
   images: {
     cover: "Cover",
     add: "Add",
+    /** The add tile while files are dragged over the grid. */
+    drop: "Drop here",
     uploading: "Uploading",
     hint: "JPG, PNG, WebP or GIF · up to 8 MB each · first image is the cover",
   },
@@ -1408,6 +1515,12 @@ export const adminEn = {
     usedUp: "Used up",
     percentOff: "Percentage off",
     fixedOff: "Fixed amount off",
+    /** Spec 07's capture affordances. Protected money section: English
+     * until a human translates. */
+    generateCode: "Generate a random code",
+    usesLeftShort: "{count} uses",
+    saveCoupon: "Save coupon",
+    createCoupon: "Create coupon",
     codePlaceholder: "WELCOME10",
     usageLimit: "Usage limit",
     minSpend: "Minimum spend",
@@ -1473,6 +1586,15 @@ export const adminEn = {
   },
 
   payments: {
+    /**
+     * The unconnected hero's checklist — spec 09, the capture's inset
+     * benefits panel. Protected money copy: English until a human
+     * translates it.
+     */
+    connectWhy: "The fastest way to get paid on Sailo",
+    connectPoint1: "Cards, Apple Pay and Google Pay, settled instantly",
+    connectPoint2: "Payouts straight to your bank on Stripe's schedule",
+    connectPoint3: "Chargeback evidence packs built from your orders",
     stripeErrorTitle: "Stripe couldn't start the setup",
 
     /*
@@ -1713,6 +1835,8 @@ export const adminEn = {
     tabBilling: "Plan & billing",
     tabSecurity: "Security",
     tabData: "Import & export",
+    /** Settings → Analytics & pixels — the section, not the dashboard. */
+    tabAnalytics: "Analytics & pixels",
     /** The X on the settings overlay — where it takes you, not "dismiss". */
     close: "Close settings",
 
@@ -1902,11 +2026,19 @@ export const adminEn = {
     gtmHint: "container ID — GTM-ABC123",
     metaPixelLabel: "Meta Pixel",
     metaPixelHint: "numeric pixel ID from Meta Events Manager",
+    googleAdsLabel: "Google Ads tag",
+    googleAdsHint: "AW-… — conversion tracking for your ad campaigns.",
+    linkedinLabel: "LinkedIn Insight Tag",
+    linkedinHint: "The partner id from Campaign Manager.",
+    pinterestLabel: "Pinterest tag",
+    pinterestHint: "The tag id from Pinterest Ads.",
     tiktokPixelLabel: "TikTok Pixel",
     tiktokPixelHint: "pixel ID from TikTok Events Manager",
     booking: "Booking",
     bookingBody: "When you take appointments. Buyers only ever see times you are open and have not already filled.",
     timeZone: "Time zone",
+    /** The one-tap chip under the timezone list: the browser's own answer. */
+    useDetectedZone: "Use {zone}",
     timeZoneHint: "Opening hours are read in this zone, so a booking means the same time to both of you.",
     openingHours: "Opening hours",
     opensAt: "opens at",
@@ -2214,6 +2346,11 @@ export const adminEn = {
     paidHint: "Cash, bank transfer, a chat handoff or card. One is enough.",
     social: "Connect a social",
     socialHint: "So people who find your shop can find you too.",
+    /* Task-card CTAs — P6's card grid; EN until the P8 batch. */
+    photoCta: "Add photo",
+    productCta: "Add product",
+    paidCta: "Set up payments",
+    socialCta: "Add link",
   },
 
   /** Refer-a-creator: the seller's own share card on the dashboard. */

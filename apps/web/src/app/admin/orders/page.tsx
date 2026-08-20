@@ -1,11 +1,14 @@
+import { LearnMore } from "@/app/admin/_components/learn-more";
+import { docsUrl } from "@sailo/core/origin";
 import type { Metadata } from "next";
 import { interpolate } from "@sailo/i18n";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
-import { orderSummaryTitle } from "@/lib/order-lines";
+import { orderNumber, orderSummaryTitle } from "@/lib/order-lines";
 import {
+  getInvoiceMap,
   getShopOrders,
   getShopOrderStatusCounts,
   hasOrderFilters,
@@ -34,6 +37,12 @@ import { LottieArt } from "@/components/shared/lottie-art";
 import parcelScene from "@/components/shared/lottie/parcel.json";
 import { ExportButton } from "@/app/admin/_components/export-button";
 import { OrderTabs } from "./_components/order-tabs";
+import {
+  BulkOrdersProvider,
+  PageSelect,
+  RowSelect,
+  SelectionArea,
+} from "./_components/bulk-select";
 import { OrderFilters } from "./_components/order-filters";
 import { Badge, EmptyState } from "@sailo/design-system/web";
 import { EmptyRow, Table, Td, Th, Tr } from "@sailo/design-system/web";
@@ -99,6 +108,9 @@ export default async function AdminOrdersPage({
     getShopOrderStatusCounts(shop.id, filters),
     usedCouponCodes(shop.id),
   ]);
+  /* One indexed read for the page's numbers — the list names orders the way
+     the detail header and the palette do. */
+  const invoices = await getInvoiceMap(orders.map((o) => o.id));
   const awaiting = orders.filter((o) => o.paymentStatus === "pending").length;
 
   const payTone = (status: string) =>
@@ -125,7 +137,11 @@ export default async function AdminOrdersPage({
       />
 
       {anyOrders || filtered ? (
-        <>
+        <BulkOrdersProvider>
+          {/* Tabs or the selection bar — never both; see bulk-select.tsx. */}
+          <SelectionArea
+            tabs={
+              <>
           <OrderTabs
             statuses={ORDER_STATUSES.map((value) => ({
               value,
@@ -145,11 +161,17 @@ export default async function AdminOrdersPage({
             }))}
             coupons={coupons}
           />
+              </>
+            }
+          />
 
           <Table
-            minWidth="52rem"
+            minWidth="56rem"
             head={
               <>
+                <Th className="w-10">
+                  <PageSelect pageIds={orders.map((o) => o.id)} />
+                </Th>
                 <Th>{a.columns.order}</Th>
                 <Th>{a.columns.client}</Th>
                 <Th>{a.columns.date}</Th>
@@ -163,7 +185,7 @@ export default async function AdminOrdersPage({
             }
           >
             {orders.length === 0 ? (
-              <EmptyRow colSpan={7}>
+              <EmptyRow colSpan={8}>
                 {a.orders.noMatches} — {a.orders.noMatchesBody}
               </EmptyRow>
             ) : (
@@ -175,17 +197,25 @@ export default async function AdminOrdersPage({
 
                 return (
                   <Tr key={order.id}>
+                    <Td className="w-10">
+                      <RowSelect id={order.id} />
+                    </Td>
+                    {/*
+                      The number is the identity — bold, like Linear's issue
+                      ids — and what was bought is the supporting line. The
+                      rail it was paid on keeps riding along in small print.
+                    */}
                     <Td className="max-w-72">
                       <Link
                         href={href}
                         className="focus-ring block min-w-0 rounded pointer-coarse:min-h-11"
                       >
-                        <span className="block truncate text-sm font-medium text-ink-900">
-                          {orderSummaryTitle(order)}
+                        <span className="block truncate text-sm font-semibold tabular-nums text-ink-900">
+                          {orderNumber(order.id, invoices.get(order.id)?.number)}
                         </span>
                         <span className="block truncate text-xs text-ink-500">
-                          {methodName}
-                          {order.deliveryLabel ? ` · ${order.deliveryLabel}` : ""}
+                          {orderSummaryTitle(order)}
+                          {order.deliveryLabel ? ` · ${order.deliveryLabel}` : ` · ${methodName}`}
                         </span>
                       </Link>
                     </Td>
@@ -248,7 +278,7 @@ export default async function AdminOrdersPage({
               })
             )}
           </Table>
-        </>
+        </BulkOrdersProvider>
       ) : (
         <EmptyState
           art={<LottieArt animation={parcelScene} fallback={<ParcelArt />} />}
@@ -256,6 +286,8 @@ export default async function AdminOrdersPage({
           description={a.orders.emptyBody}
         />
       )}
+
+      <LearnMore topic={a.orders.title} href={`${docsUrl()}/guides/orders`} />
     </>
   );
 }

@@ -2,18 +2,21 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
+  Activity,
   ArrowUpRight,
+  Bell,
   CalendarClock,
   CreditCard,
   Database,
   Landmark,
   ListChecks,
+  Palette,
   Plug,
   ScrollText,
-  Settings,
+  Search,
   ShieldCheck,
   Store,
   UsersRound,
@@ -21,6 +24,7 @@ import {
   X,
 } from "lucide-react";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
+import { initials } from "@/app/admin/_components/account-menu";
 import { cn } from "@sailo/design-system/web/cn";
 
 /**
@@ -37,7 +41,19 @@ import { cn } from "@sailo/design-system/web/cn";
  * button work, and each page keeps its own capability check. Only the
  * chrome is new.
  */
-export function SettingsShell({ children }: { children: React.ReactNode }) {
+export function SettingsShell({
+  children,
+  shopName,
+  handle,
+  userName,
+  userEmail,
+}: {
+  children: React.ReactNode;
+  shopName: string;
+  handle: string;
+  userName: string;
+  userEmail: string;
+}) {
   const a = useAdminT();
   const pathname = usePathname();
   const router = useRouter();
@@ -50,12 +66,18 @@ export function SettingsShell({ children }: { children: React.ReactNode }) {
    */
   const items = [
     { href: "/admin/settings", label: a.settings.tabDetails, icon: Store, exact: true },
+    /* Carved out of Shop details: a look change never rides a tax save. */
+    { href: "/admin/settings/appearance", label: a.settings.appearance, icon: Palette },
     { href: "/admin/settings/billing", label: a.settings.tabBilling, icon: CreditCard },
     { href: "/admin/settings/tax", label: a.tax.title, icon: Landmark },
     { href: "/admin/settings/team", label: a.settings.tabTeam, icon: UsersRound },
     { href: "/admin/settings/staff", label: a.productForm.staffTitle, icon: CalendarClock },
     { href: "/admin/settings/integrations", label: a.integrations.title, icon: Plug },
+    /* All seven tracking ids, where a seller actually looks for pixels. */
+    { href: "/admin/settings/analytics", label: a.settings.tabAnalytics, icon: Activity },
     { href: "/admin/settings/fields", label: a.broadcasts.fieldsTitle, icon: ListChecks },
+    /* Seller mail, carved out of Shop details — spec 02. */
+    { href: "/admin/settings/notifications", label: a.settings.notifications, icon: Bell },
     /*
      * Moved in from the rail's Setup shelf: a legal page is configured once
      * and consulted rarely — configuration lives here. The old /admin/legal
@@ -65,6 +87,18 @@ export function SettingsShell({ children }: { children: React.ReactNode }) {
     { href: "/admin/settings/security", label: a.settings.tabSecurity, icon: ShieldCheck },
     { href: "/admin/settings/data", label: a.settings.tabData, icon: Database },
   ];
+
+  /*
+   * The rail's own search — nineteen sections is past the point where eyes
+   * beat typing (the capture's exact affordance). Filters labels only;
+   * clearing restores the full list.
+   */
+  const [query, setQuery] = useState("");
+  const visible = query.trim()
+    ? items.filter((i) =>
+        i.label.toLowerCase().includes(query.trim().toLowerCase()),
+      )
+    : items;
 
   const isActive = (item: (typeof items)[number]) =>
     item.exact ? pathname === item.href : pathname.startsWith(item.href);
@@ -126,13 +160,43 @@ export function SettingsShell({ children }: { children: React.ReactNode }) {
 
         <div className="flex min-h-0 flex-1">
           {/* The rail — wide screens. */}
-          <div className="hidden w-60 shrink-0 flex-col overflow-y-auto border-e border-ink-200 px-3 py-4 md:flex">
-            <p className="mb-3 flex items-center gap-2 px-2.5 text-sm font-semibold text-ink-900">
-              <Settings className="size-4 text-ink-500" />
-              {a.settings.title}
-            </p>
-            <ul className="flex flex-col gap-0.5">
-              {items.map((item) => {
+          <div className="hidden w-60 shrink-0 flex-col border-e border-ink-200 px-3 py-4 md:flex">
+            {/* Whose shop this room configures — the capture's first row. */}
+            <Link
+              href="/admin/settings"
+              className="focus-ring mb-3 flex min-w-0 items-center gap-2.5 rounded-xl px-1.5 py-1"
+            >
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-brand-600 text-[11px] font-bold tracking-wide text-white">
+                {initials(shopName)}
+              </span>
+              <span className="min-w-0">
+                <span className="block truncate text-[13px] font-semibold leading-tight text-ink-900">
+                  {shopName}
+                </span>
+                <span dir="ltr" className="block truncate text-start text-[11px] leading-tight text-ink-500">
+                  /{handle}
+                </span>
+              </span>
+            </Link>
+
+            <label className="relative mb-3 block">
+              <span className="sr-only">{a.commandBar.open}</span>
+              <Search className="pointer-events-none absolute start-2.5 top-1/2 size-3.5 -translate-y-1/2 text-ink-400" />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={a.commandBar.open}
+                className="focus-ring h-8 w-full rounded-lg border border-ink-200 bg-white ps-8 pe-2 text-[13px] text-ink-900 shadow-xs transition placeholder:text-ink-400 focus:border-ink-900"
+              />
+            </label>
+
+            <ul className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto">
+              {visible.length === 0 ? (
+                <li className="px-2.5 py-2 text-xs text-ink-400">
+                  {a.commandBar.empty}
+                </li>
+              ) : null}
+              {visible.map((item) => {
                 const active = isActive(item);
                 return (
                   <li key={item.href}>
@@ -175,6 +239,24 @@ export function SettingsShell({ children }: { children: React.ReactNode }) {
                 <ArrowUpRight className="size-3.5 shrink-0 text-ink-300" />
               </Link>
             </div>
+
+            {/* Who is standing in the room — the capture's last row. */}
+            <Link
+              href="/admin/settings/security"
+              className="focus-ring mt-3 flex min-w-0 items-center gap-2.5 rounded-xl border-t border-ink-200 px-1.5 pb-1 pt-3"
+            >
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-ink-200 text-[11px] font-bold tracking-wide text-ink-700">
+                {initials(userName)}
+              </span>
+              <span className="min-w-0">
+                <span className="block truncate text-[13px] font-medium leading-tight text-ink-900">
+                  {userName}
+                </span>
+                <span className="block truncate text-[11px] leading-tight text-ink-500">
+                  {userEmail}
+                </span>
+              </span>
+            </Link>
           </div>
 
           <div className="flex min-w-0 flex-1 flex-col">
@@ -210,8 +292,12 @@ export function SettingsShell({ children }: { children: React.ReactNode }) {
             </div>
 
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-              <div className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-8">
-                <h1 className="mb-5 pe-10 text-lg font-semibold tracking-tight text-ink-900">
+              {/* 4xl, not 3xl: the plan cards sit three abreast in here, and at
+                  48rem they wrapped their own copy — the misalignment a form
+                  column never shows until a grid moves in. */}
+              <div className="mx-auto w-full max-w-4xl px-4 py-6 sm:px-8">
+                <h1 className="mb-5 flex items-center gap-2 pe-10 text-lg font-semibold tracking-tight text-ink-900">
+                  <current.icon className="size-[18px] text-ink-500" />
                   {current.label}
                 </h1>
                 {children}

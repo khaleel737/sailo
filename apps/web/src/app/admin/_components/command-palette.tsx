@@ -158,6 +158,7 @@ export function CommandPalette({ entries }: { entries: PaletteEntry[] }) {
       o: "/admin/orders",
       p: "/admin/products",
       c: "/admin/clients",
+      a: "/admin/analytics",
       b: "/admin/broadcasts",
       f: "/admin/flows",
       d: "/admin/coupons",

@@ -1,5 +1,6 @@
 "use client";
 
+import { TimezoneSelect } from "@/app/admin/_components/timezone-select";
 import Link from "next/link";
 import { Card, Field, Input, Select, Switch } from "@sailo/design-system/web";
 import { CURRENCY_CODES, currencyLabel } from "@sailo/core/currency";
@@ -54,6 +55,13 @@ export function OrdersContactCard({ shop, t }: { shop: Shop; t: Dictionary }) {
                     </option>
                   ))}
                 </Select>
+              </Field>
+
+              {/* The shop's clock — a store default like its currency, which
+                  is why it moved here from the booking card (spec 02): it
+                  stamps every order and analytics day, not only appointments. */}
+              <Field label={a.settings.timeZone} hint={a.settings.timeZoneHint}>
+                <TimezoneSelect defaultValue={shop.timeZone} />
               </Field>
 
               <Field

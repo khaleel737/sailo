@@ -8,6 +8,7 @@ import { getNotifications } from "@sailo/notifications/feed";
 import { isStaff, requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { AdminI18nProvider } from "@/app/admin/_components/admin-i18n";
+import { SaveBarProvider } from "@/app/admin/_components/save-bar";
 import { StatusBanners } from "@/app/admin/_components/status-banners";
 import { PanelFooter } from "@/components/shared/panel-footer";
 import { LiveRefresh } from "@sailo/design-system/web";
@@ -49,6 +50,8 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
     { label: t.nav.categories, href: "/admin/categories", group: "pages" },
     { label: t.nav.reviews, href: "/admin/reviews", group: "pages" },
     { label: t.nav.clients, href: "/admin/clients", group: "pages" },
+    /* Labelled from the admin dictionary — see the sidebar's note on why. */
+    { label: a.navGroups.analytics, href: "/admin/analytics", group: "pages" },
     { label: t.nav.members, href: "/admin/members", group: "pages" },
     { label: t.nav.testimonials, href: "/admin/testimonials", group: "pages" },
     { label: t.nav.broadcasts, href: "/admin/broadcasts", group: "pages" },
@@ -62,11 +65,14 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
     ...(
       [
         [a.settings.tabBilling, "/admin/settings/billing"],
+        [a.settings.appearance, "/admin/settings/appearance"],
+        [a.settings.tabAnalytics, "/admin/settings/analytics"],
         [a.tax.title, "/admin/settings/tax"],
         [a.settings.tabTeam, "/admin/settings/team"],
         [a.productForm.staffTitle, "/admin/settings/staff"],
         [a.integrations.title, "/admin/settings/integrations"],
         [a.broadcasts.fieldsTitle, "/admin/settings/fields"],
+        [a.settings.notifications, "/admin/settings/notifications"],
         [a.legal.title, "/admin/settings/legal"],
         [a.settings.tabSecurity, "/admin/settings/security"],
         [a.settings.tabData, "/admin/settings/data"],
@@ -93,6 +99,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
 
   return (
     <AdminI18nProvider value={a} locale={locale}>
+      <SaveBarProvider>
       <div dir={dir} lang={locale} className="flex min-h-screen flex-col bg-ink-50">
         <Topbar
           shop={shop}
@@ -132,6 +139,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
         <GoogleTag />
         <ConsentGate />
       </div>
+      </SaveBarProvider>
     </AdminI18nProvider>
   );
 }

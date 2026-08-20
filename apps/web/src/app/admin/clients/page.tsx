@@ -1,3 +1,5 @@
+import { LearnMore } from "@/app/admin/_components/learn-more";
+import { docsUrl } from "@sailo/core/origin";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { requireShop } from "@/lib/session";
@@ -181,6 +183,8 @@ export default async function AdminClientsPage({
           })}
         </Table>
       )}
+
+      <LearnMore topic={a.clients.title} href={`${docsUrl()}/guides/customers`} />
     </>
   );
 }

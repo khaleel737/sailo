@@ -50,6 +50,32 @@ export {
 } from "@sailo/commerce/shop-views";
 
 /**
+ * The detail page's ↑↓ arrows — this order's neighbours under the list's own
+ * ordering (`desc(createdAt)`, unfiltered). ↑ is the row above, which on a
+ * newest-first list is the *newer* order. Ids only, capped at the same
+ * hundred rows the list shows plus enough tail to keep the arrows honest at
+ * the boundary.
+ */
+export async function adjacentOrderIds(
+  shopId: string,
+  orderId: string,
+): Promise<{ prev: string | null; next: string | null }> {
+  const rows = await getDb()
+    .select({ id: orders.id })
+    .from(orders)
+    .where(eq(orders.shopId, shopId))
+    .orderBy(sql`${orders.createdAt} desc`)
+    .limit(500);
+
+  const at = rows.findIndex((row) => row.id === orderId);
+  if (at === -1) return { prev: null, next: null };
+  return {
+    prev: rows[at - 1]?.id ?? null,
+    next: rows[at + 1]?.id ?? null,
+  };
+}
+
+/**
  * What settled over card in the last thirty days, net of refunds.
  *
  * One number with one reader: the plan cards, which turn the fee ladder into

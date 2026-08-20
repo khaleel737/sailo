@@ -1,8 +1,10 @@
+import { LearnMore } from "@/app/admin/_components/learn-more";
+import { docsUrl } from "@sailo/core/origin";
 import type { Metadata } from "next";
 import { interpolate } from "@sailo/i18n";
 import Image from "next/image";
 import Link from "next/link";
-import { Eye, EyeOff, ImageIcon, Plus, Trash2 } from "lucide-react";
+import { Eye, EyeOff, ImageIcon, Plus, Trash2, Upload } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { ADMIN_PRODUCT_LIMIT, getAdminProducts } from "@/lib/queries";
@@ -52,6 +54,16 @@ export default async function AdminProductsPage() {
         }
         action={
           <div className="flex gap-2">
+            {/* The CSV intake lives in Settings → Import & export; this is
+                the door to it from where a seller actually stands when they
+                arrive carrying a catalogue. */}
+            <Link
+              href="/admin/settings/data"
+              className="focus-ring press inline-flex h-10 items-center gap-2 rounded-xl border border-ink-200 bg-white px-4 text-sm font-medium text-ink-900 shadow-xs transition hover:border-ink-300 hover:bg-ink-50 pointer-coarse:h-11"
+            >
+              <Upload className="size-4" />
+              {a.data.import}
+            </Link>
             <ExportButton shop={shop} type="products" />
             <Link href="/admin/products/new">
               <Button>
@@ -241,6 +253,8 @@ export default async function AdminProductsPage() {
           })}
         </Table>
       )}
+
+      <LearnMore topic={a.products.title} href={`${docsUrl()}/guides/products`} />
     </>
   );
 }

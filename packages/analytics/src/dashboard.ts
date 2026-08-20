@@ -42,6 +42,14 @@ export async function getDashboardStats(shopId: string, window: Window = 30) {
           refunded: sql<string>`coalesce(sum(${orders.refundedCents}), 0)`,
           refundCount: sql<string>`count(*) filter (where ${orders.refundedCents} > 0)`,
           paid: sql<string>`coalesce(sum(${orders.totalCents}) filter (where ${orders.paymentStatus} = 'paid'), 0)`,
+          /*
+           * The two lines between gross and net that the breakdown ledger
+           * prints — what was given away at checkout and what was charged to
+           * carry it. Cancelled orders never happened, same as gross; refunds
+           * are already their own line and must not be double-deducted here.
+           */
+          discounts: sql<string>`coalesce(sum(${orders.discountCents}) filter (where ${orders.status} <> 'cancelled'), 0)`,
+          delivery: sql<string>`coalesce(sum(${orders.deliveryFeeCents}) filter (where ${orders.status} <> 'cancelled'), 0)`,
           // Tax the seller has collected and owes on. Cancelled orders never
           // happened; a refund hands the tax back with the rest of the money.
           tax: sql<string>`coalesce(sum(${orders.taxCents}) filter (where ${orders.status} <> 'cancelled' and ${orders.refundedCents} = 0), 0)`,
@@ -107,6 +115,8 @@ export async function getDashboardStats(shopId: string, window: Window = 30) {
     netRevenueCents:
       Number(periodRow?.gross ?? 0) - Number(periodRow?.refunded ?? 0),
     refundCount: Number(periodRow?.refundCount ?? 0),
+    discountCents: Number(periodRow?.discounts ?? 0),
+    deliveryFeeCents: Number(periodRow?.delivery ?? 0),
     paidValueCents: Number(periodRow?.paid ?? 0),
     awaitingConfirmation: Number(openRow?.awaitingConfirm ?? 0),
     awaitingShipment: Number(openRow?.awaitingShipment ?? 0),

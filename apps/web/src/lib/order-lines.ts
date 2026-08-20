@@ -13,3 +13,16 @@
 
 export * from "@sailo/core/order-lines";
 export * from "@sailo/commerce/order-lines";
+
+/**
+ * The order's human name — "#INV-0007", or the first block of its uuid when
+ * no invoice exists yet. One function so the list, the detail header and the
+ * palette can never disagree about what an order is called (spec 04: the
+ * single biggest scanability gap vs Shopify was product-title-as-identity).
+ */
+export function orderNumber(
+  orderId: string,
+  invoiceNumber?: string | null,
+): string {
+  return `#${invoiceNumber ?? orderId.slice(0, 8)}`;
+}

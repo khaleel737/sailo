@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { CalendarRange, Lock } from "lucide-react";
 import type { Dictionary } from "@sailo/i18n";
 import { ANALYTICS_RANGES, cheapestPlanWith, PLANS, PLAN_IDS } from "@sailo/core/plans";
@@ -52,6 +52,13 @@ export function RangePicker({
   clamped?: boolean;
 }) {
   const router = useRouter();
+  /*
+   * The picker used to hardcode `/admin`, which was every page it lived on —
+   * until the analytics split gave it a second home. It addresses whichever
+   * page it is standing on now, so a range chosen on /admin/analytics stays
+   * on /admin/analytics.
+   */
+  const pathname = usePathname();
   const [upsell, setUpsell] = useState<number | null>(null);
   const [showCustom, setShowCustom] = useState(Boolean(custom));
   const [from, setFrom] = useState(customFrom ?? "");
@@ -61,18 +68,24 @@ export function RangePicker({
    * A hand-typed URL that reached past the plan was clamped server-side; the
    * modal names the fix rather than letting the shorter answer pass as the
    * one that was asked for. Once, on arrival — dismissing it keeps the
-   * clamped window on screen.
+   * clamped window on screen. Reconciled during render (the lastX pattern
+   * this codebase uses everywhere) rather than in an effect, which the hooks
+   * lint rightly flags as a cascading render.
    */
-  useEffect(() => {
+  const [lastClamped, setLastClamped] = useState(false);
+  if (Boolean(clamped) !== lastClamped) {
+    setLastClamped(Boolean(clamped));
     if (clamped) setUpsell(limit + 1);
-  }, [clamped, limit]);
+  }
 
   // The earliest day the plan can read, mirrored onto the input so the picker
   // can't offer what the server would refuse. The server clamps regardless.
-  const minDay = new Date(Date.now() - (limit - 1) * DAY_MS)
-    .toISOString()
-    .slice(0, 10);
-  const today = new Date().toISOString().slice(0, 10);
+  // State initializers, not render reads — the clock is impure and a day is
+  // stable for as long as this picker is mounted.
+  const [minDay] = useState(() =>
+    new Date(Date.now() - (limit - 1) * DAY_MS).toISOString().slice(0, 10),
+  );
+  const [today] = useState(() => new Date().toISOString().slice(0, 10));
 
   const apply = () => {
     if (!from || !to || from > to) return;
@@ -80,7 +93,7 @@ export function RangePicker({
       setUpsell(limit + 1);
       return;
     }
-    router.push(`/admin?from=${from}&to=${to}`, { scroll: false });
+    router.push(`${pathname}?from=${from}&to=${to}`, { scroll: false });
   };
 
   return (
@@ -111,7 +124,7 @@ export function RangePicker({
             <Link
               key={days}
               dir="auto"
-              href={`/admin?range=${days}`}
+              href={`${pathname}?range=${days}`}
               scroll={false}
               className={cn(
                 "inline-flex items-center rounded-lg px-2.5 py-1.5 text-sm font-medium transition",

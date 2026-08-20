@@ -3,9 +3,18 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronRight, ExternalLink } from "lucide-react";
 import { requireShop } from "@/lib/session";
-import { getAdminProduct, getShopCategories } from "@/lib/queries";
+import {
+  adjacentProductIds,
+  getAdminProduct,
+  getShopCategories,
+  productSalesSummary,
+} from "@/lib/queries";
 import { ProductForm } from "@/app/admin/products/_components/product-form";
-import { PageHeader } from "@sailo/design-system/web";
+import { ProductMenu } from "@/app/admin/products/_components/product-menu";
+import { RecordNav } from "@/app/admin/_components/record-nav";
+import { ShareLinkButton } from "@/app/admin/_components/share-link-dialog";
+import { Badge, Card, PageHeader } from "@sailo/design-system/web";
+import { formatMoney } from "@sailo/core/currency";
 import { isUuid } from "@sailo/core/uuid";
 import { getAdminT } from "@/i18n/server";
 import { connectState } from "@sailo/commerce/orders/server";
@@ -20,7 +29,7 @@ export const metadata: Metadata = { title: "Edit product" };
 export default async function EditProductPage({
   params,
 }: PageProps<"/admin/products/[id]">) {
-  const { a } = await getAdminT();
+  const { a, locale } = await getAdminT();
   const { id } = await params;
   const { shop } = await requireShop("products:read");
   if (!isUuid(id)) notFound();
@@ -28,7 +37,13 @@ export default async function EditProductPage({
   const product = await getAdminProduct(shop.id, id);
   if (!product) notFound();
 
-  const categories = await getShopCategories(shop.id);
+  const [categories, adjacent, sales] = await Promise.all([
+    getShopCategories(shop.id),
+    /* The header's ↑↓ arrows — neighbours under the list's own ordering. */
+    adjacentProductIds(shop.id, product.id),
+    /* The rail's Sales card — lifetime, so "has this ever earned". */
+    productSalesSummary(shop.id, product.id),
+  ]);
 
   /*
    * Counts only — spec 48. The pool card renders numbers and never a string,
@@ -77,17 +92,37 @@ export default async function EditProductPage({
 
   return (
     <>
+      {/*
+        The record's header, Shopify's grammar: the thing's own name, its
+        visibility said as a chip, and on the end the acts about the record —
+        preview, the ↑↓ walk through the catalogue, and the ⋯ menu.
+      */}
       <PageHeader
-        title={a.products.edit}
+        back={{ href: "/admin/products", label: a.products.title }}
+        title={product.title}
+        meta={
+          <Badge tone={product.isPublished ? "green" : "neutral"} dot>
+            {product.isPublished ? a.common.live : a.common.hidden}
+          </Badge>
+        }
         action={
-          <Link
-            href={`/${shop.handle}/p/${product.slug}`}
-            target="_blank"
-            className="inline-flex items-center gap-1.5 text-sm text-ink-500 transition hover:text-ink-900"
-          >
-            {a.products.viewOnShop}
-            <ExternalLink className="size-3.5" />
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/${shop.handle}/p/${product.slug}`}
+              target="_blank"
+              className="focus-ring hidden items-center gap-1.5 rounded text-sm text-ink-500 transition hover:text-ink-900 sm:inline-flex"
+            >
+              {a.products.viewOnShop}
+              <ExternalLink className="size-3.5" />
+            </Link>
+            <RecordNav
+              prevHref={adjacent.prev ? `/admin/products/${adjacent.prev}` : null}
+              nextHref={adjacent.next ? `/admin/products/${adjacent.next}` : null}
+              prevLabel={a.products.prevProduct}
+              nextLabel={a.products.nextProduct}
+            />
+            <ProductMenu productId={product.id} />
+          </div>
         }
       />
       <ProductForm
@@ -131,6 +166,64 @@ export default async function EditProductPage({
         /* Spec 53. Gated here and again in `saveProduct`: a form is not a
            gate, and a downgraded shop keeps every price it typed. */
         regionalCurrencies={can(shop, "regionalPricing") ? shop.regionalCurrencies : []}
+        rail={
+          <>
+            {/*
+              Lifetime numbers, formatted in the shop's own currency — the
+              same simplification the dashboard's performance table makes.
+            */}
+            <Card className="space-y-3 p-5">
+              <h2 className="text-sm font-semibold text-ink-900">
+                {a.products.salesTitle}
+              </h2>
+              {sales.units > 0 ? (
+                <>
+                  <dl className="space-y-1.5 text-sm">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <dt className="text-ink-500">{a.products.unitsSold}</dt>
+                      <dd className="tabular-nums text-ink-700">{sales.units}</dd>
+                    </div>
+                    <div className="flex items-baseline justify-between gap-3">
+                      <dt className="text-ink-500">{a.orders.title}</dt>
+                      <dd className="tabular-nums text-ink-700">{sales.orders}</dd>
+                    </div>
+                    <div className="flex items-baseline justify-between gap-3">
+                      <dt className="text-ink-500">{a.performance.revenue}</dt>
+                      <dd className="font-semibold tabular-nums text-ink-900">
+                        {formatMoney(sales.revenueCents, shop.currency, locale)}
+                      </dd>
+                    </div>
+                  </dl>
+                  <Link
+                    href="/admin"
+                    className="focus-ring inline-flex items-center rounded text-xs font-medium text-ink-500 transition hover:text-ink-900 pointer-coarse:min-h-11"
+                  >
+                    {a.products.viewAnalytics}
+                  </Link>
+                </>
+              ) : (
+                <p className="text-sm leading-relaxed text-ink-500">
+                  {a.products.salesEmpty}
+                </p>
+              )}
+            </Card>
+
+            <Card className="space-y-3 p-5">
+              <h2 className="text-sm font-semibold text-ink-900">
+                {a.products.storefront}
+              </h2>
+              <p dir="ltr" className="truncate text-start text-xs text-ink-500">
+                /{shop.handle}/p/{product.slug}
+              </p>
+              <ShareLinkButton
+                url={`${process.env.NEXT_PUBLIC_APP_URL ?? ""}/${shop.handle}/p/${product.slug}`}
+                title={a.products.shareTitle}
+                body={a.products.shareBody}
+                fileName={product.slug}
+              />
+            </Card>
+          </>
+        }
       />
       {/*
         Below the form and outside it — a pool is an inventory movement, not a

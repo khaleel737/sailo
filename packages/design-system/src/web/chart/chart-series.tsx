@@ -48,6 +48,40 @@ export function ChartSeries({
       {series.map((s, seriesIndex) => {
         const colour = chartColour(tone, s.depth ?? seriesIndex);
 
+        /*
+         * The compare series: a dashed hairline in either shape. See the
+         * flag's note in `chart/types.ts` — the past never takes a bar lane.
+         */
+        if (s.dashed) {
+          return (
+            <Group key={s.key}>
+              <LinePath
+                data={days.map((_, i) => i)}
+                x={centre}
+                y={(i) => yScale(valueAt(s, i))}
+                stroke={colour}
+                strokeWidth={1.5}
+                strokeLinecap="round"
+                strokeDasharray="5 4"
+                curve={curveMonotoneX}
+                fill="none"
+                opacity={0.7}
+              />
+              {cursor === null ? null : (
+                <circle
+                  cx={centre(cursor)}
+                  cy={yScale(valueAt(s, cursor))}
+                  r={3}
+                  fill={colour}
+                  stroke="white"
+                  strokeWidth={1.5}
+                  opacity={0.8}
+                />
+              )}
+            </Group>
+          );
+        }
+
         switch (shape) {
           case "line":
             return (

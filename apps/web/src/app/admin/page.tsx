@@ -5,73 +5,42 @@ import { ArrowRight, Eye, ShoppingBag, Users, Wallet } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import {
   getCheckoutMethods,
-  getClickBreakdown,
-  getConversionFunnel,
   getDashboardStats,
-  getProductPerformance,
   getRevenueSeries,
   getShopOrders,
-  getVisitBreakdown,
   getVisitSeries,
   orderCurrencyMix,
 } from "@/lib/queries";
 import { setupSteps } from "@sailo/core/onboarding";
 import { getPartnerCard } from "@sailo/partners/store";
-import { Chart } from "@sailo/design-system/web/chart";
 import { ShareLinkButton } from "@/app/admin/_components/share-link-dialog";
-import { TrafficPanel } from "@/app/admin/_components/traffic-panel";
-import { ProductPerformancePanel } from "@/app/admin/_components/product-performance";
-import { ConversionFunnelPanel } from "@/app/admin/_components/conversion-funnel";
-import { RangePicker } from "@/app/admin/_components/range-picker";
 import { SetupChecklist } from "@/app/admin/_components/setup-checklist";
 import { ReferralCard } from "@/app/admin/_components/referral-card";
-import { analyticsLimit, planFor } from "@sailo/core/plans";
-import { resolveAnalyticsWindow, type DateWindow } from "@sailo/analytics/window";
 import { CopyLink } from "@sailo/design-system/web";
 import { Badge, Card, EmptyState, Sparkline, Stat } from "@sailo/design-system/web";
 import { orderStatusLabel, orderStatusTone } from "@sailo/core/order-status";
 import { formatMoney } from "@sailo/core/currency";
-import { getAdminT, getLocale, getT } from "@/i18n/server";
+import { getAdminT, getLocale } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
 
 export const metadata: Metadata = { title: "Overview" };
 
-export default async function AdminOverviewPage({
-  searchParams,
-}: PageProps<"/admin">) {
+export default async function AdminOverviewPage() {
   const { shop } = await requireShop("orders:read");
-  const { t } = await getT();
   const { a } = await getAdminT();
   const locale = await getLocale();
-  const params = await searchParams;
-
-  // Clamped server-side, so neither a hand-typed ?range= nor a ?from= can
-  // read past the plan. Presets pass through as the rolling windows they
-  // always were; ?from=&to= resolves to an explicit UTC window.
-  const window = resolveAnalyticsWindow(shop, params);
-
   /*
-   * The charts stay readable at sixty bars, so a longer window plots its most
-   * recent sixty days — the same cap the presets have always had, applied to
-   * a custom window by sliding its near edge forward.
+   * A fixed thirty-day snapshot — the split (docs/admin-redesign 08) moved
+   * the range picker, the charts and every breakdown to /admin/analytics.
+   * Home's job is "what do I do next"; these four tiles are a glance, and
+   * the strip's heading links to the page that answers the follow-up.
    */
-  const chartQuery: number | DateWindow = !window.custom
-    ? Math.min(window.days, 60)
-    : window.days <= 60
-      ? (window.query as DateWindow)
-      : {
-          since: new Date(window.until.getTime() - 60 * 24 * 60 * 60 * 1000),
-          until: window.until,
-        };
-  const chartDays = Math.min(window.days, 60);
+  const DAYS = 30;
 
   const [
     stats,
     visitSeries,
     revenueSeries,
-    traffic,
-    clicks,
-    performance,
     orders,
     /*
      * The setup card's "can this shop be paid" step, answered by the same
@@ -82,15 +51,11 @@ export default async function AdminOverviewPage({
      */
     usableRails,
     partnerCard,
-    funnel,
     currencyMix,
   ] = await Promise.all([
-    getDashboardStats(shop.id, window.query),
-    getVisitSeries(shop.id, chartQuery),
-    getRevenueSeries(shop.id, chartQuery),
-    getVisitBreakdown(shop.id, window.query),
-    getClickBreakdown(shop.id, window.query),
-    getProductPerformance(shop.id, window.query, Number(params.pp) || 1),
+    getDashboardStats(shop.id, DAYS),
+    getVisitSeries(shop.id, DAYS),
+    getRevenueSeries(shop.id, DAYS),
     getShopOrders(shop.id, 5),
     getCheckoutMethods(shop.id),
     /*
@@ -100,7 +65,6 @@ export default async function AdminOverviewPage({
      * than one a page render makes on their behalf.
      */
     getPartnerCard(shop.userId),
-    getConversionFunnel(shop.id, window.query),
     /*
      * What was taken in a currency that is not the shop's own — spec 53.
      *
@@ -109,7 +73,7 @@ export default async function AdminOverviewPage({
      * it and sold nothing in it yet. The revenue tile is unchanged in both
      * cases; only a shop that has actually taken euros grows a second line.
      */
-    orderCurrencyMix(shop.id, shop.currency, window.query),
+    orderCurrencyMix(shop.id, shop.currency, DAYS),
   ]);
 
   const steps = setupSteps({
@@ -122,30 +86,6 @@ export default async function AdminOverviewPage({
   });
 
   const money = (cents: number) => formatMoney(cents, shop.currency, locale);
-
-  // Bounds are UTC midnights; formatted in UTC so the label names the same
-  // calendar day the window actually covers.
-  const dateLabel = (d: Date) =>
-    d.toLocaleDateString(locale, {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-      timeZone: "UTC",
-    });
-  const dayParam = (d: Date) => d.toISOString().slice(0, 10);
-  // `until` is exclusive; the last day on screen is the one just inside it.
-  const lastDayShown = new Date(window.until.getTime() - 1);
-  const rangeLabel = window.custom
-    ? `${dateLabel(window.since)} – ${dateLabel(lastDayShown)}`
-    : "";
-  const chartLabel =
-    window.custom && typeof chartQuery !== "number"
-      ? `${dateLabel(chartQuery.since)} – ${dateLabel(new Date(chartQuery.until.getTime() - 1))}`
-      : rangeLabel;
-  /** What the pager and any drill-down links carry to keep the same window. */
-  const rangeQuery = window.custom
-    ? `from=${dayParam(window.since)}&to=${dayParam(lastDayShown)}`
-    : `range=${window.days}`;
 
   const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
   const shopUrl = `${base}/${shop.handle}`;
@@ -215,25 +155,15 @@ export default async function AdminOverviewPage({
 
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <h2 dir="auto" className="text-sm font-medium text-ink-500">
-          {window.custom
-            ? rangeLabel
-            : `Last ${
-                window.days >= 365
-                  ? `${Math.round(window.days / 365)} year`
-                  : `${window.days} days`
-              }${window.days >= 730 ? "s" : ""}`}
+          {interpolate(a.dashboard.lastDays, { days: DAYS })}
         </h2>
-        <RangePicker
-          t={t}
-          labels={a.range}
-          current={window.days}
-          limit={analyticsLimit(shop)}
-          currentPlan={planFor(shop).id}
-          custom={window.custom}
-          customFrom={dayParam(window.since)}
-          customTo={dayParam(lastDayShown)}
-          clamped={window.clamped}
-        />
+        <Link
+          href="/admin/analytics"
+          className="focus-ring inline-flex items-center gap-1 rounded text-xs font-medium text-ink-500 transition hover:text-ink-900 pointer-coarse:min-h-11"
+        >
+          {a.products.viewAnalytics}
+          <ArrowRight className="size-3.5 rtl:rotate-180" />
+        </Link>
       </div>
 
       <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -330,8 +260,6 @@ export default async function AdminOverviewPage({
         />
       </div>
 
-      <ConversionFunnelPanel funnel={funnel} />
-
       {stats.awaitingShipment > 0 ? (
         <Link
           href="/admin/orders"
@@ -364,93 +292,6 @@ export default async function AdminOverviewPage({
           <ArrowRight className="size-4 shrink-0 text-amber-700" />
         </Link>
       ) : null}
-
-      <div className="mb-6 grid gap-3 lg:grid-cols-2">
-        <Card className="p-5">
-          <Chart
-            title={
-              window.custom
-                ? interpolate(a.dashboard.visitsCustom, { range: chartLabel })
-                : interpolate(a.dashboard.visitsRange, { days: chartDays })
-            }
-            defaultShape="line"
-            days={visitSeries.map((d) => d.day)}
-            series={[
-              {
-                key: "visits",
-                label: a.dashboard.views,
-                values: visitSeries.map((d) => d.count),
-              },
-              // The gap between the two lines is repeat viewing — the number
-              // that tells a link that is working from one being refreshed.
-              {
-                key: "unique",
-                label: a.dashboard.visitors,
-                values: visitSeries.map((d) => d.unique),
-              },
-            ]}
-            tone="activity"
-            unit="count"
-            shape={a.chart}
-            locale={locale}
-            emptyLabel={a.dashboard.noVisits}
-          />
-        </Card>
-        <Card className="p-5">
-          <Chart
-            title={
-              window.custom
-                ? interpolate(a.dashboard.revenueCustom, { range: chartLabel })
-                : interpolate(a.dashboard.revenueRange, { days: chartDays })
-            }
-            days={revenueSeries.map((d) => d.day)}
-            series={[
-              {
-                key: "sales",
-                label: a.dashboard.sales,
-                depth: 1,
-                values: revenueSeries.map((d) => d.grossCents),
-              },
-              // Below the axis: money leaving, on the day it left.
-              {
-                key: "refunds",
-                label: a.dashboard.refunds,
-                negative: true,
-                depth: 2,
-                values: revenueSeries.map((d) => d.refundedCents),
-              },
-              {
-                key: "net",
-                label: a.dashboard.net,
-                depth: 0,
-                readoutOnly: true,
-                values: revenueSeries.map((d) => d.cents),
-              },
-            ]}
-            totalKey="net"
-            tone="money"
-            unit="money"
-            currency={shop.currency}
-            shape={a.chart}
-            locale={locale}
-            emptyLabel={a.dashboard.noRevenue}
-          />
-        </Card>
-      </div>
-
-      <TrafficPanel
-        data={traffic}
-        clicks={clicks}
-        days={window.days}
-        locale={locale}
-      />
-
-      <ProductPerformancePanel
-        data={performance}
-        currency={shop.currency}
-        locale={locale}
-        rangeQuery={rangeQuery}
-      />
 
       <Card className="p-5">
         <div className="mb-4 flex items-center justify-between">

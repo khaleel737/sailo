@@ -4,7 +4,8 @@ import { clients, products } from "@sailo/db/schema";
 import { roleCan } from "@sailo/auth/permissions";
 import { requireShop } from "@/lib/session";
 import { getShopOrders } from "@/lib/queries";
-import { orderSummaryTitle } from "@/lib/order-lines";
+import { orderNumber, orderSummaryTitle } from "@/lib/order-lines";
+import { getInvoiceMap } from "@/lib/queries";
 
 /**
  * What ⌘K finds beyond pages: this shop's own orders, products and clients.
@@ -54,9 +55,13 @@ export async function GET(request: Request) {
       : Promise.resolve([]),
   ]);
 
+  /* Five rows, so this is one indexed read — and the palette then names an
+     order the way the list and the detail header do. */
+  const invoices = await getInvoiceMap(orderRows.map((o) => o.id));
+
   return Response.json({
     orders: orderRows.map((order) => ({
-      label: orderSummaryTitle(order),
+      label: `${orderNumber(order.id, invoices.get(order.id)?.number)} · ${orderSummaryTitle(order)}`,
       sub: order.customerName ?? order.customerEmail ?? "",
       href: `/admin/orders/${order.id}`,
     })),

@@ -1,5 +1,5 @@
 import "server-only";
-import { asc, desc, eq } from "drizzle-orm";
+import { asc, desc, eq, and, inArray } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { orders, productImages, products, productVariants } from "@sailo/db/schema";
 import {
@@ -180,9 +180,13 @@ export const ORDER_HEADERS = [
  * order-level money appears on the first of them so a sum over the column
  * still gives the shop's revenue.
  */
-export async function exportOrders(shopId: string) {
+export async function exportOrders(shopId: string, ids?: string[]) {
+  /* `ids` is the selection bar's "Export selected" — a narrowing inside the
+     shop's own rows, never a way to reach across one. */
   const rows = await getDb().query.orders.findMany({
-    where: eq(orders.shopId, shopId),
+    where: ids?.length
+      ? and(eq(orders.shopId, shopId), inArray(orders.id, ids))
+      : eq(orders.shopId, shopId),
     orderBy: [desc(orders.createdAt)],
   });
   const [invoices, itemsByOrder] = await Promise.all([
@@ -379,6 +383,8 @@ export async function runExport(
   type: ExportType,
   shopId: string,
   currency: string,
+  /** Narrows an orders export to a selection; every other type ignores it. */
+  ids?: string[],
 ) {
   switch (type) {
     case "products":
@@ -387,7 +393,7 @@ export async function runExport(
         body: await exportProducts(shopId, currency),
       };
     case "orders":
-      return { filename: "sailo-orders.csv", body: await exportOrders(shopId) };
+      return { filename: "sailo-orders.csv", body: await exportOrders(shopId, ids) };
     case "clients":
       return {
         filename: "sailo-customers.csv",

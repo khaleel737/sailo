@@ -105,6 +105,7 @@ export function ProductForm({
   roster = [],
   assignedStaffIds = [],
   regionalCurrencies = [],
+  rail,
 }: {
   product?: ProductWithRelations;
   categories: Category[];
@@ -161,6 +162,12 @@ export function ProductForm({
    * shop keeps its typed prices and stops being able to edit them.
    */
   regionalCurrencies?: string[];
+  /**
+   * Server-rendered cards for the edit page's rail — sales, storefront.
+   * A slot rather than props, so the form never learns how to read a sales
+   * number and the page keeps its data on the server.
+   */
+  rail?: React.ReactNode;
 }) {
   const a = useAdminT();
   const [state, action, pending] = useActionState(saveProduct, { ok: false });
@@ -254,6 +261,73 @@ export function ProductForm({
       node
     );
 
+  /*
+   * Two field groups that live in different places per mode: inside the
+   * flow's own steps when creating, and on the record's right rail when
+   * editing — Shopify's grammar, where status and organization sit beside
+   * the thing rather than after the scroll. One JSX value each, rendered
+   * exactly once, so every named field exists once in the DOM whichever
+   * home it takes.
+   */
+  const visibilityToggles = (
+    <>
+      <Toggle
+        name="inStock"
+        label={a.productForm.inStock}
+        description={a.productForm.inStockBody}
+        defaultChecked={product?.inStock ?? true}
+      />
+      <Toggle
+        name="isFeatured"
+        label={a.productForm.featured}
+        description={a.productForm.featuredBody}
+        defaultChecked={product?.isFeatured ?? false}
+      />
+      <Toggle
+        name="isPublished"
+        label={a.productForm.published}
+        description={a.productForm.publishedBody}
+        defaultChecked={product?.isPublished ?? true}
+      />
+    </>
+  );
+
+  const organizationFields = (
+    <>
+      <Field
+        label={a.productForm.category}
+        htmlFor="categoryId"
+        hint={a.common.optional}
+      >
+        <Select
+          id="categoryId"
+          name="categoryId"
+          defaultValue={product?.categoryId ?? ""}
+        >
+          <option value="">{a.productForm.noCategory}</option>
+          {categories.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </Select>
+      </Field>
+
+      <Field
+        label={a.productForm.tags}
+        htmlFor="tags"
+        hint={a.productForm.tagsHint}
+      >
+        <Input
+          id="tags"
+          name="tags"
+          defaultValue={product?.tags.join(", ") ?? ""}
+          placeholder={a.productForm.tagsPlaceholder}
+        />
+      </Field>
+    </>
+  );
+
   /* One jump per validation burst — see the header comment. */
   const invalidJumped = useRef(false);
 
@@ -318,6 +392,21 @@ export function ProductForm({
       {flow ? (
         <Stepper steps={stepLabels} current={step} className="px-1 pb-1" />
       ) : null}
+
+      {/*
+        Creation keeps its single guided column; editing reads as a record —
+        the thing on the left, the facts about it on the right. `contents`
+        keeps the flow's DOM flat so the form's own space-y still reaches the
+        visible step.
+      */}
+      <div
+        className={
+          flow
+            ? "contents"
+            : "grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]"
+        }
+      >
+        <div className={flow ? "contents" : "min-w-0 space-y-5"}>
 
       {/* ---- What is being sold ------------------------------------------ */}
 
@@ -469,39 +558,10 @@ export function ProductForm({
           </div>
         ))}
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field
-            label={a.productForm.category}
-            htmlFor="categoryId"
-            hint={a.common.optional}
-          >
-            <Select
-              id="categoryId"
-              name="categoryId"
-              defaultValue={product?.categoryId ?? ""}
-            >
-              <option value="">{a.productForm.noCategory}</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </Select>
-          </Field>
-
-          <Field
-            label={a.productForm.tags}
-            htmlFor="tags"
-            hint={a.productForm.tagsHint}
-          >
-            <Input
-              id="tags"
-              name="tags"
-              defaultValue={product?.tags.join(", ") ?? ""}
-              placeholder={a.productForm.tagsPlaceholder}
-            />
-          </Field>
-        </div>
+        {/* Editing re-homes these to the rail's Organization card. */}
+        {flow ? (
+          <div className="grid gap-4 sm:grid-cols-2">{organizationFields}</div>
+        ) : null}
       </Card>
 
       {/*
@@ -619,32 +679,30 @@ export function ProductForm({
 
       {/* ---- Visibility --------------------------------------------------- */}
 
-      {wrapStep(
-        4,
-        <>
-      <Card className="space-y-3 p-5">
-        <Toggle
-          name="inStock"
-          label={a.productForm.inStock}
-          description={a.productForm.inStockBody}
-          defaultChecked={product?.inStock ?? true}
-        />
-        <Toggle
-          name="isFeatured"
-          label={a.productForm.featured}
-          description={a.productForm.featuredBody}
-          defaultChecked={product?.isFeatured ?? false}
-        />
-        <Toggle
-          name="isPublished"
-          label={a.productForm.published}
-          description={a.productForm.publishedBody}
-          defaultChecked={product?.isPublished ?? true}
-        />
-      </Card>
+      {flow
+        ? wrapStep(4, <Card className="space-y-3 p-5">{visibilityToggles}</Card>)
+        : null}
 
-      </>,
-      )}
+        </div>
+
+        {flow ? null : (
+          <aside className="min-w-0 space-y-4">
+            <Card className="space-y-3 p-5">
+              <h2 className="text-sm font-semibold text-ink-900">
+                {a.columns.status}
+              </h2>
+              {visibilityToggles}
+            </Card>
+            {rail}
+            <Card className="space-y-4 p-5">
+              <h2 className="text-sm font-semibold text-ink-900">
+                {a.products.organization}
+              </h2>
+              {organizationFields}
+            </Card>
+          </aside>
+        )}
+      </div>
 
       {flow ? (
         /*
