@@ -26,6 +26,7 @@ import {
   Tags,
   Truck,
   Users,
+  Workflow,
   X,
 } from "lucide-react";
 import { signOutSeller } from "@/lib/actions/auth";
@@ -123,6 +124,7 @@ const SECTIONS: NavSection[] = [
     labelFrom: "groups",
     children: [
       { href: "/admin/broadcasts", key: "broadcasts" },
+      { href: "/admin/flows", key: "flows" },
       { href: "/admin/coupons", key: "coupons" },
       { href: "/admin/affiliates", key: "affiliates" },
     ],
@@ -143,6 +145,7 @@ const CHILD_ICONS: Record<string, typeof Package> = {
   members: BadgeCheck,
   testimonials: Quote,
   broadcasts: Mail,
+  flows: Workflow,
   coupons: Tags,
   affiliates: Gift,
 };

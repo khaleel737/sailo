@@ -59,7 +59,7 @@ describe("requireShop, audited", () => {
     expect(source).not.toMatch(/requireShop\(\s*permission\?/);
   });
 
-  it("is called 153 times, and every one names a real permission", () => {
+  it("is called 157 times, and every one names a real permission", () => {
     const sites = callSites();
 
     /*
@@ -87,10 +87,16 @@ describe("requireShop, audited", () => {
      * then narrows each result group by `roleCan`, so the palette cannot show
      * a teammate rows the sidebar would refuse them.
      *
+     * 153 → 157 is spec 30's builder, the automations desk at `/admin/flows`:
+     * three pages (the list, the new-flow form, the editor) reading
+     * `marketing:read`, plus the one gate in `actions/flows.ts` claiming
+     * `marketing:send` — the same permission broadcasts sends under, because
+     * a flow is another way to put mail in somebody's inbox.
+     *
      * Update this deliberately when a screen is added or removed. A number that
      * moves on its own is exactly the thing this exists to notice.
      */
-    expect(sites).toHaveLength(153);
+    expect(sites).toHaveLength(157);
 
     const unknown = sites.filter(
       (s) => !(SHOP_PERMISSIONS as readonly string[]).includes(s.permission),
@@ -107,9 +113,9 @@ describe("requireShop, audited", () => {
         s.file.startsWith("src/app/") &&
         (s.file.endsWith("page.tsx") || s.file.endsWith("layout.tsx")),
     );
-    expect(inActions).toHaveLength(102);
+    expect(inActions).toHaveLength(103);
     expect(inRoutes).toHaveLength(7);
-    expect(inPages).toHaveLength(44);
+    expect(inPages).toHaveLength(47);
     expect(inActions.length + inRoutes.length + inPages.length).toBe(sites.length);
 
     /*

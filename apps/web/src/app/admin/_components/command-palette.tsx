@@ -24,6 +24,7 @@ import {
   Tags,
   Truck,
   Users,
+  Workflow,
 } from "lucide-react";
 import { createPortal } from "react-dom";
 import { Spinner } from "@sailo/design-system/web";
@@ -79,6 +80,8 @@ const ICONS: Record<string, typeof Package> = {
   "/admin/testimonials": Quote,
   "/admin/broadcasts": Mail,
   "/admin/broadcasts/new": Mail,
+  "/admin/flows": Workflow,
+  "/admin/flows/new": Workflow,
   "/admin/coupons": Tags,
   "/admin/affiliates": Gift,
   "/admin/payments": CreditCard,
@@ -154,6 +157,7 @@ export function CommandPalette({ entries }: { entries: PaletteEntry[] }) {
       p: "/admin/products",
       c: "/admin/clients",
       b: "/admin/broadcasts",
+      f: "/admin/flows",
       d: "/admin/coupons",
       s: "/admin/settings",
     };

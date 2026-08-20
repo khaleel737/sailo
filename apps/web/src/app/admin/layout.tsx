@@ -51,6 +51,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
     { label: t.nav.members, href: "/admin/members", group: "pages" },
     { label: t.nav.testimonials, href: "/admin/testimonials", group: "pages" },
     { label: t.nav.broadcasts, href: "/admin/broadcasts", group: "pages" },
+    { label: t.nav.flows, href: "/admin/flows", group: "pages" },
     { label: t.nav.coupons, href: "/admin/coupons", group: "pages" },
     { label: t.nav.affiliates, href: "/admin/affiliates", group: "pages" },
     { label: t.nav.payments, href: "/admin/payments", group: "pages" },
@@ -78,6 +79,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
 
     { label: a.products.add, href: "/admin/products/new", group: "actions" },
     { label: a.broadcasts.compose, href: "/admin/broadcasts/new", group: "actions" },
+    { label: a.flows.create, href: "/admin/flows/new", group: "actions" },
     { label: t.nav.viewShop, href: `/${shop.handle}`, group: "actions", external: true },
     { label: a.shell.docs, href: docs, group: "actions", external: true },
   ];
