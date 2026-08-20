@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq, gte, isNotNull, isNull, lt, ne, notInArray } from "drizzle-orm";
+import { and, eq, gte, isNotNull, lt, ne, notInArray } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { bookingClaims, orderItems, orders, type Shop } from "@sailo/db/schema";
 import { hoursOf } from "./hours";
@@ -55,18 +55,30 @@ export async function busyFor(opts: {
   const lineSubject = opts.staffId
     ? eq(orderItems.staffId, opts.staffId)
     : eq(orderItems.productId, opts.productId);
+  /*
+   * Without a staff id this reads **every** claim on the product, assigned or
+   * not, and that is the whole of a bug worth writing down.
+   *
+   * It used to add `staff_id is null`, on the reasoning that a shop which has
+   * just added staff holds old unassigned claims and new assigned ones, and
+   * treating the lot as "anybody's" would show every stylist as busy whenever
+   * any one of them was. True — but that is a *per-person* question, and a
+   * per-person question always names the person. The only caller that omits
+   * the id is the product-keyed calendar, which `offeredByStaff` reaches only
+   * when the shop has no active roster at all.
+   *
+   * With the filter, deactivating a roster while somebody is mid-checkout hid
+   * their claim: `booking_claims_no_overlap` keys on
+   * `coalesce(staff_id, product_id)`, so the second buyer's unassigned claim
+   * had a different key, did not collide, and both reached payment for one
+   * slot. `order_items` has no exclusion constraint to catch it afterwards.
+   *
+   * A shop that never had staff is unaffected — every claim it has is already
+   * unassigned, so the wider read returns the same rows.
+   */
   const claimSubject = opts.staffId
     ? eq(bookingClaims.staffId, opts.staffId)
-    : and(
-        eq(bookingClaims.productId, opts.productId),
-        /*
-         * And only the unassigned ones. A shop that has just added staff has
-         * old claims with a null `staff_id` and new ones with a person on
-         * them; reading the product's whole history as "anybody's" would show
-         * every stylist as busy whenever any of them was.
-         */
-        isNull(bookingClaims.staffId),
-      );
+    : eq(bookingClaims.productId, opts.productId);
 
   const rows = await getDb()
     .select({
