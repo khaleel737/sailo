@@ -1,0 +1,36 @@
+packages/core/src/orders/order-lines.test.ts
+  s_a7bbf59e767e8f::t_471e3d11437d22 96
+  s_a7bbf59e767e8f::t_30c43487686d23 2,87-95,97-112
+  s_a7bbf59e767e8f::t_af9216c44315d3 113
+apps/web/src/app/admin/orders/_components/order-actions.tsx
+  s_a7bbf59e767e8f::t_b75e9c27dab614 61
+  s_a7bbf59e767e8f::t_029ed26b9788e8 26-38,49
+apps/web/src/lib/actions/bulk-orders.ts
+  s_a7bbf59e767e8f::t_d0e04675ca57cc 20
+  s_a7bbf59e767e8f::t_c5e3980e9d360b 137-140,142
+apps/web/src/app/admin/orders/[id]/page.tsx
+  s_a7bbf59e767e8f::t_d0925176305b77 24
+  s_a7bbf59e767e8f::t_8eb907f0d29b3e 538
+apps/web/src/app/admin/_components/order-row.tsx
+  s_a7bbf59e767e8f::t_de4876516debed 23
+  s_a7bbf59e767e8f::t_0ff652c71836f1 379-384
+packages/core/src/orders/order-lines.ts
+  s_a7bbf59e767e8f::t_c2d0ce64b3f001 140-158
+  s_a7bbf59e767e8f::t_c310568ddc52a1 139
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "c408d9b6853f9daf01ff5d0d1105f7c27ca1c78b",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
