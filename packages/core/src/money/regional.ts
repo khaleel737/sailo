@@ -24,10 +24,13 @@ import { isCurrencyCode } from "./codes";
 /**
  * The presentment currencies Sailo offers, and no others.
  *
- * The US, the EU and the UK — the market `RESHAPE-2026-08.md` names. Sailo
- * takes seventy-one currencies as a *shop* currency; offering all of them here
- * would be seventy-one prices per product for a seller to keep in step, and
- * this release is written for nine of them.
+ * The US, the EU and the UK — the market `RESHAPE-2026-08.md` names — plus
+ * the two non-euro European neighbours the original nine forgot by their own
+ * logic (a Swiss or Norwegian buyer doing euro arithmetic is the same buyer
+ * as a Swedish one), and the four biggest cross-border markets beyond them.
+ * Sailo takes seventy-one currencies as a *shop* currency; offering all of
+ * them here would be seventy-one prices per product for a seller to keep in
+ * step. Every entry is opt-in per shop, so length costs the unticked nothing.
  *
  * Order is the order the switcher shows.
  */
@@ -35,12 +38,18 @@ export const REGIONAL_CURRENCIES = [
   "USD",
   "EUR",
   "GBP",
+  "CHF",
+  "NOK",
   "SEK",
   "DKK",
   "PLN",
   "CZK",
   "HUF",
   "RON",
+  "CAD",
+  "AUD",
+  "JPY",
+  "AED",
 ] as const;
 
 export type RegionalCurrency = (typeof REGIONAL_CURRENCIES)[number];
@@ -73,6 +82,15 @@ const BY_COUNTRY: Record<string, RegionalCurrency> = {
   CZ: "CZK",
   HU: "HUF",
   RO: "RON",
+  // The non-euro neighbours, and the majors beyond Europe. Liechtenstein
+  // banks in Swiss francs; the franc covers both.
+  CH: "CHF",
+  LI: "CHF",
+  NO: "NOK",
+  CA: "CAD",
+  AU: "AUD",
+  JP: "JPY",
+  AE: "AED",
 
   // The euro area, alphabetically. Twenty members as of 2026.
   AD: "EUR",

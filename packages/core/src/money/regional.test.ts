@@ -52,7 +52,10 @@ describe("currencyForCountry", () => {
   });
 
   it("only ever names a currency it is allowed to offer", () => {
-    for (const code of ["DE", "GB", "US", "SE", "DK", "PL", "CZ", "HU", "RO"]) {
+    for (const code of [
+      "DE", "GB", "US", "SE", "DK", "PL", "CZ", "HU", "RO",
+      "CH", "LI", "NO", "CA", "AU", "JP", "AE",
+    ]) {
       const found = currencyForCountry(code);
       expect(REGIONAL_CURRENCIES).toContain(found);
     }
@@ -265,7 +268,7 @@ describe("buildCurrencyPrices", () => {
   });
 
   it("refuses a currency outside the offered set", () => {
-    expect(buildCurrencyPrices([{ currency: "JPY", priceCents: 1000 }])).toEqual({});
+    expect(buildCurrencyPrices([{ currency: "BRL", priceCents: 1000 }])).toEqual({});
     expect(buildCurrencyPrices([{ currency: "ZZZ", priceCents: 1000 }])).toEqual({});
   });
 
@@ -287,7 +290,7 @@ describe("normalizeOfferedCurrencies", () => {
   });
 
   it("drops anything that is not an offerable currency", () => {
-    expect(normalizeOfferedCurrencies(["JPY", "nonsense", 7, null], "USD")).toEqual([]);
+    expect(normalizeOfferedCurrencies(["BRL", "nonsense", 7, null], "USD")).toEqual([]);
     expect(normalizeOfferedCurrencies("EUR", "USD")).toEqual([]);
   });
 });
