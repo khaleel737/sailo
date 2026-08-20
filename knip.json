@@ -25,7 +25,8 @@
         "e2e/**/*.ts"
       ],
       "ignoreDependencies": [
-        "@vitejs/plugin-react"
+        "@vitejs/plugin-react",
+        "dotenv"
       ],
       "drizzle": {
         "config": [

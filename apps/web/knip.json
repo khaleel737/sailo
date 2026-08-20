@@ -9,7 +9,7 @@
   "project": ["src/**/*.{ts,tsx}", "scripts/**/*.ts", "e2e/**/*.ts"],
   "ignoreExportsUsedInFile": true,
   "ignore": ["src/i18n/**"],
-  "ignoreDependencies": ["@vitejs/plugin-react", "tailwindcss"],
+  "ignoreDependencies": ["@vitejs/plugin-react", "tailwindcss", "dotenv"],
   "drizzle": {
     "config": ["drizzle.config.ts"]
   }
