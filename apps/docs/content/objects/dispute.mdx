@@ -9,9 +9,9 @@ import { Callout } from "nextra/components";
 
 A chargeback. Carried by `dispute.opened` and `dispute.closed`.
 
-**There is no dispute endpoint.** Like a [subscription](/objects/subscription),
-this object reaches you through a webhook or not at all — which is why its shape
-is written out here.
+Also what [`GET /disputes`](/api/disputes) answers with. The event tells you a
+case opened; the endpoint is how you re-read it later to see whether it was won,
+and how you find the ones whose deadline is closest.
 
 <DisputeFields />
 

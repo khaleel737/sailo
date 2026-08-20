@@ -2,6 +2,8 @@ import { docsUrl } from "@sailo/core/origin";
 import { PRODUCT_KIND_VALUES } from "@sailo/core/variants";
 import { ORDER_STATUSES } from "@sailo/core/order-status";
 import { PAYMENT_STATUSES } from "@sailo/core/payment-status";
+import { SUBSCRIPTION_STATUSES } from "@sailo/core/subscription-status";
+import { DISPUTE_CASE_TYPES, DISPUTE_STATUSES } from "@sailo/core/disputes";
 import { ENDPOINTS, type Endpoint, type ResourceName } from "./endpoints";
 import { API_ERROR_CODES, API_VERSION, MAX_LIMIT } from "./respond";
 
@@ -301,6 +303,209 @@ const CONTACT = {
   },
 } as const;
 
+const SUBSCRIPTION = {
+  type: "object",
+  description:
+    "A membership. Identical to the `data` of every `subscription.*` webhook, so a field map built against one works against the other.",
+  required: [
+    "id", "object", "status", "productId", "clientId", "price", "currency",
+    "interval", "intervalCount", "billingMode", "paymentMethod",
+    "currentPeriodEnd", "cancelAtPeriodEnd", "canceledAt", "trialEndsAt",
+    "startedAt", "createdAt", "updatedAt",
+  ],
+  properties: {
+    id: { type: "string", format: "uuid" },
+    object: { type: "string", const: "subscription" },
+    status: { type: "string", enum: [...SUBSCRIPTION_STATUSES] },
+    productId: nullable("string", {
+      format: "uuid",
+      description: "Null once the product has been deleted; the membership survives it.",
+    }),
+    clientId: nullable("string", { format: "uuid" }),
+    price: { $ref: "#/components/schemas/Money" },
+    currency: { type: "string", description: "ISO 4217." },
+    interval: { type: "string", description: "`day`, `week`, `month` or `year`." },
+    intervalCount: {
+      type: "integer",
+      description: "How many intervals per charge — the `3` in every 3 months.",
+    },
+    billingMode: {
+      type: "string",
+      description:
+        "`stripe` or `manual`. A manual membership renews by an order a human settles; nothing will ever arrive from Stripe about it.",
+    },
+    paymentMethod: nullable("string", {
+      description: "The rail a manual member pays on. Null on a card subscription.",
+    }),
+    currentPeriodEnd: nullable("string", {
+      format: "date-time",
+      description: "Paid up to here. The field to revoke access on.",
+    }),
+    cancelAtPeriodEnd: {
+      type: "boolean",
+      description:
+        "They asked to stop but have paid through `currentPeriodEnd` and keep access until it.",
+    },
+    canceledAt: nullable("string", { format: "date-time" }),
+    trialEndsAt: nullable("string", { format: "date-time" }),
+    startedAt: nullable("string", { format: "date-time" }),
+    createdAt: nullable("string", { format: "date-time" }),
+    updatedAt: nullable("string", { format: "date-time" }),
+  },
+} as const;
+
+const DISPUTE = {
+  type: "object",
+  description:
+    "A chargeback against one of this shop's sales. Identical to the `data` of `dispute.opened` and `dispute.closed`. Never a platform dispute — a seller charging back their own Sailo subscription is not something this API describes.",
+  required: [
+    "id", "object", "orderId", "status", "caseType", "reason",
+    "networkReasonCode", "network", "amount", "fee", "deducted", "currency",
+    "dueBy", "evidenceSubmittedAt", "submissionCount", "completenessBp",
+    "fundsWithdrawnAt", "fundsReinstatedAt", "openedAt", "createdAt", "updatedAt",
+  ],
+  properties: {
+    id: { type: "string", format: "uuid" },
+    object: { type: "string", const: "dispute" },
+    orderId: nullable("string", { format: "uuid" }),
+    status: { type: "string", enum: [...DISPUTE_STATUSES] },
+    caseType: nullable("string", {
+      enum: [...DISPUTE_CASE_TYPES, null],
+      description:
+        "An `inquiry` is the issuer asking a question and has cost nothing yet; a `chargeback` has already taken the money.",
+    }),
+    reason: nullable("string", {
+      description: "Stripe's reason string: `fraudulent`, `product_not_received`…",
+    }),
+    networkReasonCode: nullable("string", {
+      description: "The card network's own code — `10.4`, `13.1`.",
+    }),
+    network: nullable("string"),
+    amount: { $ref: "#/components/schemas/Money" },
+    fee: {
+      allOf: [{ $ref: "#/components/schemas/Money" }],
+      description: "Stripe's dispute fee, which is why a £42 chargeback costs £57.",
+    },
+    deducted: {
+      allOf: [{ $ref: "#/components/schemas/Money" }],
+      description: "Amount plus fee — what actually left the seller's balance.",
+    },
+    currency: { type: "string", description: "ISO 4217." },
+    dueBy: nullable("string", {
+      format: "date-time",
+      description: "The response deadline. Null on a case that no longer needs one.",
+    }),
+    evidenceSubmittedAt: nullable("string", { format: "date-time" }),
+    submissionCount: { type: "integer" },
+    completenessBp: {
+      type: "integer",
+      description:
+        "How complete the submission was over its required fields, in basis points. The evidence itself is never returned.",
+    },
+    fundsWithdrawnAt: nullable("string", { format: "date-time" }),
+    fundsReinstatedAt: nullable("string", { format: "date-time" }),
+    openedAt: nullable("string", { format: "date-time" }),
+    createdAt: nullable("string", { format: "date-time" }),
+    updatedAt: nullable("string", { format: "date-time" }),
+  },
+} as const;
+
+const BOOKING = {
+  type: "object",
+  description:
+    "One appointment. There is no status: a slot is given back by removing the claim, so a booking that is still here is one that still stands.",
+  required: [
+    "id", "object", "orderId", "productId", "productTitle", "staffId",
+    "staffName", "startsAt", "endsAt", "seats", "isExclusive", "createdAt",
+  ],
+  properties: {
+    id: { type: "string", format: "uuid" },
+    object: { type: "string", const: "booking" },
+    orderId: { type: "string", format: "uuid" },
+    productId: { type: "string", format: "uuid" },
+    productTitle: nullable("string", {
+      description: "The service as it is titled now, not as it was when booked.",
+    }),
+    staffId: nullable("string", {
+      format: "uuid",
+      description: "Null on a shop that books the shop rather than a named person.",
+    }),
+    staffName: nullable("string"),
+    startsAt: nullable("string", { format: "date-time" }),
+    endsAt: nullable("string", { format: "date-time" }),
+    seats: {
+      type: "integer",
+      description: "How many places this claim takes. Always 1 on an exclusive booking.",
+    },
+    isExclusive: {
+      type: "boolean",
+      description:
+        "True when the claim holds the whole slot. False means a seat in a class, where several bookings share one window without conflicting.",
+    },
+    createdAt: nullable("string", { format: "date-time" }),
+  },
+} as const;
+
+const STAFF = {
+  type: "object",
+  description:
+    "Somebody a buyer can book. Not a login and not a team member — a name on a roster, with no account and no access to anything.",
+  required: [
+    "id", "object", "name", "email", "avatarUrl", "timeZone",
+    "isActive", "position", "createdAt", "updatedAt",
+  ],
+  properties: {
+    id: { type: "string", format: "uuid" },
+    object: { type: "string", const: "staff" },
+    name: { type: "string" },
+    email: nullable("string"),
+    avatarUrl: nullable("string"),
+    timeZone: nullable("string", {
+      description: "IANA name. Null means the shop's own zone, not UTC.",
+    }),
+    isActive: {
+      type: "boolean",
+      description:
+        "Whether they can be booked now. An inactive person can still be the `staffId` on an appointment already in the diary.",
+    },
+    position: { type: "integer", description: "The seller's own ordering of the roster." },
+    createdAt: nullable("string", { format: "date-time" }),
+    updatedAt: nullable("string", { format: "date-time" }),
+  },
+} as const;
+
+const LIST = {
+  type: "object",
+  description:
+    "A named list a contact can be on. The two counts answer different questions and must not be added together.",
+  required: [
+    "id", "object", "name", "description", "doubleOptIn",
+    "subscribedCount", "pendingCount", "createdAt", "updatedAt",
+  ],
+  properties: {
+    id: { type: "string", format: "uuid" },
+    object: { type: "string", const: "list" },
+    name: { type: "string" },
+    description: nullable("string"),
+    doubleOptIn: {
+      type: "boolean",
+      description:
+        "Whether joining needs a click in the member's own inbox. On a list that asks for it, a join lands as `pending` and no API call can produce a subscriber.",
+    },
+    subscribedCount: {
+      type: "integer",
+      description: "How many people a send would actually reach.",
+    },
+    pendingCount: {
+      type: "integer",
+      description:
+        "Added but not yet confirmed. On the list, and **not** recipients — counting them as audience overstates every list by exactly the people who never clicked.",
+    },
+    createdAt: nullable("string", { format: "date-time" }),
+    updatedAt: nullable("string", { format: "date-time" }),
+  },
+} as const;
+
 const ERROR = {
   type: "object",
   required: ["error"],
@@ -332,6 +537,11 @@ const SCHEMAS: Record<string, unknown> = {
   Product: PRODUCT,
   ProductVariant: PRODUCT_VARIANT,
   Contact: CONTACT,
+  Subscription: SUBSCRIPTION,
+  Dispute: DISPUTE,
+  Booking: BOOKING,
+  Staff: STAFF,
+  List: LIST,
   Error: ERROR,
 };
 
@@ -520,6 +730,11 @@ export function openApiDocument(baseUrl: string): Record<string, unknown> {
       { name: "orders", description: "Sales, and what was in them." },
       { name: "products", description: "The catalogue." },
       { name: "contacts", description: "The shop's list, and its consent state." },
+      { name: "lists", description: "Named lists, and who is actually on them." },
+      { name: "subscriptions", description: "Memberships, and whether they still run." },
+      { name: "disputes", description: "Chargebacks against this shop's sales." },
+      { name: "bookings", description: "The diary — appointments a shop owes." },
+      { name: "staff", description: "The bookable roster. Not logins." },
     ],
     paths,
     components: {

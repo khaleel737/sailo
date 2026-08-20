@@ -1,0 +1,70 @@
+---
+title: Staff object
+description: A bookable name on a roster. Not a login, not an account, and not the seller's colleagues — nothing here grants access to anything.
+---
+
+import { Callout } from "nextra/components";
+
+# Staff
+
+Somebody a buyer can pick when booking. What `GET /staff` and `GET /staff/{id}`
+answer with.
+
+<Callout type="error">
+**This is not an identity.** A staff resource is a name on a roster with no
+account, no password and no access to anything. The people who can actually sign
+in to a shop are organisation members, and this API does not describe them — not
+under a different name, not anywhere.
+</Callout>
+
+The `object` field says `"staff"` and never `"user"`, for exactly that reason.
+
+<StaffFields />
+
+## Inactive is not deleted
+
+`isActive: false` means stood down: they cannot be booked now. It does not
+detach them from anything, and an inactive person can still be the `staffId` on
+an appointment next Tuesday.
+
+That is why removing somebody from a roster deactivates them — the appointments
+already in the diary have to keep naming somebody.
+
+## `timeZone` null means the shop's zone
+
+Not UTC. This is the zone this person's
+[appointments](/objects/booking#reading-the-times) should be rendered in.
+Treating a null as UTC shifts every booking for any shop that is not in London.
+
+## What is not on this object
+
+**The calendar feed URL.** A roster entry can carry a link to that person's
+external calendar, which Sailo reads to know when they are busy elsewhere. It is
+a secret link — anybody holding it can read every appointment in that person's
+life, work or not. It is a credential wearing a URL's clothes, and the API
+returns no credentials.
+
+**Working hours.** An internal shape that is ours to change, and one that would
+not answer the question anybody wants it for: availability is hours *minus*
+closures, lead time and the external busy feed, and a consumer that
+reconstructed it from the raw windows would confidently offer slots that are not
+free.
+
+## Example
+
+```json
+{
+  "data": {
+    "id": "6d4b2e19-7a30-4f85-b1c6-2e8d5a3f0b71",
+    "object": "staff",
+    "name": "Ada",
+    "email": "ada@acme.example",
+    "avatarUrl": null,
+    "timeZone": "Europe/London",
+    "isActive": true,
+    "position": 0,
+    "createdAt": "2026-06-01T10:00:00.000Z",
+    "updatedAt": "2026-08-01T16:20:31.442Z"
+  }
+}
+```

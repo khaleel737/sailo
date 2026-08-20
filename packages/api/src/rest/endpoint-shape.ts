@@ -34,7 +34,16 @@ export type BodyField = {
 export type EndpointError = { code: ApiErrorCode; when: string };
 
 /** The `components/schemas` name a response carries. */
-export type ResourceName = "Shop" | "Order" | "Product" | "Contact";
+export type ResourceName =
+  | "Shop"
+  | "Order"
+  | "Product"
+  | "Contact"
+  | "Subscription"
+  | "Dispute"
+  | "Booking"
+  | "Staff"
+  | "List";
 
 export type Endpoint = {
   /** Stable anchor and OpenAPI `operationId`. Never renamed — docs deep-link to it. */

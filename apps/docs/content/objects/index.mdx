@@ -24,13 +24,19 @@ These pages are that vocabulary, written down once.
 | [Order](/objects/order) | `GET /orders`, `GET /orders/{id}` | `order.*`, `booking.confirmed` |
 | [Product](/objects/product) | `GET /products`, `GET /products/{id}` | — |
 | [Contact](/objects/contact) | `GET /contacts`, `GET /contacts/{id}` | `contact.created` |
-| [Subscription](/objects/subscription) | *no endpoint* | `subscription.*` |
-| [Dispute](/objects/dispute) | *no endpoint* | `dispute.*` |
+| [List](/objects/list) | `GET /lists`, `GET /lists/{id}` | — |
+| [Subscription](/objects/subscription) | `GET /subscriptions`, `GET /subscriptions/{id}` | `subscription.*` |
+| [Dispute](/objects/dispute) | `GET /disputes`, `GET /disputes/{id}` | `dispute.*` |
+| [Booking](/objects/booking) | `GET /bookings`, `GET /bookings/{id}` | — |
+| [Staff](/objects/staff) | `GET /staff`, `GET /staff/{id}` | — |
 
-The last two are the reason this section exists as a section. Nine of the
-<EventCount /> webhook events carry an object that appears nowhere in the REST
-API — there is no `GET /api/v1/subscriptions/{id}` and no dispute endpoint — so
-unlike an order there is nowhere else to go and read the shape off.
+**Every object here is now readable.** That was not true until subscriptions and
+disputes got endpoints: nine of the <EventCount /> webhook events carried a shape
+that appeared nowhere in the REST API, so a consumer holding a
+`subscription.created` had the id of something it could not go and look up. This
+section was originally written to be the only place those shapes existed. It is
+now the place they are described once for both transports, which is a better
+reason for it.
 
 ## `object`
 

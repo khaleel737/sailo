@@ -1,0 +1,82 @@
+---
+title: Staff
+description: The bookable roster — the people a buyer picks when booking. Not logins, not accounts, and not the seller's colleagues.
+---
+
+import { Callout } from "nextra/components";
+
+# Staff
+
+The roster: the people a buyer can choose when they book a service.
+
+## This is not an identity API
+
+<Callout type="error">
+A staff resource is **a name on a roster**. It has no account, no password and
+no access to anything. Nobody here can sign in to a shop, and nothing about this
+object grants a permission.
+</Callout>
+
+The people who can actually sign in to a seller's shop are organisation members
+with roles, and this API does not describe them at all — not under a different
+name, not anywhere. If you are building anything that reads a list of people and
+concludes something about who may do what, this is not that list.
+
+The `object` field says `"staff"` and never `"user"`, for exactly this reason.
+
+## Inactive is not deleted
+
+`isActive: false` means somebody has been stood down — they cannot be booked
+now. It does not mean they are gone, and it does not detach them from anything.
+
+Taking a person off a roster deactivates them precisely so that the appointments
+already in the diary against them keep naming somebody. An inactive staff member
+can still be the `staffId` on a booking next Tuesday.
+
+Omitting the `active` filter returns both, which is usually what you want when
+resolving names off bookings:
+
+<CurlExample path="/staff" />
+
+Pass `?active=true` when you are rendering a picker.
+
+## `timeZone` null means the shop's zone
+
+Not UTC. A staff member with no zone of their own works in the shop's, and that
+is the zone their appointments should be rendered in. Treating null as UTC
+shifts every booking for any shop that is not in London.
+
+## `position` is the seller's ordering
+
+It is where they put this person in their own roster — the order the booking
+page shows them in. `/staff` does not sort by it, because every list in this API
+is ordered newest-first for cursor consistency. Sort by it yourself if you are
+reproducing the seller's own view.
+
+## What is deliberately absent
+
+**The calendar feed URL.** Each roster entry can carry a link to that person's
+external calendar — Google, iCloud — which Sailo reads to know when they are
+busy elsewhere. It is a secret link: anybody holding it can read every
+appointment in that person's life, work or not. **It is a credential wearing a
+URL's clothes**, and this API returns no credentials.
+
+**Working hours.** The weekly-hours blob is an internal shape that is ours to
+change, and reconstructing availability from it would mean also reproducing
+shop closures, lead times and the external busy feed — and getting one of them
+wrong means offering a slot that is not really free.
+
+**Writes.** The roster is managed in the seller's settings. An integration
+adding bookable people to a shop is not a thing anybody has asked for, and an
+integration *removing* one would silently orphan a diary.
+
+## The object
+
+The full shape is on the [staff object reference](/objects/staff).
+
+<Endpoints match="/staff" />
+
+## Getting a key
+
+The API is on the <ApiPlanName /> plan. Reading the roster needs only a read
+key. Create one under <KeyLink />.

@@ -10,9 +10,9 @@ import { Callout } from "nextra/components";
 A membership. Carried by all <SubscriptionEventCount /> `subscription.*` events,
 identically.
 
-**There is no `GET /api/v1/subscriptions/{id}`.** This object reaches you
-through a webhook or not at all, which is why its shape is written out here
-rather than left to a REST reference to describe.
+Also what [`GET /subscriptions`](/api/subscriptions) answers with — the same
+object, so an integration that stored the id off `subscription.created` can go
+and resolve it, which for a long time it could not.
 
 One shape for all seven events rather than a payload per event: a consumer that
 wired `subscription.created` and later adds `subscription.cancelled` should not

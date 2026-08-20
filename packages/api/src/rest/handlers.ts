@@ -1,26 +1,41 @@
 import "server-only";
-import { and, asc, desc, eq, inArray, isNotNull, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, isNotNull, lt, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import {
+  bookingClaims,
   clients,
+  contactListMembers,
+  contactLists,
+  disputes,
   orderItems,
   orders,
   productVariants,
   products,
+  staffResources,
+  subscriptions,
   type Order,
 } from "@sailo/db/schema";
 import { MAX_TAGS, normalizeTag, normalizeTags } from "@sailo/core/tags";
 import { normalizePhone } from "@sailo/core/phone";
+import { isUuid } from "@sailo/core/uuid";
 import { MAX_EMAIL_LENGTH, confirmUrl, normalizeEmail, normalizeName, subscribeToken } from "@sailo/marketing/broadcasts/server";
+import { MAX_LISTS_PER_SHOP } from "@sailo/marketing/contacts";
+import { joinList, leaveList, listsForClient } from "@sailo/marketing/contacts/server";
 import { sendSubscribeConfirmation } from "@sailo/email/lifecycle";
 import { getDictionary, interpolate } from "@sailo/i18n";
 import { rateLimit } from "@sailo/rate-limit";
 import type { ApiCaller } from "./auth";
 import {
+  bookingResource,
+  contactListResource,
   contactResource,
+  disputeResource,
+  iso,
   orderResource,
   productResource,
   shopResource,
+  staffResource,
+  subscriptionResource,
 } from "@sailo/core/resources";
 import {
   decodeCursor,
@@ -113,6 +128,31 @@ function readCursor(raw: string | null): Cursor | null | { failure: ApiFailure }
   return cursor;
 }
 
+/**
+ * An ISO 8601 instant off the query string, or the refusal.
+ *
+ * `new Date(x)` alone is not a parse, it is a guess: it answers `Invalid Date`
+ * for nonsense but happily accepts `"2026"` and a dozen other shapes with
+ * whatever the runtime feels like meaning by them. The `getTime` check is what
+ * turns the guess back into a yes or no, and a caller who sent something we
+ * cannot read is told so rather than silently given an unfiltered page — which
+ * is the failure mode that matters here, because an unfiltered page of bookings
+ * looks exactly like a correct answer to a window that happened to be empty.
+ */
+function readInstant(raw: string | null | undefined): Date | null | { failure: ApiFailure } {
+  if (!raw) return null;
+  const at = new Date(raw);
+  if (Number.isNaN(at.getTime())) {
+    return {
+      failure: {
+        code: "invalid_request",
+        message: "Send an ISO 8601 timestamp, e.g. `2026-08-20T09:00:00Z`.",
+      },
+    };
+  }
+  return at;
+}
+
 /* -------------------------------------------------------------------------- */
 /*  Shop                                                                       */
 /* -------------------------------------------------------------------------- */
@@ -199,10 +239,22 @@ export async function listOrders(
   };
 }
 
+/*
+ * Every `{id}` read starts by checking the shape of the id.
+ *
+ * Not defensive tidiness — the columns are `uuid`, and Postgres *raises* on a
+ * malformed comparison rather than matching nothing. Without this,
+ * `GET /orders/banana` is a 500 whose log line is a Postgres syntax error,
+ * where the honest answer is the 404 the caller would have got for any other id
+ * that is not theirs. It is the same reasoning the cursor decoder gives for
+ * checking its own uuid before building a comparison out of it.
+ */
 export async function getOrder(
   caller: ApiCaller,
   id: string,
 ): Promise<Handled<ReturnType<typeof orderResource>>> {
+  if (!isUuid(id)) return notFound("order");
+
   const db = getDb();
   const order = await db.query.orders.findFirst({
     where: and(eq(orders.id, id), eq(orders.shopId, caller.shop.id)),
@@ -265,6 +317,8 @@ export async function getProduct(
   caller: ApiCaller,
   id: string,
 ): Promise<Handled<ReturnType<typeof productResource>>> {
+  if (!isUuid(id)) return notFound("product");
+
   const db = getDb();
   const product = await db.query.products.findFirst({
     where: and(eq(products.id, id), eq(products.shopId, caller.shop.id)),
@@ -327,11 +381,415 @@ export async function getContact(
   caller: ApiCaller,
   id: string,
 ): Promise<Handled<ReturnType<typeof contactResource>>> {
+  if (!isUuid(id)) return notFound("contact");
+
   const client = await getDb().query.clients.findFirst({
     where: and(eq(clients.id, id), eq(clients.shopId, caller.shop.id)),
   });
   if (!client) return notFound("contact");
   return { ok: true, data: contactResource(client) };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Subscriptions                                                              */
+/* -------------------------------------------------------------------------- */
+
+export type SubscriptionFilters = ListOptions & {
+  status?: string | null;
+  productId?: string | null;
+  contactId?: string | null;
+};
+
+/**
+ * The shop's memberships.
+ *
+ * The read the seven `subscription.*` events have been arriving without since
+ * they shipped: a consumer that received `subscription.created`, stored the id
+ * and later wanted to know whether that membership is still running had no way
+ * to ask. That is the whole reason this exists — an event carrying an id into a
+ * system with no endpoint to resolve it is half an integration, which is the
+ * same sentence spec 16 opens with about webhooks and a REST API.
+ *
+ * `billingMode` is the field a consumer must read before concluding anything
+ * about renewal. A `manual` membership is one Sailo raises renewal orders for
+ * and a human settles at the door; nothing will ever arrive from Stripe about
+ * it, so an integration waiting for a card renewal on one waits for ever.
+ */
+export async function listSubscriptions(
+  caller: ApiCaller,
+  options: SubscriptionFilters,
+): Promise<Handled<ReturnType<typeof subscriptionResource>[]> & { page?: Page<unknown> }> {
+  const cursor = readCursor(options.cursor);
+  if (cursor && "failure" in cursor) return { ok: false, failure: cursor.failure };
+
+  const filters = [eq(subscriptions.shopId, caller.shop.id)];
+  if (options.status) filters.push(eq(subscriptions.status, options.status));
+
+  /*
+   * The two id filters are checked for shape before they reach the query.
+   *
+   * Both columns are `uuid`, and Postgres raises on a malformed comparison
+   * rather than matching nothing — so an integration passing an empty string or
+   * somebody else's slug would get a 500 describing our schema instead of the
+   * 400 it earned.
+   */
+  if (options.productId) {
+    if (!isUuid(options.productId)) return invalid("`product_id` is not an id we could have issued.");
+    filters.push(eq(subscriptions.productId, options.productId));
+  }
+  if (options.contactId) {
+    if (!isUuid(options.contactId)) return invalid("`contact_id` is not an id we could have issued.");
+    filters.push(eq(subscriptions.clientId, options.contactId));
+  }
+  if (cursor) filters.push(keysetWhere(subscriptions, cursor));
+
+  const rows = await getDb()
+    .select()
+    .from(subscriptions)
+    .where(and(...filters))
+    .orderBy(desc(subscriptions.createdAt), desc(subscriptions.id))
+    .limit(options.limit + 1);
+
+  const page = paginate(rows, options.limit);
+
+  return { ok: true, data: page.items.map(subscriptionResource), page };
+}
+
+export async function getSubscription(
+  caller: ApiCaller,
+  id: string,
+): Promise<Handled<ReturnType<typeof subscriptionResource>>> {
+  if (!isUuid(id)) return notFound("subscription");
+
+  const subscription = await getDb().query.subscriptions.findFirst({
+    where: and(eq(subscriptions.id, id), eq(subscriptions.shopId, caller.shop.id)),
+  });
+  if (!subscription) return notFound("subscription");
+  return { ok: true, data: subscriptionResource(subscription) };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Disputes                                                                   */
+/* -------------------------------------------------------------------------- */
+
+export type DisputeFilters = ListOptions & {
+  status?: string | null;
+  orderId?: string | null;
+};
+
+/**
+ * Chargebacks against this shop's sales.
+ *
+ * **`scope = 'connected'` is in the WHERE and is not a filter the caller can
+ * change.** A connected dispute is a buyer charging back a seller's sale. A
+ * *platform* dispute is that seller charging back their own Sailo subscription
+ * — Sailo's money, Sailo's problem, and a row that has the seller's shop id on
+ * it precisely so it can be counted against them. Letting it out of this
+ * endpoint would put a seller's argument with us into their own Zapier account
+ * dressed as a customer chargeback, which is both wrong and none of an
+ * integration's business. The same reasoning keeps it out of the webhook.
+ *
+ * The point of reading these over an API at all is the deadline. A chargeback
+ * gives about twenty days to respond and the evidence that wins it usually
+ * lives somewhere that is not Sailo — a helpdesk, a fulfilment tool, a shipping
+ * account — so this is what lets a seller's own tooling go and fetch it.
+ */
+export async function listDisputes(
+  caller: ApiCaller,
+  options: DisputeFilters,
+): Promise<Handled<ReturnType<typeof disputeResource>[]> & { page?: Page<unknown> }> {
+  const cursor = readCursor(options.cursor);
+  if (cursor && "failure" in cursor) return { ok: false, failure: cursor.failure };
+
+  const filters = [eq(disputes.shopId, caller.shop.id), eq(disputes.scope, "connected")];
+  if (options.status) filters.push(eq(disputes.status, options.status));
+  if (options.orderId) {
+    if (!isUuid(options.orderId)) return invalid("`order_id` is not an id we could have issued.");
+    filters.push(eq(disputes.orderId, options.orderId));
+  }
+  if (cursor) filters.push(keysetWhere(disputes, cursor));
+
+  const rows = await getDb()
+    .select()
+    .from(disputes)
+    .where(and(...filters))
+    .orderBy(desc(disputes.createdAt), desc(disputes.id))
+    .limit(options.limit + 1);
+
+  const page = paginate(rows, options.limit);
+
+  return { ok: true, data: page.items.map(disputeResource), page };
+}
+
+export async function getDispute(
+  caller: ApiCaller,
+  id: string,
+): Promise<Handled<ReturnType<typeof disputeResource>>> {
+  if (!isUuid(id)) return notFound("dispute");
+
+  const dispute = await getDb().query.disputes.findFirst({
+    where: and(
+      eq(disputes.id, id),
+      eq(disputes.shopId, caller.shop.id),
+      // Same refusal as the list, and it has to be repeated: a platform dispute
+      // carries the shop id too, so ownership alone would hand one over.
+      eq(disputes.scope, "connected"),
+    ),
+  });
+  if (!dispute) return notFound("dispute");
+  return { ok: true, data: disputeResource(dispute) };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Bookings                                                                   */
+/* -------------------------------------------------------------------------- */
+
+export type BookingFilters = ListOptions & {
+  productId?: string | null;
+  staffId?: string | null;
+  /** ISO 8601. Appointments starting at or after this instant. */
+  from?: string | null;
+  /** ISO 8601, exclusive. Appointments starting strictly before it. */
+  to?: string | null;
+};
+
+/**
+ * The appointments a shop owes.
+ *
+ * `booking_claims` carries no shop id — the product it is against is what makes
+ * it a shop's — so the ownership check is the inner join to `products` and
+ * cannot be omitted or reordered into a filter applied afterwards. Every row
+ * this returns reached it through that join.
+ *
+ * **Ordered newest-booked first, like every other list here, and windowed by
+ * `from`/`to` rather than sorted by start time.** The two questions a
+ * calendar integration asks are "what has been booked since I last looked",
+ * which is this order, and "what is in the diary for next week", which is the
+ * window — and answering both without a second cursor implementation is worth
+ * more than chronological rows a consumer can sort in one line. The window is
+ * on when an appointment *starts*, not on overlap: an appointment that began
+ * before `from` and runs into it is not in the answer.
+ */
+export async function listBookings(
+  caller: ApiCaller,
+  options: BookingFilters,
+): Promise<Handled<ReturnType<typeof bookingResource>[]> & { page?: Page<unknown> }> {
+  const cursor = readCursor(options.cursor);
+  if (cursor && "failure" in cursor) return { ok: false, failure: cursor.failure };
+
+  const filters = [eq(products.shopId, caller.shop.id)];
+
+  if (options.productId) {
+    if (!isUuid(options.productId)) return invalid("`product_id` is not an id we could have issued.");
+    filters.push(eq(bookingClaims.productId, options.productId));
+  }
+  if (options.staffId) {
+    if (!isUuid(options.staffId)) return invalid("`staff_id` is not an id we could have issued.");
+    filters.push(eq(bookingClaims.staffId, options.staffId));
+  }
+
+  const from = readInstant(options.from);
+  if (from && "failure" in from) return { ok: false, failure: from.failure };
+  const to = readInstant(options.to);
+  if (to && "failure" in to) return { ok: false, failure: to.failure };
+
+  if (from) filters.push(gte(bookingClaims.startsAt, from));
+  if (to) filters.push(lt(bookingClaims.startsAt, to));
+  if (cursor) filters.push(keysetWhere(bookingClaims, cursor));
+
+  const rows = await getDb()
+    .select({
+      claim: bookingClaims,
+      productTitle: products.title,
+      staffName: staffResources.name,
+    })
+    .from(bookingClaims)
+    .innerJoin(products, eq(products.id, bookingClaims.productId))
+    /*
+     * Left, not inner. `staff_id` is null on a shop that books the shop rather
+     * than a named person, and it stays set when a seller later removes
+     * somebody from the roster — an inner join would drop exactly the
+     * appointments whose staffing a consumer most needs to notice.
+     */
+    .leftJoin(staffResources, eq(staffResources.id, bookingClaims.staffId))
+    .where(and(...filters))
+    .orderBy(desc(bookingClaims.createdAt), desc(bookingClaims.id))
+    .limit(options.limit + 1);
+
+  const page = paginate(
+    rows.map((row) => ({ ...row, id: row.claim.id, createdAt: row.claim.createdAt })),
+    options.limit,
+  );
+
+  return {
+    ok: true,
+    data: page.items.map((row) =>
+      bookingResource(row.claim, {
+        productTitle: row.productTitle,
+        staffName: row.staffName,
+      }),
+    ),
+    page,
+  };
+}
+
+export async function getBooking(
+  caller: ApiCaller,
+  id: string,
+): Promise<Handled<ReturnType<typeof bookingResource>>> {
+  if (!isUuid(id)) return notFound("booking");
+
+  const [row] = await getDb()
+    .select({
+      claim: bookingClaims,
+      productTitle: products.title,
+      staffName: staffResources.name,
+    })
+    .from(bookingClaims)
+    .innerJoin(products, eq(products.id, bookingClaims.productId))
+    .leftJoin(staffResources, eq(staffResources.id, bookingClaims.staffId))
+    .where(and(eq(bookingClaims.id, id), eq(products.shopId, caller.shop.id)))
+    .limit(1);
+
+  if (!row) return notFound("booking");
+
+  return {
+    ok: true,
+    data: bookingResource(row.claim, {
+      productTitle: row.productTitle,
+      staffName: row.staffName,
+    }),
+  };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Staff                                                                      */
+/* -------------------------------------------------------------------------- */
+
+export type StaffFilters = ListOptions & {
+  active?: boolean | null;
+};
+
+/**
+ * The bookable roster.
+ *
+ * Read `staffResource` for what this is not: these are names a buyer can pick,
+ * not accounts, not logins and not the seller's colleagues. Nothing here can
+ * sign in to anything.
+ */
+export async function listStaff(
+  caller: ApiCaller,
+  options: StaffFilters,
+): Promise<Handled<ReturnType<typeof staffResource>[]> & { page?: Page<unknown> }> {
+  const cursor = readCursor(options.cursor);
+  if (cursor && "failure" in cursor) return { ok: false, failure: cursor.failure };
+
+  const filters = [eq(staffResources.shopId, caller.shop.id)];
+  if (options.active !== null && options.active !== undefined) {
+    filters.push(eq(staffResources.isActive, options.active));
+  }
+  if (cursor) filters.push(keysetWhere(staffResources, cursor));
+
+  const rows = await getDb()
+    .select()
+    .from(staffResources)
+    .where(and(...filters))
+    .orderBy(desc(staffResources.createdAt), desc(staffResources.id))
+    .limit(options.limit + 1);
+
+  const page = paginate(rows, options.limit);
+
+  return { ok: true, data: page.items.map(staffResource), page };
+}
+
+export async function getStaff(
+  caller: ApiCaller,
+  id: string,
+): Promise<Handled<ReturnType<typeof staffResource>>> {
+  if (!isUuid(id)) return notFound("staff member");
+
+  const staff = await getDb().query.staffResources.findFirst({
+    where: and(eq(staffResources.id, id), eq(staffResources.shopId, caller.shop.id)),
+  });
+  if (!staff) return notFound("staff member");
+  return { ok: true, data: staffResource(staff) };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Contact lists                                                              */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * The two counts, as one filtered aggregate rather than a query per list.
+ *
+ * A left join so a list nobody has joined reports zero instead of vanishing —
+ * the empty list is usually the one the seller just made and is looking for.
+ */
+const LIST_COUNTS = {
+  subscribed: sql<string>`count(*) filter (where ${contactListMembers.status} = 'subscribed')`,
+  pending: sql<string>`count(*) filter (where ${contactListMembers.status} = 'pending')`,
+};
+
+const listCounts = (row: { subscribed: string | null; pending: string | null }) => ({
+  subscribed: Number(row.subscribed ?? 0),
+  pending: Number(row.pending ?? 0),
+});
+
+/**
+ * The shop's lists, with the numbers a send would actually reach.
+ *
+ * The read that makes `docs/…/guides/sync-a-crm` true rather than aspirational:
+ * a contact's tags were already fetchable, but the lists they are on — which is
+ * what a seller actually segments a broadcast by — were not, so a CRM mirror
+ * could copy the labels and not the audiences.
+ */
+export async function listLists(
+  caller: ApiCaller,
+  options: ListOptions,
+): Promise<Handled<ReturnType<typeof contactListResource>[]> & { page?: Page<unknown> }> {
+  const cursor = readCursor(options.cursor);
+  if (cursor && "failure" in cursor) return { ok: false, failure: cursor.failure };
+
+  const filters = [eq(contactLists.shopId, caller.shop.id)];
+  if (cursor) filters.push(keysetWhere(contactLists, cursor));
+
+  const rows = await getDb()
+    .select({ list: contactLists, ...LIST_COUNTS })
+    .from(contactLists)
+    .leftJoin(contactListMembers, eq(contactListMembers.listId, contactLists.id))
+    .where(and(...filters))
+    .groupBy(contactLists.id)
+    .orderBy(desc(contactLists.createdAt), desc(contactLists.id))
+    .limit(options.limit + 1);
+
+  const page = paginate(
+    rows.map((row) => ({ ...row, id: row.list.id, createdAt: row.list.createdAt })),
+    options.limit,
+  );
+
+  return {
+    ok: true,
+    data: page.items.map((row) => contactListResource(row.list, listCounts(row))),
+    page,
+  };
+}
+
+export async function getList(
+  caller: ApiCaller,
+  id: string,
+): Promise<Handled<ReturnType<typeof contactListResource>>> {
+  if (!isUuid(id)) return notFound("list");
+
+  const [row] = await getDb()
+    .select({ list: contactLists, ...LIST_COUNTS })
+    .from(contactLists)
+    .leftJoin(contactListMembers, eq(contactListMembers.listId, contactLists.id))
+    .where(and(eq(contactLists.id, id), eq(contactLists.shopId, caller.shop.id)))
+    .groupBy(contactLists.id)
+    .limit(1);
+
+  if (!row) return notFound("list");
+  return { ok: true, data: contactListResource(row.list, listCounts(row)) };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -514,6 +972,8 @@ export async function tagContact(
   id: string,
   input: { add?: unknown; remove?: unknown },
 ): Promise<Handled<ReturnType<typeof contactResource>>> {
+  if (!isUuid(id)) return notFound("contact");
+
   const db = getDb();
   const existing = await db.query.clients.findFirst({
     where: and(eq(clients.id, id), eq(clients.shopId, caller.shop.id)),
@@ -539,4 +999,176 @@ export async function tagContact(
 
   const record = updated[0];
   return record ? { ok: true, data: contactResource(record) } : notFound("contact");
+}
+
+/**
+ * A contact and every list they are on.
+ *
+ * The shape both list endpoints answer with, so one parser handles the read and
+ * the write. The memberships are always read back from the database rather than
+ * assembled from what a write was asked to do — a list id that is not this
+ * shop's is a no-op inside `joinList`, so what was requested and what is true
+ * are different things and only one of them is worth returning.
+ */
+type ContactWithLists = ReturnType<typeof contactResource> & {
+  lists: { id: string; name: string; status: string; joinedAt: string | null }[];
+};
+
+async function contactWithLists(
+  caller: ApiCaller,
+  contact: Parameters<typeof contactResource>[0],
+): Promise<ContactWithLists> {
+  const memberships = await listsForClient(caller.shop.id, contact.id);
+  return {
+    ...contactResource(contact),
+    lists: memberships.map((row) => ({
+      id: row.id,
+      name: row.name,
+      status: row.status,
+      joinedAt: iso(row.joinedAt),
+    })),
+  };
+}
+
+/**
+ * Which lists one contact is on.
+ *
+ * Its own endpoint rather than a field on the contact, because it is a join
+ * every caller would otherwise pay for on every read of every contact — and the
+ * overwhelming majority of reads here are a CRM mirror that wants the person,
+ * not their memberships. `status` per membership is the whole value of it:
+ * `subscribed` will receive the next broadcast and `pending` will not, and a
+ * consumer that cannot tell them apart will report an audience that does not
+ * exist.
+ */
+export async function getContactLists(
+  caller: ApiCaller,
+  id: string,
+): Promise<Handled<ContactWithLists>> {
+  if (!isUuid(id)) return notFound("contact");
+
+  const contact = await getDb().query.clients.findFirst({
+    where: and(eq(clients.id, id), eq(clients.shopId, caller.shop.id)),
+  });
+  if (!contact) return notFound("contact");
+
+  return { ok: true, data: await contactWithLists(caller, contact) };
+}
+
+/**
+ * Puts a contact on lists and takes them off others.
+ *
+ * The list counterpart of `tagContact`, and the same shape on purpose: add and
+ * remove rather than replace, because a list membership a seller created by
+ * hand is not something an automation should be able to delete by leaving it
+ * out of an array. `join` and `leave` are named for what they do to a person
+ * rather than to a set, because the two verbs have genuinely different
+ * consequences here and `add`/`remove` would suggest otherwise.
+ *
+ * **Joining cannot manufacture a subscriber, and that is the point of it.** On
+ * a double-opt-in list — which is the default — a join lands as `pending` and
+ * stays there until the person clicks a link in their own inbox. The response
+ * says which state each membership actually settled in, so a caller never has
+ * to assume: `subscribed` means they will receive the next broadcast, `pending`
+ * means they will not. This is the same refusal `upsertContact` makes about
+ * `marketingConsentAt`, one level down — consent is a thing a person gave, and
+ * an array in a request body is a claim that they did.
+ *
+ * **Leaving is `removed`, never a delete and never a suppression.** A deleted
+ * membership would lose the fact that they left and the next import would put
+ * them back; a suppression would end every list at once, which is a different
+ * verb the seller has a different button for. The other lists this person is on
+ * are untouched.
+ */
+export async function updateContactLists(
+  caller: ApiCaller,
+  id: string,
+  input: { join?: unknown; leave?: unknown },
+): Promise<Handled<ContactWithLists>> {
+  if (!isUuid(id)) return notFound("contact");
+
+  const join = readListIds(input.join);
+  const leave = readListIds(input.leave);
+  if ("failure" in join) return { ok: false, failure: join.failure };
+  if ("failure" in leave) return { ok: false, failure: leave.failure };
+
+  if (join.ids.length === 0 && leave.ids.length === 0) {
+    return invalid("Send `join`, `leave`, or both.");
+  }
+
+  const db = getDb();
+  const contact = await db.query.clients.findFirst({
+    where: and(eq(clients.id, id), eq(clients.shopId, caller.shop.id)),
+  });
+  if (!contact) return notFound("contact");
+
+  /*
+   * Sequential rather than `Promise.all`.
+   *
+   * Every one of these is an upsert against `(list, client)` and a join can
+   * enrol the contact into an automation, so a caller naming the same list
+   * twice — or naming one in both arrays — must produce one settled answer
+   * rather than a race between two writers. The lists a shop may hold are
+   * capped, so the longest run this can be is short.
+   *
+   * `leave` runs after `join` for the same reason: sending a list in both
+   * arrays is a caller contradicting themselves, and the API has to pick one
+   * meaning and keep picking it. Removal wins, because "take them off this
+   * list" is the safer half of the contradiction to honour.
+   */
+  for (const listId of join.ids) {
+    /*
+     * `force` is never passed. It is how an *import* skips the pending state on
+     * the seller's own claim that they collected consent offline, and it is not
+     * a claim an API caller is in a position to make.
+     */
+    await joinList({
+      shopId: caller.shop.id,
+      listId,
+      clientId: contact.id,
+      source: "api",
+    });
+  }
+  for (const listId of leave.ids) {
+    await leaveList({ shopId: caller.shop.id, listId, clientId: contact.id });
+  }
+
+  /*
+   * Read back rather than assembled from what the writes returned. A list id
+   * that is not this shop's is a no-op inside `joinList`, so the only honest
+   * account of where the contact ended up is the one the database gives — and
+   * it is the same account `getContactLists` gives, from the same helper.
+   */
+  return { ok: true, data: await contactWithLists(caller, contact) };
+}
+
+/**
+ * List ids off a request body — uuid-shaped, deduplicated and capped.
+ *
+ * The cap is the shop's own list ceiling rather than an arbitrary number,
+ * because a call naming more lists than the shop can hold is a mistake however
+ * politely it is phrased, and the alternative is a caller pasting ten thousand
+ * ids into an endpoint that would then run ten thousand upserts.
+ */
+function readListIds(
+  raw: unknown,
+): { ids: string[] } | { failure: ApiFailure } {
+  if (raw === undefined || raw === null) return { ids: [] };
+  if (!Array.isArray(raw)) {
+    return { failure: { code: "invalid_request", message: "`join` and `leave` are arrays of list ids." } };
+  }
+  if (raw.length > MAX_LISTS_PER_SHOP) {
+    return {
+      failure: {
+        code: "invalid_request",
+        message: `That is more lists than a shop can have (${MAX_LISTS_PER_SHOP}).`,
+      },
+    };
+  }
+
+  const ids = [...new Set(raw.filter(isUuid))];
+  if (ids.length !== new Set(raw).size) {
+    return { failure: { code: "invalid_request", message: "One of those list ids is not an id we could have issued." } };
+  }
+  return { ids };
 }

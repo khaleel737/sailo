@@ -1,6 +1,6 @@
 ---
 title: MCP server
-description: Point Claude, Cursor or any MCP client at a Sailo shop with an API key. Read orders, products and contacts; with a write key, add contacts and change tags.
+description: Point Claude, Cursor or any MCP client at a Sailo shop with an API key. Read orders, products, contacts, memberships, chargebacks and the diary; with a write key, manage contacts.
 ---
 
 import { Callout } from "nextra/components";
@@ -11,8 +11,9 @@ import { Callout } from "nextra/components";
 
 Sailo runs a [Model Context Protocol](https://modelcontextprotocol.io) server.
 Point Claude, Cursor, or any MCP client at that address with an API key as a
-bearer token, and it can read a shop's orders, products and contacts — and, with
-a write key, add contacts and change their tags.
+bearer token, and it can read a shop's orders, products, contacts, lists,
+memberships, chargebacks and diary — and, with a write key, manage its
+contacts.
 
 ## The same key, the same rules
 
@@ -43,11 +44,14 @@ number of things an assistant can safely do.
 - *"How many orders did we take last week, and what was the total?"*
 - *"Find everything ada@example.com has bought."*
 - *"Which products are nearly out of stock?"*
+- *"Which memberships are past due, and who is due to renew this month?"*
+- *"Do I have any chargebacks with a deadline in the next week?"*
+- *"What is in the diary for Tuesday, and who is taking each appointment?"*
 - *"Add everybody who came to the webinar to the list and tag them."*
 
 What it is **not** for is running the shop. An assistant cannot refund, ship,
-cancel, publish, or change a price — see [what it can
-do](/mcp/permissions) for the full line.
+cancel, publish, change a price, answer a chargeback, or move an appointment —
+see [what it can do](/mcp/permissions) for the full line.
 
 <Callout type="warning">
 **A key is a key.** An assistant holding one can do everything that key can do,

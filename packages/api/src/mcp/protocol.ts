@@ -251,9 +251,30 @@ export const CAPABILITIES = {
   tools: { listChanged: false },
 } as const;
 
+/**
+ * What a model is told at connection, before it has called anything.
+ *
+ * Four rules rather than a description of the surface, because a model can list
+ * the tools for itself and cannot infer any of these from a tool name. Each one
+ * is here because getting it wrong produces a confident, plausible answer that
+ * is false in a way the person reading it cannot see:
+ *
+ *   - quoting `4999` at a customer who paid £49.99;
+ *   - mailing somebody who never agreed to be mailed;
+ *   - telling a seller a cancelled member has already lost access, when they
+ *     have paid to the end of the period;
+ *   - calling a chargeback a refund, which is a different event, a different
+ *     amount, and a different thing to say to a seller about their customer.
+ */
 export const INSTRUCTIONS =
-  "Read and manage one Sailo shop: its orders, products and contacts. " +
+  "Read one Sailo shop — its orders, products, contacts, lists, memberships, " +
+  "chargebacks and bookings — and manage its contacts. " +
   "Amounts are returned both as integer minor units (`cents`) and as a decimal " +
   "string (`amount`) — quote the decimal string to people. " +
   "A contact's `marketingConsentAt` is null unless that person opted in; never " +
-  "treat a contact without it as someone who agreed to be emailed.";
+  "treat a contact without it as someone who agreed to be emailed. " +
+  "A membership still entitles somebody to what they bought until " +
+  "`currentPeriodEnd`, even after they cancel — never say access has ended " +
+  "before that date. " +
+  "A chargeback is a bank reversing a sale and taking a fee; it is not a refund " +
+  "and must never be described as one.";

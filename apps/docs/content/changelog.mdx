@@ -51,16 +51,50 @@ a breaking change. See [versioning](/conventions#versioning).
 
 ## History
 
-### 2026-08-12 — the current contract
+### 2026-08-20 — five more resources, and every webhook object now readable
 
-The version every response carries today. It covers:
+Additive throughout. `sailo-version` does not move, no field changed meaning,
+and nothing was removed — an integration written the day before this shipped
+needs no change.
 
-- <EndpointCount /> REST operations over shops, orders, products and contacts.
-- <EventCount /> webhook events, signed with Standard Webhooks.
-- <ToolCount /> MCP tools over the same key.
+**New REST resources.** [Subscriptions](/api/subscriptions),
+[disputes](/api/disputes), [bookings](/api/bookings), [staff](/api/staff) and
+[lists](/api/lists), each with a list and a fetch-one.
 
-Nothing has been removed or renamed since. Everything since has been additive
-and is described on the pages it belongs to rather than repeated here.
+**The gap this closes.** Nine of the <EventCount /> webhook events carried an
+object with no endpoint behind it. A consumer that received
+`subscription.created`, stored the id and later wanted to know whether that
+membership still ran had nowhere to ask — and one that missed a delivery had
+lost that state permanently. Every object a webhook carries can now be fetched
+back, which is what makes a missed delivery recoverable rather than final.
+
+**A third write.** `POST /contacts/{id}/lists` joins and leaves lists, in the
+same add-and-remove shape as tags, and `GET /contacts/{id}/lists` reads the
+memberships back. Neither can produce a subscriber on a double opt-in list: the
+membership settles as `pending` until the person clicks, and the response says
+which state it actually settled in.
+
+**New MCP tools**, one per operation, over the same handlers and the same key. A
+read-only key sees only the read tools, as before.
+
+**Server instructions widened.** The MCP `INSTRUCTIONS` string now carries two
+further rules a model cannot infer from a tool name: that a cancelled membership
+keeps its access until `currentPeriodEnd`, and that a chargeback is not a
+refund. Clients that cache instructions from a previous connection should
+reconnect to pick them up.
+
+**One refusal fixed.** A `{id}` read with an id that is not uuid-shaped —
+`GET /orders/banana` — returned a `server_error` where the honest answer was
+`not_found`, because the malformed value reached a `uuid` column. It is a 404
+now. Anything branching on the status of that case should expect 404.
+
+### 2026-08-12 — the previous contract
+
+The version every response still carries. It covered <EventCount /> webhook
+events signed with Standard Webhooks, and REST and MCP over shops, orders,
+products and contacts.
+
+Nothing has been removed or renamed since.
 
 ## Watching for changes
 

@@ -10,8 +10,9 @@ import { Callout } from "nextra/components";
 The people on a shop's list — everyone who has bought something, signed up, or
 been added by an automation.
 
-This is the only resource with writes. Both of them are here, and both are
-narrow on purpose.
+This is where the write surface is. All three writes are here, and each is
+narrow on purpose: create-or-update a person, change their tags, change their
+list memberships.
 
 ## Consent
 
@@ -88,6 +89,32 @@ retry.
 Tags are normalised — trimmed and lowercased — the same way stored ones are, on
 both write and filter. A tag that normalises to nothing is an
 `invalid_request` rather than a silent no-op.
+
+## Lists
+
+A tag says what somebody *is*. A list says what they get *sent* — it is what a
+seller addresses a broadcast to — and the two operations for it hang off the
+contact, because membership is a property of the person.
+
+`GET /contacts/{id}/lists` returns every list they are on with the state of each
+membership. `POST /contacts/{id}/lists` takes `join` and `leave`, both arrays of
+list ids, in the same add-and-remove shape as tags.
+
+<Callout type="error">
+**Joining cannot make somebody a subscriber.** On a double opt-in list — the
+default — the membership lands as `pending` and only that person's own click on
+the confirmation email turns it into `subscribed`. The response tells you which
+state each membership actually settled in; read it rather than assuming the one
+you asked for.
+</Callout>
+
+`removed` is what leaving produces. It is not a deletion — the record that they
+left is what stops the next import quietly putting them back — and it is not a
+suppression, which is a different verb that ends every list at once and is not
+on this API.
+
+The counts, the `doubleOptIn` rule and what is deliberately not here are on the
+[lists page](/api/lists).
 
 ## What is deliberately absent
 

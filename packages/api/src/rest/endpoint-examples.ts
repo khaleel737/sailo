@@ -200,3 +200,220 @@ export const CONTACT_WRITE_EXAMPLE = `{
     "optInSent": true
   }
 }`;
+
+export const SUBSCRIPTION_EXAMPLE = `{
+  "data": {
+    "id": "5e8a1c73-2d94-4b16-8f07-3c9e6b0a1d42",
+    "object": "subscription",
+    "status": "active",
+    "productId": "9a7e2c11-6b48-4d0f-8e35-71c9a4f2b6d8",
+    "clientId": "c1d2e3f4-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
+    "price": { "cents": 1200, "amount": "12.00", "currency": "GBP" },
+    "currency": "GBP",
+    "interval": "month",
+    "intervalCount": 1,
+    "billingMode": "stripe",
+    "paymentMethod": null,
+    "currentPeriodEnd": "2026-09-12T09:41:07.221Z",
+    "cancelAtPeriodEnd": false,
+    "canceledAt": null,
+    "trialEndsAt": null,
+    "startedAt": "2026-02-12T09:41:07.221Z",
+    "createdAt": "2026-02-12T09:41:07.221Z",
+    "updatedAt": "2026-08-12T09:41:09.884Z"
+  }
+}`;
+
+export const SUBSCRIPTION_PAGE_EXAMPLE = `{
+  "data": [
+    {
+      "id": "5e8a1c73-2d94-4b16-8f07-3c9e6b0a1d42",
+      "object": "subscription",
+      "status": "active",
+      "productId": "9a7e2c11-6b48-4d0f-8e35-71c9a4f2b6d8",
+      "clientId": "c1d2e3f4-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
+      "price": { "cents": 1200, "amount": "12.00", "currency": "GBP" },
+      "interval": "month",
+      "intervalCount": 1,
+      "billingMode": "stripe",
+      "currentPeriodEnd": "2026-09-12T09:41:07.221Z",
+      "cancelAtPeriodEnd": false
+      /* … every field GET /subscriptions/{id} returns … */
+    }
+  ],
+  "has_more": false,
+  "next_cursor": null
+}`;
+
+export const DISPUTE_EXAMPLE = `{
+  "data": {
+    "id": "7b3f9d21-6c05-4e88-9a12-4d7e2f8b3c60",
+    "object": "dispute",
+    "orderId": "8f2b41d6-0c93-4f77-a1e5-9b6d2c4a7e01",
+    "status": "needs_response",
+    "caseType": "chargeback",
+    "reason": "product_not_received",
+    "networkReasonCode": "13.1",
+    "network": "visa",
+    "amount":   { "cents": 5498, "amount": "54.98", "currency": "GBP" },
+    "fee":      { "cents": 1500, "amount": "15.00", "currency": "GBP" },
+    "deducted": { "cents": 6998, "amount": "69.98", "currency": "GBP" },
+    "currency": "GBP",
+    "dueBy": "2026-09-01T23:59:59.000Z",
+    "evidenceSubmittedAt": null,
+    "submissionCount": 0,
+    "completenessBp": 0,
+    "fundsWithdrawnAt": "2026-08-12T11:02:00.000Z",
+    "fundsReinstatedAt": null,
+    "openedAt": "2026-08-12T11:01:58.000Z",
+    "createdAt": "2026-08-12T11:02:03.114Z",
+    "updatedAt": "2026-08-12T11:02:03.114Z"
+  }
+}`;
+
+export const DISPUTE_PAGE_EXAMPLE = `{
+  "data": [
+    {
+      "id": "7b3f9d21-6c05-4e88-9a12-4d7e2f8b3c60",
+      "object": "dispute",
+      "orderId": "8f2b41d6-0c93-4f77-a1e5-9b6d2c4a7e01",
+      "status": "needs_response",
+      "caseType": "chargeback",
+      "reason": "product_not_received",
+      "amount":   { "cents": 5498, "amount": "54.98", "currency": "GBP" },
+      "deducted": { "cents": 6998, "amount": "69.98", "currency": "GBP" },
+      "dueBy": "2026-09-01T23:59:59.000Z"
+      /* … every field GET /disputes/{id} returns … */
+    }
+  ],
+  "has_more": false,
+  "next_cursor": null
+}`;
+
+export const BOOKING_EXAMPLE = `{
+  "data": {
+    "id": "2a6d8f30-91b4-4c27-8e53-0f1a7c6b9d84",
+    "object": "booking",
+    "orderId": "8f2b41d6-0c93-4f77-a1e5-9b6d2c4a7e01",
+    "productId": "9a7e2c11-6b48-4d0f-8e35-71c9a4f2b6d8",
+    "productTitle": "Cut and finish",
+    "staffId": "6d4b2e19-7a30-4f85-b1c6-2e8d5a3f0b71",
+    "staffName": "Ada",
+    "startsAt": "2026-08-24T13:30:00.000Z",
+    "endsAt": "2026-08-24T14:15:00.000Z",
+    "seats": 1,
+    "isExclusive": true,
+    "createdAt": "2026-08-12T09:41:07.221Z"
+  }
+}`;
+
+export const BOOKING_PAGE_EXAMPLE = `{
+  "data": [
+    {
+      "id": "2a6d8f30-91b4-4c27-8e53-0f1a7c6b9d84",
+      "object": "booking",
+      "orderId": "8f2b41d6-0c93-4f77-a1e5-9b6d2c4a7e01",
+      "productId": "9a7e2c11-6b48-4d0f-8e35-71c9a4f2b6d8",
+      "productTitle": "Cut and finish",
+      "staffId": "6d4b2e19-7a30-4f85-b1c6-2e8d5a3f0b71",
+      "staffName": "Ada",
+      "startsAt": "2026-08-24T13:30:00.000Z",
+      "endsAt": "2026-08-24T14:15:00.000Z",
+      "seats": 1,
+      "isExclusive": true,
+      "createdAt": "2026-08-12T09:41:07.221Z"
+    }
+  ],
+  "has_more": false,
+  "next_cursor": null
+}`;
+
+export const STAFF_EXAMPLE = `{
+  "data": {
+    "id": "6d4b2e19-7a30-4f85-b1c6-2e8d5a3f0b71",
+    "object": "staff",
+    "name": "Ada",
+    "email": "ada@acme.example",
+    "avatarUrl": null,
+    "timeZone": "Europe/London",
+    "isActive": true,
+    "position": 0,
+    "createdAt": "2026-06-01T10:00:00.000Z",
+    "updatedAt": "2026-08-01T16:20:31.442Z"
+  }
+}`;
+
+export const STAFF_PAGE_EXAMPLE = `{
+  "data": [
+    {
+      "id": "6d4b2e19-7a30-4f85-b1c6-2e8d5a3f0b71",
+      "object": "staff",
+      "name": "Ada",
+      "email": "ada@acme.example",
+      "avatarUrl": null,
+      "timeZone": "Europe/London",
+      "isActive": true,
+      "position": 0,
+      "createdAt": "2026-06-01T10:00:00.000Z",
+      "updatedAt": "2026-08-01T16:20:31.442Z"
+    }
+  ],
+  "has_more": false,
+  "next_cursor": null
+}`;
+
+export const LIST_EXAMPLE = `{
+  "data": {
+    "id": "b8c1a057-3e62-4d19-9f74-5a0c8b2e6d13",
+    "object": "list",
+    "name": "Newsletter",
+    "description": "Monthly, and never more than that.",
+    "doubleOptIn": true,
+    "subscribedCount": 412,
+    "pendingCount": 7,
+    "createdAt": "2026-04-18T12:00:00.000Z",
+    "updatedAt": "2026-04-18T12:00:00.000Z"
+  }
+}`;
+
+export const LIST_PAGE_EXAMPLE = `{
+  "data": [
+    {
+      "id": "b8c1a057-3e62-4d19-9f74-5a0c8b2e6d13",
+      "object": "list",
+      "name": "Newsletter",
+      "description": "Monthly, and never more than that.",
+      "doubleOptIn": true,
+      "subscribedCount": 412,
+      "pendingCount": 7,
+      "createdAt": "2026-04-18T12:00:00.000Z",
+      "updatedAt": "2026-04-18T12:00:00.000Z"
+    }
+  ],
+  "has_more": false,
+  "next_cursor": null
+}`;
+
+export const CONTACT_LISTS_EXAMPLE = `{
+  "data": {
+    "id": "c1d2e3f4-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
+    "object": "contact",
+    "name": "Ada Lovelace",
+    "email": "ada@example.com",
+    "phone": null,
+    "tags": ["webinar"],
+    "source": "api",
+    "marketingConsentAt": null,
+    "address": { "line1": null, "line2": null, "city": null, "region": null, "postalCode": null, "country": null },
+    "createdAt": "2026-08-12T09:41:07.221Z",
+    "updatedAt": "2026-08-12T09:41:07.221Z",
+    "lists": [
+      {
+        "id": "b8c1a057-3e62-4d19-9f74-5a0c8b2e6d13",
+        "name": "Newsletter",
+        "status": "pending",
+        "joinedAt": "2026-08-20T14:05:11.900Z"
+      }
+    ]
+  }
+}`;

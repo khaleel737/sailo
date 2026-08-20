@@ -1,7 +1,9 @@
 import {
   ADDRESS_FIELDS,
+  BOOKING_FIELDS,
   CONTACT_FIELDS,
   DISPUTE_FIELDS,
+  LIST_FIELDS,
   MONEY_FIELDS,
   ORDER_BOOKING_FIELDS,
   ORDER_CUSTOMER_FIELDS,
@@ -14,6 +16,7 @@ import {
   PRODUCT_MEMBERSHIP_FIELDS,
   PRODUCT_VARIANT_FIELDS,
   SHOP_FIELDS,
+  STAFF_FIELDS,
   SUBSCRIPTION_FIELDS,
   type Field,
 } from "./fields";
@@ -81,3 +84,13 @@ export const SubscriptionFields = () => (
 );
 
 export const DisputeFields = () => <FieldTable caption="Fields on a dispute" fields={DISPUTE_FIELDS} />;
+
+export const BookingFields = () => (
+  <FieldTable caption="Fields on a booking" fields={BOOKING_FIELDS} />
+);
+
+export const StaffFields = () => (
+  <FieldTable caption="Fields on a staff member" fields={STAFF_FIELDS} />
+);
+
+export const ListFields = () => <FieldTable caption="Fields on a list" fields={LIST_FIELDS} />;

@@ -45,7 +45,7 @@ Two, and deliberately not more.
 | Scope | What it allows |
 | --- | --- |
 | `read` | Every read on every surface. Carried by every key. |
-| `write` | Additionally: create or update a contact, and change a contact's tags. |
+| `write` | Additionally: create or update a contact, change a contact's tags, and move a contact on and off lists. |
 
 A per-resource scope matrix is the obvious next step and it is the wrong one
 for this product. A seller wiring up Zapier is not going to reason about eleven
@@ -68,23 +68,37 @@ Even a `write` key is narrower than most people assume. In full:
 - Read orders and their line items.
 - Read the catalogue, its variants and their stock.
 - Read the people on the shop's list, with their tags and consent state.
+- Read which lists exist and which of them a contact is on.
+- Read memberships, and whether each one still entitles somebody to anything.
+- Read chargebacks against the shop's sales, and the deadline to answer them.
+- Read the diary and the bookable roster.
 
 **With a write key, additionally**
 
 - Create or update a contact, merging tags onto one that already exists.
 - Add and remove tags on a contact.
+- Join and leave lists for a contact — subject to double opt-in, which no key
+  can override.
 
 **Never, with any key**
 
 - **Grant marketing consent.** A contact created through the API always has
   `marketingConsentAt: null`, whatever the request body says. See
-  [consent](/api/contacts#consent).
+  [consent](/api/contacts#consent). Joining a list cannot manufacture one
+  either: on a double opt-in list the membership stays `pending` until the
+  person clicks.
 - Change an order, mark one paid or shipped, refund anything, or cancel
   anything.
 - Create, edit, publish or delete a product, or change stock.
+- Cancel, pause or re-price a membership.
+- Respond to a chargeback, or read the evidence assembled to answer one.
+- Create, move or cancel an appointment, or change who is on the roster.
+- Create or delete a list.
 - Delete a contact, or read the seller's private notes on one.
 - See anything internal — no Stripe identifiers, no download tokens, no payment
-  proofs, no dispute evidence bundles.
+  proofs, no dispute evidence bundles, no staff calendar feed links.
+- See a *platform* dispute — a seller's argument with Sailo over their own
+  subscription is never returned as though a customer had raised it.
 - Touch billing, the seller's account, or another shop. A key names one shop and
   every query is scoped by it in the `WHERE`, not by an id the caller sends.
 

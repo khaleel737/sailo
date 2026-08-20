@@ -1,9 +1,12 @@
 import type {
+  bookingResource,
+  contactListResource,
   contactResource,
   disputeResource,
   orderResource,
   productResource,
   shopResource,
+  staffResource,
   subscriptionResource,
 } from "@sailo/core/wire";
 import { ORDER_STATUSES } from "@sailo/core/order-status";
@@ -493,4 +496,121 @@ export const DISPUTE_FIELDS = [
 type _DisputeIsComplete = Exhaustive<
   (typeof DISPUTE_FIELDS)[number]["name"],
   KeysOf<ReturnType<typeof disputeResource>>
+>;
+
+/* -------------------------------------------------------------------------- */
+/*  Booking                                                                    */
+/* -------------------------------------------------------------------------- */
+
+export const BOOKING_FIELDS = [
+  { name: "id", type: "string", body: "The appointment's own id." },
+  { name: "object", type: '"booking"', body: "Always the literal string." },
+  { name: "orderId", type: "string", body: "The sale that bought this appointment — readable with `GET /orders/{id}`. Always present: an appointment exists because something was ordered." },
+  { name: "productId", type: "string", body: "The service booked — readable with `GET /products/{id}`." },
+  {
+    name: "productTitle",
+    type: "string | null",
+    body:
+      "The service as it is titled **now**, not as it was when the appointment was made. Unlike an order line, which keeps the title it sold under, this is a live read — so a service the seller renames renames itself in every future booking.",
+  },
+  {
+    name: "staffId",
+    type: "string | null",
+    body:
+      "Who is taking it — readable with `GET /staff/{id}`. Null on a shop that books the shop rather than a named person, which is most of them.",
+  },
+  { name: "staffName", type: "string | null", body: "Their name now, resolved for you so a diary entry does not need a second call." },
+  { name: "startsAt", type: "string | null", body: "ISO 8601, when the appointment begins. Read it in the staff member's `timeZone`, or the shop's where they have none." },
+  { name: "endsAt", type: "string | null", body: "ISO 8601, when it ends. Derived from the service's duration at the time of booking." },
+  {
+    name: "seats",
+    type: "number",
+    body:
+      "How many places this claim takes. Always 1 on an exclusive booking; on a class it is how many people came in on one order.",
+  },
+  {
+    name: "isExclusive",
+    type: "boolean",
+    body:
+      "**Read this before mirroring anything into a calendar.** True means the claim holds the whole slot — a one-to-one appointment. False means a seat in a class, where several bookings share one window and do not conflict. Treating every entry as busy will report clashes that are not real, and will book a teacher out of their own class.",
+  },
+  { name: "createdAt", type: "string | null", body: "ISO 8601, when it was booked. This is what `/bookings` orders by, not `startsAt`." },
+] as const satisfies readonly Field[];
+
+type _BookingIsComplete = Exhaustive<
+  (typeof BOOKING_FIELDS)[number]["name"],
+  KeysOf<ReturnType<typeof bookingResource>>
+>;
+
+/* -------------------------------------------------------------------------- */
+/*  Staff                                                                      */
+/* -------------------------------------------------------------------------- */
+
+export const STAFF_FIELDS = [
+  { name: "id", type: "string", body: "The roster entry's own id. This is what `staffId` on a booking points at." },
+  { name: "object", type: '"staff"', body: "Always the literal string." },
+  { name: "name", type: "string", body: "What a buyer sees when picking who they want." },
+  {
+    name: "email",
+    type: "string | null",
+    body:
+      "Where their own appointment notifications go. Not a login — nothing about this address grants access to the shop.",
+  },
+  { name: "avatarUrl", type: "string | null", body: "A picture for the booking page, if the seller uploaded one." },
+  {
+    name: "timeZone",
+    type: "string | null",
+    body:
+      "IANA name. **Null means the shop's own zone, not UTC** — this is the zone their appointment times should be read in, and defaulting a null to UTC will shift every booking for a shop that is not in London.",
+  },
+  {
+    name: "isActive",
+    type: "boolean",
+    body:
+      "Whether they can be booked right now. Somebody stood down goes inactive rather than being deleted, because the appointments already against them have to keep naming somebody — so an inactive person can still be the `staffId` on a future booking.",
+  },
+  { name: "position", type: "number", body: "Where the seller put them in their own ordering of the roster. `/staff` does not sort by it; it is yours to sort by." },
+  { name: "createdAt", type: "string | null", body: "ISO 8601, when they were added." },
+  { name: "updatedAt", type: "string | null", body: "ISO 8601, when the entry last changed." },
+] as const satisfies readonly Field[];
+
+type _StaffIsComplete = Exhaustive<
+  (typeof STAFF_FIELDS)[number]["name"],
+  KeysOf<ReturnType<typeof staffResource>>
+>;
+
+/* -------------------------------------------------------------------------- */
+/*  List                                                                       */
+/* -------------------------------------------------------------------------- */
+
+export const LIST_FIELDS = [
+  { name: "id", type: "string", body: "The list's own id. What you pass to `POST /contacts/{id}/lists`." },
+  { name: "object", type: '"list"', body: "Always the literal string." },
+  { name: "name", type: "string", body: "What the seller calls it. Unique within a shop, case-folded." },
+  { name: "description", type: "string | null", body: "The seller's own note about what this list is for." },
+  {
+    name: "doubleOptIn",
+    type: "boolean",
+    body:
+      "Whether joining needs a click in the member's own inbox. **The field that decides what a write can achieve**: on a list that asks for it, a join lands as `pending` and no API call will ever produce a subscriber. The one exception is a contact who already carries `marketingConsentAt` for this shop — they have clicked a link for this seller before, and asking twice costs a real join.",
+  },
+  {
+    name: "subscribedCount",
+    type: "number",
+    body:
+      "How many people a send would actually reach. **This is the audience size.** If a seller asks how big a list is, this is the honest answer.",
+  },
+  {
+    name: "pendingCount",
+    type: "number",
+    body:
+      "Added to a double opt-in list and not yet confirmed. On the list, and **not** recipients. Adding this to `subscribedCount` overstates every list a seller has by exactly the number of people who never clicked, which is the commonest way an audience number becomes a lie.",
+  },
+  { name: "createdAt", type: "string | null", body: "ISO 8601, when the list was made." },
+  { name: "updatedAt", type: "string | null", body: "ISO 8601, when it last changed." },
+] as const satisfies readonly Field[];
+
+type _ListIsComplete = Exhaustive<
+  (typeof LIST_FIELDS)[number]["name"],
+  KeysOf<ReturnType<typeof contactListResource>>
 >;

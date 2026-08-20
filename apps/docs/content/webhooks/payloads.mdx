@@ -77,14 +77,15 @@ later adds `subscription.cancelled` remaps nothing, because what differs between
 them is which one fired and not what a membership is.
 
 <Callout type="info">
-The first two are the **same objects the REST API returns**, built by the same
-code — so one field map works against both, and a consumer that stored only an
-id can fetch the rest with `GET /orders/{id}` and see identical field names.
+All four are the **same objects the REST API returns**, built by the same code —
+so one field map works against both, and a consumer that stored only an id can
+fetch the rest and see identical field names: `GET /orders/{id}`,
+`GET /contacts/{id}`, [`GET /subscriptions/{id}`](/api/subscriptions) and
+[`GET /disputes/{id}`](/api/disputes).
 
-The other two have no endpoint at all. There is no
-`GET /api/v1/subscriptions/{id}` and no dispute endpoint, which is exactly why
-their shapes are written out in the [object reference](/objects) rather than
-left to a REST page to describe.
+That was not always true of the last two. Until they had endpoints, a consumer
+holding a `subscription.created` had the id of something it could not look up,
+and a missed delivery meant a state it could never recover.
 </Callout>
 
 ## Headers

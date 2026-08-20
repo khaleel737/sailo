@@ -1,0 +1,69 @@
+---
+title: List object
+description: A named list a contact can be on. subscribedCount is the audience; pendingCount is people who never confirmed, and the two must not be added together.
+---
+
+import { Callout } from "nextra/components";
+
+# List
+
+A named list — what a seller addresses a broadcast to. What `GET /lists` and
+`GET /lists/{id}` answer with.
+
+<ListFields />
+
+## The counts are not additive
+
+<Callout type="error">
+**`subscribedCount + pendingCount` is not an audience size.** Reporting the sum
+overstates every list a seller has by exactly the number of people who never
+clicked their confirmation link.
+</Callout>
+
+`subscribedCount` is who a send would reach. That is the number to show a seller
+who asks how big a list is.
+
+`pendingCount` is who was added to a double opt-in list and has not confirmed.
+They are on the list and they are not recipients.
+
+Neither includes people who left. A removed membership is kept as the record
+that they left — so the next import does not quietly put them back — but nothing
+counts it and nothing mails it.
+
+## `doubleOptIn` decides what a write can do
+
+On a list that asks for confirmation, which is the default, a join lands as
+`pending` and **no API call will ever produce a subscriber**. Only the person's
+own click does.
+
+The one exception is not a loophole: a contact who already carries
+`marketingConsentAt` for this shop has clicked a link in their own inbox for
+this seller before, so their join lands as `subscribed` directly.
+
+## Membership lives on the person
+
+There is no members array on this object and no `GET /lists/{id}/contacts`.
+Membership is read from the contact — `GET /contacts/{id}/lists` — because that
+is where the [consent rules](/api/contacts#consent) governing who you may email
+live.
+
+The three states a membership can be in are `subscribed`, `pending` and
+`removed`, and only the first is a recipient.
+
+## Example
+
+```json
+{
+  "data": {
+    "id": "b8c1a057-3e62-4d19-9f74-5a0c8b2e6d13",
+    "object": "list",
+    "name": "Newsletter",
+    "description": "Monthly, and never more than that.",
+    "doubleOptIn": true,
+    "subscribedCount": 412,
+    "pendingCount": 7,
+    "createdAt": "2026-04-18T12:00:00.000Z",
+    "updatedAt": "2026-04-18T12:00:00.000Z"
+  }
+}
+```

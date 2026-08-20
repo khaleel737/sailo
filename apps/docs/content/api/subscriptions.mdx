@@ -1,0 +1,92 @@
+---
+title: Subscriptions
+description: Read a shop's memberships, and the two fields that decide whether somebody still has access — currentPeriodEnd and billingMode, not the status alone.
+---
+
+import { Callout } from "nextra/components";
+
+# Subscriptions
+
+A membership: one buyer paying a shop on a cycle, for a product, until they stop.
+
+These endpoints exist because the seven `subscription.*` webhooks did not have
+them. An event that carries an id into a system with no way to resolve it is
+half an integration — you could be told a membership changed, and had nowhere to
+ask what it changed *to*.
+
+## Revoke on `currentPeriodEnd`, never on the cancellation
+
+<Callout type="error">
+`subscription.cancelled` and `cancelAtPeriodEnd: true` both mean **the member
+asked to stop**. They have paid through `currentPeriodEnd` and keep their access
+until it. Revoking when you see the cancellation takes away a month somebody
+already bought.
+</Callout>
+
+The sequence for a paid community is:
+
+1. `cancelAtPeriodEnd` flips to `true`, and `canceledAt` is stamped. Change
+   nothing — they are still a member.
+2. `currentPeriodEnd` passes and the membership ends. `subscription.ended`
+   fires. **Now** remove the Discord role.
+
+`status` alone will not tell you this. A cancelled-but-still-running membership
+and an ended one can both read `canceled`, and the date is the only thing that
+separates them.
+
+## `past_due` is not "gone"
+
+A card that failed this morning puts the membership in `past_due`. Stripe will
+retry it, and most of them succeed. An integration that revokes access on the
+first failed charge takes it away from somebody whose second attempt clears that
+afternoon — and Sailo will not tell you to give it back, because from its point
+of view nothing ended.
+
+`trialing`, `active` and `past_due` are the three statuses in which somebody
+still has what they paid for.
+
+## `billingMode` changes what renewal means
+
+**`stripe`** — a card, on the seller's connected account. It renews itself, and
+`subscription.renewed` follows.
+
+**`manual`** — Sailo raises a renewal order and a human settles it, at the door
+or by bank transfer. Nothing will ever arrive from Stripe about one of these, so
+an integration waiting for a card renewal on a manual membership waits for ever.
+`paymentMethod` names the rail they actually pay on.
+
+The two are otherwise identical. Access, grace and cancellation all read
+`status` and `currentPeriodEnd` and never ask how those came to be written,
+which is exactly what a consumer should do too.
+
+## Prices are snapshotted
+
+`price` and `intervalCount` are what *this member* agreed to, not what the
+product costs now. A seller who re-prices a membership has not re-priced the
+people already on it. If you are reconciling revenue, this is the number that
+was actually charged.
+
+## What is deliberately absent
+
+**Every Stripe identifier.** `stripeSubscriptionId`, `stripeCustomerId` and
+`stripeAccountId` all name objects in the *seller's* Stripe account, and
+shipping them would let anything holding a payload address that account
+directly. The membership's own `id` is the handle, and it is the one the
+webhooks speak too.
+
+**Writes.** There is no way to cancel, pause or re-price a membership through
+this API. Those change what somebody is charged, and they belong in the admin
+where the seller can see the consequence before they commit to it.
+
+## The object
+
+The full shape is on the
+[subscription object reference](/objects/subscription). It is identical to the
+`data` of every `subscription.*` webhook, so one field map works against both.
+
+<Endpoints match="/subscriptions" />
+
+## Getting a key
+
+The API is on the <ApiPlanName /> plan. Reading memberships needs only a
+read key. Create one under <KeyLink />.

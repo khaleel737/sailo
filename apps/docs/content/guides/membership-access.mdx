@@ -152,14 +152,28 @@ product it is a subscription to, and that product is readable with
 
 ## Bootstrapping
 
-There is no `GET /api/v1/subscriptions`, so you cannot page existing members at
-setup.
+Page [`GET /subscriptions`](/api/subscriptions) once at setup, and you have every
+existing member before a single event arrives.
 
-The practical approach: turn the integration on, let it build state from events
-as they arrive, and grant access on demand for anybody it has not seen — a
-member who logs in and is unknown gets checked against your own records or
-granted provisionally. Within a billing cycle every active membership has sent
-you at least a `renewed`.
+<CurlExample path="/subscriptions?status=active" />
 
-If that does not work for your case, [get in touch](/support) — it is a real gap
-rather than a decision.
+Run it for `trialing` and `past_due` as well — those are the other two statuses
+in which somebody still has what they paid for — or omit `status` and decide
+from `currentPeriodEnd` yourself, which is the more robust reading.
+
+This used to be a genuine gap. Until these endpoints existed the advice here was
+to turn the integration on, build state from events as they arrived, and grant
+access provisionally to anybody it had not seen yet — which worked, roughly,
+within a billing cycle. It is no longer necessary and you should not do it.
+
+## Reconciling
+
+The same endpoint makes a nightly reconcile possible, and it is worth running
+one. Events are at-least-once but not guaranteed to be at-least-*eventually*: an
+endpoint that was down for a day and exhausted its retries has permanently
+missed those deliveries, and without a re-read your access state stays wrong
+until that member's next renewal.
+
+Page `/subscriptions`, compare `currentPeriodEnd` against what you hold, and fix
+the difference. It is cheap — most shops are a page or two — and it converges on
+the truth rather than accumulating drift.

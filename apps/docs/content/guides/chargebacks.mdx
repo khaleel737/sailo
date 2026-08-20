@@ -94,6 +94,18 @@ Note the `GET /orders/{id}` call. The dispute payload carries `orderId` and not
 the order — so this is the one place where fetching after an event is right
 rather than wasteful.
 
+### Catching up, and catching what you missed
+
+The event tells you a case opened. [`GET /disputes`](/api/disputes) is how you
+find the ones already open when you wired this up, and how you re-read a case
+later to see whether it was won:
+
+<CurlExample path="/disputes?status=needs_response" />
+
+Worth running on a schedule as well as on the event. A missed delivery on any
+other resource costs you a stale row; a missed `dispute.opened` costs a deadline,
+and there is no second chance at one.
+
 ## What to gather, by reason
 
 `reason` is Stripe's string. The evidence that answers each is different, and

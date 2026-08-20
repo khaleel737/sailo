@@ -199,6 +199,45 @@ this is safe to retry.
 automation should delete by omitting it — and tags decide who a broadcast
 reaches.
 
+## Lists, and why they are not tags
+
+A tag says what somebody *is*. A [list](/api/lists) is what a seller actually
+addresses a broadcast to — so a mirror built on tags alone copies the labels and
+not the audiences.
+
+Read them from the person:
+
+<CurlExample path="/contacts/c1d2e3f4-5a6b-7c8d-9e0f-1a2b3c4d5e6f/lists" />
+
+and write with `POST /contacts/{id}/lists`:
+
+```bash
+curl -X POST https://api.sailo.store/api/v1/contacts/{id}/lists \
+  -H "Authorization: Bearer sailo_sk_…" \
+  -H "Content-Type: application/json" \
+  -d '{"join":["b8c1a057-3e62-4d19-9f74-5a0c8b2e6d13"]}'
+```
+
+<Callout type="error">
+**A join does not make a subscriber.** On a double opt-in list — the default —
+the membership lands as `pending` and only that person's own click turns it into
+`subscribed`. The response tells you which state each membership settled in.
+Read it; do not assume the one you asked for.
+</Callout>
+
+The same rule as `sendOptIn`, one level down, and for the same reason: consent
+is a thing a person gave, and a request body is a claim that they did.
+
+Two more things worth knowing before you build on it:
+
+- **Only `subscribed` is a recipient.** A membership can be `subscribed`,
+  `pending` or `removed`, and when you mirror an audience size, use
+  `subscribedCount` from the list object. Adding `pendingCount` to it overstates
+  every list by exactly the people who never clicked.
+- **A re-join never demotes.** Somebody already subscribed who is added again
+  stays subscribed rather than dropping back to `pending`, so the write is safe
+  to retry and safe to run from a nightly reconcile.
+
 ## Deletions
 
 There is no `DELETE /contacts/{id}`, and no `contact.deleted` event.

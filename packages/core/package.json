@@ -18,6 +18,7 @@
     "./order-lines": "./src/orders/order-lines.ts",
     "./order-status": "./src/orders/order-status.ts",
     "./payment-status": "./src/orders/payment-status.ts",
+    "./subscription-status": "./src/memberships/subscription-status.ts",
     "./catalog": "./src/catalog/index.ts",
     "./variants": "./src/catalog/variants.ts",
     "./lead-questions": "./src/catalog/lead-questions.ts",

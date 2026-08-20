@@ -1,13 +1,14 @@
 import type { MetaRecord } from "nextra";
 
 /**
- * `money` first because every other page here refers to it, then the four
- * objects the REST API returns, then the two it does not.
+ * `money` first because every other page here refers to it, then the objects
+ * in the order their resource pages appear under `/api`.
  *
- * Subscriptions and disputes are last for a reason worth keeping: they have no
- * endpoint at all and reach a consumer only through a webhook, so a reader
- * arriving from `/api` meets the four they can fetch before the two they
- * cannot.
+ * The old ordering put subscriptions and disputes last, with a note saying
+ * they were the two with no endpoint at all — reachable only through a
+ * webhook. Both have endpoints now, so the distinction the order encoded no
+ * longer exists and the order follows `/api/_meta.ts` instead. There is no
+ * longer any object here a consumer cannot fetch.
  */
 export default {
   index: "Overview",
@@ -16,6 +17,9 @@ export default {
   order: "Order",
   product: "Product",
   contact: "Contact",
+  list: "List",
   subscription: "Subscription",
   dispute: "Dispute",
+  booking: "Booking",
+  staff: "Staff",
 } satisfies MetaRecord;

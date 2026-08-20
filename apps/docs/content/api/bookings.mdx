@@ -1,0 +1,104 @@
+---
+title: Bookings
+description: Read a shop's appointments for a calendar that is not ours. Windowed by from and to, ordered newest-booked first, and isExclusive decides what counts as busy.
+---
+
+import { Callout } from "nextra/components";
+
+# Bookings
+
+An appointment: a slot in a shop's diary that somebody has bought.
+
+## Ordered by when it was booked, not when it happens
+
+Every list in this API is newest-first on creation time, and this one is no
+exception — so `/bookings` gives you appointments in the order they were
+*booked*. To ask about a date range, use `from` and `to`.
+
+That is a deliberate trade. The two questions a calendar integration asks are:
+
+- **"What has been booked since I last looked?"** — the default order answers
+  this directly, which is the incremental sync most integrations actually run.
+- **"What is in the diary next week?"** — the window answers this, and sorting
+  a page of results by `startsAt` is one line at your end.
+
+<CurlExample path="/bookings?from=2026-08-24T00:00:00Z&to=2026-08-31T00:00:00Z" />
+
+Both bounds are ISO 8601. `from` is inclusive, `to` is exclusive, and **the
+window is on when an appointment starts** — not on overlap. An appointment that
+began before `from` and runs into it is not in the answer.
+
+## `isExclusive` decides what counts as busy
+
+<Callout type="warning">
+Mirroring every booking into a calendar as a busy block will invent clashes that
+do not exist, and will book a teacher out of their own class.
+</Callout>
+
+**`isExclusive: true`** — a one-to-one appointment. The claim holds the whole
+slot, and nothing else can be booked into it.
+
+**`isExclusive: false`** — a seat in a class. Several of these share one time
+window quite happily, and `seats` says how many places this particular booking
+took. Six people in a yoga class is six bookings over the same hour, and none of
+them conflict.
+
+## There is no status, and none is missing
+
+A booking has no `cancelled` state because a released slot is a deleted claim:
+an order that is cancelled or refunded gives the time back by removing the row.
+
+So:
+
+- An appointment that answers is one that still stands.
+- An id that worked yesterday and 404s today is how you learn it was dropped.
+- A full re-read of a window is the only way to detect cancellations.
+
+If you are keeping a mirror in step, re-read the window rather than trusting an
+append-only log of what you saw. That is the same shape of sync a calendar feed
+needs anyway.
+
+## Times and time zones
+
+`startsAt` and `endsAt` are UTC, like every timestamp in this API. Render them in
+the *staff member's* `timeZone` where the booking has one, and the shop's where
+it does not.
+
+<Callout type="warning">
+A null `timeZone` on a staff member means **the shop's zone**, not UTC.
+Defaulting it to UTC shifts every appointment for any shop that is not in
+London.
+</Callout>
+
+## `staffId` is often null
+
+Plenty of shops book the shop rather than a named person — one chair, one room,
+one van. Those bookings carry `staffId: null` and that is not missing data.
+
+Where it is set, `staffName` is resolved for you so a diary entry does not need
+a second call, and it can name somebody who has since been stood down: taking
+a person off the roster deactivates them precisely so the appointments already
+against them keep naming somebody.
+
+## What is deliberately absent
+
+**Writes.** There is no way to create, move or cancel an appointment here.
+Booking a slot is not a row insert — it is an availability check against the
+roster, the shop's hours, any closures and an external calendar feed, then an
+exclusive claim taken under contention. An endpoint that let an integration
+skip that would double-book real people.
+
+**Availability.** There is no "what is free on Tuesday" endpoint. The answer
+depends on all of the above, and a consumer that computed it from the bookings
+alone would be confidently wrong.
+
+## The object
+
+The full shape is on the [booking object reference](/objects/booking).
+
+<Endpoints match="/bookings" />
+
+## Getting a key
+
+The API is on the <ApiPlanName /> plan. Reading the diary needs only a read key.
+Create one under <KeyLink />.

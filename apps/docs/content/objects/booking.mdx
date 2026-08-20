@@ -1,0 +1,73 @@
+---
+title: Booking object
+description: One appointment in a shop's diary. isExclusive decides whether it blocks a slot or is a seat in a class, and there is no cancelled state.
+---
+
+import { Callout } from "nextra/components";
+
+# Booking
+
+An appointment: a slot somebody has bought. What `GET /bookings` and
+`GET /bookings/{id}` answer with.
+
+<BookingFields />
+
+## `isExclusive` is the field to read first
+
+<Callout type="warning">
+Mirroring every booking into a calendar as a busy block invents clashes that do
+not exist, and books a teacher out of their own class.
+</Callout>
+
+**True** — a one-to-one appointment. The claim holds the whole slot.
+
+**False** — a seat in a class. Several bookings share one window without
+conflicting, and `seats` says how many places this one took.
+
+## There is no status
+
+A booking has no `cancelled` state, and none is missing. A released slot is a
+deleted claim: an order that is cancelled or refunded gives the time back by
+removing the row.
+
+So an appointment that is returned is one that still stands, and an id that
+worked yesterday and 404s today is how you learn it was dropped. Re-read a
+window rather than keeping an append-only log of what you have seen.
+
+## Reading the times
+
+`startsAt` and `endsAt` are UTC, like every timestamp Sailo sends. Render them in
+the staff member's [`timeZone`](/objects/staff) where the booking names one, and
+the [shop's](/objects/shop#the-two-fields-everything-else-depends-on) where it
+does not.
+
+A null `timeZone` on a staff member means the shop's zone, **not** UTC.
+
+## `productTitle` is live, unlike an order line
+
+An [order item](/objects/order) keeps the title it sold under, because what was
+bought is a historical fact. A booking's `productTitle` is read fresh, so a
+service the seller renames renames itself in every future appointment. That is
+the right behaviour for a diary — the person turning up on Tuesday is coming for
+whatever the service is called on Tuesday.
+
+## Example
+
+```json
+{
+  "data": {
+    "id": "2a6d8f30-91b4-4c27-8e53-0f1a7c6b9d84",
+    "object": "booking",
+    "orderId": "8f2b41d6-0c93-4f77-a1e5-9b6d2c4a7e01",
+    "productId": "9a7e2c11-6b48-4d0f-8e35-71c9a4f2b6d8",
+    "productTitle": "Cut and finish",
+    "staffId": "6d4b2e19-7a30-4f85-b1c6-2e8d5a3f0b71",
+    "staffName": "Ada",
+    "startsAt": "2026-08-24T13:30:00.000Z",
+    "endsAt": "2026-08-24T14:15:00.000Z",
+    "seats": 1,
+    "isExclusive": true,
+    "createdAt": "2026-08-12T09:41:07.221Z"
+  }
+}
+```

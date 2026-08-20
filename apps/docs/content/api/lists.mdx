@@ -1,0 +1,112 @@
+---
+title: Lists
+description: A shop's named lists and who is really on them. subscribedCount is the audience; pendingCount is not, and adding the two together overstates every list.
+---
+
+import { Callout } from "nextra/components";
+
+# Lists
+
+A named list a contact can be on — what a seller addresses a broadcast to.
+
+Tags say what somebody *is*. Lists say what they get *sent*. A CRM mirror built
+on tags alone copies the labels and not the audiences, which is the gap these
+endpoints close.
+
+## The two counts answer different questions
+
+<Callout type="error">
+**Never add `subscribedCount` and `pendingCount` together.** The sum is not an
+audience size, and reporting it as one overstates every list a seller has by
+exactly the number of people who never confirmed.
+</Callout>
+
+**`subscribedCount`** — people a send would actually reach. If a seller asks how
+big a list is, this is the honest answer.
+
+**`pendingCount`** — people added to a double opt-in list who have not yet
+clicked the link in their own inbox. They are on the list and they are **not**
+recipients.
+
+Neither count includes people who left. A removed membership is kept as a record
+that they left — so the next import does not quietly put them back — but nothing
+counts it and nothing mails it.
+
+## `doubleOptIn` decides what a write can achieve
+
+On a list that asks for confirmation, which is the default, adding somebody
+produces a `pending` membership and **no request to this API will ever produce a
+subscriber**. Only their own click does.
+
+There is one exception, and it is not a loophole: a contact who already carries
+`marketingConsentAt` for this shop has clicked a link in their own inbox for
+this seller before, so a join lands as `subscribed` directly. Asking a second
+time is ceremony that costs a real join.
+
+## Joining and leaving
+
+Membership is a property of the *person*, so both operations hang off the
+contact and are documented with it:
+
+- `GET /contacts/{id}/lists` — which lists somebody is on, and the state of
+  each.
+- `POST /contacts/{id}/lists` — `join` and `leave`, both arrays of list ids.
+
+Both are on the [contacts page](/api/contacts#lists). The rules that follow are
+about what those operations can and cannot achieve, which is a fact about lists.
+
+The write is deliberately the same shape as
+[tagging](/api/contacts#tagging-is-its-own-endpoint): add and remove rather than
+replace, because a membership a seller created by hand is not something an
+automation should be able to delete by leaving it out of an array.
+
+<Callout type="warning">
+**Read the response before you report anything.** It carries the state each
+membership actually settled in — `subscribed`, `pending` or `removed` — read
+back from the database rather than echoing what you asked for. Telling a seller
+somebody is subscribed when the answer says `pending` is the single most likely
+way to be wrong here.
+</Callout>
+
+Rules worth knowing before you rely on them:
+
+- **A re-join never demotes.** Somebody already `subscribed` who is added again
+  stays subscribed; they do not drop back to `pending`.
+- **A list id that is not this shop's is ignored**, not an error. The read-back
+  is how you tell whether anything happened.
+- **The same id in both arrays leaves them off it.** Removal is the safer half
+  of a contradiction to honour.
+- **Leaving marks the membership `removed`.** It does not delete it, and it does
+  not suppress the address — that is a different verb that ends every list at
+  once, and it is not on this API.
+
+## Consent is still not something you can assert
+
+Everything the [contacts page](/api/contacts#consent) says applies here.
+Joining a list is not the same act as granting marketing consent, and neither
+one can be claimed on somebody's behalf through a request body. `marketingConsentAt`
+on the contact is written when a person clicks, and nowhere else.
+
+## What is deliberately absent
+
+**Creating and deleting lists.** A list is a thing a seller names and builds an
+audience in. An integration creating them would fill the broadcasts screen with
+machine-named lists nobody recognises, and an integration deleting one would
+throw away an audience that took a year to gather.
+
+**Reading a list's members.** There is no `GET /lists/{id}/contacts`. Membership
+is read from the person — `GET /contacts/{id}/lists` — because that is where the
+consent rules governing who you may email live, and an endpoint that handed back
+an audience as a flat array is one that invites mailing it without ever looking
+at them.
+
+## The object
+
+The full shape is on the [list object reference](/objects/list).
+
+<Endpoints match="/lists" />
+
+## Getting a key
+
+The API is on the <ApiPlanName /> plan. Reading lists needs a read key; joining
+and leaving needs one with `write`. Create one under <KeyLink />.

@@ -1,0 +1,95 @@
+---
+title: Disputes
+description: Read chargebacks against a shop's sales, with the deadline to answer them. A chargeback is not a refund, and an inquiry has not taken any money yet.
+---
+
+import { Callout } from "nextra/components";
+
+# Disputes
+
+A chargeback: a buyer telling their bank to reverse a sale.
+
+The reason to read these over an API is the clock. A dispute allows about twenty
+days to respond, and the evidence that answers it almost always lives somewhere
+that is not Sailo — a helpdesk thread, a fulfilment tool, a shipping account.
+These endpoints are what let a seller's own tooling go and fetch it before the
+deadline rather than after.
+
+## A chargeback is not a refund
+
+<Callout type="error">
+A refund is the seller choosing to give money back. A chargeback is a bank
+taking it, plus a fee, and usually without asking. They land on the same order
+and they mean opposite things about the customer relationship — so never
+describe one as the other in an alert, a dashboard or a message to a seller.
+</Callout>
+
+On the order, a chargeback shows as `paymentStatus: "disputed"`. That is not
+`refunded` and must not be rendered as it.
+
+## `caseType` decides whether anything has been lost yet
+
+**`inquiry`** — a retrieval request. The issuer is asking a question on the
+cardholder's behalf. **No money has moved**, no fee has been charged, and
+answering it well often ends the matter. An alert that says "you have lost a
+sale" here is wrong and will send a seller into a panic over nothing.
+
+**`chargeback`** — the money is already gone. `deducted` is what actually left
+the balance: the sale plus Stripe's dispute fee, which is why a £42 chargeback
+costs £57.
+
+Both arrive through the same `dispute.opened` event, so branch on `caseType`
+before you tell anybody anything.
+
+## The three amounts
+
+| Field | What it is |
+| --- | --- |
+| `amount` | The disputed sale. |
+| `fee` | Stripe's dispute fee. Charged on a chargeback, not on an inquiry. |
+| `deducted` | Amount plus fee — what left the seller's balance. |
+
+`fundsWithdrawnAt` says when. On a win, `fundsReinstatedAt` says when they came
+back.
+
+## `dueBy` is the field to build on
+
+It is the response deadline, and it is null only on a case that no longer needs
+one. The useful automation is: on `dispute.opened`, read `dueBy`, and open a
+task in whatever the seller actually works out of with that date on it.
+
+## Only the seller's own sales
+
+This endpoint returns disputes where a buyer charged back one of the shop's
+sales. It never returns a *platform* dispute — a seller charging back their own
+Sailo subscription — because that is our money and our argument with them, and
+it has no business arriving in their Zapier account dressed as a customer
+chargeback. There is no filter that changes this.
+
+## What is deliberately absent
+
+**The evidence bundle.** `evidenceSnapshot` is the complete case assembled to
+answer the dispute: buyer address, delivery proof, the seller's own account of
+events. It exists to be sent to Stripe, not syndicated to whatever an
+integration points at. `completenessBp` tells you how strong the response was —
+in basis points, over the fields the case required — without shipping the
+response itself.
+
+**Responding.** You cannot submit evidence through this API. Answering a dispute
+is a one-shot action with a deadline and a fee attached, and it belongs in the
+admin where both are in front of the person doing it.
+
+**Stripe identifiers**, for the reason they are absent everywhere else: they
+address the seller's account.
+
+## The object
+
+The full shape is on the [dispute object reference](/objects/dispute), and it is
+identical to the `data` of `dispute.opened` and `dispute.closed`.
+
+<Endpoints match="/disputes" />
+
+## Getting a key
+
+The API is on the <ApiPlanName /> plan. Reading disputes needs only a read key.
+Create one under <KeyLink />.

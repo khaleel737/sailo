@@ -18,6 +18,7 @@ import type {
 import type { staffResources } from "./booking";
 import type { affiliates, coupons, deliveryMethods, paymentMethods } from "./commerce";
 import type {
+  bookingClaims,
   clients,
   doorPasses,
   invoices,
@@ -28,6 +29,7 @@ import type {
   stockRequests,
   tickets,
 } from "./orders";
+import type { contactLists } from "./contacts";
 import type { subscriptionSeats, subscriptions } from "./memberships";
 import type { disputes } from "./disputes";
 import type { broadcasts } from "./audience";
@@ -95,6 +97,14 @@ export type EventTier = typeof eventTiers.$inferSelect;
 export type EventSession = typeof eventSessions.$inferSelect;
 /** Somebody a buyer can book — spec 51. Not a login; see `booking.ts`. */
 export type StaffResource = typeof staffResources.$inferSelect;
+/**
+ * One appointment a shop owes, as the row that makes it exclusive.
+ *
+ * Carries no `shop_id` of its own — the product it is against is what makes it
+ * a shop's — so every reader of one joins to reach the shop, and the public
+ * API's list is written that way rather than filtering after the fact.
+ */
+export type BookingClaim = typeof bookingClaims.$inferSelect;
 export type Review = typeof reviews.$inferSelect;
 export type Order = typeof orders.$inferSelect;
 export type OrderItem = typeof orderItems.$inferSelect;
@@ -120,6 +130,14 @@ export type VisitDaily = typeof visitDaily.$inferSelect;
 export type PaymentMethod = typeof paymentMethods.$inferSelect;
 export type DeliveryMethod = typeof deliveryMethods.$inferSelect;
 export type Client = typeof clients.$inferSelect;
+/**
+ * A named list a contact can be on.
+ *
+ * The row alone, without the two membership counts a seller reads it by —
+ * those are a filtered aggregate over `contact_list_members` and belong to the
+ * query that asks for them, not to the table.
+ */
+export type ContactListRow = typeof contactLists.$inferSelect;
 export type Coupon = typeof coupons.$inferSelect;
 export type Affiliate = typeof affiliates.$inferSelect;
 export type Invoice = typeof invoices.$inferSelect;

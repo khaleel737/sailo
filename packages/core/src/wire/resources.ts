@@ -1,12 +1,15 @@
 import { minorPerMajor } from "../money/currency";
 import type {
+  BookingClaim,
   Client,
+  ContactListRow,
   Dispute,
   Order,
   OrderItem,
   Product,
   ProductVariant,
   Shop,
+  StaffResource,
   Subscription,
 } from "@sailo/db/schema";
 
@@ -463,6 +466,156 @@ export function subscriptionResource(sub: Subscription) {
     startedAt: iso(sub.startedAt),
     createdAt: iso(sub.createdAt),
     updatedAt: iso(sub.updatedAt),
+  };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Booking                                                                    */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * One appointment, as `GET /api/v1/bookings` describes it.
+ *
+ * The row this is built from is `booking_claims`, which exists to make a slot
+ * exclusive rather than to be read — so the two things a calendar integration
+ * actually needs, the name of the service and the name of the person taking
+ * it, are not on it. They are passed in rather than looked up here, because
+ * this module holds no database handle and because the list endpoint resolves
+ * both for a whole page in one query each; a resource function that fetched
+ * them would be a round trip per appointment.
+ *
+ * **`seats` and `isExclusive` are the pair that decides what an appointment
+ * means.** An exclusive claim is a one-to-one booking and holds the whole slot;
+ * a non-exclusive one is a seat in a class, and several sit in the same window
+ * without conflicting. A consumer mirroring these into a calendar that treats
+ * every entry as busy will double-book a class teacher out of their own class
+ * unless it reads `isExclusive` first.
+ *
+ * There is no status. A booking claim is released by deletion — an order that
+ * is cancelled or refunded gives the slot back by removing the row — so a claim
+ * that exists is an appointment that stands, and the absence of one from a
+ * later page is how a consumer learns it was dropped.
+ */
+export function bookingResource(
+  claim: BookingClaim,
+  context: { productTitle: string | null; staffName: string | null },
+) {
+  return {
+    id: claim.id,
+    object: "booking" as const,
+
+    orderId: claim.orderId,
+    productId: claim.productId,
+    /** The service as it is titled now, not as it was when booked. */
+    productTitle: context.productTitle,
+
+    /** Null on a shop that books no particular person — see `staffResource`. */
+    staffId: claim.staffId,
+    staffName: context.staffName,
+
+    startsAt: iso(claim.startsAt),
+    endsAt: iso(claim.endsAt),
+
+    /** How many places this claim takes. Always 1 on an exclusive booking. */
+    seats: claim.seatsTaken,
+    /** True when the claim holds the whole slot rather than a seat in it. */
+    isExclusive: claim.isExclusive,
+
+    createdAt: iso(claim.createdAt),
+  };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Staff                                                                      */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Somebody a buyer can book, as `GET /api/v1/staff` describes them.
+ *
+ * **Not a login and not a team member.** A staff resource is a bookable name on
+ * a roster — the person a buyer picks when they book a haircut — and it has no
+ * account, no password and no access to anything. The seller's actual
+ * colleagues are `member` rows against an organisation, which this API does not
+ * describe at all. Anything reading this as an identity is reading it wrong,
+ * which is why the object is `staff` and never `user`.
+ *
+ * **`calendarFeedUrl` is deliberately absent, and it is the one field here that
+ * would matter if it leaked.** It is the seller's private external calendar —
+ * an Google or iCloud secret link that anyone holding can read every
+ * appointment in that person's life, work or not. It is a credential wearing a
+ * URL's clothes, and the API returns no credentials.
+ *
+ * `hours` is absent for a duller reason: it is an internal weekly-hours blob
+ * whose shape is ours to change, and a consumer that needs to know when
+ * somebody is free should ask what is bookable rather than reimplement the
+ * calculation from the raw opening windows, closures and external busy feeds
+ * that go into it.
+ */
+export function staffResource(staff: StaffResource) {
+  return {
+    id: staff.id,
+    object: "staff" as const,
+    name: staff.name,
+    email: staff.email,
+    avatarUrl: staff.avatarUrl,
+    /** IANA name. Null means the shop's own zone, not UTC. */
+    timeZone: staff.timeZone,
+    /**
+     * Whether they can be booked at all right now.
+     *
+     * Inactive rather than deleted is how a seller takes somebody off the
+     * roster without breaking the appointments already against them, so an
+     * inactive person can still be the `staffId` on a future booking.
+     */
+    isActive: staff.isActive,
+    /** Where they sit in the seller's own ordering of the roster. */
+    position: staff.position,
+    createdAt: iso(staff.createdAt),
+    updatedAt: iso(staff.updatedAt),
+  };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Contact list                                                               */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A named list, as `GET /api/v1/lists` describes it.
+ *
+ * The two counts are the numbers a seller reads a list by, and they are
+ * separate because they answer different questions. `subscribedCount` is how
+ * many people a send would actually reach. `pendingCount` is how many were
+ * added to a double-opt-in list and have not yet clicked the link in their own
+ * inbox — they are on the list and they are **not** recipients, and a consumer
+ * that adds the two together and reports it as an audience size is overstating
+ * every list a seller has by exactly the number of people who never confirmed.
+ *
+ * Neither count includes members who left. `removed` is a state rather than a
+ * deletion, so the row survives to stop the next import quietly putting them
+ * back, but nothing counts them and nothing mails them.
+ */
+export function contactListResource(
+  list: ContactListRow,
+  counts: { subscribed: number; pending: number },
+) {
+  return {
+    id: list.id,
+    object: "list" as const,
+    name: list.name,
+    description: list.description,
+    /**
+     * Whether joining this list needs a click in the member's own inbox.
+     *
+     * The field that decides what `POST /contacts/{id}/lists` can achieve: on a
+     * double-opt-in list a join lands as `pending` and stays there until the
+     * person confirms, so an integration cannot put a subscriber on one by
+     * asking.
+     */
+    doubleOptIn: list.doubleOptIn,
+    subscribedCount: counts.subscribed,
+    pendingCount: counts.pending,
+    createdAt: iso(list.createdAt),
+    updatedAt: iso(list.updatedAt),
   };
 }
 

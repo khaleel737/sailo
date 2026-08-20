@@ -15,14 +15,22 @@ The question worth answering before you paste a key anywhere.
 - Read orders, their line items, delivery details and any appointment.
 - Read the catalogue, its variants and their stock.
 - Read the people on the shop's list, with their tags and consent state.
+- Read which lists exist, their real audience size, and which lists one contact
+  is on.
+- Read memberships — including whether one still entitles somebody to anything,
+  which is a question about `currentPeriodEnd` rather than about the status.
+- Read chargebacks against the shop's sales, and the deadline to answer them.
+- Read the diary and the bookable roster.
 
 ## With a write key, additionally
 
-Two things, and they are the whole of it: <WriteToolNames />.
+Three things, and they are the whole of it: <WriteToolNames />.
 
 - **Add somebody to the list**, or update and merge tags onto somebody already
   on it.
 - **Add and remove tags** on one contact.
+- **Join and leave lists** for one contact — which cannot produce a subscriber
+  on a double opt-in list, however it is asked.
 
 ## Never, with any key
 
@@ -30,15 +38,22 @@ Two things, and they are the whole of it: <WriteToolNames />.
   `marketingConsentAt: null`, whatever it passes. It can ask Sailo to send a
   double opt-in email; consent is written only when the person clicks the link.
   Never tell a seller a contact is subscribed on the strength of that call
-  alone.
+  alone. Joining a list is the same story one level down: on a double opt-in
+  list the membership settles as `pending`, and the reply says so.
 - Change an order — mark one paid, mark one shipped, add tracking, refund
   anything, or cancel anything.
 - Create, edit, publish, unpublish or delete a product, or change stock.
+- Cancel, pause or re-price a membership.
+- Respond to a chargeback, or read the evidence assembled to answer one.
+- Create, move or cancel an appointment, or change who is on the roster.
+- Create or delete a list.
 - Delete a contact, or read the seller's private notes on one.
 - Send an email, a broadcast or a notification.
 - Create or change a coupon, an affiliate, a delivery rate or a payment method.
 - See anything internal — no Stripe identifiers, no download tokens, no payment
-  proofs, no dispute evidence.
+  proofs, no dispute evidence, no staff calendar feed links.
+- See a *platform* dispute. A seller's own argument with Sailo over their
+  subscription is never returned as though a customer had raised it.
 - Touch billing, the seller's account, or another shop. A key names one shop.
 
 <Callout type="info">
@@ -80,18 +95,30 @@ documentation the model never reads.
 The same applies to `list_contacts`, which tells it that a contact without
 `marketingConsentAt` **must not** be added to a mailing list or newsletter tool.
 
+`update_contact_lists` carries the same rule for memberships, and
+`list_lists` tells a model in as many words not to add the two audience counts
+together — because `subscribed + pending` is the number that turns into a
+confidently wrong answer when a seller asks how big their list is.
+
 ## Server instructions
 
 Every client is told this at connection, whichever era it speaks:
 
-> Read and manage one Sailo shop: its orders, products and contacts. Amounts are
-> returned both as integer minor units (`cents`) and as a decimal string
-> (`amount`) — quote the decimal string to people. A contact's
-> `marketingConsentAt` is null unless that person opted in; never treat a
-> contact without it as someone who agreed to be emailed.
+> Read one Sailo shop — its orders, products, contacts, lists, memberships,
+> chargebacks and bookings — and manage its contacts. Amounts are returned both
+> as integer minor units (`cents`) and as a decimal string (`amount`) — quote
+> the decimal string to people. A contact's `marketingConsentAt` is null unless
+> that person opted in; never treat a contact without it as someone who agreed
+> to be emailed. A membership still entitles somebody to what they bought until
+> `currentPeriodEnd`, even after they cancel — never say access has ended before
+> that date. A chargeback is a bank reversing a sale and taking a fee; it is not
+> a refund and must never be described as one.
 
-Two rules, both aimed at the failures that matter: quoting `4999` at a customer,
-and mailing somebody who never agreed.
+Four rules, and each is there because getting it wrong produces a confident,
+plausible answer that the person reading it cannot tell is false: quoting `4999`
+at a customer who paid £49.99, mailing somebody who never agreed, telling a
+seller a cancelled member has already lost access when they have paid to the end
+of the month, and calling a chargeback a refund.
 
 ## Practical advice
 
@@ -99,8 +126,9 @@ and mailing somebody who never agreed.
 you try next. `lastUsedAt` then tells you which is still in use, and revoking
 one does not break the others.
 
-**Read-only by default.** The write tools are two contact operations. If you are
-not automating list-building, you do not need them.
+**Read-only by default.** The write tools are three contact operations. If you
+are not automating list-building, you do not need them — everything about
+orders, memberships, chargebacks and the diary is a read.
 
 **Revoke when you stop.** A key left in a configuration file on a laptop is a
 key. Revocation is immediate on the next request.
