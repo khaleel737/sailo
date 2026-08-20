@@ -1,0 +1,33 @@
+apps/hq/src/app/(panel)/marketing/_components/status-badge.tsx
+  s_a7bbf59e767e8f::t_2e602931edbf12 17
+  s_a7bbf59e767e8f::t_e0b5f6655040ea 2,4-8
+packages/marketing/src/campaign-status.ts
+  s_a7bbf59e767e8f::t_b307639795992e 1-49
+apps/web/src/app/admin/broadcasts/page.tsx
+  s_a7bbf59e767e8f::t_4ed7d8fa9ca799 252
+  s_a7bbf59e767e8f::t_91366637ef3f2e 30
+  s_a7bbf59e767e8f::t_f2ed0da595322b 24
+packages/marketing/package.json
+  s_a7bbf59e767e8f::t_2770b5391d736d 19
+apps/hq/src/app/(panel)/affiliates/page.tsx
+  s_a7bbf59e767e8f::t_cdc51af5cd2e5d 11-14,135-136
+  s_a7bbf59e767e8f::t_a9aef3dad2a1c9 18-19
+apps/web/src/app/admin/affiliates/page.tsx
+  s_a7bbf59e767e8f::t_cdc51af5cd2e5d 25-28,153-165
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "73440f27838e14d110a121e5057667b9015790a7",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
