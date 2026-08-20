@@ -30,7 +30,7 @@ import { MembershipSettingsCard } from "./membership-settings-card";
 import { LeadSettingsCard } from "./lead-settings-card";
 import type { ProductWithRelations } from "./product.types";
 import { interpolate } from "@sailo/i18n";
-import type { Category } from "@sailo/db/schema";
+import type { Category, EventSession, EventTier } from "@sailo/db/schema";
 
 /**
  * Adding or editing a product.
@@ -80,6 +80,10 @@ export function ProductForm({
   licensing = false,
   membershipTerms = false,
   staffResources = false,
+  eventTiers = false,
+  eventSessions = false,
+  tiers = [],
+  sessions = [],
   regionalCurrencies = [],
 }: {
   product?: ProductWithRelations;
@@ -102,6 +106,23 @@ export function ProductForm({
   membershipTerms?: boolean;
   /** Whether the plan includes staff and classes — spec 51. */
   staffResources?: boolean;
+  /**
+   * Whether the plan includes price bands, and whether it includes several
+   * dates — spec 50. Two flags because they are two plans: bands are Pro, a
+   * series is Business.
+   */
+  eventTiers?: boolean;
+  eventSessions?: boolean;
+  /**
+   * The bands and dates this event already has — spec 50.
+   *
+   * Loaded beside the product rather than on it: `event_tiers` and
+   * `event_sessions` have no drizzle relation, so `sellerProduct` cannot bring
+   * them along in its `with`, and adding one would put them on the phone's
+   * `products.get` and the catalogue list too.
+   */
+  tiers?: EventTier[];
+  sessions?: EventSession[];
   /**
    * The other currencies the shop quotes — spec 53.
    *
@@ -410,6 +431,15 @@ export function ProductForm({
             releaseOnPayment={releaseOnPayment}
             onReleaseOnPaymentChange={setReleaseOnPayment}
             timeZone={timeZone}
+            currency={currency}
+            /* The live price field, not the saved one: a seller typing a
+               ticket price wants the bands to read against what they have just
+               set the event at. */
+            basePrice={price}
+            tiers={tiers}
+            sessions={sessions}
+            eventTiers={eventTiers}
+            eventSessions={eventSessions}
           />
         ) : null}
 

@@ -26,3 +26,11 @@ export * from "./preorders";
  * anything: a cross-sell adds no pricing trust at all.
  */
 export * from "./offers";
+/**
+ * `tickets` is what an event may be sold in — spec 50's ceilings on bands and
+ * dates, and the weekly repeat. Pure for the same reason `variants` is: the
+ * seller's tier repeater is a client component and cannot reach the write path,
+ * and a ceiling the browser does not know is one the seller meets as a row that
+ * silently vanished on save.
+ */
+export * from "./tickets";

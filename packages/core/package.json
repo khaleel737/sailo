@@ -25,6 +25,7 @@
     "./preorders": "./src/catalog/preorders.ts",
     "./offers": "./src/catalog/offers.ts",
     "./codes": "./src/catalog/codes.ts",
+    "./tickets": "./src/catalog/tickets.ts",
     "./identity": "./src/identity/index.ts",
     "./slug": "./src/identity/slug.ts",
     "./handle": "./src/identity/handle.ts",

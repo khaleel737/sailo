@@ -134,21 +134,18 @@ for (const file of files) {
  * screen does not, so the translation is correct, wanted, and waiting.
  *
  * Named one by one rather than folded into a larger ceiling, because a number
- * hides what it is covering. Twenty-six free slots would absorb the next
- * accidental hardcoded string in silence; this list absorbs exactly these
- * twenty-six and fails on the twenty-seventh.
+ * hides what it is covering. Eleven free slots would absorb the next accidental
+ * hardcoded string in silence; this list absorbs exactly these eleven and fails
+ * on the twelfth.
  *
- * **Event tiers** (`tier*`, `tiersTitle`, `tiersBody`) — `event_tiers` is a
- * table, `claimEventCapacity` enforces the two-level ceiling narrower-first,
- * and `event-depth.scenario.ts` proves it. Nothing in `apps/web` calls it: no
- * editor writes a tier and the checkout claims product stock only. Deliberately
- * *not* variants — the note over `eventTiers` explains why a tier forced into
- * an option group becomes a fake option that renders in the picker.
- *
- * **Event sessions** (`sessionMode*`, `sessions*`, `sessionGenerate*`,
- * `sessionCapacity`) — `event_sessions` exists and `saveProduct` already reads
- * and gates `sessionMode`, so half of this is wired: what is missing is the
- * editor that creates the dates and the checkout that claims one.
+ * **Spec 50's fifteen are gone.** The tier repeater and the sessions editor are
+ * built — `event-tier-editor.tsx` and `event-session-editor.tsx` inside the
+ * event card, writing through `ProductInput.tiers` / `.sessions` and
+ * `syncTiers` / `syncSessions`. What is still not wired is the *checkout*:
+ * `claimEventCapacity` is called from no production path, so a tier's seats are
+ * not yet taken when somebody buys one. That is an unreachable function rather
+ * than an unshown string, so it is not this test's business — but it is the
+ * reason a seller can now name a band and cannot yet oversell one.
  *
  * **Staff rosters** (`staff*`) — `staff_resources` and `product_staff` exist
  * with `listStaff`, `staffCalendars` and `firstFreeStaff` behind them, and
@@ -161,23 +158,6 @@ for (const file of files) {
  * the entry is deleted, which is the point.
  */
 const UNBUILT = new Set([
-  // Spec 50 — ticket tiers.
-  "productForm.tiersTitle",
-  "productForm.tiersBody",
-  "productForm.tierName",
-  "productForm.tierPrice",
-  "productForm.tierCapacity",
-  "productForm.tierCapacityHint",
-  "productForm.tierHidden",
-  // Spec 50 — several dates on one event.
-  "productForm.sessionMode",
-  "productForm.sessionModeSingle",
-  "productForm.sessionModePickOne",
-  "productForm.sessionModeAllAccess",
-  "productForm.sessionsTitle",
-  "productForm.sessionGenerate",
-  "productForm.sessionGenerateCount",
-  "productForm.sessionCapacity",
   // Spec 51 — who takes the bookings.
   "productForm.staffTitle",
   "productForm.staffBody",

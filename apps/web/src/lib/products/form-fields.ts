@@ -34,6 +34,33 @@ export type VariantRow = {
   sellUntil?: string;
 };
 
+/**
+ * One price band, as the tier repeater serialises it — spec 50.
+ *
+ * Every field is a string because a browser composed it. `id` is what makes a
+ * saved band the same band across an edit: a tier carries the seats already
+ * sold against it, and a row matched by its label would give them all back the
+ * moment a seller fixed a typo.
+ */
+export type TierRow = {
+  id?: string;
+  name?: string;
+  price?: string;
+  /** Blank shares the product's stock, which is a band that names a price. */
+  capacity?: string;
+  hidden?: boolean;
+};
+
+/** One date, as the session editor serialises it — spec 50. */
+export type SessionRow = {
+  id?: string;
+  /** `2026-08-31T19:00`, the only shape a `datetime-local` input produces. */
+  startsAt?: string;
+  endsAt?: string;
+  capacity?: string;
+  cancelled?: boolean;
+};
+
 export type FileRow = {
   name?: string;
   url?: string;
