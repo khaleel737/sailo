@@ -64,6 +64,11 @@ vi.mock("@sailo/db", () => ({
         innerJoin: function () {
           return this;
         },
+        // The sessions join — spec 50. Left, so an event with no dates still
+        // reminds off the product's own.
+        leftJoin: function () {
+          return this;
+        },
         where: function () {
           return this;
         },
@@ -118,6 +123,12 @@ const row = (over: Record<string, unknown> = {}) => ({
     ...(over.product as object),
   },
   shop: { id: "shop-1", handle: "ada" },
+  /*
+   * The date this registration is for — spec 50. Null here, because that is
+   * what a left join gives every event that runs once, which is all of them
+   * until a seller adds dates.
+   */
+  session: (over.session as object) ?? null,
 });
 
 beforeEach(() => {
@@ -154,8 +165,20 @@ describe("the two passes", () => {
   it("covers non-overlapping windows, so a late registrant gets one email", async () => {
     await sendDueEventReminders(NOW);
 
+    /*
+     * The bound arrives wrapped — spec 50.
+     *
+     * The window is now compared against `coalesce(session.starts_at,
+     * product.event_starts_at)`, which is an expression rather than a column,
+     * so drizzle has nothing to encode the value against and sends the wrong
+     * literal. `sql.param(at, products.eventStartsAt)` names the encoder, and
+     * what the comparator receives is that wrapper rather than a bare `Date`.
+     * Unwrapped here, because the window this test is about is unchanged.
+     */
+    const dateOf = (value: unknown): Date =>
+      value instanceof Date ? value : ((value as { value: Date }).value);
     const minutesFromNow = (value: unknown) =>
-      Math.round(((value as Date).getTime() - NOW.getTime()) / 60_000);
+      Math.round((dateOf(value).getTime() - NOW.getTime()) / 60_000);
 
     const [dayFrom, hourFrom] = bounds.filter((b) => b.op === "gt");
     const [dayTo, hourTo] = bounds.filter((b) => b.op === "lte");
@@ -208,6 +231,42 @@ describe("claiming before sending", () => {
     expect(result.sent).toBe(1);
     expect(sendEventReminder).toHaveBeenCalledOnce();
   });
+
+  /*
+   * The date is part of the claim — spec 50.
+   *
+   * `0045` gives the unique index `NULLS NOT DISTINCT`, which is what makes a
+   * null session collide with itself: an ordinary single-date event has to keep
+   * claiming exactly once, or it is reminded on every cron tick for ever.
+   */
+  it("claims against the date, and against a null one for an event with none", async () => {
+    duePasses = [[row({ session: { id: "session-4" } }), row({ order: { id: "order-2" } })], []];
+
+    await sendDueEventReminders(NOW);
+
+    expect(inserted[0]).toMatchObject({ orderId: "order-1", sessionId: "session-4" });
+    expect(inserted[1]).toMatchObject({ orderId: "order-2", sessionId: null });
+  });
+
+  /*
+   * Two dates of one class are two registrations, each with its own claim —
+   * without the session in the key they collapse to one and the buyer is
+   * reminded about Tuesday and never about Thursday.
+   */
+  it("claims once per date when a buyer booked two of them", async () => {
+    duePasses = [
+      [
+        row({ session: { id: "tuesday" } }),
+        row({ session: { id: "thursday" } }),
+      ],
+      [],
+    ];
+
+    const result = await sendDueEventReminders(NOW);
+
+    expect(result.sent).toBe(2);
+    expect(inserted.map((v) => v.sessionId)).toEqual(["tuesday", "thursday"]);
+  });
 });
 
 describe("what the reminder says", () => {
@@ -247,6 +306,57 @@ describe("what the reminder says", () => {
           joinUrl: null,
           location: "The studio, 4 Mill Lane",
         }),
+      }),
+    );
+  });
+
+  /*
+   * The date the buyer actually booked — spec 50, and the reason this cron had
+   * to learn about sessions at all.
+   *
+   * `products.event_starts_at` is the *first* Tuesday of a weekly class, so a
+   * buyer holding the fourth one was told to come three weeks early and then
+   * never heard again, because that send spent the claim.
+   */
+  it("names the date this registration is for, not the first of the series", async () => {
+    const fourth = new Date("2026-09-08T18:00:00.000Z");
+    duePasses = [[], [row({ session: { id: "s4", startsAt: fourth } })]];
+
+    await sendDueEventReminders(NOW);
+
+    expect(sendEventReminder).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: expect.objectContaining({ startsAt: fourth }),
+      }),
+    );
+  });
+
+  /*
+   * And that date's own room when it has one. A class that moves for a single
+   * week has to say so on that week's mail rather than on all of them — the
+   * same fallback `eventAccessForOrder` applies.
+   */
+  it("prefers the date's own room and link, falling back to the product's", async () => {
+    duePasses = [
+      [],
+      [
+        row({ session: { id: "s4", startsAt: NOW, location: "The big room" } }),
+        row({ order: { id: "order-2" }, session: { id: "s5", startsAt: NOW } }),
+      ],
+    ];
+
+    await sendDueEventReminders(NOW);
+
+    expect(sendEventReminder).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({
+        event: expect.objectContaining({ location: "The big room" }),
+      }),
+    );
+    expect(sendEventReminder).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        event: expect.objectContaining({ location: "The studio, 4 Mill Lane" }),
       }),
     );
   });
