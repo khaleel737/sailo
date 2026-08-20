@@ -146,6 +146,11 @@ function triggerMatches(
     case "checkout.abandoned": {
       // The same vocabulary as `product.purchased`: an empty config means any
       // abandoned checkout, ids mean only checkouts holding one of them.
+      // KNOWN GAP: a cart session carries no product ids (its contents are
+      // not on the session), so a product-filtered flow never fires for a
+      // cart — even one holding the product. Deliberate until sessions
+      // record their lines: matching every cart instead would email buyers
+      // whose cart did not hold the product.
       const wanted = config.productIds;
       if (!Array.isArray(wanted) || wanted.length === 0) return true;
       const held = Array.isArray(context.productIds) ? context.productIds : [];

@@ -178,6 +178,10 @@ export default async function FlowPage({
             : typeof config.productId === "string"
               ? config.productId
               : undefined,
+          /* The full stored filter, so an unrelated edit cannot narrow it. */
+          productIds: Array.isArray(config.productIds)
+            ? config.productIds.map(String)
+            : undefined,
           fields: Array.isArray(config.fields)
             ? config.fields.map(String)
             : undefined,

@@ -545,6 +545,15 @@ async function announceAbandonments(now: Date, due: Date): Promise<number> {
         subject: { email: session.email, clientId: session.clientId },
         context: {
           sessionId: session.id,
+          /*
+           * A cart session records no product (`productId` null means "whole
+           * cart"), so a product-filtered flow never matches one — the cart's
+           * contents are not on the session and guessing would email buyers
+           * whose cart did not hold the product, which is worse than staying
+           * quiet. A KNOWN GAP until sessions record their lines: a seller
+           * who filters on product X gets no enrolment for a cart containing
+           * X. See `triggerMatches` in @sailo/marketing/automations.
+           */
           productIds: session.productId ? [session.productId] : [],
         },
         now,

@@ -69,7 +69,14 @@ export function FlowEditor({
   status: "draft" | "active" | "paused";
   name: string;
   entryPolicy: "once" | "repeat";
-  trigger: { type: string; listId?: string; productId?: string; fields?: string[] };
+  trigger: {
+    type: string;
+    listId?: string;
+    productId?: string;
+    /** The stored filter in full — this editor's picker shows only the first. */
+    productIds?: string[];
+    fields?: string[];
+  };
   /** Null when the stored graph is not the linear shape this editor draws. */
   steps: EditorStep[] | null;
   stats: { queued: number; waiting: number; done: number; failed: number; cancelled: number };
@@ -111,21 +118,34 @@ export function FlowEditor({
   const run = (act: () => Promise<FlowState>) =>
     start(async () => setState(await act()));
 
-  const save = (form: FormData) =>
-    run(() =>
+  const save = (form: FormData) => {
+    const chosen = String(form.get("productId") ?? "") || undefined;
+    return run(() =>
       saveFlow(flowId, {
         name,
         entryPolicy: policy,
         trigger: {
           type: String(form.get("trigger") ?? trigger.type),
           listId: String(form.get("listId") ?? "") || undefined,
-          productId: String(form.get("productId") ?? "") || undefined,
+          productId: chosen,
+          /*
+           * The stored filter may hold several ids even though this picker
+           * shows one. Untouched, the whole set rides through the save; a
+           * new choice replaces it. Without this, any unrelated edit — a
+           * renamed step, a longer timer — silently narrowed a multi-product
+           * filter to its first entry.
+           */
+          productIds:
+            chosen === (trigger.productId || undefined)
+              ? trigger.productIds
+              : undefined,
           fields:
             String(form.get("updatedFields") ?? "") === "tags" ? ["tags"] : undefined,
         },
         steps: rows.map(({ key: _key, ...step }) => step),
       }),
     );
+  };
 
   const addRow = (step: EditorStep) =>
     setRows((prev) => [...prev, { ...step, key: freshKey() }]);
