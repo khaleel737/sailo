@@ -1,0 +1,21 @@
+packages/i18n/src/tooling/protected-write.test.ts
+  s_16f404b29c0075::t_bda95459bb0369 1-67
+scripts/i18n/fill.mts
+  s_16f404b29c0075::t_eb232ead77d065 105-159,376-378
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "59a20b9038ce56a43c41d67b66e85bdd23e1056d",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
