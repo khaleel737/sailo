@@ -21,6 +21,7 @@ import {
   releaseEventCapacity,
 } from "@sailo/commerce/ticketing";
 import { createOrderIntent } from "@/lib/actions/orders";
+import { previewOrder } from "@/lib/actions/order-preview";
 import { restoreStock, retakeStock } from "@sailo/commerce/catalog";
 
 /**
@@ -644,6 +645,39 @@ describe("buying a ticket in a band", () => {
     expect(refusals).toContain("VIP is sold out.");
     expect(refusals).toContain("Early bird is sold out.");
   }, CROWD_TIMEOUT);
+
+  /*
+   * The basket's half of `lineKey`, from the server's side.
+   *
+   * Two bands of one event are two lines, and the drawer pairs each stored
+   * line to a priced one by product, variant, band and date. Before the last
+   * two were in that key both lines had equal identities: `find` returned the
+   * first for both, so the buyer read one price twice against an order that
+   * charged two.
+   */
+  it("prices two bands of one event as two lines the drawer can tell apart", async () => {
+    const shop = await makeSellingShop();
+    const event = await makeEvent(shop.id, 100);
+    const vip = await makeTier(event.id, "VIP", 30, { priceCents: 5000 });
+    const general = await makeTier(event.id, "General", null, { priceCents: 2000 });
+
+    const preview = await previewOrder({
+      shopId: shop.id,
+      items: [
+        { productId: event.id, quantity: 1, tierId: vip.id },
+        { productId: event.id, quantity: 1, tierId: general.id },
+      ],
+    });
+    if ("error" in preview) throw new Error(preview.error);
+
+    expect(preview.lines).toHaveLength(2);
+    expect(preview.lines.map((l) => l.unitPriceCents)).toEqual([5000, 2000]);
+    expect(preview.lines.map((l) => l.tierId)).toEqual([vip.id, general.id]);
+    // And the label the drawer prints, which is the band on a product that has
+    // no variant to name.
+    expect(preview.lines.map((l) => l.label)).toEqual(["VIP", "General"]);
+    expect(preview.totals.subtotalCents).toBe(7000);
+  });
 
   it("refuses a band that is not this event's rather than pricing from the product", async () => {
     const shop = await makeSellingShop();
