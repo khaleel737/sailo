@@ -269,6 +269,11 @@ export async function previewOrder(input: {
     lines: priced.lines.map((line, index) => ({
       productId: line.productId,
       variantId: line.variantId,
+      // The rest of this line's identity, on an event with bands or dates —
+      // spec 50. The drawer pairs on all four, or a VIP and a General ticket
+      // read as the same line and one price is shown for both.
+      tierId: line.tierId ?? null,
+      sessionId: line.sessionId ?? null,
       title: line.title,
       label: line.label,
       kind: line.kind,
@@ -293,6 +298,8 @@ export async function previewOrder(input: {
     unavailable: resolved.dropped.map((d) => ({
       productId: d.productId,
       variantId: d.variantId ?? null,
+      tierId: d.tierId ?? null,
+      sessionId: d.sessionId ?? null,
     })),
     needsDelivery: priced.needsDelivery,
     needsAddress: priced.needsAddress,

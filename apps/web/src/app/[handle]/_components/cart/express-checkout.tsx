@@ -50,6 +50,9 @@ export function ExpressCheckout({
   /** The combination picked on the page, or null when there are none. */
   variant,
   options,
+  tierId = null,
+  tierName = null,
+  sessionId = null,
   quantity,
   unitPriceCents,
   pwywCents,
@@ -76,6 +79,21 @@ export function ExpressCheckout({
   currency: string;
   variant: CheckoutVariant | null;
   options: ProductOption[];
+  /**
+   * The band and the date picked on the page — spec 50.
+   *
+   * Ids, and a name only so the sheet can say which ticket is being bought:
+   * the price comes back out of `event_tiers` in `resolveLines`, exactly as
+   * the product's does. Null for everything that is not an event with bands,
+   * which is every product today.
+   *
+   * They travel here for the same reason `variant` does. "Buy now" skips the
+   * basket, so a choice that stops at the product page is a choice the express
+   * path never makes — and this one decides what the buyer is charged.
+   */
+  tierId?: string | null;
+  tierName?: string | null;
+  sessionId?: string | null;
   quantity: number;
   unitPriceCents: number;
   /**
@@ -119,7 +137,10 @@ export function ExpressCheckout({
   const scheduledFor = booking ? new Date(booking).toISOString() : undefined;
 
   const cover = variant?.imageUrl ?? imageUrl;
-  const label = variant ? variantLabel(variant.options, options) : "";
+  // The band's name where a variant's label would be: an event with bands has
+  // no variant, and a sheet that named neither would ask a buyer to confirm
+  // "Rooftop Show" at a price they cannot check against anything.
+  const label = variant ? variantLabel(variant.options, options) : (tierName ?? "");
 
   const summary = (
     <>
@@ -200,6 +221,10 @@ export function ExpressCheckout({
         {
           productId,
           variantId: variant?.id,
+          // Which band and which date — spec 50. Ids only; `resolveLines`
+          // reads the price, the seats and the name from the rows.
+          tierId: tierId ?? undefined,
+          sessionId: sessionId ?? undefined,
           quantity,
           // Sent as an absolute instant: the buyer picked a time in their own
           // timezone, and the server has no idea what that is.

@@ -8,7 +8,7 @@ import {
   type EventTier,
   type Product,
 } from "@sailo/db/schema";
-import { reserveStock, releaseStock } from "../catalog/inventory";
+import { reserveStock, releaseStock } from "../catalog/stock";
 
 /**
  * Two-level event capacity — spec 50, and the riskiest arithmetic in the wave.

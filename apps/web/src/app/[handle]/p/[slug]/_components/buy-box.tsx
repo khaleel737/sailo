@@ -13,6 +13,8 @@ import {
 import { useCart } from "@/app/[handle]/_components/cart/cart-provider";
 import { FavoriteButton } from "@/app/[handle]/_components/favorites/favorite-button";
 import { OptionChips } from "@/app/[handle]/_components/option-chips";
+import { TicketPicker } from "./ticket-picker";
+import type { BuySession, BuyTier } from "@sailo/core/catalog";
 import { useVariantPhoto } from "./variant-photo";
 import { isSoldOut } from "@/app/[handle]/_lib/availability";
 import type { Dictionary } from "@sailo/i18n";
@@ -42,6 +44,19 @@ import type { ProductOption, VariantOptions } from "@sailo/db/schema";
  * The old page showed options as a read-only list and made the buyer pick
  * them inside a sheet that covered the photos they were picking from.
  */
+/**
+ * The tightest of several counts, where null means "nobody is counting".
+ *
+ * A band with four seats left inside a room of two hundred is a four, and a
+ * band that shares the room's stock contributes nothing. Every-null is null,
+ * which is what an uncapped event is and what stops "only 0 left" appearing
+ * under a product nobody is counting.
+ */
+function narrowest(counts: (number | null)[]): number | null {
+  const known = counts.filter((n): n is number => n !== null);
+  return known.length === 0 ? null : Math.min(...known);
+}
+
 export function BuyBox({
   shopId,
   shopName,
@@ -61,6 +76,8 @@ export function BuyBox({
   canPayInPerson,
   options,
   variants,
+  tiers = [],
+  sessions = [],
   unitsLeft,
   maxPerOrder = null,
   pricingMode = "fixed",
@@ -106,6 +123,19 @@ export function BuyBox({
   canPayInPerson: boolean;
   options: ProductOption[];
   variants: CheckoutVariant[];
+  /**
+   * The bands and the dates this event is sold in — spec 50.
+   *
+   * Empty for everything else, and empty is what turns the picker off: a
+   * product with no bands behaves exactly as it did. Both lists are decided on
+   * the server — hidden bands filtered, closed windows dropped, seats counted —
+   * for the reason `windowState` and `offersStockRequest` are: the storefront
+   * read is `"use cache"` with `cacheLife("max")`, so anything the buyer's
+   * clock or the seat count decides has to be taken per request rather than
+   * frozen into an entry that never expires.
+   */
+  tiers?: BuyTier[];
+  sessions?: BuySession[];
   /** Units left on the product itself, when it has no options. */
   unitsLeft: number | null;
   /**
@@ -189,9 +219,49 @@ export function BuyBox({
     ? (findVariant(variants, selection) ?? null)
     : null;
 
-  const unitPriceCents = variant?.priceCents ?? priceCents;
-  const wasPriced = variant ? variant.compareAtCents : compareAtCents;
-  const stockLeft = variant ? variant.unitsLeft : unitsLeft;
+  /*
+   * The band and the date, opened on something the buyer can actually have —
+   * spec 50, and the same rule the variant selection above follows.
+   *
+   * Opening on a sold-out band would put a dead button under a price, and
+   * opening on a cancelled date would pre-answer a question with the one answer
+   * that is wrong. Null when every band has gone, which the picker draws as a
+   * list of struck-through rows rather than as nothing at all.
+   */
+  const [tierId, setTierId] = useState<string | null>(
+    () => (tiers.find((row) => !row.soldOut) ?? tiers[0])?.id ?? null,
+  );
+  const [sessionId, setSessionId] = useState<string | null>(
+    () =>
+      (sessions.find((row) => !row.soldOut && !row.cancelled) ?? null)?.id ?? null,
+  );
+  const tier = tiers.find((row) => row.id === tierId) ?? null;
+  const session = sessions.find((row) => row.id === sessionId) ?? null;
+
+  /*
+   * The band prices the line, exactly as the variant does.
+   *
+   * This is the number the seller typed into their tier editor, and until this
+   * line it reached no buyer: the page showed `priceCents`, the basket cached
+   * `priceCents`, and `resolveLines` now charges the band's — three surfaces
+   * that would have disagreed, on the one page where a buyer reads the price
+   * before agreeing to it.
+   */
+  const unitPriceCents = tier?.priceCents ?? variant?.priceCents ?? priceCents;
+  const wasPriced = tier ? null : variant ? variant.compareAtCents : compareAtCents;
+  /*
+   * Seats left in the *narrowest* thing the buyer has chosen.
+   *
+   * A room of two hundred with four VIP seats left is not a product with two
+   * hundred left, and "only 4 left" against the room would be a scarcity
+   * message about a number the buyer is not buying against. `resolveLines`
+   * clamps to the same three ceilings server-side.
+   */
+  const stockLeft = narrowest([
+    tier?.seatsLeft ?? null,
+    session?.seatsLeft ?? null,
+    variant ? variant.unitsLeft : unitsLeft,
+  ]);
   /*
    * `quantityCeiling`, not a third copy of the same three comparisons. It is
    * what `maxOrderable` is built from, and `maxOrderable` is what the checkout
@@ -202,7 +272,12 @@ export function BuyBox({
    * sold-out product is refused by `soldOut` below, not by a picker whose only
    * value is none.
    */
-  const maxQuantity = Math.max(1, quantityCeiling(stockLeft, maxPerOrder));
+  // The band may cap an order tighter than the product does — four to a
+  // customer in VIP, unlimited in General.
+  const maxQuantity = Math.max(
+    1,
+    quantityCeiling(stockLeft, tier?.maxPerOrder ?? maxPerOrder),
+  );
 
   const [quantity, setQuantity] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
@@ -246,7 +321,20 @@ export function BuyBox({
     showPhoto?.(chosenPhoto);
   }, [showPhoto, chosenPhoto]);
 
-  const soldOut = isSoldOut({ inStock, variants, unitsLeft });
+  /*
+   * …and an event has run out when its bands have, or its dates have — spec 50.
+   *
+   * The room can be half empty and every band gone, which is the case the
+   * product-level answer gets wrong in the direction that costs money: the
+   * button would be live, the buyer would press it, and `claimEventCapacity`
+   * would refuse them at the last step. A picker with nothing pressable in it
+   * is a page that already said so.
+   */
+  const bandsGone = tiers.length > 0 && tiers.every((row) => row.soldOut);
+  const datesGone =
+    sessions.length > 0 && sessions.every((row) => row.soldOut || row.cancelled);
+  const soldOut =
+    isSoldOut({ inStock, variants, unitsLeft }) || bandsGone || datesGone;
   /*
    * The rails this product can be bought on, which is not always every rail
    * the shop runs: cash on delivery promises a moment where the money changes
@@ -295,9 +383,20 @@ export function BuyBox({
     cart.add({
       productId,
       variantId: variant?.id ?? null,
+      /*
+       * Which band and which date — spec 50, and part of the basket's identity
+       * rather than a detail on it. `lineKey` reads both: without them a £50
+       * VIP added after a £20 general merges into one line at whichever price
+       * arrived last, and the buyer pays it twice.
+       */
+      tierId: tier?.id ?? null,
+      sessionId: session?.id ?? null,
       quantity,
       title: productTitle,
-      label: variant ? variantLabel(variant.options, options) : "",
+      // The band's name is what the drawer shows where a variant's label would
+      // be — an event with bands has no variant, and "Rooftop Show" twice with
+      // two different prices beside it is a basket nobody can read.
+      label: variant ? variantLabel(variant.options, options) : (tier?.name ?? ""),
       kind,
       unitPriceCents: chosenCents,
       /*
@@ -390,6 +489,37 @@ export function BuyBox({
         onChoose={chooseOption}
         t={t}
       />
+
+      {/*
+        Which ticket, and for which date — spec 50.
+
+        Above the quantity stepper and below the price, because it changes both:
+        the number at the top is this band's price, and the ceiling on the
+        stepper is this band's remaining seats. A picker underneath them would
+        move two numbers the buyer had already read.
+      */}
+      {tiers.length > 0 || sessions.length > 0 ? (
+        <TicketPicker
+          tiers={tiers}
+          sessions={sessions}
+          tierId={tierId}
+          sessionId={sessionId}
+          currency={currency}
+          locale={locale}
+          onTier={(id) => {
+            setTierId(id);
+            // The new band may hold fewer seats than the old quantity.
+            const left = tiers.find((row) => row.id === id)?.seatsLeft ?? null;
+            if (left !== null) setQuantity((q) => Math.min(q, Math.max(1, left)));
+          }}
+          onSession={(id) => {
+            setSessionId(id);
+            const left = sessions.find((row) => row.id === id)?.seatsLeft ?? null;
+            if (left !== null) setQuantity((q) => Math.min(q, Math.max(1, left)));
+          }}
+          t={t}
+        />
+      ) : null}
 
       {/*
         The promised date, above the button and before the buyer commits — spec
@@ -569,6 +699,12 @@ export function BuyBox({
           currency={currency}
           variant={variant}
           options={options}
+          // Buy now carries the same three choices the basket would have —
+          // spec 50. Without them the express path prices from the product,
+          // which is the same revenue bug reached by a different button.
+          tierId={tier?.id ?? null}
+          tierName={tier?.name ?? null}
+          sessionId={session?.id ?? null}
           quantity={quantity}
           unitPriceCents={chosenCents}
           pwywCents={pwyw ? chosenCents : undefined}

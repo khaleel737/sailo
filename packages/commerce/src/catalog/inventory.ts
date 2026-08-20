@@ -2,19 +2,18 @@ import "server-only";
 import { publishShopEvent } from "@sailo/events";
 import { maybeRow } from "@sailo/core/invariant";
 import { releaseCouponRedemption } from "../coupons/redemption";
-import { and, asc, eq, gte, inArray, isNull, isNotNull, lt, ne, or, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, isNull, isNotNull, lt, ne, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { releaseSlots, retakeSlots } from "../booking/claim";
 /*
  * The undo half of the event claim — spec 50.
  *
- * `capacity.ts` imports `reserveStock` and `releaseStock` from this file, so
- * this import closes a cycle. It is safe and it is deliberate: both modules
- * export nothing but hoisted function declarations, so neither reads the
- * other's bindings while it is being evaluated, and the alternative — a third
- * module holding the two conditional UPDATEs — would put the narrowest and the
- * widest level of one claim in different files. The whole safety argument for
- * this feature is that the levels are claimed and released together.
+ * One direction only, now that the two stock primitives are in `./stock`:
+ * `capacity.ts` reaches down to those, this file reaches across to `capacity`,
+ * and nothing points back. Before the split the two imported each other, which
+ * `import/no-cycle` refuses — rightly, on the one path where evaluation order
+ * deciding whether a function is defined would be a stock claim that silently
+ * did nothing.
  */
 import { releaseEventCapacity } from "../ticketing/capacity";
 import { spentCodesByProduct } from "./code-pool";
@@ -30,132 +29,17 @@ import {
 } from "@sailo/db/schema";
 
 /**
- * Stock movements. A null quantity means nobody is counting, and Postgres
- * carries that through arithmetic untouched — `null - 2` is still null — so
- * untracked rows fall out of these statements on their own.
+ * Order-level stock movements — what a status change implies for the shelf.
+ *
+ * The two conditional statements these are built on live in `./stock`, which
+ * imports nothing but the schema. That split is not tidiness: an event's
+ * capacity claim needs `reserveStock`, and this file's restock needs to give a
+ * refunded ticket's seat back to its band — a cycle, until the primitives moved
+ * below both of them. They are re-exported here so every existing caller of
+ * `@sailo/commerce/catalog` is untouched.
  */
-
-export type StockLine = {
-  productId: string | null;
-  variantId: string | null;
-  quantity: number;
-  /**
-   * The band and the date this line took a seat from — spec 50.
-   *
-   * Optional because the type is built by hand at half a dozen call sites and
-   * absent means the same as null: an ordinary line, with nothing above the
-   * product to give back. Present, they are the whole of why `order_items`
-   * carries the two columns — a refunded VIP ticket has to return its seat to
-   * VIP, and a unit put back on the room while `event_tiers.sold` stays at
-   * thirty leaves the band sold out for ever with the room half empty.
-   */
-  tierId?: string | null;
-  sessionId?: string | null;
-};
-
-/**
- * Takes units off the shelf, or reports that they weren't there. The guard is
- * part of the WHERE clause rather than a read followed by a write, so two
- * buyers racing for the last one can't both be told yes.
- */
-export async function reserveStock(input: {
-  productId: string;
-  variantId: string | null;
-  quantity: number;
-  trackInventory: boolean;
-}): Promise<boolean> {
-  if (!input.trackInventory || input.quantity <= 0) return true;
-  const db = getDb();
-
-  if (input.variantId) {
-    const rows = await db
-      .update(productVariants)
-      .set({
-        stockQuantity: sql`${productVariants.stockQuantity} - ${input.quantity}`,
-        updatedAt: new Date(),
-      })
-      .where(
-        and(
-          eq(productVariants.id, input.variantId),
-          or(
-            isNull(productVariants.stockQuantity),
-            gte(productVariants.stockQuantity, input.quantity),
-          ),
-        ),
-      )
-      .returning({ id: productVariants.id });
-    return rows.length > 0;
-  }
-
-  const rows = await db
-    .update(products)
-    .set({
-      stockQuantity: sql`${products.stockQuantity} - ${input.quantity}`,
-      updatedAt: new Date(),
-    })
-    .where(
-      and(
-        eq(products.id, input.productId),
-        or(
-          isNull(products.stockQuantity),
-          gte(products.stockQuantity, input.quantity),
-        ),
-      ),
-    )
-    .returning({ id: products.id });
-  return rows.length > 0;
-}
-
-/**
- * Puts units back, unconditionally. Used both to undo a half-reserved cart and
- * to restock a cancelled order — neither can be refused the way a purchase can.
- */
-export async function releaseStock(line: StockLine) {
-  const db = getDb();
-  if (line.quantity <= 0) return;
-
-  if (line.variantId) {
-    /*
-     * The same two conditions the product branch below applies, because
-     * `reserveStock` never took these units in the first place: it returns
-     * early for an untracked product, and a null count means nobody is
-     * counting. Adding units back regardless drifts the number upward on
-     * every cancel, refund and failed handoff — and the drift only becomes
-     * visible the day a seller turns tracking on.
-     *
-     * Tracking lives on the parent product, so the variant is judged by it.
-     */
-    await db
-      .update(productVariants)
-      .set({
-        stockQuantity: sql`${productVariants.stockQuantity} + ${line.quantity}`,
-        updatedAt: new Date(),
-      })
-      .where(
-        and(
-          eq(productVariants.id, line.variantId),
-          isNotNull(productVariants.stockQuantity),
-          sql`exists (select 1 from ${products} where ${products.id} = ${productVariants.productId} and ${products.trackInventory})`,
-        ),
-      );
-    return;
-  }
-
-  if (!line.productId) return;
-  await db
-    .update(products)
-    .set({
-      stockQuantity: sql`${products.stockQuantity} + ${line.quantity}`,
-      updatedAt: new Date(),
-    })
-    .where(
-      and(
-        eq(products.id, line.productId),
-        eq(products.trackInventory, true),
-        isNotNull(products.stockQuantity),
-      ),
-    );
-}
+export { releaseStock, reserveStock, type StockLine } from "./stock";
+import { releaseStock, type StockLine } from "./stock";
 
 /**
  * The lines an order took off the shelf. Falls back to the header columns for

@@ -40,7 +40,8 @@ import { railsForOrder } from "@/lib/payments";
 import { PoweredBy } from "@/components/shared/powered-by";
 import { absolute } from "@sailo/core/origin";
 import { breadcrumbJsonLd, productJsonLd } from "@/lib/seo";
-import { eventSalesOpen } from "@sailo/commerce/ticketing";
+import { eventSalesOpen, sessionsFor, tiersFor } from "@sailo/commerce/ticketing";
+import { buyableSessions, buyableTiers } from "@sailo/core/catalog";
 import {
   isPwyw,
   pwywFloorCents,
@@ -103,6 +104,7 @@ export async function generateMetadata({
 
 export default async function ProductPage({
   params,
+  searchParams,
 }: PageProps<"/[handle]/p/[slug]">) {
   const { handle, slug } = await params;
   const row = await getShopByHandle(handle);
@@ -188,6 +190,45 @@ export default async function ProductPage({
     windowState === "open" &&
     anySellable(product, product.variants);
   const stockLeft = unitsLeft(product);
+
+  /*
+   * The bands and the dates this event is sold in — spec 50.
+   *
+   * **Deliberately outside `getProductBySlug`.** That read is `"use cache"` with
+   * `cacheLife("max")` and never expires on a clock, and both of these carry a
+   * `sold` counter that moves on every purchase: cached, the page would go on
+   * offering a band that filled up an hour ago, and the buyer would meet the
+   * refusal at the last step of a checkout instead of a struck-through row on
+   * the page. Same argument `windowState` above makes about the sell window,
+   * with a stronger reason — a window moves once, a seat count moves all night.
+   *
+   * Skipped entirely for anything that is not an event, which is most of the
+   * catalogue, so nothing else pays for this.
+   *
+   * `?tier=` is how a hidden band is reached. "A comp or press tier, reachable
+   * by direct link only" means the link is the credential: `buyableTiers` will
+   * not list a hidden band, and naming one reveals exactly that band and no
+   * other. `resolveLines` sells it whether or not the page listed it, so this
+   * decides what is *shown* and never what may be bought.
+   */
+  const reveal = product.kind === "event" ? (await searchParams).tier : undefined;
+  const [tierRows, sessionRows] =
+    product.kind === "event"
+      ? await Promise.all([tiersFor(product.id), sessionsFor(product.id)])
+      : [[], []];
+  const now = new Date();
+  const tiers = buyableTiers(tierRows, {
+    now,
+    reveal: typeof reveal === "string" ? reveal : null,
+  });
+  /*
+   * Only under `pick_one`. An `all_access` pass admits every date, so a picker
+   * would ask the buyer to choose between things they are all getting — and a
+   * chosen date would claim a seat the pass does not occupy, which
+   * `resolveLines` then has to drop.
+   */
+  const sessions =
+    product.sessionMode === "pick_one" ? buyableSessions(sessionRows, now) : [];
 
   return (
     <>
@@ -392,6 +433,8 @@ export default async function ProductPage({
               canPayInPerson={payInPerson}
               options={product.options}
               variants={variants}
+              tiers={tiers}
+              sessions={sessions}
               unitsLeft={stockLeft}
               maxPerOrder={product.maxPerOrder}
               pricingMode={product.pricingMode}
