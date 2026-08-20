@@ -1,0 +1,24 @@
+packages/core/src/memberships/subscription-status.ts
+  s_a7bbf59e767e8f::t_fd3a77790162e8 61-81
+packages/commerce/src/memberships/memberships.ts
+  s_a7bbf59e767e8f::t_de36db4ac62e04 161-162,164-167,169-175,177
+  s_a7bbf59e767e8f::t_0ce8435a644f2e 2-5
+  s_a7bbf59e767e8f::t_fcecb47c313178 355
+  s_a7bbf59e767e8f::t_c1938447e15843 334
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "2ed66ff7decb5f904dab90af93c5a9f0c67cb5b3",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
