@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { and, desc, eq, ilike, or, sql } from "drizzle-orm";
+import { and, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { clients, orders } from "@sailo/db/schema";
 import { normalizeTags, MAX_TAGS } from "@sailo/core/tags";
@@ -61,7 +61,17 @@ export const clientsRouter = router({
     const tag = input?.tag?.trim().toLowerCase();
     const limit = input?.limit ?? 50;
 
-    const rows = await getDb()
+    /*
+     * The page first, the money second.
+     *
+     * One query joined every order of every client and aggregated the lot
+     * before the page was cut — a 100k-order shop re-summed 100k rows per
+     * scroll step. Picking the fifty visible clients costs an index walk,
+     * and aggregating `where client_id in (…)` probes `orders_client_idx`
+     * fifty times instead of hashing the shop's lifetime history.
+     */
+    const db = getDb();
+    const page = await db
       .select({
         id: clients.id,
         name: clients.name,
@@ -71,14 +81,8 @@ export const clientsRouter = router({
         source: clients.source,
         marketingConsentAt: clients.marketingConsentAt,
         createdAt: clients.createdAt,
-        orderCount: sql<number>`count(${orders.id})::int`,
-        /* Cancelled orders are excluded, refunds are not. What a customer has
-           spent is what they paid; a refund is money that came back, which the
-           order row records separately. */
-        spentCents: sql<number>`coalesce(sum(${orders.totalCents}) filter (where ${orders.status} <> 'cancelled'), 0)::int`,
       })
       .from(clients)
-      .leftJoin(orders, eq(orders.clientId, clients.id))
       .where(
         and(
           eq(clients.shopId, ctx.shopId),
@@ -94,12 +98,31 @@ export const clientsRouter = router({
           tag ? sql`${clients.tags} && ARRAY[${tag}]::text[]` : undefined,
         ),
       )
-      .groupBy(clients.id)
       .orderBy(desc(clients.createdAt))
       .limit(limit)
       .offset(input?.offset ?? 0);
 
-    return rows;
+    if (page.length === 0) return [];
+
+    const totals = await db
+      .select({
+        clientId: orders.clientId,
+        orderCount: sql<number>`count(*)::int`,
+        /* Cancelled orders are excluded, refunds are not. What a customer has
+           spent is what they paid; a refund is money that came back, which the
+           order row records separately. */
+        spentCents: sql<number>`coalesce(sum(${orders.totalCents}) filter (where ${orders.status} <> 'cancelled'), 0)::int`,
+      })
+      .from(orders)
+      .where(inArray(orders.clientId, page.map((row) => row.id)))
+      .groupBy(orders.clientId);
+
+    const byClient = new Map(totals.map((t) => [t.clientId, t]));
+    return page.map((row) => ({
+      ...row,
+      orderCount: byClient.get(row.id)?.orderCount ?? 0,
+      spentCents: byClient.get(row.id)?.spentCents ?? 0,
+    }));
   }),
 
   /** One customer, with the orders they have placed. */

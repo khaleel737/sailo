@@ -5,6 +5,7 @@ import { refreshCalendarFeeds } from "@sailo/commerce/booking/server";
 import { pruneWebhookDeliveries } from "@sailo/workflows/webhooks";
 import { sweepDeletedShopFiles } from "@sailo/account/deletion";
 import { expireDataExports } from "@sailo/account/data-requests";
+import { pruneStripeEvents } from "@sailo/payments/stripe";
 
 /**
  * Housekeeping that must happen whether or not a webhook arrived.
@@ -65,6 +66,13 @@ export async function GET(request: Request) {
   // Not `exports` — that is a reserved word in a module.
   const expiredExports = await expireDataExports();
 
+  /*
+   * The Stripe idempotency ledger, past the window Stripe could redeliver
+   * into. The one table whose growth nothing else bounds — one row per
+   * webhook ever received, forever, without this.
+   */
+  const stripeEventsPruned = await pruneStripeEvents();
+
   return NextResponse.json({
     ok: true,
     abandonedCheckoutsReleased: abandoned.swept,
@@ -74,5 +82,6 @@ export async function GET(request: Request) {
     deletedShopsSwept: files.shopsSwept,
     deletedFilesRemoved: files.blobsDeleted,
     dataExportsExpired: expiredExports.expired,
+    stripeEventsPruned,
   });
 }

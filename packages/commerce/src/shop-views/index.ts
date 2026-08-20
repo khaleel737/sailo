@@ -54,7 +54,17 @@ export async function getShopAffiliates(shopId: string): Promise<AffiliateRow[]>
       unpaidCents: sql<string>`coalesce(sum(${orders.commissionCents}) filter (where not ${orders.commissionPaid}), 0)`,
     })
     .from(affiliates)
-    .leftJoin(orders, eq(orders.affiliateId, affiliates.id))
+    /*
+     * The shop scope belongs in the join, not only on `affiliates`: without
+     * it the hash join builds over every order of every shop before the
+     * outer filter runs. Redundant in meaning — an affiliate's orders are
+     * its shop's — and load-bearing in the plan, alongside
+     * `orders_affiliate_idx` (0062).
+     */
+    .leftJoin(
+      orders,
+      and(eq(orders.affiliateId, affiliates.id), eq(orders.shopId, shopId)),
+    )
     .where(eq(affiliates.shopId, shopId))
     .groupBy(affiliates.id)
     .orderBy(sql`coalesce(sum(${orders.commissionCents}), 0) desc`);

@@ -1,4 +1,4 @@
-import { and, eq, inArray, ne, or, sql } from "drizzle-orm";
+import { and, eq, gt, inArray, ne, or, sql } from "drizzle-orm";
 import { getReadDb } from "@sailo/db";
 import {
   leads,
@@ -65,6 +65,14 @@ export async function getDashboardStats(shopId: string, window: Window = 30) {
        * shipped is exactly the one a seller must be told about, and bounding
        * this to thirty days would quietly hide it. Narrowed by state instead,
        * so it reads the open tail rather than every order ever placed.
+       *
+       * The commission disjunct carries `commission_cents > 0`, and that is
+       * what makes the sentence above true: `commission_paid` defaults false
+       * on every order, so without it this read matched the entire history
+       * of every shop with no affiliates — the admin layout aggregated
+       * lifetime orders on every navigation. The predicate now mirrors
+       * `orders_open_tail_idx` (0062) exactly, which is what lets Postgres
+       * serve it from the partial index.
        */
       db
         .select({
@@ -80,7 +88,7 @@ export async function getDashboardStats(shopId: string, window: Window = 30) {
             or(
               inArray(orders.status, ["new", "confirmed"]),
               eq(orders.paymentStatus, "pending"),
-              eq(orders.commissionPaid, false),
+              and(gt(orders.commissionCents, 0), eq(orders.commissionPaid, false)),
             ),
           ),
         ),

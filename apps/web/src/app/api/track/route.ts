@@ -59,29 +59,36 @@ export async function POST(request: Request) {
   if (!isUuid(shopId)) return NextResponse.json({ ok: false }, { status: 400 });
 
   const db = getDb();
-  const shop = await db.query.shops.findFirst({
-    // A shop that isn't reachable can't have been visited, so a beacon naming
-    // one is either stale or forged. Either way it shouldn't add to anyone's
-    // analytics.
-    where: liveShop(eq(shops.id, shopId)),
-    columns: { id: true },
-  });
-  if (!shop) return NextResponse.json({ ok: false }, { status: 404 });
 
   /*
-   * Only record a product view if that product really belongs to this shop —
-   * and only look at all if the id could name one. A malformed `productId`
-   * raised in Postgres the same way a malformed `shopId` did; ignoring it
-   * rather than refusing the beacon is right, because the shop's own visit is
-   * still worth counting.
+   * One round trip, not two — this is the hottest endpoint in the app, and
+   * the validation reads are most of what it costs the primary. When the
+   * beacon names a product, a single join answers both questions: is the
+   * shop reachable (a shop that isn't can't have been visited, so a beacon
+   * naming one is stale or forged), and does the product belong to it. A
+   * product that doesn't is ignored rather than refused — the shop's own
+   * visit is still worth counting — and only an id shaped like a uuid is
+   * looked at, because Postgres raises on a malformed comparison.
    */
   let validProductId: string | null = null;
   if (isUuid(productId)) {
-    const p = await db.query.products.findFirst({
-      where: and(eq(products.id, productId), eq(products.shopId, shop.id)),
+    const [row] = await db
+      .select({ productId: products.id })
+      .from(shops)
+      .leftJoin(
+        products,
+        and(eq(products.id, productId), eq(products.shopId, shops.id)),
+      )
+      .where(liveShop(eq(shops.id, shopId)))
+      .limit(1);
+    if (!row) return NextResponse.json({ ok: false }, { status: 404 });
+    validProductId = row.productId ?? null;
+  } else {
+    const shop = await db.query.shops.findFirst({
+      where: liveShop(eq(shops.id, shopId)),
       columns: { id: true },
     });
-    validProductId = p?.id ?? null;
+    if (!shop) return NextResponse.json({ ok: false }, { status: 404 });
   }
 
   const h = await headers();
@@ -94,7 +101,7 @@ export async function POST(request: Request) {
   const sid = visitorId({
     ip,
     userAgent: h.get("user-agent"),
-    shopId: shop.id,
+    shopId,
   });
 
   // The referrer must come from the browser, not from this request's own
@@ -121,7 +128,7 @@ export async function POST(request: Request) {
   const ua = parseUserAgent(h.get("user-agent"));
 
   const visit = {
-    shopId: shop.id,
+    shopId,
     productId: validProductId,
     sessionId: sid,
     referrer: origin.referrer,
@@ -170,7 +177,7 @@ export async function POST(request: Request) {
    * not a dashboard under load. Only when a row was really written: a
    * count that didn't change is not worth a repaint.
    */
-  if (recorded) after(() => publishShopEvent(shop.id, "visit"));
+  if (recorded) after(() => publishShopEvent(shopId, "visit"));
 
   return NextResponse.json({ ok: true });
 }
