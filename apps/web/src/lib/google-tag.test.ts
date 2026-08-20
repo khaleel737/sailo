@@ -76,6 +76,14 @@ const UNMEASURED = [
    * script origin at all, so the decision is enforced rather than remembered.
    */
   "/embed",
+  /*
+   * The testimonial write page's mounting point for its own not-found —
+   * a pass-through that exists so a burned single-use link stops answering
+   * "This shop doesn't exist". The visitor is a buyer following a private
+   * link the seller mailed them; they did not arrive at sailo.store's
+   * marketing surface and must not be measured by its tag.
+   */
+  "/testimonial",
 ];
 
 describe("the Google tag's placement", () => {
