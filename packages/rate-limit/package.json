@@ -6,6 +6,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./client-ip": "./src/client-ip.ts",
+    "./ip": "./src/ip.ts",
     "./keys": "./src/keys.ts"
   },
   "scripts": {

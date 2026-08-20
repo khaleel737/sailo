@@ -42,6 +42,7 @@ import {
 } from "@sailo/commerce/orders/server";
 import { licenseKeyPrefix, normalizeLicenseKey } from "@sailo/core/codes";
 import { rateLimit, refundRateLimit } from "@sailo/rate-limit";
+import { ipFromHeaders } from "@sailo/rate-limit/ip";
 
 /**
  * Attempts per key per window, and the window.
@@ -276,16 +277,17 @@ export async function handleLicenseDeactivate(request: Request): Promise<Respons
 /**
  * The caller's address, from the proxy headers this platform sets.
  *
- * Not `callerIp` from `@sailo/rate-limit/client-ip`: that reaches for
- * `next/headers`, and these handlers are given the `Request` directly so the
- * header is right here. Recorded on the activation because an activation from
- * an address at a time is the strongest evidence a software sale can produce
- * against a `product_not_received` dispute.
+ * `ipFromHeaders` is the pure half of `@sailo/rate-limit`'s parser — these
+ * handlers hold the `Request`, so no `next/headers` is needed. The hand-rolled
+ * copy this replaces returned `""` for a `x-forwarded-for` of only commas
+ * instead of falling through to `x-real-ip`, on the one record whose whole
+ * purpose is dispute evidence: an activation from an address at a time is the
+ * strongest evidence a software sale can produce against
+ * `product_not_received`.
  */
 function callerAddress(request: Request): string | null {
-  const forwarded = request.headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0]?.trim() ?? null;
-  return request.headers.get("x-real-ip");
+  const ip = ipFromHeaders(request.headers);
+  return ip === "unknown" ? null : ip;
 }
 
 /**
