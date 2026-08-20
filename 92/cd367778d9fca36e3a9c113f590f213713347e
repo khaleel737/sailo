@@ -1,0 +1,26 @@
+apps/web/src/lib/actions/staff.ts
+  s_16f404b29c0075::t_e529785d0c71d1 1-140
+apps/web/src/lib/session.test.ts
+  s_16f404b29c0075::t_6cb3542d8537d5 104
+  s_16f404b29c0075::t_2f9986b5f42667 79-83,87
+  s_16f404b29c0075::t_3befa2458270aa 62
+packages/commerce/src/booking/staff.ts
+  s_16f404b29c0075::t_b5ad4d1b60ef19 2,8,11,13
+  s_16f404b29c0075::t_a4ed8f3be12023 246-466
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "92cd367778d9fca36e3a9c113f590f213713347e",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
