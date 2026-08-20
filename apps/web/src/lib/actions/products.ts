@@ -377,6 +377,20 @@ function readProduct(
     eventAllowSelfCancel: formData.get("eventAllowSelfCancel") === "on",
 
     /* ---- Spec 51 ------------------------------------------------------- */
+    /*
+     * Who takes bookings for this service — `product_staff`.
+     *
+     * `has` and not `getAll`, and the difference is the whole rule. A checkbox
+     * group posts nothing when none of it is checked, so an absent field and a
+     * cleared list look identical — the card posts a hidden marker so they stop
+     * looking identical, and this reads the marker. `undefined` leaves the
+     * assignment alone, which is what a form with no roster on it means and
+     * what the phone means; `[]` is a seller who unticked everybody, which
+     * means *anybody* may take it.
+     */
+    staffIds: formData.has("staffIds")
+      ? formData.getAll("staffIds").map(String).filter(Boolean)
+      : undefined,
     bookingCapacity: optionalCount(formData.get("bookingCapacity"), 500),
     rescheduleCutoffHours: optionalCount(formData.get("rescheduleCutoffHours"), 8760),
     cancelCutoffHours: optionalCount(formData.get("cancelCutoffHours"), 8760),

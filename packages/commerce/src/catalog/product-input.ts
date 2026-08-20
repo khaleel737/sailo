@@ -215,6 +215,18 @@ export type ProductInput = {
   /** How close to the appointment a buyer may move it. Null is not allowed. */
   rescheduleCutoffHours?: number | null;
   cancelCutoffHours?: number | null;
+  /**
+   * Who takes bookings for this service — `product_staff`.
+   *
+   * **`undefined` leaves the assignment alone; `[]` clears it, and clearing it
+   * is not the same as nobody.** An empty set means *every* active person in
+   * the shop, which is what a single-chair salon means and what `staffFor`
+   * answers — so the difference between "this caller did not mention staff"
+   * and "the seller unticked everybody" has to survive the trip. A phone
+   * saving a title must not silently hand a specialist's service to the whole
+   * roster.
+   */
+  staffIds?: string[];
 
   inStock?: boolean;
   isFeatured?: boolean;
