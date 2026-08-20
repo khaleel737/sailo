@@ -11,16 +11,24 @@
  * or a track length and none of them should own the rounding.
  */
 
-/** Human file size for download listings: 1536 → "1.5 KB". */
-export function formatBytes(bytes: number) {
+/**
+ * Human file size for download listings: 1536 → "2 KB" — bytes and kilobytes
+ * read better whole; megabytes deserve a decimal.
+ *
+ * `base` 1024 for storage listings, 1000 where a stated ceiling is decimal:
+ * dispute evidence says "4.5 MB" because Stripe's limit is 4,500,000 bytes,
+ * and rendering the same file "4.3 MB" beside that sentence reads as a
+ * contradiction. One implementation with the base as the only choice, because
+ * the second copy this replaces had already drifted into its own rounding.
+ */
+export function formatBytes(bytes: number, base: 1000 | 1024 = 1024) {
   if (!Number.isFinite(bytes) || bytes <= 0) return "0 KB";
   const units = ["B", "KB", "MB", "GB"];
   const exponent = Math.min(
-    Math.floor(Math.log(bytes) / Math.log(1024)),
+    Math.floor(Math.log(bytes) / Math.log(base)),
     units.length - 1,
   );
-  const value = bytes / 1024 ** exponent;
-  // Bytes and kilobytes read better whole; megabytes deserve a decimal.
+  const value = bytes / base ** exponent;
   return `${value >= 10 || exponent <= 1 ? Math.round(value) : value.toFixed(1)} ${units[exponent]}`;
 }
 

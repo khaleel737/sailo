@@ -40,6 +40,7 @@
  */
 
 import { EVIDENCE_FILE_FIELDS, type EvidenceFileField } from "./reasons";
+import { formatBytes as formatBytesBase } from "../format/units";
 
 /**
  * What Stripe's Files API accepts for `purpose: dispute_evidence`.
@@ -297,7 +298,5 @@ export function budgetPressure(held: readonly HeldFile[]): {
 
 /** `1.4 MB`. Decimal megabytes, because that is how the 4.5 MB limit is stated. */
 export function formatBytes(bytes: number): string {
-  if (bytes < 1_000) return `${bytes} B`;
-  if (bytes < 1_000_000) return `${Math.round(bytes / 1_000)} KB`;
-  return `${(bytes / 1_000_000).toFixed(1)} MB`;
+  return formatBytesBase(bytes, 1000);
 }
