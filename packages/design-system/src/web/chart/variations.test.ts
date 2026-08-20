@@ -206,25 +206,17 @@ describe("every shop, every window", () => {
 describe("data that should not exist but might", () => {
   const days = daysOf(3);
 
-  it("survives a series shorter than the window", () => {
-    const series: Series[] = [{ key: "a", label: "A", values: [5] }];
-    const domain = chartDomain(series);
-    expect(snapshotAt(2, days, series)?.values[0]?.value).toBe(0);
-    expect(Number.isFinite(barRect(0, domain).height)).toBe(true);
-  });
+  /*
+   * The empty chart, the short series and the sign of a negative series are
+   * pinned where the rules live — `../../chart`'s own `domain.test.ts` and
+   * `cursor.test.ts`. This file keeps only the shapes those files do not have.
+   */
 
   it("survives a series longer than the window", () => {
     const series: Series[] = [{ key: "a", label: "A", values: [1, 2, 3, 4, 5] }];
     // The extra days are simply never reached by the cursor.
     expect(snapshotAt(4, days, series)).toBeNull();
     expect(chartDomain(series).max).toBe(5);
-  });
-
-  it("survives no series at all", () => {
-    const domain = chartDomain([]);
-    expect(Number.isFinite(toPercent(0, domain))).toBe(true);
-    expect(peak([])).toBeNull();
-    expect(hasData([])).toBe(false);
   });
 
   it("survives a chart of nothing but a reported figure", () => {
@@ -237,16 +229,5 @@ describe("data that should not exist but might", () => {
     expect(chartDomain(series)).toEqual({ min: 0, max: 0 });
     // It still reports: the headline figure comes from the series, not the plot.
     expect(sumOf(series[0])).toBe(30);
-  });
-
-  it("treats a negative series as an amount, whichever sign it arrives with", () => {
-    const stored = chartDomain([
-      { key: "r", label: "R", negative: true, values: [40] },
-    ]);
-    const negated = chartDomain([
-      { key: "r", label: "R", negative: true, values: [-40] },
-    ]);
-    expect(stored).toEqual(negated);
-    expect(stored.min).toBe(-40);
   });
 });

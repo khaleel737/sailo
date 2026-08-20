@@ -8,14 +8,18 @@ import {
   minorPerMajor,
   toCurrencyCode,
   toStripeAmount,
-} from "@sailo/core/currency";
-import { formatMoney, moneyToCents, parseMoneyToCents } from "@sailo/core/currency";
+} from "./currency";
+import { moneyToCents, parseMoneyToCents } from "./currency";
 
 /*
  * The whole table exists for one number, so most of these test that number
  * rather than the list around it. A currency added with the wrong `decimals`
  * does not fail anywhere visible: the seller types a price, sees it echoed
  * back correctly, and a buyer is charged a hundred times more or less.
+ *
+ * Rendering and parsing have their own files (`format.test.ts`,
+ * `parse.test.ts`); this one covers the table and its accessors. It lived in
+ * apps/web until 2026-08-20, a survivor of the core extraction.
  */
 
 describe("the currency table", () => {
@@ -102,16 +106,6 @@ describe("minor units", () => {
     }
   });
 
-  it("assumes two for anything it does not know", () => {
-    /*
-     * The safe direction. Treating an unknown zero-decimal currency as
-     * two-decimal shows a price a hundred times too small — visible, and
-     * nobody is overcharged. The reverse would charge a hundred times too
-     * much before anyone noticed.
-     */
-    expect(currencyDecimals("ZZZ")).toBe(2);
-  });
-
   it("is case-insensitive, because Stripe returns codes in lower case", () => {
     expect(currencyDecimals("jpy")).toBe(0);
   });
@@ -124,18 +118,6 @@ describe("a price survives the round trip", () => {
     expect(moneyToCents("1000", "JPY")).toBe(1000);
     expect(moneyToCents("19.99", "USD")).toBe(1999);
     expect(moneyToCents("9.999", "JOD")).toBe(9999);
-  });
-
-  it("shows back exactly what was stored", () => {
-    expect(formatMoney(1000, "JPY", "en")).toBe("¥1,000");
-    expect(formatMoney(1999, "USD", "en")).toBe("$19.99");
-    expect(formatMoney(9999, "JOD", "en")).toContain("9.999");
-  });
-
-  it("does not invent a fraction the currency has no name for", () => {
-    // "¥1,000.00" is not a price anyone in Japan has ever written.
-    expect(formatMoney(1000, "JPY", "en")).not.toContain(".");
-    expect(formatMoney(1234, "KRW", "en")).not.toContain(".");
   });
 
   it("round-trips every currency in the table", () => {

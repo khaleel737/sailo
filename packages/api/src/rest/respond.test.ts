@@ -1,8 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
   apiOk,
-  decodeCursor,
-  encodeCursor,
   rateHeaders,
   readLimit,
   retryAfterHeader,
@@ -10,67 +8,12 @@ import {
   DEFAULT_LIMIT,
 } from "./respond";
 
-/**
- * Paging, and the two ways it goes wrong.
- *
- * A cursor that round-trips imprecisely silently skips or repeats rows, and a
- * cursor that is trusted without checking its shape reaches a `uuid` column as
- * arbitrary text — where Postgres raises rather than returning nothing, which
- * turns a malformed query string into a 500.
+/*
+ * The cursor codec is `@sailo/core/paging` and is tested there
+ * (`packages/core/src/paging/cursor.test.ts`) — this file only re-exports it.
+ * What is tested here is what this module owns: the limit clamp and the
+ * rate-limit headers.
  */
-
-describe("cursors", () => {
-  it("round-trips exactly", () => {
-    const cursor = {
-      createdAt: new Date("2026-08-12T09:41:07.221Z"),
-      id: "3f8a1b2c-4d5e-6f70-8192-a3b4c5d6e7f8",
-    };
-    const decoded = decodeCursor(encodeCursor(cursor));
-
-    expect(decoded).not.toBe("invalid");
-    expect(decoded).not.toBeNull();
-    if (decoded && decoded !== "invalid") {
-      // Milliseconds included: two orders placed in the same second are the
-      // ordinary case on a busy shop, and a cursor truncated to seconds would
-      // hand back one of them twice.
-      expect(decoded.createdAt.toISOString()).toBe("2026-08-12T09:41:07.221Z");
-      expect(decoded.id).toBe(cursor.id);
-    }
-  });
-
-  it("treats an absent cursor as the first page", () => {
-    expect(decodeCursor(null)).toBeNull();
-    expect(decodeCursor("")).toBeNull();
-  });
-
-  it("refuses anything it did not write", () => {
-    for (const raw of [
-      "not-base64-at-all!!",
-      Buffer.from("no-separator", "utf8").toString("base64url"),
-      Buffer.from("2026-08-12T09:41:07.221Z|", "utf8").toString("base64url"),
-      Buffer.from("|3f8a1b2c-4d5e-6f70-8192-a3b4c5d6e7f8", "utf8").toString("base64url"),
-      Buffer.from("not-a-date|3f8a1b2c-4d5e-6f70-8192-a3b4c5d6e7f8", "utf8").toString(
-        "base64url",
-      ),
-    ]) {
-      expect(decodeCursor(raw), raw).toBe("invalid");
-    }
-  });
-
-  it("refuses an id that is not a uuid", () => {
-    /*
-     * This one is not fussiness. The value is compared against a `uuid`
-     * column, and Postgres raises on a malformed literal rather than matching
-     * nothing — so without this check a hand-typed cursor is a 500 rather than
-     * a 400.
-     */
-    const raw = Buffer.from(
-      "2026-08-12T09:41:07.221Z|'; drop table orders; --",
-      "utf8",
-    ).toString("base64url");
-    expect(decodeCursor(raw)).toBe("invalid");
-  });
-});
 
 describe("readLimit", () => {
   const limitOf = (query: string) =>

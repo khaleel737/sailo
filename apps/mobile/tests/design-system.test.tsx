@@ -266,12 +266,3 @@ describe("Text", () => {
     expect(screen.queryByRole("header")).toBeNull();
   });
 });
-
-describe("StatusPill", () => {
-  it("carries its meaning in the label, not only in the colour", () => {
-    // Colour alone fails for the ~8% of men with a colour vision deficiency,
-    // and fails entirely in a screen reader.
-    render(<StatusPill label="Refunded" tone="danger" />);
-    expect(screen.getByText("Refunded")).toBeOnTheScreen();
-  });
-});

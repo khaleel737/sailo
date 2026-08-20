@@ -97,11 +97,6 @@ function page(rows: Row[], cursor: string | null, limit: number) {
 }
 
 describe("the cursor", () => {
-  it("survives a round trip", () => {
-    const there = { createdAt: new Date("2026-08-14T09:41:07.221Z"), id: uuidFor(7) };
-    expect(decodeCursor(encodeCursor(there))).toEqual(there);
-  });
-
   /*
    * A STALE CURSOR IS NOT A MALFORMED ONE, AND THIS TEST USED TO CONFLATE THEM
    *
@@ -114,26 +109,15 @@ describe("the cursor", () => {
    * and `olderThan` compares against a timestamp, so it does not matter whether
    * the row it names still exists. Nothing about staleness is malformed.
    *
-   * Garbage is a different thing. `"../../etc"` was never a cursor, and the id
-   * half of a malformed one reaches `lt(column, id)` against a `uuid` column —
-   * which is a 500 rather than an empty page. So garbage is refused, and a caller
-   * that genuinely wants the first page instead says so with `decodeCursorOrTop`.
+   * Garbage is a different thing — refused, and a caller that genuinely wants
+   * the first page instead says so with `decodeCursorOrTop`. The codec itself
+   * (round trip, refusal shapes, absent-as-first-page) is `@sailo/core/paging`
+   * and is tested where it lives, in `packages/core/src/paging/cursor.test.ts`;
+   * this file only keeps the one case that documents the conflation.
    */
   it("reads a stale cursor of ours without complaint", () => {
     const longAgo = { createdAt: new Date("2019-01-01T00:00:00.000Z"), id: uuidFor(1) };
     expect(decodeCursor(encodeCursor(longAgo))).toEqual(longAgo);
-  });
-
-  it.each(["!!!!", "Zm9v", "../../etc"])("refuses %s, which was never a cursor", (junk) => {
-    expect(decodeCursor(junk)).toBe("invalid");
-  });
-
-  it.each(["", null, undefined])("still treats %s as the first page", (absent) => {
-    expect(decodeCursor(absent)).toBeNull();
-  });
-
-  it("offers the first page to a caller that cannot report a refusal", () => {
-    expect(decodeCursorOrTop("../../etc")).toBeNull();
   });
 });
 
