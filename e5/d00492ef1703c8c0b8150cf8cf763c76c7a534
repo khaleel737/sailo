@@ -1,0 +1,19 @@
+apps/web/src/lib/google-tag.test.ts
+  s_5a74b4ec056616::t_c6cca2d487fcd1 79-86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "e5d00492ef1703c8c0b8150cf8cf763c76c7a534",
+  "prompts": {},
+  "sessions": {
+    "s_5a74b4ec056616": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "09d9ff8c-792d-4483-a67b-d14f394f16c7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
