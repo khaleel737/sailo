@@ -134,9 +134,9 @@ for (const file of files) {
  * screen does not, so the translation is correct, wanted, and waiting.
  *
  * Named one by one rather than folded into a larger ceiling, because a number
- * hides what it is covering. Twenty-six free slots would absorb the next
+ * hides what it is covering. Fifteen free slots would absorb the next
  * accidental hardcoded string in silence; this list absorbs exactly these
- * twenty-six and fails on the twenty-seventh.
+ * fifteen and fails on the sixteenth.
  *
  * **Event tiers** (`tier*`, `tiersTitle`, `tiersBody`) — `event_tiers` is a
  * table, `claimEventCapacity` enforces the two-level ceiling narrower-first,
@@ -150,11 +150,12 @@ for (const file of files) {
  * and gates `sessionMode`, so half of this is wired: what is missing is the
  * editor that creates the dates and the checkout that claims one.
  *
- * **Staff rosters** (`staff*`) — `staff_resources` and `product_staff` exist
- * with `listStaff`, `staffCalendars` and `firstFreeStaff` behind them, and
- * `staff-bookings.scenario.ts` passes. The booking path does not consult them
- * and there is no roster screen, so a Pro shop paying for "staff and classes"
- * gets `bookingCapacity` and nothing else.
+ * **Staff rosters** (`staff*`) were the third entry here and are now built:
+ * `/admin/settings/staff` writes `staff_resources`, the service card writes
+ * `product_staff`, and the buyer's calendar asks `staffCalendars` for the union
+ * of everybody's free time. The eleven keys came out of this list in the commit
+ * that referenced them, which is the mechanism working rather than a courtesy —
+ * the assertion below fails while a built screen is still excused.
  *
  * Each entry is asserted to exist and to still be unreferenced below, so the
  * list cannot rot: renaming one fails, and *building* the screen fails until
@@ -178,18 +179,6 @@ const UNBUILT = new Set([
   "productForm.sessionGenerate",
   "productForm.sessionGenerateCount",
   "productForm.sessionCapacity",
-  // Spec 51 — who takes the bookings.
-  "productForm.staffTitle",
-  "productForm.staffBody",
-  "productForm.staffName",
-  "productForm.staffEmail",
-  "productForm.staffHours",
-  "productForm.staffHoursHint",
-  "productForm.staffTimeZone",
-  "productForm.staffFeed",
-  "productForm.staffFeedHint",
-  "productForm.staffAdd",
-  "productForm.staffActive",
 ]);
 
 const unreferenced = KEYS.filter(
