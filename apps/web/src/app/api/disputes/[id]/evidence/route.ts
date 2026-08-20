@@ -6,7 +6,6 @@ import {
   formatBytes,
 } from "@sailo/core/disputes";
 import { authoriseDisputeFiles } from "@/lib/dispute-access";
-import { recordStaffAction } from "@sailo/security/audit";
 
 /**
  * Attaching a document to a dispute.
@@ -38,13 +37,11 @@ export async function POST(
   const form = await request.formData();
   const field = String(form.get("field") ?? "").trim();
   /*
-   * Which door the caller came in by, and never which one they claim. `as` only
-   * chooses between two checks that both re-derive ownership from the row — a
-   * seller passing `staff` still has to satisfy `requireStaff`.
+   * Seller-only. Staff attach evidence through apps/hq's own route, behind
+   * `requireStaff("money:move")` — this app's staff check has no capability
+   * to ask, so a staff door here would be a door around the capability model.
    */
-  const as = form.get("as") === "staff" ? "staff" : "seller";
-
-  const access = await authoriseDisputeFiles(id, as);
+  const access = await authoriseDisputeFiles(id);
   if (!access.ok) {
     return NextResponse.json({ error: access.error }, { status: 403 });
   }
@@ -56,7 +53,7 @@ export async function POST(
    * account. Keyed per shop, like `/api/upload`, so one seller cannot spend
    * another's quota.
    */
-  const gate = await rateLimit(`dispute-evidence:${access.shopId ?? id}`, 30, 300);
+  const gate = await rateLimit(`dispute-evidence:${access.shopId}`, 30, 300);
   if (!gate.allowed) {
     return NextResponse.json(
       { error: "Too many uploads just now. Wait a moment and try again." },
@@ -111,24 +108,6 @@ export async function POST(
   });
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 400 });
-  }
-
-  if (access.audit) {
-    /*
-     * Written straight to the audit table rather than through apps/hq's
-     * `recordOnAccount`, which is where this used to go: that helper also
-     * revalidates two staff pages, and those pages are in another deployment
-     * now. The row is the part that matters and the part that has to happen
-     * here; apps/hq redraws itself on its own next request.
-     */
-    await recordStaffAction({
-      actorEmail: access.actor,
-      action: "dispute.evidence_attached",
-      shopId: access.audit.shopId,
-      summary:
-        `Attached ${file.name} (${formatBytes(file.size)}) as ${field}` +
-        `${result.replaced ? `, replacing ${result.replaced}` : ""}`,
-    });
   }
 
   /*

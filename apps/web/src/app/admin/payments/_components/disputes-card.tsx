@@ -250,7 +250,7 @@ export function DisputesCard({
                             removeAction={removeSellerDisputeFile}
                             previewHref={
                               slot.attached
-                                ? `/api/disputes/${dispute.id}/evidence/${slot.field}?as=seller`
+                                ? `/api/disputes/${dispute.id}/evidence/${slot.field}`
                                 : null
                             }
                             disabled={Boolean(dispute.evidenceSubmittedAt)}

@@ -2,59 +2,49 @@ import "server-only";
 import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { disputes, shops } from "@sailo/db/schema";
-import { requireStaff, requireUser } from "@/lib/session";
+import { requireUser } from "@/lib/session";
 
 /**
- * Who may touch a dispute's documents, and under what name.
+ * Who may touch a dispute's documents, from this side: the seller, and only
+ * on their own case.
+ *
+ * The seller half of what was one module answering for two callers behind an
+ * `as: "staff" | "seller"` parameter. The staff half lives in apps/hq now,
+ * where the staff session is and where `requireStaff("money:move")` can be
+ * asked — this app's `requireStaff` takes no capability, so a staff branch
+ * kept here was a door around the capability model. Removing the branch
+ * removes the parameter, and with it the class of bug it invited: a caller
+ * passing the wrong string got the wrong guard.
  *
  * Shared by the upload route and the remove action, which are deliberately two
  * different mechanisms — see the route's own note — and must not therefore be
  * two different answers to "may you?". A check that lives in one of them is a
  * check the other can be made to skip.
  *
- * Staff may reach any dispute. A seller may reach one that is their own shop's
- * **and** is a `connected` dispute: their Sailo subscription chargeback is an
- * argument between them and us, and letting them file evidence on it would be
- * letting one side of a dispute submit for the other.
+ * A seller may reach a dispute that is their own shop's **and** is a
+ * `connected` dispute: their Sailo subscription chargeback is an argument
+ * between them and us, and letting them file evidence on it would be letting
+ * one side of a dispute submit for the other.
  */
 
 export type DisputeAccess =
   | {
       ok: true;
-      /** Who to stamp on the row: a staff email, or the seller's own. */
+      /** Who to stamp on the row: the seller's own address. */
       actor: string;
-      /** Set only for staff, who are the only actor the audit log is about. */
-      audit: { shopId: string; ownerId: string } | null;
       /** For rate limiting: the shop whose quota this spends. */
-      shopId: string | null;
+      shopId: string;
     }
   | { ok: false; error: string };
 
 export async function authoriseDisputeFiles(
   disputeId: string,
-  as: "staff" | "seller",
 ): Promise<DisputeAccess> {
   const db = getDb();
   const dispute = await db.query.disputes.findFirst({
     where: eq(disputes.id, disputeId),
   });
   if (!dispute) return { ok: false, error: "That dispute no longer exists." };
-
-  if (as === "staff") {
-    const staff = await requireStaff();
-    const shop = dispute.shopId
-      ? await db.query.shops.findFirst({
-          where: eq(shops.id, dispute.shopId),
-          columns: { id: true, userId: true },
-        })
-      : undefined;
-    return {
-      ok: true,
-      actor: staff.email,
-      audit: shop ? { shopId: shop.id, ownerId: shop.userId } : null,
-      shopId: shop?.id ?? null,
-    };
-  }
 
   const user = await requireUser();
   if (dispute.scope !== "connected" || !dispute.shopId) {
@@ -80,5 +70,5 @@ export async function authoriseDisputeFiles(
    * uploaded is already on `disputeEvidenceFiles.uploadedBy`, which is where a
    * question about this document is actually asked.
    */
-  return { ok: true, actor: user.email ?? user.id, audit: null, shopId: shop.id };
+  return { ok: true, actor: user.email ?? user.id, shopId: shop.id };
 }

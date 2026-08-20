@@ -14,18 +14,17 @@ import { authoriseDisputeFiles } from "@/lib/dispute-access";
  * checked less than the write would be the more dangerous of the two: a document
  * on a dispute names a buyer, an address and what they bought.
  *
- * Staff by default, because /hq is where evidence is reviewed. `?as=seller`
- * takes the ownership path instead, for a seller checking what they attached.
+ * Seller-only: a seller checking what they attached to their own case. Staff
+ * review evidence in /hq, whose own route asks `requireStaff("money:move")` —
+ * a staff door on this origin would skip the capability check.
  */
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: RouteContext<"/api/disputes/[id]/evidence/[field]">,
 ) {
   const { id, field } = await params;
-  const as =
-    new URL(request.url).searchParams.get("as") === "seller" ? "seller" : "staff";
 
-  const access = await authoriseDisputeFiles(id, as);
+  const access = await authoriseDisputeFiles(id);
   if (!access.ok) {
     return NextResponse.json({ error: access.error }, { status: 403 });
   }

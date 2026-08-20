@@ -28,7 +28,7 @@ async function detach(formData: FormData): Promise<ActionState> {
   const disputeId = String(formData.get("disputeId") ?? "").trim();
   const field = String(formData.get("field") ?? "").trim();
 
-  const access = await authoriseDisputeFiles(disputeId, "seller");
+  const access = await authoriseDisputeFiles(disputeId);
   if (!access.ok) return { ok: false, error: access.error };
 
   const result = await detachEvidenceFile({ disputeId, field });
