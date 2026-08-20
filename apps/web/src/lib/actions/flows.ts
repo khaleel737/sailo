@@ -182,17 +182,32 @@ export async function saveFlow(id: string, draft: FlowDraft): Promise<FlowState>
   if (!trigger) return { ok: false, error: "trigger" };
   const entryPolicy = draft.entryPolicy === "repeat" ? "repeat" : "once";
 
-  const db = getDb();
-  const existing = await db
-    .select({ id: automationEmails.id })
-    .from(automationEmails)
-    .where(eq(automationEmails.automationId, row.id));
-  const known = new Set(existing.map((e) => e.id));
-
-  /* Emails first, because the graph's send nodes need their ids. */
-  const kept = new Set<string>();
-  const emailIdFor = new Map<number, string>();
+  /*
+   * Every refusal happens before any write. The old order upserted the email
+   * rows and swept the orphans first, then asked parseGraph — so a save the
+   * validator refused had already destroyed the seller's written copy: clear
+   * the steps of a paused flow, press Save, be told it did not happen, and
+   * every subject and body is gone to the orphan sweep while the stored
+   * graph's send nodes still point at the deleted rows.
+   */
+  const emailFields = new Map<
+    number,
+    {
+      name: string;
+      subject: string;
+      preheader: string | null;
+      bodyMarkdown: string;
+      position: number;
+      updatedAt: Date;
+    }
+  >();
   for (const [index, step] of draft.steps.entries()) {
+    if (step.kind === "timer") {
+      const minutes = Math.trunc(Number(step.minutes));
+      if (!Number.isInteger(minutes) || minutes < 1 || minutes > MAX_TIMER_DAYS * 1_440) {
+        return { ok: false, error: "timer" };
+      }
+    }
     if (step.kind !== "send") continue;
     const fields = {
       name: step.name.trim().slice(0, 120) || step.subject.trim().slice(0, 120),
@@ -205,6 +220,70 @@ export async function saveFlow(id: string, draft: FlowDraft): Promise<FlowState>
     if (!fields.subject || !fields.bodyMarkdown.trim()) {
       return { ok: false, error: "email", problems: [String(index + 1)] };
     }
+    emailFields.set(index, fields);
+  }
+
+  /* The linear dialect, compiled: n steps, n nodes, n−1 unlabelled edges. */
+  const nodesFrom = (emailIdOf: (index: number) => string | undefined) =>
+    draft.steps.map((step, index) => {
+      const nodeId =
+        step.nodeId && /^[\w-]{1,64}$/.test(step.nodeId)
+          ? step.nodeId
+          : `s-${crypto.randomUUID().slice(0, 8)}`;
+      if (step.kind === "send") {
+        return { id: nodeId, kind: "send", config: { emailId: emailIdOf(index) } };
+      }
+      if (step.kind === "timer") {
+        const minutes = Math.trunc(Number(step.minutes));
+        return { id: nodeId, kind: "timer", config: { mode: "duration", minutes } };
+      }
+      const tag = step.tag.trim().slice(0, 60);
+      return {
+        id: nodeId,
+        kind: "filter",
+        config: { segment: { match: "all", rules: [{ type: "tag", value: tag }] } },
+      };
+    });
+  const graphOf = (nodes: ReturnType<typeof nodesFrom>): AutomationGraph => ({
+    nodes,
+    edges: nodes.flatMap((node, i) => {
+      const next = nodes[i + 1];
+      return next ? [{ from: node.id, to: next.id }] : [];
+    }),
+    entry: nodes[0]?.id,
+  });
+
+  /*
+   * The same reader the runner trusts — refused here means refused everywhere.
+   * Probed with a placeholder email id, because the real ids do not exist
+   * until the rows are written and nothing may be written until this answers.
+   * The saved graph below differs from the probe only in those id strings,
+   * and the parser asks no more of them than being non-empty — so a probe
+   * that passes cannot become a save that fails.
+   */
+  const probe = parseGraph(graphOf(nodesFrom(() => "probe")));
+  if (!probe.ok) {
+    return {
+      ok: false,
+      error: "graph",
+      problems: probe.problems.map((p) => p.code),
+    };
+  }
+
+  const db = getDb();
+  const existing = await db
+    .select({ id: automationEmails.id })
+    .from(automationEmails)
+    .where(eq(automationEmails.automationId, row.id));
+  const known = new Set(existing.map((e) => e.id));
+
+  /* Emails first, because the graph's send nodes need their ids. */
+  const kept = new Set<string>();
+  const emailIdFor = new Map<number, string>();
+  for (const [index, step] of draft.steps.entries()) {
+    if (step.kind !== "send") continue;
+    const fields = emailFields.get(index);
+    if (!fields) continue; // Unreachable: every send step was validated above.
     if (step.emailId && known.has(step.emailId)) {
       await db
         .update(automationEmails)
@@ -229,52 +308,7 @@ export async function saveFlow(id: string, draft: FlowDraft): Promise<FlowState>
     await db.delete(automationEmails).where(inArray(automationEmails.id, orphans));
   }
 
-  /* The linear dialect, compiled: n steps, n nodes, n−1 unlabelled edges. */
-  const nodes = draft.steps.map((step, index) => {
-    const nodeId =
-      step.nodeId && /^[\w-]{1,64}$/.test(step.nodeId)
-        ? step.nodeId
-        : `s-${crypto.randomUUID().slice(0, 8)}`;
-    if (step.kind === "send") {
-      return { id: nodeId, kind: "send", config: { emailId: emailIdFor.get(index) } };
-    }
-    if (step.kind === "timer") {
-      const minutes = Math.trunc(Number(step.minutes));
-      return { id: nodeId, kind: "timer", config: { mode: "duration", minutes } };
-    }
-    const tag = step.tag.trim().slice(0, 60);
-    return {
-      id: nodeId,
-      kind: "filter",
-      config: { segment: { match: "all", rules: [{ type: "tag", value: tag }] } },
-    };
-  });
-  const graph: AutomationGraph = {
-    nodes,
-    edges: nodes.flatMap((node, i) => {
-      const next = nodes[i + 1];
-      return next ? [{ from: node.id, to: next.id }] : [];
-    }),
-    entry: nodes[0]?.id,
-  };
-
-  /* The same reader the runner trusts — refused here means refused everywhere. */
-  const parsed = parseGraph(graph);
-  if (!parsed.ok) {
-    return {
-      ok: false,
-      error: "graph",
-      problems: parsed.problems.map((p) => p.code),
-    };
-  }
-  for (const step of draft.steps) {
-    if (step.kind === "timer") {
-      const minutes = Math.trunc(Number(step.minutes));
-      if (!Number.isInteger(minutes) || minutes < 1 || minutes > MAX_TIMER_DAYS * 1_440) {
-        return { ok: false, error: "timer" };
-      }
-    }
-  }
+  const graph = graphOf(nodesFrom((index) => emailIdFor.get(index)));
 
   await db
     .update(automations)
