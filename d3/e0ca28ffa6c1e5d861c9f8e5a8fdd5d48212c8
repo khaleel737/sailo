@@ -1,0 +1,247 @@
+apps/web/src/app/api/v1/lists/[id]/route.ts
+  s_dea12176d7f649::t_54d544c899a941 1-17
+apps/docs/content/objects/subscription.mdx
+  s_dea12176d7f649::t_42a4e0b4335675 13-15
+apps/docs/content/webhooks/payloads.mdx
+  s_dea12176d7f649::t_d8deb8621780b3 80-88
+apps/docs/content/api/index.mdx
+  s_dea12176d7f649::t_b0d1708a223a6f 25-29,36-46
+  s_dea12176d7f649::t_8d50065c73627b 69-74
+  s_dea12176d7f649::t_197f4baa138f32 3,10
+apps/docs/content/objects/_meta.ts
+  s_dea12176d7f649::t_5b15be2305e16e 4-5,7-11,20,23-24
+apps/api/src/app/api/v1/staff/[id]/route.ts
+  s_dea12176d7f649::t_54d544c899a941 1-37
+apps/docs/content/guides/chargebacks.mdx
+  s_dea12176d7f649::t_e48c4a06387e24 97-108
+packages/core/package.json
+  s_dea12176d7f649::t_9bf74f97778eae 21
+apps/docs/content/objects/booking.mdx
+  s_dea12176d7f649::t_a13f754db113c0 1-73
+packages/api/src/rest/handlers.ts
+  s_dea12176d7f649::t_bb3977a8289ef0 1087
+  s_dea12176d7f649::t_1f6e90cc197298 1139-1142
+  s_dea12176d7f649::t_1662a2b25e65bb 131,133,141,154,244,251,384,401,403,405,412,417,419,456,459-460,466,469,478,480,482,491,496,498,522,525-526,538,541,554,556,558,563,572,574,624,633-634,637-638,656,662-663,671,673,675,679,681,703,706-707,713,716,722,724,727,731,738,740,745,747,770,774-775,778-779,793,975,1004-1058,1060,1067,1076,1082,1084-1085,1088,1101-1103,1143,1145,1147,1152,1174
+  s_dea12176d7f649::t_cc8ac9e3a38800 132
+  s_dea12176d7f649::t_5b3b2ee0f18908 134-136,138-140
+  s_dea12176d7f649::t_afbc6d1db9991d 142-144,151-153
+  s_dea12176d7f649::t_fd2e0a22484828 155
+  s_dea12176d7f649::t_7a553d12a95bce 242-243
+  s_dea12176d7f649::t_aa43d14594a7c9 245-250
+  s_dea12176d7f649::t_301e81848655c8 385
+  s_dea12176d7f649::t_2f5a0d5beccdb9 398-400
+  s_dea12176d7f649::t_9605f997c52ab5 402
+  s_dea12176d7f649::t_dbdd33b4de72b3 404
+  s_dea12176d7f649::t_0cdb71e22f03fe 406-411
+  s_dea12176d7f649::t_98569f20b0a019 413-416
+  s_dea12176d7f649::t_7a911dfdaedeae 418
+  s_dea12176d7f649::t_fd7c91d7436507 420-422,453-455
+  s_dea12176d7f649::t_313c54ebc30f47 457-458
+  s_dea12176d7f649::t_f4fa5b32003291 461-465
+  s_dea12176d7f649::t_7e60988c775590 467-468
+  s_dea12176d7f649::t_3b91314fff0c48 470-472,475-477
+  s_dea12176d7f649::t_16c8295d70a958 479
+  s_dea12176d7f649::t_4002823926bb96 481
+  s_dea12176d7f649::t_e11a54cc33a94f 483-485,488-490
+  s_dea12176d7f649::t_191a43a8f3d61a 492-495
+  s_dea12176d7f649::t_f32d0e250886df 497
+  s_dea12176d7f649::t_60e34e68915874 499-501,519-521
+  s_dea12176d7f649::t_28f9b9478e324c 523-524
+  s_dea12176d7f649::t_a169df47130b3b 527-529,535-537
+  s_dea12176d7f649::t_62f9a6077ef184 539-540
+  s_dea12176d7f649::t_7eb721699cbc02 542-544,551-553
+  s_dea12176d7f649::t_4380affb2ba498 555
+  s_dea12176d7f649::t_f2c910cf71336f 557
+  s_dea12176d7f649::t_be5390621c7274 559-562
+  s_dea12176d7f649::t_71a6dd63d16261 564-566,569-571
+  s_dea12176d7f649::t_a176cafbb54092 573
+  s_dea12176d7f649::t_a48d5338d9c347 575-577,621-623
+  s_dea12176d7f649::t_45aaada8685dbd 625-627,630-632
+  s_dea12176d7f649::t_2333fc489c1e97 635-636
+  s_dea12176d7f649::t_8cb0c607cceb6a 639-641,653-655
+  s_dea12176d7f649::t_5a9a915c781d8b 657-661
+  s_dea12176d7f649::t_ebd5d62bd61d63 664-666,668-670
+  s_dea12176d7f649::t_24db7e03ef9666 672
+  s_dea12176d7f649::t_d8ab8eaf678d9f 674
+  s_dea12176d7f649::t_385a6117c9eadc 676-678
+  s_dea12176d7f649::t_7404ef65864fd6 680
+  s_dea12176d7f649::t_7675a13fe9bbaf 682-684,700-702
+  s_dea12176d7f649::t_0e03bcb9d55f0e 704-705
+  s_dea12176d7f649::t_38d113c512a1d6 708-712
+  s_dea12176d7f649::t_7f8435bd38a57c 714-715
+  s_dea12176d7f649::t_6523acefd4783e 717-721
+  s_dea12176d7f649::t_5a66441e334e10 723
+  s_dea12176d7f649::t_ddeb24e11710bd 725-726
+  s_dea12176d7f649::t_92127c34324ce2 728-730
+  s_dea12176d7f649::t_b5bafc3101a2c5 732-737
+  s_dea12176d7f649::t_ff73780b28fdd7 739
+  s_dea12176d7f649::t_49bc7d55669d34 741-744
+  s_dea12176d7f649::t_7f10d953911e54 746
+  s_dea12176d7f649::t_ae950a9ac58d0b 748-750,767-769
+  s_dea12176d7f649::t_3c6f33b14e9b7e 771-773
+  s_dea12176d7f649::t_8b1c15d2d044aa 776-777
+  s_dea12176d7f649::t_ac24916c267552 780-782,790-792
+  s_dea12176d7f649::t_2270746d362698 794
+  s_dea12176d7f649::t_ad6147510de24a 976
+  s_dea12176d7f649::t_217ebf5366ce86 1003
+  s_dea12176d7f649::t_e9f59dc3f673d7 1059
+  s_dea12176d7f649::t_469286dea4675e 1061-1066
+  s_dea12176d7f649::t_f6914ad3c68ebf 1068-1070,1073-1075
+  s_dea12176d7f649::t_7cd4726d148af2 1077-1081
+  s_dea12176d7f649::t_7fe1fdd36fb258 1083
+  s_dea12176d7f649::t_969347cc57aba1 1086
+  s_dea12176d7f649::t_3c6da384602e7f 1089-1091,1098-1100
+  s_dea12176d7f649::t_07f5d947a5d80d 1104-1106,1136-1138
+  s_dea12176d7f649::t_d8451487f36f3c 1144
+  s_dea12176d7f649::t_ba592d881b3a36 1146
+  s_dea12176d7f649::t_1e45e2cf5fb58d 1148-1151
+  s_dea12176d7f649::t_03f3e6191dae77 1153-1155,1171-1173
+  s_5a74b4ec056616::t_a647732f4406f4 2,5,7-9,14-15,20,22-23,29-30,32-33,37-38,137,145-150,256-257,320-321,393-397,423-452,473-474,486-487,502-518,530-534,545-550,567-568,578-620,628-629,642-652,667,685-699,751-766,783-789,1071-1072,1092-1097,1107-1135,1156-1170
+apps/web/src/app/api/v1/staff/route.ts
+  s_dea12176d7f649::t_54d544c899a941 1-24
+apps/docs/content/api/subscriptions.mdx
+  s_dea12176d7f649::t_88cd640ebb9f74 1-92
+apps/docs/content/api/lists.mdx
+  s_dea12176d7f649::t_c0b3e9062993b4 48-49,51-58
+  s_dea12176d7f649::t_e38bf3514b2d34 1-47,50,59-96,102-112
+  s_dea12176d7f649::t_9e153baa976213 97-101
+apps/docs/content/api/disputes.mdx
+  s_dea12176d7f649::t_2031d3370d191f 1-95
+packages/core/src/memberships/subscription-status.ts
+  s_dea12176d7f649::t_f0a1b323c1b4ce 1-60
+apps/docs/content/authentication.mdx
+  s_dea12176d7f649::t_6fe7389d020d70 48,71-74,80-81,87-89,93-96,99-101
+apps/web/src/app/api/v1/subscriptions/route.ts
+  s_dea12176d7f649::t_54d544c899a941 1-25
+apps/docs/content/objects/list.mdx
+  s_dea12176d7f649::t_567c9869e49125 1-69
+apps/web/src/app/api/v1/subscriptions/[id]/route.ts
+  s_dea12176d7f649::t_54d544c899a941 1-18
+apps/api/src/app/api/v1/staff/route.ts
+  s_dea12176d7f649::t_54d544c899a941 1-45
+apps/web/src/app/api/v1/contacts/[id]/lists/route.ts
+  s_dea12176d7f649::t_54d544c899a941 2-3,24-52
+  s_dea12176d7f649::t_0600ec4f214037 1,4-23
+apps/web/src/app/api/v1/disputes/route.ts
+  s_dea12176d7f649::t_54d544c899a941 1-24
+apps/docs/content/objects/index.mdx
+  s_dea12176d7f649::t_41cae11366bfae 27-31,33-39
+apps/api/src/app/api/v1/subscriptions/route.ts
+  s_dea12176d7f649::t_54d544c899a941 1-46
+packages/api/src/rest/endpoints.ts
+  s_dea12176d7f649::t_1ac26d0b3ec741 75-105
+  s_dea12176d7f649::t_e3ca249ab2b08c 408-441,459-489,491-724
+  s_dea12176d7f649::t_b98af533ca1605 36-37
+  s_dea12176d7f649::t_0406f3a4f39cfd 52-53,55,58-61,67-70
+  s_dea12176d7f649::t_7bdc602963c45c 490
+  s_dea12176d7f649::t_c9d7ed261c8b52 442-458
+packages/api/src/rest/openapi.ts
+  s_dea12176d7f649::t_e65c042d723e7d 5-6
+  s_dea12176d7f649::t_61b5d4f81c786b 540-544
+  s_dea12176d7f649::t_117eea3d9d4788 306-508
+  s_dea12176d7f649::t_541f58922bdd01 733-737
+apps/docs/content/objects/staff.mdx
+  s_dea12176d7f649::t_4fb213b570f980 1-70
+packages/api/src/mcp/protocol.ts
+  s_dea12176d7f649::t_65458b81fd2e15 254-268,270-271,275-280
+apps/web/src/app/api/v1/staff/[id]/route.ts
+  s_dea12176d7f649::t_54d544c899a941 1-16
+apps/docs/content/mcp/permissions.mdx
+  s_dea12176d7f649::t_635d21c813f332 107-121
+  s_dea12176d7f649::t_c8e34145ae59c8 18-23,27,32-33,41-42,46-49,54-56,98-102,129-131
+apps/api/src/app/api/v1/disputes/[id]/route.ts
+  s_dea12176d7f649::t_54d544c899a941 1-40
+apps/api/src/app/api/v1/contacts/[id]/lists/route.ts
+  s_dea12176d7f649::t_54d544c899a941 1-21,23-24,45-73
+  s_dea12176d7f649::t_0600ec4f214037 22,25-44
+apps/docs/src/components/reference/endpoints.tsx
+  s_dea12176d7f649::t_50a0d0a022a625 47-51
+apps/docs/content/api/bookings.mdx
+  s_dea12176d7f649::t_7ef9b5ae7f74d0 1-104
+apps/docs/content/changelog.mdx
+  s_dea12176d7f649::t_ef1ea68c74ccff 54-97
+apps/api/src/app/api/v1/bookings/route.ts
+  s_dea12176d7f649::t_54d544c899a941 1-44
+apps/api/src/app/api/v1/subscriptions/[id]/route.ts
+  s_dea12176d7f649::t_54d544c899a941 1-39
+apps/web/src/app/api/v1/bookings/route.ts
+  s_dea12176d7f649::t_54d544c899a941 1-23
+packages/api/src/mcp/tools.test.ts
+  s_dea12176d7f649::t_8cac936a7a6a89 1-235
+apps/docs/src/components/reference/objects.tsx
+  s_dea12176d7f649::t_803d7366c72fa9 3,6,19,87-96
+apps/docs/content/api/_meta.ts
+  s_dea12176d7f649::t_0e1f82204aaa53 5-11,23-27
+apps/web/src/app/api/v1/disputes/[id]/route.ts
+  s_dea12176d7f649::t_54d544c899a941 1-19
+apps/docs/content/mcp/index.mdx
+  s_dea12176d7f649::t_bb3c9d2bdf1248 3,14-16,47-49,53-54
+apps/docs/content/guides/sync-a-crm.mdx
+  s_dea12176d7f649::t_f174845877e317 202-240
+apps/api/src/app/api/v1/bookings/[id]/route.ts
+  s_dea12176d7f649::t_54d544c899a941 1-39
+apps/docs/content/api/contacts.mdx
+  s_dea12176d7f649::t_fec511896685a5 13-15
+  s_dea12176d7f649::t_d8141d75727ba8 93-118
+apps/web/src/app/api/v1/lists/route.ts
+  s_dea12176d7f649::t_54d544c899a941 1-17
+apps/web/src/app/api/v1/bookings/[id]/route.ts
+  s_dea12176d7f649::t_54d544c899a941 1-18
+apps/docs/content/index.mdx
+  s_dea12176d7f649::t_ed60af94d1a677 76-80
+apps/api/src/app/api/v1/lists/[id]/route.ts
+  s_dea12176d7f649::t_54d544c899a941 1-38
+apps/docs/content/guides/membership-access.mdx
+  s_dea12176d7f649::t_7225991e7338e6 155-156,158,160-179
+apps/docs/src/components/reference/fields.ts
+  s_dea12176d7f649::t_7a2daafc6c09c9 2-3,9
+  s_dea12176d7f649::t_bbc8ac280da8a6 500-616
+packages/api/src/mcp/tools.ts
+  s_dea12176d7f649::t_1457981a0b2c1b 303-312
+  s_dea12176d7f649::t_a25cbb16ade8ba 7
+  s_dea12176d7f649::t_28c8d4ab10cb6b 358-375
+  s_dea12176d7f649::t_3ae3a0b6bf7d9f 320-357,376-601
+  s_dea12176d7f649::t_f8b10ce5feafdc 187-191
+  s_dea12176d7f649::t_e8f343eef6275e 237-241
+  s_dea12176d7f649::t_9a0d117c78c19b 5,8-9,13-15,17-18,21-22,24,30-31
+apps/api/src/app/api/v1/lists/route.ts
+  s_dea12176d7f649::t_54d544c899a941 1-38
+apps/docs/content/objects/dispute.mdx
+  s_dea12176d7f649::t_f9ef3e2d79888d 12-14
+apps/api/src/app/api/v1/disputes/route.ts
+  s_dea12176d7f649::t_54d544c899a941 1-45
+apps/docs/content/api/staff.mdx
+  s_dea12176d7f649::t_6b4a5962645db9 1-82
+packages/api/src/rest/endpoint-examples.ts
+  s_dea12176d7f649::t_07537e83ee06bb 203-419
+packages/db/src/schema/types.ts
+  s_5a74b4ec056616::t_ab01e701302a52 21,32,100-107,133-140
+packages/api/src/rest/endpoint-shape.ts
+  s_dea12176d7f649::t_8612d74a7ac384 37-46
+packages/core/src/wire/resources.ts
+  s_dea12176d7f649::t_381797d21084af 3,5,12,472-621
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "d3e0ca28ffa6c1e5d861c9f8e5a8fdd5d48212c8",
+  "prompts": {},
+  "sessions": {
+    "s_5a74b4ec056616": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "09d9ff8c-792d-4483-a67b-d14f394f16c7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_dea12176d7f649": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d48cc105-2598-4cad-8e85-b8850bb9df27",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
