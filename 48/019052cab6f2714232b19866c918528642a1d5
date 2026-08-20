@@ -1,0 +1,32 @@
+packages/commerce/src/orders/types.ts
+  s_16f404b29c0075::t_bf46bff2762c36 47-61
+packages/commerce/src/orders/resolve-lines.ts
+  s_16f404b29c0075::t_a3aafd8db48311 4-12
+  s_16f404b29c0075::t_af630e1be6ce60 204-246
+  s_16f404b29c0075::t_5f4e25afb8bbb8 371-498
+  s_16f404b29c0075::t_7cdb995ecf1d08 709-723,725-727,732-743
+  s_16f404b29c0075::t_ab1d9875e29549 370,626-650,653
+packages/core/src/money/quote.ts
+  s_16f404b29c0075::t_e0994927b3a11d 130-138,141
+  s_16f404b29c0075::t_027bd46f8a3416 39-55
+apps/web/src/lib/cart.ts
+  s_16f404b29c0075::t_2be28c71c7683a 27-36
+  s_16f404b29c0075::t_fa876b1a1d9368 56-57,66-72,74-78
+  s_16f404b29c0075::t_05d7462c2d4ec8 195-201
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "48019052cab6f2714232b19866c918528642a1d5",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
