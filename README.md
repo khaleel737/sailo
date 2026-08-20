@@ -128,11 +128,11 @@ WhatsApp messages — set it to the real origin in production.
 Three suites, and they cover different things on purpose.
 
 ```bash
-npm run typecheck                                # tsc, separately — vitest does not typecheck
-npm test                                         # 1,217 unit tests
-npx playwright test e2e/                         # 34 browser tests
-npm run lint                                     # oxlint, zero errors expected
-npm run build                                    # read the exit code, not the output
+pnpm typecheck --concurrency=1                   # tsc per workspace — vitest does not typecheck
+pnpm test --concurrency=1                        # unit tests, every workspace (parallel runs race on .vite-temp)
+cd apps/web && npx playwright test e2e/          # browser tests
+pnpm lint                                        # oxlint, zero errors expected
+pnpm build                                       # read the exit code, not the output
 ```
 
 ### The scenario suite — the money path, against a real database
@@ -142,20 +142,24 @@ database the app could reach was production's. Writing one would have taken
 real stock and claimed a real invoice number out of a sequence a tax authority
 expects unbroken.
 
-`e2e/scenarios/up.sh` gives it somewhere safe to write: a throwaway
+`apps/web/e2e/scenarios/up.sh` gives it somewhere safe to write: a throwaway
 Postgres behind a local Neon HTTP proxy. The proxy is the load-bearing part —
 the app speaks Neon's HTTP protocol and a plain container cannot answer it.
 
 ```bash
-./e2e/scenarios/up.sh                        # needs Docker
-npx vitest run --config vitest.scenarios.mts     # 50 scenarios
+cd apps/web
+./e2e/scenarios/up.sh                            # needs Docker
+npx vitest run --config vitest.scenarios.mts     # the web scenarios
+cd ../hq && npx vitest run --config vitest.scenarios.mts   # the staff scenarios
 docker rm -f sailo-test-db sailo-neon-proxy      # when you are done
 ```
 
-`src/db/index.ts` points the driver at the proxy **only when `DATABASE_URL`
-names localhost** — keyed on the hostname rather than a flag, because a flag
-can be set by mistake in production and a hostname cannot lie about where the
-database is. Both scenario suites refuse to start otherwise.
+`packages/db` points the driver at the proxy **only when `DATABASE_URL`
+names localhost** (`isLocalDatabaseUrl`, which a hostname like
+`localhost.attacker.example` does not fool) — keyed on the hostname rather
+than a flag, because a flag can be set by mistake in production and a
+hostname cannot lie about where the database is. The scenario suites refuse
+to start otherwise.
 
 Covered: who may sell, what an order costs, stock, digital delivery, coupons,
 bookings, cancellation, abandonment, and settlement — including the races a

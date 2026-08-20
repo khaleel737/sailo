@@ -19,7 +19,7 @@ importers:
         specifier: ^6.32.2
         version: 6.32.2
       tsx:
-        specifier: ^4.20.7
+        specifier: ^4.23.5
         version: 4.23.12
       turbo:
         specifier: ^2.5.5
@@ -224,30 +224,6 @@ importers:
       '@t3-oss/env-core':
         specifier: ^0.13.4
         version: 0.13.11(typescript@5.9.3)(zod@4.4.3)
-      '@visx/axis':
-        specifier: ^4.0.0
-        version: 4.0.0(@types/react@19.1.17)(react@19.2.8)
-      '@visx/curve':
-        specifier: ^4.0.0
-        version: 4.0.0
-      '@visx/event':
-        specifier: ^4.0.0
-        version: 4.0.0(@types/react@19.1.17)(react@19.2.8)
-      '@visx/grid':
-        specifier: ^4.0.0
-        version: 4.0.0(@types/react@19.1.17)(react@19.2.8)
-      '@visx/group':
-        specifier: ^4.0.0
-        version: 4.0.0(@types/react@19.1.17)(react@19.2.8)
-      '@visx/responsive':
-        specifier: ^4.0.0
-        version: 4.0.0(@types/react@19.1.17)(react@19.2.8)
-      '@visx/scale':
-        specifier: ^4.0.0
-        version: 4.0.0
-      '@visx/shape':
-        specifier: ^4.0.0
-        version: 4.0.0(@types/react@19.1.17)(react@19.2.8)
       better-auth:
         specifier: ^1.6.25
         version: 1.6.26(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.10)(drizzle-orm@0.45.2(@neondatabase/serverless@1.1.0)(@opentelemetry/api@1.9.1)(@types/pg@8.21.0)(kysely@0.29.5))(next@16.3.0(@opentelemetry/api@1.9.1)(@playwright/test@1.62.1)(@types/node@20.19.43)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(vitest@4.1.10)
@@ -815,7 +791,7 @@ importers:
         specifier: workspace:*
         version: link:../storage
       '@trpc/client':
-        specifier: ^11.6.0
+        specifier: ^11.18.0
         version: 11.18.0(@trpc/server@11.18.0(typescript@5.9.3))(typescript@5.9.3)
       '@trpc/server':
         specifier: ^11.6.0
@@ -830,7 +806,7 @@ importers:
         specifier: ^0.0.1
         version: 0.0.1
       zod:
-        specifier: ^4.1.13
+        specifier: ^4.4.3
         version: 4.4.3
     devDependencies:
       '@sailo/config':

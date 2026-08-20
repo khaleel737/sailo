@@ -9,14 +9,16 @@ this repo has more than one agent in it and the numbers move.
 ## 1. Where it stands
 
 ```bash
-npx tsc --noEmit; echo $?                              # 0
-npx vitest run                                         # 1206 tests, 59 files
-npx vitest run --config vitest.scenarios.mts           # 48 against a real database
-npx oxlint 2>&1 | grep -cE ' error '                   # 0
-npm run build > /dev/null 2>&1; echo $?                # 0
-npx playwright test e2e/                               # 34/34
-E2E_BASE_URL=https://sailo.store npx playwright test e2e/security.spec.ts e2e/checkout.spec.ts
+# Since the monorepo cutover (2026-08-12) these run from the repo root…
+pnpm typecheck --concurrency=1; echo $?                # 0
+pnpm test --concurrency=1                              # all workspaces green
+pnpm lint                                              # 0 errors
+pnpm build > /dev/null 2>&1; echo $?                   # 0
 DATABASE_URL=postgres://k:k@localhost/k npx knip       # 0 unused files, 0 unused exports
+# …and these from apps/web (the numbers below date from the flat layout):
+npx vitest run --config vitest.scenarios.mts           # scenarios, against a real database
+npx playwright test e2e/
+E2E_BASE_URL=https://sailo.store npx playwright test e2e/security.spec.ts e2e/checkout.spec.ts
 ```
 
 | | Start of the day | Now |

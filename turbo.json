@@ -14,10 +14,11 @@
    * - foundation  primitives and vendor-free seams. Knows nothing above it.
    *               config, env, db, core, i18n, observability, design-system.
    * - capability  a single external capability behind a seam, no business
-   *               rules: auth, payments, billing, rate-limit, events, security.
+   *               rules: auth, payments, billing, rate-limit, events, mailer,
+   *               storage.
    * - domain      Sailo's rules, built on capabilities: commerce, analytics,
    *               customers, partners, marketing, email, notifications,
-   *               webhooks.
+   *               webhooks, account, security.
    * - workflow    work that spans contexts and belongs to none of them:
    *               workflows. A function whose whole body is "tell three other
    *               systems" is not about any of them.
