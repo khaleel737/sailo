@@ -1,0 +1,26 @@
+apps/web/knip.json
+  s_16f404b29c0075::t_c8adcab9f776f2 12
+apps/web/src/app/[handle]/_components/cart/custom-fields.test.tsx
+  s_16f404b29c0075::t_09552d38565f9a 1-81
+knip.json
+  s_16f404b29c0075::t_2645c8573537c1 28-29
+apps/web/src/lib/actions/checkout-session.ts
+  s_16f404b29c0075::t_d2bee41d77781d 131-132,134-139,141-146
+  s_16f404b29c0075::t_e31b827d2c756b 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "12e21fe583349ac76433cb9490afceca1d586bcb",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
