@@ -133,44 +133,24 @@ for (const file of files) {
  * neither: the table, the arithmetic and the scenario tests exist and the admin
  * screen does not, so the translation is correct, wanted, and waiting.
  *
- * Named one by one rather than folded into a larger ceiling, because a number
- * hides what it is covering. Eleven free slots would absorb the next accidental
- * hardcoded string in silence; this list absorbs exactly these eleven and fails
- * on the twelfth.
+ * **It is empty, and that is the mechanism working rather than a courtesy.**
+ * Both of its entries were removed by the commits that built their screens,
+ * from two branches at once:
  *
- * **Spec 50's fifteen are gone.** The tier repeater and the sessions editor are
- * built — `event-tier-editor.tsx` and `event-session-editor.tsx` inside the
- * event card, writing through `ProductInput.tiers` / `.sessions` and
- * `syncTiers` / `syncSessions`. What is still not wired is the *checkout*:
- * `claimEventCapacity` is called from no production path, so a tier's seats are
- * not yet taken when somebody buys one. That is an unreachable function rather
- * than an unshown string, so it is not this test's business — but it is the
- * reason a seller can now name a band and cannot yet oversell one.
+ * - **Spec 50's fifteen** — the tier repeater and the sessions editor, in
+ *   `event-tier-editor.tsx` and `event-session-editor.tsx`, writing through
+ *   `ProductInput.tiers` / `.sessions` and `syncTiers` / `syncSessions`. The
+ *   checkout that claims a band's seats came after, on the same branch.
+ * - **Spec 51's eleven** — `/admin/settings/staff` writes `staff_resources`,
+ *   the service card writes `product_staff`, and the buyer's calendar asks
+ *   `staffCalendars` for the union of everybody's free time.
  *
- * **Staff rosters** (`staff*`) — `staff_resources` and `product_staff` exist
- * with `listStaff`, `staffCalendars` and `firstFreeStaff` behind them, and
- * `staff-bookings.scenario.ts` passes. The booking path does not consult them
- * and there is no roster screen, so a Pro shop paying for "staff and classes"
- * gets `bookingCapacity` and nothing else.
- *
- * Each entry is asserted to exist and to still be unreferenced below, so the
- * list cannot rot: renaming one fails, and *building* the screen fails until
- * the entry is deleted, which is the point.
+ * Each entry was asserted to exist *and* to still be unreferenced, so the list
+ * could not rot: renaming one failed, and building the screen failed until the
+ * entry was deleted. Both did exactly that. An empty set is the honest state
+ * and the next entry to go in has to earn its place the same way.
  */
-const UNBUILT = new Set([
-  // Spec 51 — who takes the bookings.
-  "productForm.staffTitle",
-  "productForm.staffBody",
-  "productForm.staffName",
-  "productForm.staffEmail",
-  "productForm.staffHours",
-  "productForm.staffHoursHint",
-  "productForm.staffTimeZone",
-  "productForm.staffFeed",
-  "productForm.staffFeedHint",
-  "productForm.staffAdd",
-  "productForm.staffActive",
-]);
+const UNBUILT = new Set<string>([]);
 
 const unreferenced = KEYS.filter(
   (k) =>

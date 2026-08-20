@@ -24,7 +24,7 @@ import { StockCard } from "./stock-card";
 import { PricingCard } from "./pricing-card";
 import { PhysicalSettingsCard } from "./physical-settings-card";
 import { DigitalDeliveryCard } from "./digital-delivery-card";
-import { ServiceSettingsCard } from "./service-settings-card";
+import { ServiceSettingsCard, type ServiceStaff } from "./service-settings-card";
 import { EventSettingsCard } from "./event-settings-card";
 import { MembershipSettingsCard } from "./membership-settings-card";
 import { LeadSettingsCard } from "./lead-settings-card";
@@ -84,6 +84,8 @@ export function ProductForm({
   eventSessions = false,
   tiers = [],
   sessions = [],
+  roster = [],
+  assignedStaffIds = [],
   regionalCurrencies = [],
 }: {
   product?: ProductWithRelations;
@@ -123,6 +125,16 @@ export function ProductForm({
    */
   tiers?: EventTier[];
   sessions?: EventSession[];
+  /**
+   * The shop's roster, and who is already named on this service — spec 51.
+   *
+   * Both read at the page rather than in the card, so the card stays a client
+   * component with no database of its own. Only the id, the name and whether
+   * they are still taking bookings cross the boundary; the rest of a staff row
+   * is somebody's working week and their calendar address.
+   */
+  roster?: ServiceStaff[];
+  assignedStaffIds?: string[];
   /**
    * The other currencies the shop quotes — spec 53.
    *
@@ -419,6 +431,8 @@ export function ProductForm({
         {kind === "service" ? (
           <ServiceSettingsCard
             staffResources={staffResources}
+            roster={roster}
+            assignedStaffIds={assignedStaffIds}
             product={product}
             bookingEnabled={bookingEnabled}
             onBookingEnabledChange={setBookingEnabled}

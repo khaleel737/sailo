@@ -25,6 +25,7 @@ import type { ResolvedLine } from "./types";
 import { parseBooking } from "./booking";
 import type { ProductVariant } from "@sailo/db/schema";
 import { isBookable, slotOptionsFor, type BookingShop } from "../booking/availability";
+import { offeredByStaff } from "../booking/staff";
 import { isOfferedSlot } from "../booking/slots";
 
 /**
@@ -573,17 +574,38 @@ export async function resolveLines(
        * with.
        */
       if (scheduledFor && opts.shop) {
-        const slotOptions = await slotOptionsFor(
-          opts.shop,
-          product,
-          {
-            from: new Date(scheduledFor.getTime() - 24 * 3_600_000),
-            to: new Date(scheduledFor.getTime() + 24 * 3_600_000),
-          },
-          opts.now,
-        );
+        /*
+         * The roster is asked first, and only falls through to the shop's own
+         * calendar when there is no roster — spec 51.
+         *
+         * Without this the re-derivation asks the *product-keyed* question,
+         * which reads every order line for the service whoever took it. A
+         * salon with three stylists would have the page offer ten o'clock and
+         * this line refuse it the moment any one of them was booked then, and
+         * the buyer would be told a time had "just been taken" that nobody had
+         * taken. `offeredByStaff` answers `{ roster: false }` for a shop with
+         * no rows, which is every shop today, and then nothing below changes.
+         */
+        const byStaff = await offeredByStaff(opts.shop, product, scheduledFor, {
+          now: opts.now,
+        });
 
-        if (!isOfferedSlot(scheduledFor, slotOptions)) {
+        const offered = byStaff.roster
+          ? byStaff.offered
+          : isOfferedSlot(
+              scheduledFor,
+              await slotOptionsFor(
+                opts.shop,
+                product,
+                {
+                  from: new Date(scheduledFor.getTime() - 24 * 3_600_000),
+                  to: new Date(scheduledFor.getTime() + 24 * 3_600_000),
+                },
+                opts.now,
+              ),
+            );
+
+        if (!offered) {
           const stop = fail(
             item,
             `That time for ${product.title} has just been taken. Pick another.`,

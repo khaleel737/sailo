@@ -29,6 +29,7 @@ import { normalizePricingMode } from "@sailo/core/pricing-models";
 import { isPublicLinkUrl, isRenderableImageUrl, isStoredFileUrl } from "@sailo/storage/urls";
 import { DEFAULT_CODE_PATTERN, checkCodePattern } from "@sailo/core/codes";
 import { isTimeZone } from "../booking/time-zone";
+import { setProductStaff } from "../booking/staff";
 import { normalizeCycles } from "../memberships/terms";
 import { isCodeSource } from "./code-pool";
 import {
@@ -1197,6 +1198,27 @@ export async function saveProduct(
    */
   if (tiers) await syncTiers(savedId, tiers);
   if (sessions) await syncSessions(savedId, sessions);
+
+  /*
+   * Who takes bookings for this service — spec 51.
+   *
+   * Only when the caller mentioned them: `undefined` is a save that was not
+   * about staff, and treating it as an empty set would hand a specialist's
+   * service to the whole roster every time a phone corrected a title.
+   *
+   * Gated on the plan, and falling back rather than refusing, exactly as
+   * `bookingCapacity` above is. A shop that downgrades keeps the rows it wrote
+   * — `staffFor` goes on reading them, so its calendars keep working — and
+   * simply stops being able to change who is on a service. Refusing would leave
+   * a seller unable to edit a title.
+   *
+   * `setProductStaff` re-checks every id against this shop's own roster, so the
+   * ownership question is answered where the write is rather than at whichever
+   * surface happened to collect the ids.
+   */
+  if (input.staffIds && can(shop, "staffResources")) {
+    await setProductStaff(shop.id, savedId, input.staffIds);
+  }
 
   return { ok: true, id: savedId, slug, created };
 }

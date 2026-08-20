@@ -59,11 +59,11 @@ describe("requireShop, audited", () => {
     expect(source).not.toMatch(/requireShop\(\s*permission\?/);
   });
 
-  it("is called 149 times, and every one names a real permission", () => {
+  it("is called 152 times, and every one names a real permission", () => {
     const sites = callSites();
 
     /*
-     * **149**, and the number is the point of this test.
+     * **152**, and the number is the point of this test.
      *
      * The audit that introduced the argument found **140** existing call sites
      * — 94 server actions, 40 pages and layouts, 6 route handlers — and read
@@ -76,10 +76,16 @@ describe("requireShop, audited", () => {
      * not a duplicate to be tidied away — Next runs the two independently, and
      * a title naming a buyer is as much of a leak as the page under it.
      *
+     * 149 → 152 is spec 51's roster: `saveStaffMember` and `toggleStaffActive`
+     * in `actions/staff.ts`, both `settings:write`, plus the screen they serve
+     * at `/admin/settings/staff`, which reads `settings:read`. Who takes
+     * bookings is shop-wide configuration in the same sense the opening hours
+     * are, and `settings` is the resource a manager holds read-only.
+     *
      * Update this deliberately when a screen is added or removed. A number that
      * moves on its own is exactly the thing this exists to notice.
      */
-    expect(sites).toHaveLength(149);
+    expect(sites).toHaveLength(152);
 
     const unknown = sites.filter(
       (s) => !(SHOP_PERMISSIONS as readonly string[]).includes(s.permission),
@@ -96,9 +102,9 @@ describe("requireShop, audited", () => {
         s.file.startsWith("src/app/") &&
         (s.file.endsWith("page.tsx") || s.file.endsWith("layout.tsx")),
     );
-    expect(inActions).toHaveLength(100);
+    expect(inActions).toHaveLength(102);
     expect(inRoutes).toHaveLength(6);
-    expect(inPages).toHaveLength(43);
+    expect(inPages).toHaveLength(44);
     expect(inActions.length + inRoutes.length + inPages.length).toBe(sites.length);
 
     /*

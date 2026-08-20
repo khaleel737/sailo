@@ -102,6 +102,61 @@ const onlySurface = value("surface") as Surface | undefined;
 const onlyLocale = value("locale");
 const limit = Number(value("limit") ?? Number.POSITIVE_INFINITY);
 const fromFile = value("from");
+/**
+ * The one way a protected money section can be written, and it is deliberately
+ * awkward.
+ *
+ * `PROTECTED_SECTIONS` exists because a plausible-but-wrong translation of a
+ * total, a payout status or a coupon rule is not caught by reading the screen —
+ * it is caught by a complaint, after somebody has acted on it. So the default
+ * is refusal, and `glossary.ts` says to protect when unsure.
+ *
+ * But "no machine writes these" is not the same as "these can never be
+ * written". The risk the list guards against is a model filling them blind and
+ * nobody looking. A translation that was briefed against a bound glossary,
+ * verified key by key, and read by somebody who then typed this flag with a
+ * name attached is not that risk — and without a path, the alternative is
+ * hand-editing thirty-four files, which is how a placeholder gets dropped.
+ *
+ * Three conditions, all of them load-bearing:
+ *
+ *   - It requires `--from`. A model may never write a protected section, with
+ *     or without this flag. `client` stays null on that path, so this cannot
+ *     become a way to point the model at the money surfaces.
+ *   - It requires a name. `--reviewed` alone is refused; `--reviewed "Ada"` is
+ *     accepted, because the point of the guard is that somebody is accountable
+ *     for those strings, not that a flag was set.
+ *   - It says what it did. The run prints the name and the sections it
+ *     unlocked, so a terminal scrollback and a commit message can disagree and
+ *     be noticed.
+ */
+/*
+ * Presence and value read separately. `--reviewed` as the last argument makes
+ * `value()` return undefined, which would sail past the checks below and land
+ * on "needs credentials" — a refusal about the wrong thing entirely.
+ */
+const reviewedBy = flag("reviewed") ? (value("reviewed") ?? "") : undefined;
+if (reviewedBy !== undefined) {
+  if (!fromFile) {
+    console.error(
+      "--reviewed only applies to --from. A model may not write a protected " +
+        "money section under any flag: the whole point of the list is that " +
+        "these strings are read by a person before they ship.",
+    );
+    process.exit(1);
+  }
+  if (!reviewedBy.trim() || reviewedBy.startsWith("--")) {
+    console.error(
+      '--reviewed needs a name: --reviewed "Ada Lovelace". A flag records that ' +
+        "the guard was bypassed; a name records who is answerable for the " +
+        "strings, which is what the guard is actually for.",
+    );
+    process.exit(1);
+  }
+  console.log(
+    `Protected money sections unlocked for this run — reviewed by ${reviewedBy.trim()}.`,
+  );
+}
 
 /** `{ surface: { locale: { "section.key": text } } }`, when `--from` is used. */
 type Supplied = Partial<Record<Surface, Record<string, Record<string, string>>>>;
@@ -318,7 +373,9 @@ for (const surface of Object.keys(SURFACES) as Surface[]) {
     const target = flatten(await loadDictionary(dir, locale, exportName(locale)), surface);
     const gap = gapsFor(english, target, locale);
 
-    let writable = gap.missing.filter((key) => !isProtected(surface, key));
+    let writable = gap.missing.filter(
+      (key) => reviewedBy !== undefined || !isProtected(surface, key),
+    );
     held += gap.missing.length - writable.length;
 
     /*
