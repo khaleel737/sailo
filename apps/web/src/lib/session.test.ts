@@ -59,7 +59,7 @@ describe("requireShop, audited", () => {
     expect(source).not.toMatch(/requireShop\(\s*permission\?/);
   });
 
-  it("is called 152 times, and every one names a real permission", () => {
+  it("is called 153 times, and every one names a real permission", () => {
     const sites = callSites();
 
     /*
@@ -82,10 +82,15 @@ describe("requireShop, audited", () => {
      * bookings is shop-wide configuration in the same sense the opening hours
      * are, and `settings` is the resource a manager holds read-only.
      *
+     * 152 → 153 is the ⌘K palette's search route at `/api/admin/palette`,
+     * which claims `orders:read` — the weakest read every member holds — and
+     * then narrows each result group by `roleCan`, so the palette cannot show
+     * a teammate rows the sidebar would refuse them.
+     *
      * Update this deliberately when a screen is added or removed. A number that
      * moves on its own is exactly the thing this exists to notice.
      */
-    expect(sites).toHaveLength(152);
+    expect(sites).toHaveLength(153);
 
     const unknown = sites.filter(
       (s) => !(SHOP_PERMISSIONS as readonly string[]).includes(s.permission),
@@ -103,7 +108,7 @@ describe("requireShop, audited", () => {
         (s.file.endsWith("page.tsx") || s.file.endsWith("layout.tsx")),
     );
     expect(inActions).toHaveLength(102);
-    expect(inRoutes).toHaveLength(6);
+    expect(inRoutes).toHaveLength(7);
     expect(inPages).toHaveLength(44);
     expect(inActions.length + inRoutes.length + inPages.length).toBe(sites.length);
 
