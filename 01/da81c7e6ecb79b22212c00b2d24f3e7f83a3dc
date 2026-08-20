@@ -1,0 +1,39 @@
+packages/core/src/disputes/assemble.ts
+  s_a7bbf59e767e8f::t_74c333fe66ce51 24
+  s_a7bbf59e767e8f::t_24f3208972e645 130-134
+  s_a7bbf59e767e8f::t_be04f62d15b2ac 200,219,233,236,255,308,332,342,359,369,378,391-393,422,426
+packages/core/src/disputes/escalation.ts
+  s_a7bbf59e767e8f::t_4f5d93e845dd89 208-209
+  s_a7bbf59e767e8f::t_6ca361bd23e40b 34
+apps/web/src/lib/stripe-webhooks/disputes.ts
+  s_a7bbf59e767e8f::t_4506bbdff1920f 432
+  s_a7bbf59e767e8f::t_f740f236b9e916 29
+packages/core/src/disputes/text.ts
+  s_a7bbf59e767e8f::t_fe5918d124de55 1-28
+packages/core/src/disputes/text.test.ts
+  s_a7bbf59e767e8f::t_c4d915f494587a 1-42
+packages/core/src/disputes/pack.ts
+  s_a7bbf59e767e8f::t_6042b6971cf9db 293,295,302
+  s_a7bbf59e767e8f::t_f4894a718cf9bd 47
+packages/core/src/disputes/platform.ts
+  s_a7bbf59e767e8f::t_aacf4013e8d0d2 312,314
+  s_a7bbf59e767e8f::t_ff4fa396360e17 323
+  s_a7bbf59e767e8f::t_5cd196691eb193 35-36
+  s_a7bbf59e767e8f::t_06078a9921cd78 364
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "01da81c7e6ecb79b22212c00b2d24f3e7f83a3dc",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
