@@ -1,11 +1,12 @@
 /**
  * Where this deployment lives.
  *
- * Deliberately not behind `server-only`, and deliberately not in `stripe.ts`.
- * It reads a `NEXT_PUBLIC_` variable — there is nothing here to leak — and the
- * pre-deploy check scripts build Stripe redirect URLs from it while running as
- * plain Node, where importing `server-only` throws.
+ * A delegation to `@sailo/core/origin`, kept as a module because the
+ * pre-deploy check scripts import it as plain Node — which `appOrigin`
+ * supports: no `server-only`, no framework import, nothing to leak. The core
+ * helper also normalizes and falls back to the preview deployment's own URL,
+ * which the bare env read this replaces did not: with the variable unset,
+ * invite and share links became scheme-less strings while emails from the
+ * same deployment were correct.
  */
-export function appUrl() {
-  return process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-}
+export { appOrigin as appUrl } from "@sailo/core/origin";

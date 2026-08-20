@@ -6,6 +6,7 @@ import { BillingBadge, When } from "@/app/_components/hq-ui";
 import { getAccountHeader, getShopRisk } from "@/lib/platform";
 import { planFor } from "@sailo/core/plans";
 import { isShopLive } from "@sailo/core/visibility";
+import { appOrigin } from "@sailo/core/origin";
 
 /**
  * The frame every account tab renders inside: who this is, what standing they
@@ -48,7 +49,7 @@ export default async function AccountLayout({
   const risk = shop ? await getShopRisk(shop.id) : null;
   const openFindings = risk ? risk.signals.length + risk.flags.filter((f) => !f.clearedAt).length : 0;
 
-  const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
+  const base = appOrigin();
   const live = shop ? isShopLive(shop) : false;
 
   return (

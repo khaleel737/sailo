@@ -24,6 +24,7 @@ import {
   handleSubscriptionCheckout,
   handleSubscriptionDeleted,
 } from "./memberships";
+import { appOrigin } from "@sailo/core/origin";
 
 /**
  * A buyer's payment on a seller's connected account.
@@ -260,7 +261,7 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
               unlockNow: Boolean(order.downloadToken),
               downloadToken: order.downloadToken,
             },
-            base: process.env.NEXT_PUBLIC_APP_URL ?? "",
+            base: appOrigin(),
           });
         }
 

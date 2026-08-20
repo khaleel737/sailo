@@ -32,6 +32,7 @@ import { ensureMemberPass } from "@sailo/commerce/memberships/server";
 import { MembershipCard } from "./_components/membership-card";
 import { CollectionList } from "./_components/collection-list";
 import { collectionForProduct, readableCollection } from "@sailo/commerce/content";
+import { appOrigin } from "@sailo/core/origin";
 
 /* Not yet converted — see the note in `next.config.ts`. */
 export const instant = false;
@@ -100,7 +101,7 @@ export default async function DownloadPage({
    * only place they can act on it.
    */
   const membership = await accessForOrder(order);
-  const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
+  const base = appOrigin();
 
   /*
    * The product's gated content, if the seller has built any. Spec 40.

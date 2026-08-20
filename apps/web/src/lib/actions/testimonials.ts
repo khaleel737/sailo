@@ -27,6 +27,7 @@ import {
 import { sendTestimonialRequest } from "@/lib/email";
 import { publishShopEvent } from "@sailo/events";
 import type { ActionState } from "@sailo/core/action-state";
+import { absolute } from "@sailo/core/origin";
 
 /**
  * Spec 35's writes: one public, the rest the seller's.
@@ -279,7 +280,7 @@ export async function askForTestimonials(
       sendTestimonialRequest({
         shop: fresh ?? shop,
         to: one.email,
-        url: `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/testimonial/${one.token}`,
+        url: absolute(`/testimonial/${one.token}`),
       }),
     );
   }

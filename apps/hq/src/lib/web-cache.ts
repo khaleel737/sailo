@@ -1,5 +1,6 @@
 import "server-only";
 import { env } from "@/env";
+import { appOrigin } from "@sailo/core/origin";
 
 /**
  * Reaching into apps/web's storefront cache.
@@ -33,7 +34,7 @@ export async function revalidateShopOnWeb(shop: {
     return { ok: false };
   }
 
-  const base = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const base = appOrigin();
 
   try {
     const response = await fetch(`${base}/api/internal/revalidate`, {

@@ -17,6 +17,7 @@ import {
 import { upsertClient } from "@sailo/commerce/orders/server";
 import { sendLeadMagnet } from "@/lib/email";
 import { notifySellerOfLead } from "@sailo/workflows/leads";
+import { absolute } from "@sailo/core/origin";
 
 /**
  * The public end of a lead-capture product.
@@ -219,6 +220,6 @@ export async function captureLead(
 
 /** Where a magnet link points. Its own route, never the order download gate. */
 function magnetUrl(token: string): string {
-  const base = process.env.NEXT_PUBLIC_APP_URL;
-  return base ? `${base}/magnet/${token}` : `/magnet/${token}`;
+  // Absolute always — this link leaves the site in an email.
+  return absolute(`/magnet/${token}`);
 }

@@ -26,6 +26,7 @@ import { sendEmailConfirmation, sendPasswordReset } from "@/lib/email";
 import { refusesPasswordAuthForRoster } from "@sailo/security/roster";
 import { rateLimit, refundRateLimit } from "@sailo/rate-limit";
 import { recordAccountEvent } from "@sailo/commerce/disputes";
+import { absolute } from "@sailo/core/origin";
 
 /**
  * How long a reset link stays good. Set here rather than left to the default
@@ -564,7 +565,7 @@ export const auth = betterAuth({
           organizationName: data.organization.name,
           inviterName: data.inviter.user.name,
           inviterEmail: data.inviter.user.email,
-          url: `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/team/invite/${data.id}`,
+          url: absolute(`/team/invite/${data.id}`),
         });
       },
       /*

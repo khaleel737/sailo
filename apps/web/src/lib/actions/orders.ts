@@ -62,6 +62,7 @@ import { confirmBuyerByEmail } from "@sailo/workflows/orders";
 import { notifySellerOfOrder } from "@sailo/workflows/orders";
 import { notifySellerOfLowStock } from "@sailo/workflows/orders";
 import { emitOrderWebhook } from "@sailo/webhooks/emit";
+import { appOrigin } from "@sailo/core/origin";
 
 
 /**
@@ -1164,7 +1165,7 @@ export async function createOrderIntent(
     }
   }
 
-  const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
+  const base = appOrigin();
 
   /*
    * The invoice's public token, minted before the invoice exists.

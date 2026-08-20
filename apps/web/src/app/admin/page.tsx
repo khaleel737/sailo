@@ -22,6 +22,7 @@ import { orderStatusLabel, orderStatusTone } from "@sailo/core/order-status";
 import { formatMoney } from "@sailo/core/currency";
 import { getAdminT, getLocale } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
+import { appOrigin } from "@sailo/core/origin";
 
 export const metadata: Metadata = { title: "Overview" };
 
@@ -87,7 +88,7 @@ export default async function AdminOverviewPage() {
 
   const money = (cents: number) => formatMoney(cents, shop.currency, locale);
 
-  const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
+  const base = appOrigin();
   const shopUrl = `${base}/${shop.handle}`;
   const displayUrl = shopUrl.replace(/^https?:\/\//, "");
 

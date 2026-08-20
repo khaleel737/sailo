@@ -21,6 +21,7 @@ import { formatMoney } from "@sailo/core/currency";
 import { CopyLink } from "@sailo/design-system/web";
 import { ensurePortalToken, portalUrl } from "@sailo/partners/portal";
 import { getT, getAdminT } from "@/i18n/server";
+import { appOrigin } from "@sailo/core/origin";
 
 export const metadata: Metadata = { title: "Affiliates" };
 
@@ -67,7 +68,7 @@ export default async function AdminAffiliatesPage() {
     other: a.affiliates.payoutOther,
   };
 
-  const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
+  const base = appOrigin();
 
   // One token per affiliate, minted the first time the seller looks.
   const portalUrls = new Map<string, string>();
