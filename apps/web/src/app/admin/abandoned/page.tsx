@@ -3,7 +3,7 @@ import Link from "next/link";
 import { desc, eq, sql } from "drizzle-orm";
 import { ShoppingCart, Workflow } from "lucide-react";
 import { getDb } from "@sailo/db";
-import { checkoutSessions, products } from "@sailo/db/schema";
+import { checkoutSessions, orders, products } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
@@ -52,9 +52,19 @@ export default async function AbandonedPage() {
         open: sql<string>`count(*) filter (where ${checkoutSessions.status} in ('opened','error') and ${checkoutSessions.orderId} is null)`,
         emailed: sql<string>`count(*) filter (where ${checkoutSessions.recoverySentAt} is not null)`,
         recovered: sql<string>`count(*) filter (where ${checkoutSessions.recoveredAt} is not null)`,
-        recoveredCents: sql<string>`coalesce(sum(${checkoutSessions.subtotalCents}) filter (where ${checkoutSessions.recoveredAt} is not null), 0)`,
+        /*
+         * Recovered funds read the *order*, never the session's subtotal —
+         * the same rule `recoveryStats` documents. The session records what
+         * the basket was worth when it was abandoned, in whatever currency
+         * the buyer was browsing; the order records what was actually paid.
+         * Summing session subtotals overstated every recovery by the
+         * discount that caused it, and added a ¥5,000 basket into a figure
+         * labelled "€".
+         */
+        recoveredCents: sql<string>`coalesce(sum(${orders.totalCents}) filter (where ${checkoutSessions.recoveredAt} is not null), 0)`,
       })
       .from(checkoutSessions)
+      .leftJoin(orders, eq(orders.id, checkoutSessions.orderId))
       .where(eq(checkoutSessions.shopId, shop.id)),
   ]);
 
