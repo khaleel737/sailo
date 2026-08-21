@@ -1425,6 +1425,9 @@ export const adminKo: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "마케팅 이메일이 일시 중지되었습니다",
+    pausedBody:
+      "최근 이메일 중 반송되거나 스팸으로 신고된 건이 너무 많아, 함께 원인을 해결할 때까지 마케팅 이메일 발송을 중단했습니다. 주문, 영수증, 상점은 평소대로 작동합니다. 받은편지함에서 안내 메일을 확인하시거나 지원팀에 문의해 주시면 발송을 다시 켜 드리겠습니다.",
     title: "브로드캐스트",
     compose: "새 브로드캐스트",
     composeBody: "마크다운으로 작성하고 상점의 디자인으로 발송됩니다.",

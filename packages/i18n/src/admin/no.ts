@@ -1420,6 +1420,9 @@ export const adminNo: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "Markedsførings-e-poster er satt på pause",
+    pausedBody:
+      "For mange av de siste e-postene dine spratt tilbake eller ble rapportert som søppelpost, så utsending av markedsføringsmeldinger er stoppet mens vi finner ut av det sammen med deg. Bestillinger, kvitteringer og butikken din er ikke berørt — sjekk innboksen for e-posten vår, eller skriv til support, så skrur vi på utsendingen igjen.",
     title: "Utsendelser",
     compose: "Ny utsendelse",
     composeBody: "Skrives i Markdown og sendes med butikkens utseende.",

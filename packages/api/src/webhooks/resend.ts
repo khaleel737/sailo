@@ -21,6 +21,7 @@ import { getDb } from "@sailo/db";
 import { broadcastDeliveries } from "@sailo/db/schema";
 import { suppress } from "@sailo/marketing/broadcasts/server";
 import { evaluateShop } from "@sailo/marketing/broadcasts/server";
+import { announceMarketingPause } from "@sailo/workflows/reputation";
 import { optOut } from "@sailo/marketing/lifecycle/server";
 import { markMessageStatus } from "@sailo/commerce/disputes";
 import { lifecycleDeliveryByProviderId, markLifecycleFailed } from "@sailo/marketing/lifecycle/server";
@@ -225,7 +226,13 @@ export async function handleResendWebhook(request: Request): Promise<Response> {
      * failed evaluation costs a few minutes rather than a pause.
      */
     try {
-      await evaluateShop(delivery.shopId);
+      const paused = await evaluateShop(delivery.shopId);
+      /*
+       * The seller hears it from us, now — not from a refused Send button
+       * days later. `announceMarketingPause` is itself best-effort and never
+       * throws; the catch below still guards the verdict.
+       */
+      if (paused) await announceMarketingPause(delivery.shopId, paused);
     } catch (error) {
       console.error(`[sailo] reputation check failed for shop ${delivery.shopId}`, error);
     }

@@ -1426,6 +1426,9 @@ export const adminSq: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "E-mailet e marketingut janë në pauzë",
+    pausedBody:
+      "Shumë nga e-mailet tuaja të fundit u kthyen ose u raportuan si spam, prandaj dërgimi i e-maileve të marketingut është ndalur derisa ta zgjidhim bashkë. Porositë, faturat dhe dyqani juaj nuk preken — shikoni e-mailin tonë në kutinë hyrëse ose i shkruani mbështetjes dhe do ta rikthejmë dërgimin.",
     title: "Dërgesa",
     compose: "Dërgesë e re",
     composeBody: "Shkruhet në Markdown, dërgohet me pamjen e dyqanit tënd.",

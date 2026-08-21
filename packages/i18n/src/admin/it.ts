@@ -1410,6 +1410,9 @@ export const adminIt: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "Le email di marketing sono in pausa",
+    pausedBody:
+      "Troppe delle tue email recenti sono state respinte o segnalate come spam, quindi l'invio di email di marketing è fermo finché non lo risolviamo insieme. Ordini, ricevute e il tuo negozio non sono toccati — controlla la nostra email nella posta in arrivo o scrivi al supporto e riattiveremo l'invio.",
     title: "Invii",
     compose: "Nuovo invio",
     composeBody: "Si scrive in Markdown e si invia con l'aspetto del tuo negozio.",

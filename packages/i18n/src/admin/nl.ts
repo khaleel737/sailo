@@ -1420,6 +1420,9 @@ export const adminNl: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "Marketingmail is gepauzeerd",
+    pausedBody:
+      "Te veel van je recente mails zijn gebouncet of als spam gemeld, dus het versturen van marketingmail is gestopt totdat we dit samen hebben opgelost. Bestellingen, bonnetjes en je winkel werken gewoon door — check je inbox voor onze mail of schrijf naar support, dan zetten we het versturen weer aan.",
     title: "Mailings",
     compose: "Nieuwe mailing",
     composeBody: "Geschreven in Markdown, verzonden in de stijl van je winkel.",

@@ -6,6 +6,7 @@ import { SectionTitle, When } from "@/app/_components/hq-ui";
 import { ClearFlag, RaiseFlag } from "../../../risk/_components/flag-controls";
 import { getAccountHeader, getShopRisk, priorClosuresFor } from "@/lib/platform";
 import { staffCan } from "@/lib/session";
+import { reputationFor } from "@sailo/marketing/broadcasts/server";
 import type { RiskSeverity } from "@sailo/core/risk";
 
 export const metadata: Metadata = { title: "Risk" };
@@ -50,10 +51,16 @@ export default async function HqAccountRiskPage({
 
   const { owner, shop } = header;
 
-  const [risk, closures, mayFlag] = await Promise.all([
+  const [risk, closures, mayFlag, reputation] = await Promise.all([
     getShopRisk(shop.id),
     priorClosuresFor(owner.email),
     staffCan("account:suspend"),
+    /*
+     * The decision-grade numbers — the same window `evaluateShop` pauses on,
+     * clearance watermark included — so the person deciding whether to lift
+     * a pause reads the rate that caused it, not a guess.
+     */
+    reputationFor(shop.id),
   ]);
 
   const open = risk?.flags.filter((f) => !f.clearedAt) ?? [];
@@ -237,6 +244,17 @@ export default async function HqAccountRiskPage({
               {shop.marketingPausedAt
                 ? "Marketing paused — broadcasts are held."
                 : "Marketing allowed."}
+            </p>
+            <p className="text-xs leading-relaxed text-ink-500">
+              {reputation.sent.toLocaleString()} marketing emails in the last 30
+              days{shop.marketingClearedAt ? " (since the last clearance)" : ""}:{" "}
+              {reputation.complaints} spam complaint
+              {reputation.complaints === 1 ? "" : "s"} (
+              {(reputation.complaintRate * 100).toFixed(2)}%),{" "}
+              {reputation.bounces} bounce
+              {reputation.bounces === 1 ? "" : "s"} (
+              {(reputation.bounceRate * 100).toFixed(1)}%). The automatic pause
+              trips at 0.10% complaints or 5% bounces over 100 sends.
             </p>
             {shop.disputeClearedAt ? (
               <p className="text-xs leading-relaxed text-ink-500">

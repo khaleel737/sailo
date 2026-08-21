@@ -1425,6 +1425,9 @@ export const adminSl: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "Marketinška e-pošta je zaustavljena",
+    pausedBody:
+      "Preveč vaših nedavnih e-poštnih sporočil je bilo zavrnjenih ali prijavljenih kot neželena pošta, zato je pošiljanje marketinških sporočil ustavljeno, dokler tega ne rešimo skupaj z vami. Naročila, računi in vaša trgovina delujejo naprej — preverite naše sporočilo v nabiralniku ali pišite podpori in pošiljanje bomo znova vklopili.",
     title: "Kampanje",
     compose: "Nova kampanja",
     composeBody: "Napišeš v Markdownu, pošlje se v videzu tvoje trgovine.",

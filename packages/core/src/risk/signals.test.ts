@@ -39,6 +39,11 @@ const CLEAN: RiskInput = {
   chargesEnabled: true,
   grossCents: 5_000_000,
   currency: "USD",
+  // Healthy mail: real volume, nothing complained, one stray bounce.
+  emailSent30d: 800,
+  emailComplaints30d: 0,
+  emailBounces30d: 1,
+  marketingPaused: false,
 };
 
 const shop = (overrides: Partial<RiskInput>): RiskInput => ({ ...CLEAN, ...overrides });
@@ -278,5 +283,40 @@ describe("isLouder", () => {
     // Equal is not louder: re-raising a cleared flag at the same level is what
     // makes a dismissed finding come back every morning.
     expect(isLouder("review", "review")).toBe(false);
+  });
+});
+
+describe("email reputation", () => {
+  it("says nothing about healthy mail", () => {
+    // CLEAN sends 800 with one bounce — an ordinary shop's ordinary month.
+    expect(kinds(CLEAN)).not.toContain("email_reputation");
+  });
+
+  it("puts an automatic pause in front of a person, as review", () => {
+    const signals = assessRisk(
+      shop({ marketingPaused: true, emailSent30d: 500, emailComplaints30d: 3 }),
+    );
+    const signal = signals.find((s) => s.kind === "email_reputation");
+    expect(signal?.severity).toBe("review");
+    expect(signal?.summary).toContain("paused automatically");
+  });
+
+  it("warns at half the pause threshold, with the volume floor honoured", () => {
+    // 1 complaint over 1,000 sends is 0.1% — the pause line; half is 0.05%.
+    expect(
+      kinds(shop({ emailSent30d: 1_000, emailComplaints30d: 1 })),
+    ).toContain("email_reputation");
+    // The same complaint over 99 sends is an accident, not a rate.
+    expect(
+      kinds(shop({ emailSent30d: 99, emailComplaints30d: 1 })),
+    ).not.toContain("email_reputation");
+  });
+
+  it("never reaches act on its own — the pause already contains the damage", () => {
+    const signals = assessRisk(
+      shop({ marketingPaused: true, emailSent30d: 5_000, emailComplaints30d: 50 }),
+    );
+    const signal = signals.find((s) => s.kind === "email_reputation");
+    expect(signal?.severity).toBe("review");
   });
 });

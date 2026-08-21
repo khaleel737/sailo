@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { after } from "next/server";
 import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { shops } from "@sailo/db/schema";
+import { broadcastDeliveries, shops } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
 import { revalidateShop } from "@/lib/cache";
 import { rateLimit } from "@sailo/rate-limit";
@@ -276,13 +276,31 @@ export async function askForTestimonials(
    */
   const fresh = await db.query.shops.findFirst({ where: eq(shops.id, shop.id) });
   for (const one of outcome.sent) {
-    after(() =>
-      sendTestimonialRequest({
+    after(async () => {
+      const sent = await sendTestimonialRequest({
         shop: fresh ?? shop,
         to: one.email,
         url: absolute(`/testimonial/${one.token}`),
-      }),
-    );
+      });
+      /*
+       * Close the ledger honestly. The delivery row was written optimistically
+       * before this send; the provider id is what lets a complaint webhook
+       * find its way back to this shop, and a send that failed must not sit
+       * in the reputation denominator as though it reached anybody.
+       */
+      await db
+        .update(broadcastDeliveries)
+        .set(
+          sent.sent
+            ? { providerId: sent.id }
+            : {
+                status: "failed",
+                error: ("reason" in sent ? sent.reason : "unknown").slice(0, 500),
+                sentAt: null,
+              },
+        )
+        .where(eq(broadcastDeliveries.id, one.deliveryId));
+    });
   }
 
   revalidatePath("/admin/testimonials");

@@ -2413,6 +2413,14 @@ export const adminEn = {
 
   broadcasts: {
     title: "Broadcasts",
+    /*
+     * The reputation pause, said before the seller writes a word — not by a
+     * refused Send button after they have. The body separates what stopped
+     * (marketing mail) from what did not (orders, receipts, the storefront).
+     */
+    pausedTitle: "Marketing email is paused",
+    pausedBody:
+      "Too many recent emails bounced or were reported as spam, so marketing sending is stopped while we sort it out with you. Orders, receipts and your storefront are unaffected — check your inbox for our email, or write to support, and we'll get you sending again.",
     compose: "New broadcast",
     composeBody: "Written in Markdown, sent with your shop's look.",
     reach: "{count} contacts have opted in to marketing email.",

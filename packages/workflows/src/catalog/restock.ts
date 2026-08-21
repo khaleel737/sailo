@@ -1,7 +1,8 @@
 import "server-only";
 import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { productVariants, products, type Shop } from "@sailo/db/schema";
+import { broadcastDeliveries, productVariants, products, type Shop } from "@sailo/db/schema";
+import { isSuppressed } from "@sailo/marketing/broadcasts/server";
 import { rateLimit } from "@sailo/rate-limit";
 import { isSellable } from "@sailo/core/variants";
 import {
@@ -141,6 +142,15 @@ export async function notifyBackInStock(opts: {
          */
         if (!request.email) continue;
 
+        /*
+         * The suppression list binds this mail like every other. A bounced or
+         * complained address must never be mailed again by this shop — this
+         * path skipped the check entirely, which is exactly the behaviour the
+         * table exists to stop. Still claimed: the request was answered, the
+         * answer is "we may not write to you".
+         */
+        if (await isSuppressed(shop.id, request.email)) continue;
+
         if (!(await underCeiling(shop.id))) return;
 
         const sent = await sendBackInStock({
@@ -152,6 +162,22 @@ export async function notifyBackInStock(opts: {
         });
         if (!sent.sent) {
           console.warn(`[sailo] back-in-stock email not sent: ${sent.reason}`);
+        } else {
+          /*
+           * The complaint ledger — a delivery row with the provider id is the
+           * only route a bounce or complaint webhook has back to this shop.
+           * Without it this mail's complaints vanished: no suppression, no
+           * reputation contribution.
+           */
+          await getDb()
+            .insert(broadcastDeliveries)
+            .values({
+              shopId: shop.id,
+              email: request.email,
+              status: "sent",
+              providerId: sent.id,
+              sentAt: new Date(),
+            });
         }
       }
     }

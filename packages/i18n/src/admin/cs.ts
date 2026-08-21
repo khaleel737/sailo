@@ -1410,6 +1410,9 @@ export const adminCs: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "Marketingové e-maily jsou pozastaveny",
+    pausedBody:
+      "Příliš mnoho vašich nedávných e-mailů se vrátilo nebo bylo nahlášeno jako spam, proto je odesílání marketingových e-mailů zastaveno, než to s vámi vyřešíme. Objednávky, účtenky i váš obchod fungují dál — podívejte se do schránky na náš e-mail nebo napište podpoře a odesílání obnovíme.",
     title: "Hromadné e-maily",
     compose: "Nový hromadný e-mail",
     composeBody: "Píše se v Markdownu, odesílá se ve vzhledu vašeho obchodu.",

@@ -1408,6 +1408,9 @@ export const adminFi: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "Markkinointisähköpostit on keskeytetty",
+    pausedBody:
+      "Liian moni viimeaikaisista viesteistäsi palautui tai ilmoitettiin roskapostiksi, joten markkinointiviestien lähetys on pysäytetty, kunnes selvitämme asian kanssasi. Tilaukset, kuitit ja kauppasi toimivat normaalisti — katso sähköpostimme saapuneista tai kirjoita tuelle, niin palautamme lähetyksen.",
     title: "Joukkoviestit",
     compose: "Uusi joukkoviesti",
     composeBody: "Kirjoitetaan Markdownilla ja lähetetään kauppasi ilmeellä.",

@@ -13,7 +13,7 @@ import {
   type Testimonial,
   type TestimonialWall,
 } from "@sailo/db/schema";
-import { maybeRow } from "@sailo/core/invariant";
+import { firstRow, maybeRow } from "@sailo/core/invariant";
 import { randomHex } from "@sailo/core/token";
 import { slugify } from "@sailo/core/slug";
 import { isEmbeddableVideoUrl, isRenderableImageUrl } from "@sailo/storage/urls";
@@ -43,7 +43,15 @@ export const REQUEST_TTL_DAYS = 30;
 
 export type RequestOutcome = {
   /** Tokens to mail, in the caller's order. */
-  sent: { email: string; token: string; clientId: string | null }[];
+  sent: {
+    email: string;
+    token: string;
+    clientId: string | null;
+    /** The delivery ledger row, so the caller can attach the provider id
+     *  once the send has actually happened — the complaint webhook's only
+     *  route back to this shop. */
+    deliveryId: string;
+  }[];
   /** On a suppression list — bounced, complained or unsubscribed. */
   suppressed: number;
   /** Left unasked because the day's sending allowance ran out. */
@@ -111,15 +119,26 @@ export async function raiseTestimonialRequests(opts: {
       tokenHash: hashRequestToken(token),
       expiresAt,
     });
-    await db.insert(broadcastDeliveries).values({
-      shopId: opts.shop.id,
-      clientId: recipient.clientId,
-      email,
-      status: "sent",
-      sentAt: now,
-    });
+    const delivery = firstRow(
+      await db
+        .insert(broadcastDeliveries)
+        .values({
+          shopId: opts.shop.id,
+          clientId: recipient.clientId,
+          email,
+          status: "sent",
+          sentAt: now,
+        })
+        .returning({ id: broadcastDeliveries.id }),
+      "testimonial delivery",
+    );
 
-    out.sent.push({ email, token, clientId: recipient.clientId });
+    out.sent.push({
+      email,
+      token,
+      clientId: recipient.clientId,
+      deliveryId: delivery.id,
+    });
   }
 
   return out;

@@ -137,7 +137,7 @@ async function candidates(): Promise<Set<string>> {
       .select({ shopId: shops.id })
       .from(shops)
       .where(
-        sql`(${shops.suspendedAt} is not null or ${shops.payoutsPausedAt} is not null) and ${shops.deletedAt} is null`,
+        sql`(${shops.suspendedAt} is not null or ${shops.payoutsPausedAt} is not null or ${shops.marketingPausedAt} is not null) and ${shops.deletedAt} is null`,
       )
       .limit(CANDIDATE_LIMIT),
   ]);
@@ -160,6 +160,7 @@ async function describe(shopIds: string[]) {
   const db = getReadDb();
   const week = daysAgo(7);
   const fortnight = daysAgo(14);
+  const month = daysAgo(30);
 
   return db
     .select({
@@ -214,6 +215,18 @@ async function describe(shopIds: string[]) {
       priorCents: sql<string>`(select coalesce(sum(o.total_cents), 0) from orders o where o.shop_id = ${shops.id} and o.created_at >= ${fortnight} and o.created_at < ${week} and o.status <> 'cancelled')`,
 
       openFlags: sql<string>`(select count(*) from risk_flags f where f.shop_id = ${shops.id} and f.cleared_at is null)`,
+
+      /*
+       * The email screening numbers — the last 30 days of marketing mail and
+       * how it landed. Written out here like the chargeback predicate above,
+       * and for the same trade: the decision-grade windowing (clearance
+       * watermark included) lives in @sailo/marketing's reputation module;
+       * the desk only needs to know who is worth reading about.
+       */
+      marketingPausedAt: shops.marketingPausedAt,
+      emailSent: sql<string>`(select count(*) from broadcast_deliveries bd where bd.shop_id = ${shops.id} and bd.sent_at >= ${month})`,
+      emailComplaints: sql<string>`(select count(*) from broadcast_deliveries bd where bd.shop_id = ${shops.id} and bd.sent_at >= ${month} and bd.error = 'complained')`,
+      emailBounces: sql<string>`(select count(*) from broadcast_deliveries bd where bd.shop_id = ${shops.id} and bd.sent_at >= ${month} and bd.error = 'bounced')`,
     })
     .from(shops)
     .innerJoin(user, eq(user.id, shops.userId))
@@ -318,6 +331,10 @@ export async function getRiskDesk(filters: { severity?: string } = {}) {
       chargesEnabled: row.stripeChargesEnabled,
       grossCents,
       currency: row.currency,
+      emailSent30d: num(row.emailSent),
+      emailComplaints30d: num(row.emailComplaints),
+      emailBounces30d: num(row.emailBounces),
+      marketingPaused: row.marketingPausedAt !== null,
     });
 
     const severity = worstSeverity(signals);
@@ -414,6 +431,10 @@ export async function getShopRisk(shopId: string) {
     chargesEnabled: row.stripeChargesEnabled,
     grossCents,
     currency: row.currency,
+    emailSent30d: num(row.emailSent),
+    emailComplaints30d: num(row.emailComplaints),
+    emailBounces30d: num(row.emailBounces),
+    marketingPaused: row.marketingPausedAt !== null,
   });
 
   return {

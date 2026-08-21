@@ -1410,6 +1410,9 @@ export const adminDa: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "Marketingmails er sat på pause",
+    pausedBody:
+      "For mange af dine seneste mails bouncede eller blev meldt som spam, så udsendelse af marketingmails er stoppet, mens vi finder ud af det sammen med dig. Ordrer, kvitteringer og din butik er ikke berørt — tjek din indbakke for vores mail, eller skriv til support, så får vi dig i gang igen.",
     title: "Udsendelser",
     compose: "Ny udsendelse",
     composeBody: "Skrives i Markdown og sendes med din butiks udseende.",

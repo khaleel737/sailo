@@ -1413,6 +1413,9 @@ export const adminJa: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "マーケティングメールは一時停止中です",
+    pausedBody:
+      "最近のメールでバウンスや迷惑メール報告が多かったため、原因を一緒に確認できるまでマーケティングメールの送信を停止しています。注文・領収書・ショップは通常どおり動作します。受信トレイのご案内メールをご確認いただくか、サポートまでご連絡ください。確認でき次第、送信を再開します。",
     title: "一斉配信",
     compose: "新しい一斉配信",
     composeBody: "Markdown で書き、ショップの見た目で送ります。",

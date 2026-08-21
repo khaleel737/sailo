@@ -1411,6 +1411,9 @@ export const adminZh: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "营销邮件已暂停",
+    pausedBody:
+      "您最近的邮件退回或被举报为垃圾邮件的数量过多，因此营销邮件已暂停发送，待我们与您一起解决后恢复。订单、收据和您的店铺一切正常——请查收我们发送的邮件，或联系客服，我们会尽快恢复发送。",
     title: "群发邮件",
     compose: "新建群发",
     composeBody: "用 Markdown 撰写，以你店铺的外观发送。",

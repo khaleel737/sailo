@@ -1423,6 +1423,9 @@ export const adminHr: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "Marketinški e-mailovi su pauzirani",
+    pausedBody:
+      "Previše je vaših nedavnih e-mailova odbijeno ili prijavljeno kao spam, pa je slanje marketinških poruka zaustavljeno dok to ne riješimo s vama. Narudžbe, računi i vaša trgovina rade normalno — provjerite naš e-mail u pretincu ili se javite podršci i vratit ćemo slanje.",
     title: "Kampanje",
     compose: "Nova kampanja",
     composeBody: "Piše se u Markdownu, šalje se u izgledu tvoje trgovine.",

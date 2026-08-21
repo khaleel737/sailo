@@ -65,6 +65,7 @@ export const RISK_KINDS = [
   "velocity",
   "restricted_business",
   "returning_closure",
+  "email_reputation",
   "manual",
 ] as const;
 
@@ -128,6 +129,17 @@ export type RiskInput = {
   /** Lifetime gross, used only to keep the quiet signals quiet on tiny shops. */
   grossCents: number;
   currency: string;
+  /**
+   * Marketing mail handed to the provider in the last 30 days, and how it
+   * landed. The decision-grade windowing (clearance watermark and all) lives
+   * in `@sailo/marketing`'s reputation module — these are the desk's
+   * screening numbers, same trade the chargeback columns make.
+   */
+  emailSent30d: number;
+  emailComplaints30d: number;
+  emailBounces30d: number;
+  /** Whether the automatic reputation pause is standing on the shop. */
+  marketingPaused: boolean;
 };
 
 /* ── Floors ──────────────────────────────────────────────────────────────── */
@@ -152,6 +164,16 @@ export const CHARGEBACK_MIN_ORDERS = 20;
 export const REFUND_WATCH_BP = 2_500;
 export const REFUND_REVIEW_BP = 4_000;
 export const REFUND_MIN_GROSS_CENTS = 50_000;
+
+/**
+ * The email screening floors — half the automatic pause thresholds in
+ * `@sailo/marketing`'s reputation module (0.1% complaints, 5% bounces over a
+ * 100-send floor), so the desk sees a shop *approaching* the pause while
+ * there is still something to say to the seller besides "it happened".
+ */
+export const EMAIL_VOLUME_FLOOR = 100;
+export const EMAIL_COMPLAINT_WATCH = 0.0005;
+export const EMAIL_BOUNCE_WATCH = 0.025;
 
 /** A week that is five times the one before it, on a shop old enough to have a normal. */
 export const VELOCITY_MULTIPLE = 5;
@@ -235,6 +257,40 @@ export function assessRisk(input: RiskInput): RiskSignal[] {
       summary: `${(input.refundBp / 100).toFixed(1)}% of everything this shop has sold has been refunded.`,
       evidence: String(input.refundBp),
     });
+  }
+
+  /* ── Email reputation ────────────────────────────────────────────────── */
+  if (input.marketingPaused) {
+    /*
+     * The pause has already been applied by `@sailo/marketing`'s reputation
+     * check — this puts it in front of a person, which is the half the
+     * automatic side cannot do. `review`, not `act`: the damage is contained
+     * by the pause; what is owed now is a conversation about the list.
+     */
+    signals.push({
+      kind: "email_reputation",
+      severity: "review",
+      summary:
+        `Marketing email is paused automatically — ${input.emailComplaints30d} spam ` +
+        `complaint${input.emailComplaints30d === 1 ? "" : "s"} and ${input.emailBounces30d} ` +
+        `bounce${input.emailBounces30d === 1 ? "" : "s"} across ${input.emailSent30d.toLocaleString()} sends in 30 days.`,
+      evidence: String(input.emailComplaints30d + input.emailBounces30d),
+    });
+  } else if (input.emailSent30d >= EMAIL_VOLUME_FLOOR) {
+    const complaintRate = input.emailComplaints30d / input.emailSent30d;
+    const bounceRate = input.emailBounces30d / input.emailSent30d;
+    if (complaintRate >= EMAIL_COMPLAINT_WATCH || bounceRate >= EMAIL_BOUNCE_WATCH) {
+      signals.push({
+        kind: "email_reputation",
+        severity: "watch",
+        summary:
+          `Email reputation is slipping — ${input.emailComplaints30d} spam ` +
+          `complaint${input.emailComplaints30d === 1 ? "" : "s"} and ${input.emailBounces30d} ` +
+          `bounce${input.emailBounces30d === 1 ? "" : "s"} across ${input.emailSent30d.toLocaleString()} ` +
+          `sends — halfway to the automatic pause.`,
+        evidence: String(input.emailComplaints30d + input.emailBounces30d),
+      });
+    }
   }
 
   /* ── Velocity ────────────────────────────────────────────────────────── */

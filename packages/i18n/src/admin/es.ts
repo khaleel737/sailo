@@ -1408,6 +1408,9 @@ export const adminEs: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "El correo de marketing está en pausa",
+    pausedBody:
+      "Demasiados de tus últimos correos rebotaron o fueron marcados como spam, así que el envío de marketing está detenido mientras lo resolvemos contigo. Los pedidos, los recibos y tu tienda no se ven afectados — revisa tu bandeja de entrada en busca de nuestro correo o escribe a soporte y volveremos a activar el envío.",
     title: "Envíos",
     compose: "Nuevo envío",
     composeBody: "Se escribe en Markdown y se envía con el aspecto de tu tienda.",

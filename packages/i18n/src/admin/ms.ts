@@ -1425,6 +1425,9 @@ export const adminMs: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "E-mel pemasaran dijeda",
+    pausedBody:
+      "Terlalu banyak e-mel terbaru anda melantun atau dilaporkan sebagai spam, jadi penghantaran e-mel pemasaran dihentikan sementara kami menyelesaikannya bersama anda. Pesanan, resit dan kedai anda tidak terjejas — semak e-mel kami di peti masuk atau hubungi sokongan, dan kami akan memulihkan penghantaran.",
     title: "Siaran",
     compose: "Siaran baharu",
     composeBody: "Ditulis dalam Markdown, dihantar dengan rupa kedai anda.",

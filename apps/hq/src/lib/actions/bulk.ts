@@ -164,7 +164,14 @@ export async function bulkAccountAction(
     case "resume_marketing":
       await db
         .update(shops)
-        .set({ marketingPausedAt: null, marketingPausedReason: null, updatedAt: now })
+        .set({
+          marketingPausedAt: null,
+          marketingPausedReason: null,
+          // The adjudication watermark — see the single-shop resume in
+          // standing.ts for why clearance restarts the reputation window.
+          marketingClearedAt: now,
+          updatedAt: now,
+        })
         .where(inArray(shops.id, targetIds));
       break;
     case "comp":

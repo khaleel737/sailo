@@ -16,7 +16,8 @@
     "./broadcasts": "./src/broadcasts/pickers.ts",
     "./disputes": "./src/disputes/notify-seller.ts",
     "./leads": "./src/leads/notify-seller.ts",
-    "./recovery": "./src/recovery/pass.ts"
+    "./recovery": "./src/recovery/pass.ts",
+    "./reputation": "./src/reputation/notify-seller.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

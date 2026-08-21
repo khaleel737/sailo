@@ -193,6 +193,16 @@ export const shops = pgTable(
     marketingPausedAt: timestamp("marketing_paused_at"),
     /** `complaint_rate` | `bounce_rate` | free text when a human paused it. */
     marketingPausedReason: text("marketing_paused_reason"),
+    /**
+     * When staff last lifted an automatic pause — the adjudication watermark.
+     *
+     * The reputation window starts no earlier than this, so a webhook arriving
+     * late for a send that *predates* the clearance cannot re-pause a shop the
+     * moment a human cleared it. It does not forgive new behaviour: the next
+     * bad send after clearance counts in full and can re-pause within the
+     * minute, which keeps the pause a measurement rather than a sentence.
+     */
+    marketingClearedAt: timestamp("marketing_cleared_at"),
 
     // Affiliate programme
     affiliatesEnabled: boolean("affiliates_enabled").default(false).notNull(),

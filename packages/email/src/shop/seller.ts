@@ -256,6 +256,55 @@ export async function sendSellerWebhookDisabled(opts: {
   });
 }
 
+/**
+ * Marketing sending was paused automatically — the seller hears it from us,
+ * not from a refused Send button three days later.
+ *
+ * The wording separates the two facts a panicking seller needs separated:
+ * what stopped (marketing mail only) and what did not (orders, receipts,
+ * the storefront). The same doctrine as the pause itself — a bounce rate
+ * may stop broadcasts and may not reach for anything else.
+ */
+export async function sendSellerMarketingPaused(opts: {
+  shop: Shop;
+  to: string;
+  reason: "complaint_rate" | "bounce_rate";
+}): Promise<SendResult> {
+  const { shop, to, reason } = opts;
+
+  const what =
+    reason === "complaint_rate"
+      ? "too many recipients reported your recent emails as spam"
+      : "too many of your recent emails bounced";
+
+  const body = `
+    ${mutedPara(
+      `We've paused marketing email from ${esc(shop.name)} because ${what}. ` +
+        `Broadcasts, flows and other marketing messages are held; nothing sends until we've looked at it together.`,
+    )}
+    ${mutedPara(
+      "Everything else is untouched — orders, receipts, download links and your storefront all keep working exactly as before.",
+    )}
+    ${fine(
+      "High complaint or bounce rates usually mean a list with addresses that didn't ask to be on it, or that went stale. " +
+        "Reply to this email and tell us where the list came from; once it's cleaned up we'll switch sending back on.",
+    )}
+    ${button(`${appOrigin()}/admin/broadcasts`, "Open broadcasts")}
+  `;
+
+  return send({
+    from: sender("Sailo", ORDERS),
+    to,
+    subject: `Marketing email paused for ${shop.name}`,
+    html: sailoLayout("Your marketing email is paused", body, {
+      preheader:
+        reason === "complaint_rate"
+          ? "Recipients reported recent emails as spam."
+          : "Too many recent emails bounced.",
+    }),
+  });
+}
+
 /* -------------------------------------------------------------------------- */
 /*  Running out                                                                */
 /* -------------------------------------------------------------------------- */

@@ -1420,6 +1420,9 @@ export const adminRo: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "E-mailurile de marketing sunt în pauză",
+    pausedBody:
+      "Prea multe dintre e-mailurile tale recente au fost respinse sau raportate ca spam, așa că trimiterea de e-mailuri de marketing este oprită până lămurim împreună situația. Comenzile, chitanțele și magazinul tău nu sunt afectate — verifică e-mailul nostru în inbox sau scrie-ne la suport și reactivăm trimiterea.",
     title: "Trimiteri",
     compose: "Trimitere nouă",
     composeBody: "Se scrie în Markdown, se trimite cu aspectul magazinului tău.",

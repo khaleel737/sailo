@@ -173,6 +173,13 @@ export async function setMarketingPaused(
     .set({
       marketingPausedAt: null,
       marketingPausedReason: null,
+      /*
+       * The adjudication watermark. The reputation window restarts here, so a
+       * late webhook for a send that predates this clearance cannot re-pause
+       * the shop staff just cleared — while a bad send *after* it counts in
+       * full and re-pauses within the minute.
+       */
+      marketingClearedAt: new Date(),
       updatedAt: new Date(),
     })
     .where(eq(shops.id, shop.id));

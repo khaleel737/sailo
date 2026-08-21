@@ -1425,6 +1425,9 @@ export const adminId: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "Email pemasaran dijeda",
+    pausedBody:
+      "Terlalu banyak email terbaru Anda yang terpental atau dilaporkan sebagai spam, jadi pengiriman email pemasaran dihentikan sementara kami menyelesaikannya bersama Anda. Pesanan, kuitansi, dan toko Anda tidak terpengaruh — periksa email kami di kotak masuk atau hubungi dukungan, dan kami akan mengaktifkan kembali pengiriman.",
     title: "Siaran email",
     compose: "Siaran baru",
     composeBody: "Ditulis dalam Markdown, dikirim dengan tampilan tokomu.",

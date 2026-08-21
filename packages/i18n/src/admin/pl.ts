@@ -1420,6 +1420,9 @@ export const adminPl: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "E-maile marketingowe są wstrzymane",
+    pausedBody:
+      "Zbyt wiele Twoich ostatnich e-maili zostało odrzuconych lub zgłoszonych jako spam, dlatego wysyłka marketingowa jest zatrzymana, dopóki nie wyjaśnimy tego razem. Zamówienia, paragony i Twój sklep działają bez zmian — sprawdź naszą wiadomość w skrzynce lub napisz do pomocy, a przywrócimy wysyłkę.",
     title: "Wysyłki",
     compose: "Nowa wysyłka",
     composeBody: "Piszesz w Markdown, wysyłamy w wyglądzie Twojego sklepu.",

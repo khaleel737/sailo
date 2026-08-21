@@ -76,7 +76,23 @@ export async function reputationFor(
   shopId: string,
   now = new Date(),
 ): Promise<Reputation> {
-  const since = new Date(now.getTime() - WINDOW_DAYS * 24 * 3_600_000);
+  const windowStart = new Date(now.getTime() - WINDOW_DAYS * 24 * 3_600_000);
+
+  /*
+   * The window starts no earlier than the last staff clearance. Without this
+   * the clear was a no-op while old events trickled in: a complaint arriving
+   * late for a send that *predates* the clearance re-ran the same thirty days
+   * and re-paused the shop the minute a human cleared it. Clearance settles
+   * the past; sends after it count in full, so a shop that keeps mailing a
+   * bad list is back on pause within the minute — which keeps this a
+   * measurement rather than a sentence.
+   */
+  const shop = await getDb().query.shops.findFirst({
+    where: eq(shops.id, shopId),
+    columns: { marketingClearedAt: true },
+  });
+  const cleared = shop?.marketingClearedAt;
+  const since = cleared && cleared > windowStart ? cleared : windowStart;
 
   /*
    * `sentAt IS NOT NULL` rides on the numerators too, via the shared WHERE.
@@ -172,4 +188,47 @@ export async function evaluateShop(
 
   console.warn(`[sailo] shop ${shopId} marketing paused: ${reason}`);
   return reason;
+}
+
+/**
+ * Re-runs the verdict for every unpaused shop with a bad outcome in the
+ * window — the backstop for a verdict that failed at webhook time.
+ *
+ * `evaluateShop` normally runs inside the Resend webhook, and the webhook
+ * deliberately swallows its errors so a landed suppression is never rolled
+ * back by a failed verdict. That trade leaves a hole: the suppression row
+ * exists, the rate is over the line, and nothing ever looks again. This
+ * sweep looks again. It only considers shops that already have a complained
+ * or bounced delivery in the window — a shop the webhook never told us about
+ * has nothing here to find either.
+ */
+export async function sweepReputation(
+  now = new Date(),
+): Promise<{
+  examined: number;
+  paused: { shopId: string; reason: PauseReason }[];
+}> {
+  const since = new Date(now.getTime() - WINDOW_DAYS * 24 * 3_600_000);
+
+  const candidates = await getDb()
+    .selectDistinct({ shopId: broadcastDeliveries.shopId })
+    .from(broadcastDeliveries)
+    .innerJoin(shops, eq(shops.id, broadcastDeliveries.shopId))
+    .where(
+      and(
+        isNotNull(broadcastDeliveries.sentAt),
+        gte(broadcastDeliveries.sentAt, since),
+        sql`${broadcastDeliveries.error} in ('complained', 'bounced')`,
+        isNull(shops.marketingPausedAt),
+        isNull(shops.deletedAt),
+      ),
+    )
+    .limit(200);
+
+  const paused: { shopId: string; reason: PauseReason }[] = [];
+  for (const { shopId } of candidates) {
+    const reason = await evaluateShop(shopId, now);
+    if (reason) paused.push({ shopId, reason });
+  }
+  return { examined: candidates.length, paused };
 }

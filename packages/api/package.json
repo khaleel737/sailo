@@ -29,6 +29,7 @@
     "@sailo/events": "workspace:*",
     "@sailo/i18n": "workspace:*",
     "@sailo/marketing": "workspace:*",
+    "@sailo/workflows": "workspace:*",
     "@sailo/notifications": "workspace:*",
     "@sailo/payments": "workspace:*",
     "@sailo/rate-limit": "workspace:*",

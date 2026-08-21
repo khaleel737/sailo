@@ -1413,6 +1413,9 @@ export const adminDe: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "Marketing-E-Mails sind pausiert",
+    pausedBody:
+      "Zu viele deiner letzten E-Mails sind gebounct oder wurden als Spam gemeldet, deshalb ist der Versand von Marketing-E-Mails gestoppt, bis wir das mit dir geklärt haben. Bestellungen, Belege und dein Shop laufen normal weiter — sieh in deinem Posteingang nach unserer E-Mail oder schreib dem Support, dann geht es wieder los.",
     title: "Rundmails",
     compose: "Neue Rundmail",
     composeBody: "In Markdown geschrieben, im Look deines Shops verschickt.",

@@ -1423,6 +1423,9 @@ export const adminFil: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "Naka-pause ang marketing email",
+    pausedBody:
+      "Masyadong maraming bounce o na-report bilang spam sa mga huling email mo, kaya nakahinto muna ang pagpapadala ng marketing email habang inaayos natin ito. Hindi apektado ang mga order, resibo at ang tindahan mo — tingnan ang inbox mo para sa email namin o sumulat sa support at ibabalik namin ang pagpapadala.",
     title: "Broadcasts",
     compose: "Bagong broadcast",
     composeBody: "Nakasulat sa Markdown, ipinapadala gamit ang itsura ng shop mo.",

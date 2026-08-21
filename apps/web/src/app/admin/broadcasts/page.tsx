@@ -3,7 +3,7 @@ import envelopeScene from "@/components/shared/lottie/envelope.json";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { desc, eq } from "drizzle-orm";
-import { Mail, Plus } from "lucide-react";
+import { Mail, Plus, TriangleAlert } from "lucide-react";
 import { getDb } from "@sailo/db";
 import { broadcasts } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
@@ -204,6 +204,19 @@ export default async function BroadcastsPage() {
           </Link>
         }
       />
+
+      {/* The reputation pause, said before the seller writes a word — the
+          refused Send button three days from now is the wrong place to learn
+          it. Amber, not red: contained, recoverable, and a conversation. */}
+      {shop.marketingPausedAt ? (
+        <Card className="mb-4 flex items-start gap-3 border-amber-200 bg-amber-50 p-4">
+          <TriangleAlert className="mt-0.5 size-4 shrink-0 text-amber-600" />
+          <div className="space-y-1 text-sm">
+            <p className="font-medium text-amber-900">{a.broadcasts.pausedTitle}</p>
+            <p className="leading-relaxed text-amber-800">{a.broadcasts.pausedBody}</p>
+          </div>
+        </Card>
+      ) : null}
 
       {/* Directly under that number, because it is the answer to what the
           number makes a seller ask — and then the people it counted. */}

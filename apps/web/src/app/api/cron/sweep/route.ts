@@ -6,6 +6,8 @@ import { pruneWebhookDeliveries } from "@sailo/workflows/webhooks";
 import { sweepDeletedShopFiles } from "@sailo/account/deletion";
 import { expireDataExports } from "@sailo/account/data-requests";
 import { pruneStripeEvents } from "@sailo/payments/stripe";
+import { sweepReputation } from "@sailo/marketing/broadcasts/server";
+import { announceMarketingPause } from "@sailo/workflows/reputation";
 
 /**
  * Housekeeping that must happen whether or not a webhook arrived.
@@ -73,6 +75,18 @@ export async function GET(request: Request) {
    */
   const stripeEventsPruned = await pruneStripeEvents();
 
+  /*
+   * The email-reputation backstop. The verdict normally runs inside the
+   * Resend webhook, which swallows its own errors so a landed suppression
+   * is never rolled back by a failed verdict — this looks again at every
+   * unpaused shop with a bad outcome in the window, and tells the seller
+   * when it pauses one.
+   */
+  const reputation = await sweepReputation();
+  for (const { shopId, reason } of reputation.paused) {
+    await announceMarketingPause(shopId, reason);
+  }
+
   return NextResponse.json({
     ok: true,
     abandonedCheckoutsReleased: abandoned.swept,
@@ -83,5 +97,7 @@ export async function GET(request: Request) {
     deletedFilesRemoved: files.blobsDeleted,
     dataExportsExpired: expiredExports.expired,
     stripeEventsPruned,
+    reputationExamined: reputation.examined,
+    reputationPaused: reputation.paused.length,
   });
 }

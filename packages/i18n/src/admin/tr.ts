@@ -1411,6 +1411,9 @@ export const adminTr: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "Pazarlama e-postaları duraklatıldı",
+    pausedBody:
+      "Son e-postalarınızın çoğu geri döndü veya spam olarak bildirildi; bu yüzden, durumu birlikte çözene kadar pazarlama e-postalarının gönderimi durduruldu. Siparişler, makbuzlar ve mağazanız etkilenmez — gelen kutunuzda e-postamızı kontrol edin ya da desteğe yazın, gönderimi yeniden açalım.",
     title: "Toplu e-postalar",
     compose: "Yeni toplu e-posta",
     composeBody: "Markdown ile yazılır, mağazanızın görünümüyle gönderilir.",

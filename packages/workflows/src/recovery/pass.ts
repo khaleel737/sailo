@@ -2,6 +2,7 @@ import "server-only";
 import { and, eq, inArray, isNull, lt, notExists, or, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import {
+  broadcastDeliveries,
   checkoutSessions,
   coupons,
   emailSuppressions,
@@ -125,6 +126,15 @@ export async function runRecoveryPass(
          * express that. It is asked below, per session.
          */
         eq(shops.recoveryEnabled, true),
+        /*
+         * The reputation pause binds this mail too. Its own comment above
+         * admits the buyer's reading of "an email about a thing I did not
+         * buy" is marketing — and a shop paused for its complaint rate must
+         * not keep generating exactly the message people complain about.
+         * Genuine transactional mail (receipts, download links) stays
+         * untouched; this is the marketing-in-substance boundary.
+         */
+        isNull(shops.marketingPausedAt),
       ),
     )
     .orderBy(checkoutSessions.openedAt)
@@ -302,6 +312,27 @@ async function recoverOne(
         }
       : undefined,
   });
+
+  if (result.sent) {
+    /*
+     * The complaint ledger. A bounce or complaint webhook can only find the
+     * shop it belongs to through a delivery row carrying the provider id —
+     * without one, this mail's complaints vanished entirely: no suppression,
+     * no reputation contribution, on the one message whose own comment above
+     * admits buyers read it as marketing. `broadcastId` null is the flow-mail
+     * shape the webhook already understands.
+     */
+    await getDb()
+      .insert(broadcastDeliveries)
+      .values({
+        shopId: shop.id,
+        email,
+        clientId: session.clientId ?? null,
+        status: "sent",
+        providerId: result.id,
+        sentAt: now,
+      });
+  }
 
   return result.sent ? "sent" : "failed";
 }

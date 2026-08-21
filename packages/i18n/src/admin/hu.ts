@@ -1408,6 +1408,9 @@ export const adminHu: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "A marketing e-mailek szünetelnek",
+    pausedBody:
+      "Túl sok friss e-mailed pattant vissza vagy lett spamként jelentve, ezért a marketing e-mailek küldését leállítottuk, amíg ezt közösen rendezzük. A rendelések, a nyugták és a boltod zavartalanul működnek — nézd meg a postaládádban a levelünket, vagy írj az ügyfélszolgálatnak, és visszakapcsoljuk a küldést.",
     title: "Körlevelek",
     compose: "Új körlevél",
     composeBody: "Markdownban írod, a boltod arculatával megy ki.",

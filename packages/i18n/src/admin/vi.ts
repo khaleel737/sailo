@@ -1426,6 +1426,9 @@ export const adminVi: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "Email tiếp thị đang tạm dừng",
+    pausedBody:
+      "Quá nhiều email gần đây của bạn bị trả lại hoặc bị báo cáo là spam, nên việc gửi email tiếp thị đã tạm dừng cho đến khi chúng tôi cùng bạn xử lý xong. Đơn hàng, biên nhận và cửa hàng của bạn không bị ảnh hưởng — hãy kiểm tra email của chúng tôi trong hộp thư đến hoặc liên hệ bộ phận hỗ trợ, chúng tôi sẽ bật lại việc gửi.",
     title: "Email hàng loạt",
     compose: "Email hàng loạt mới",
     composeBody: "Soạn bằng Markdown, gửi theo giao diện cửa hàng của bạn.",

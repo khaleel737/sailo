@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { warmUpCeiling } from "./quota";
+import { budgetFor, warmUpCeiling } from "./quota";
 
 /**
  * The ramp a new shop climbs.
@@ -56,5 +56,25 @@ describe("the warm-up ceiling", () => {
    */
   it("treats a shop created in the future as brand new", () => {
     expect(atAge(-5)).toBe(100);
+  });
+});
+
+describe("budgetFor, paused", () => {
+  it("answers before counting anything, because waiting fixes nothing", async () => {
+    /*
+     * The one `limitedBy` that does not resolve itself: plan, platform and
+     * warm-up ceilings roll with the calendar, a reputation pause waits for
+     * a person. The early return is also what makes this testable without a
+     * database — the paused branch must never reach one.
+     */
+    const budget = await budgetFor({
+      id: "00000000-0000-4000-8000-000000000000",
+      plan: "business",
+      subscriptionStatus: "active",
+      createdAt: CREATED,
+      marketingPausedAt: new Date(),
+      compPlan: null,
+    });
+    expect(budget).toEqual({ available: 0, limitedBy: "paused" });
   });
 });

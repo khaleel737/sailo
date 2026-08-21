@@ -1420,6 +1420,9 @@ export const adminPt: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "O e-mail de marketing está em pausa",
+    pausedBody:
+      "Demasiados dos teus e-mails recentes foram devolvidos ou denunciados como spam, por isso o envio de marketing está parado até resolvermos isto contigo. As encomendas, os recibos e a tua loja não são afetados — vê o nosso e-mail na tua caixa de entrada ou escreve ao suporte e voltamos a ativar o envio.",
     title: "Envios",
     compose: "Novo envio",
     composeBody: "Escrito em Markdown, enviado com o aspeto da tua loja.",

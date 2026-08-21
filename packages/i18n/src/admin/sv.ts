@@ -1411,6 +1411,9 @@ export const adminSv: PartialAdminDictionary = {
 
 
   broadcasts: {
+    pausedTitle: "Marknadsföringsmejl är pausade",
+    pausedBody:
+      "För många av dina senaste mejl studsade eller anmäldes som skräppost, så utskick av marknadsföringsmejl är stoppade medan vi reder ut det tillsammans med dig. Beställningar, kvitton och din butik påverkas inte — kolla inkorgen efter vårt mejl eller skriv till supporten så slår vi på utskicken igen.",
     title: "Utskick",
     compose: "Nytt utskick",
     composeBody: "Skrivs i Markdown och skickas i din butiks utseende.",
