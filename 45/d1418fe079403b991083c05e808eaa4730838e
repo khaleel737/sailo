@@ -1,0 +1,183 @@
+apps/web/src/app/admin/_components/bulk-select.tsx
+  s_9ce31a7108a83e::t_756c754114f490 197
+  s_9ce31a7108a83e::t_c0121272e51ca8 1-144,146-153,166-169,171-196,198-285
+  s_9ce31a7108a83e::t_657910ef6eadf4 154-165,170
+  s_9ce31a7108a83e::t_b0e5efd20bc909 145
+apps/web/scripts/check-connect.ts
+  s_9ce31a7108a83e::t_81cb5783222e8c 147-152,154-157,159,165,168,170,172
+apps/web/e2e/charts.spec.ts
+  s_9ce31a7108a83e::t_4cfbb8a8d867ce 30
+packages/analytics/src/series.ts
+  s_9ce31a7108a83e::t_e53db4f847da78 96-98
+  s_9ce31a7108a83e::t_72d8f822e781a7 121-123,127-128,137
+packages/i18n/src/admin/zh.ts
+  s_9ce31a7108a83e::t_52d9ec529243e5 319-323
+apps/web/src/app/admin/products/_components/bulk-select.tsx
+  s_9ce31a7108a83e::t_5a1f42c39c1dd6 1-80
+apps/web/src/app/onboarding/_components/customize-step.tsx
+  s_9ce31a7108a83e::t_192a7b7c3e07e6 12-18
+  s_9ce31a7108a83e::t_036d6a43fd6d55 34,47-48,53-59
+  s_9ce31a7108a83e::t_7f7342c28b85fc 96
+  s_9ce31a7108a83e::t_3195e65e563015 118-119
+  s_9ce31a7108a83e::t_656b1e76c3fcdd 11
+  s_9ce31a7108a83e::t_84884b46361d83 60
+apps/web/src/app/admin/orders/_components/bulk-select.tsx
+  s_9ce31a7108a83e::t_ff226906e2772f 3,9-14,18-22,25,30,33,38-74
+apps/web/src/app/admin/page.tsx
+  s_9ce31a7108a83e::t_4f8333e3c09e4a 26
+  s_9ce31a7108a83e::t_95783d614d348e 239
+  s_9ce31a7108a83e::t_df572638f54866 173-177,186,197,205-210
+packages/design-system/src/web/sparkline.tsx
+  s_9ce31a7108a83e::t_fe6837c0e49c60 79-80,86
+  s_9ce31a7108a83e::t_15c1d096325f5b 1-4,12-22,30,34-35,37-40,43-46,49,51,69-70,72-78,81-85,87-97,99,102-122
+  s_9ce31a7108a83e::t_3db646615bf025 52-57
+packages/commerce/src/catalog/products.ts
+  s_9ce31a7108a83e::t_d276d58a23d5e3 1267-1294
+  s_9ce31a7108a83e::t_cb4c68017d382b 12
+  s_9ce31a7108a83e::t_611103c2484736 1295-1296
+apps/web/src/lib/actions/bulk-orders.ts
+  s_9ce31a7108a83e::t_06c977dc5e0bcc 11
+apps/web/src/lib/actions/products.ts
+  s_9ce31a7108a83e::t_87fb683c168440 662-734
+  s_9ce31a7108a83e::t_c70bcab21b71ff 32,37
+  s_9ce31a7108a83e::t_0109cc93382d56 735
+apps/web/src/app/admin/products/page.tsx
+  s_9ce31a7108a83e::t_7801264934528d 12-17
+  s_9ce31a7108a83e::t_c4b2b2f9c7eb30 120-141
+  s_2bcfe090002697::t_389089b8033a74 296
+  s_9ce31a7108a83e::t_4efcee065107de 160-162
+  s_9ce31a7108a83e::t_363e9fe77711b4 261,263
+  s_9ce31a7108a83e::t_25b6cfc323ddb8 292-293
+apps/web/src/app/admin/analytics/page.tsx
+  s_9ce31a7108a83e::t_720def0498a13c 228-233
+  s_9ce31a7108a83e::t_d6480f1726eaca 23
+  s_9ce31a7108a83e::t_f67d13c29d430d 203
+  s_9ce31a7108a83e::t_751a854e413835 247
+  s_9ce31a7108a83e::t_cb30fa4dbaceb9 219
+apps/web/src/lib/session.test.ts
+  s_9ce31a7108a83e::t_3bc296ea65a07e 162
+  s_9ce31a7108a83e::t_c0fd08dfddc792 135-141,145
+apps/web/src/app/admin/payments/_components/stripe-card.tsx
+  s_9ce31a7108a83e::t_01331e2d6dd48c 64-73
+packages/i18n/src/admin/en.ts
+  s_9ce31a7108a83e::t_569803eea8b4c7 674-680
+apps/web/src/app/admin/orders/page.tsx
+  s_2bcfe090002697::t_dce4cf570be2dc 291
+apps/web/src/app/onboarding/_components/onboarding-form.tsx
+  s_9ce31a7108a83e::t_fb066c8b190555 141-146,164-166
+  s_9ce31a7108a83e::t_69265784fed501 256
+  s_9ce31a7108a83e::t_409c5759c9b81f 167-168
+packages/i18n/src/admin/vi.ts
+  s_9ce31a7108a83e::t_52d9ec529243e5 1047-1051
+apps/web/.oxlintrc.json
+  s_a7bbf59e767e8f::t_583662cfa1b6f8 29
+apps/web/src/app/dev/charts/page.tsx
+  s_9ce31a7108a83e::t_2bf30b576d7f9e 286-289
+  s_9ce31a7108a83e::t_ec8dbe0e2a9c6c 290
+  s_9ce31a7108a83e::t_8c7f2d8bbb0dab 229-279
+  s_9ce31a7108a83e::t_cd338fe1f0f00e 3-4
+apps/web/src/app/admin/clients/page.tsx
+  s_2bcfe090002697::t_b10769c406518d 187
+apps/web/src/app/admin/_components/traffic-panel.tsx
+  s_9ce31a7108a83e::t_d7726b2af581a3 33-35
+packages/core/src/place/countries.ts
+  s_9ce31a7108a83e::t_1388e47f359ad3 306-319,322-326
+apps/web/src/lib/bulk-selection.ts
+  s_9ce31a7108a83e::t_190ccc39d91d62 1-37
+packages/i18n/src/admin/ar.ts
+  s_9ce31a7108a83e::t_69899574681467 319-323
+packages/i18n/src/admin/bg.ts
+  s_9ce31a7108a83e::t_bf9442151a5bbe 1046-1050
+packages/i18n/src/admin/bs.ts
+  s_9ce31a7108a83e::t_193d2b730b1d15 1046-1050
+packages/i18n/src/admin/cs.ts
+  s_9ce31a7108a83e::t_9d777fd3dd3999 319-323
+packages/i18n/src/admin/da.ts
+  s_9ce31a7108a83e::t_61a464f72fa1a1 319-323
+packages/i18n/src/admin/de.ts
+  s_9ce31a7108a83e::t_70e5525cb19838 319-323
+packages/i18n/src/admin/el.ts
+  s_9ce31a7108a83e::t_f491d1275b9fce 319-323
+packages/i18n/src/admin/es.ts
+  s_9ce31a7108a83e::t_bb3e3ea6d07468 319-323
+packages/i18n/src/admin/fi.ts
+  s_9ce31a7108a83e::t_e928833d72eaf3 319-323
+packages/i18n/src/admin/fil.ts
+  s_9ce31a7108a83e::t_4ca6f0b867e935 1048-1052
+packages/i18n/src/admin/fr.ts
+  s_9ce31a7108a83e::t_022477bd30e07f 319-323
+packages/i18n/src/admin/hr.ts
+  s_9ce31a7108a83e::t_8639f8f5681cab 1048-1052
+packages/i18n/src/admin/hu.ts
+  s_9ce31a7108a83e::t_5803357ba33a87 319-323
+packages/i18n/src/admin/id.ts
+  s_9ce31a7108a83e::t_6ad64ef3fe6c16 1048-1052
+packages/i18n/src/admin/it.ts
+  s_9ce31a7108a83e::t_246cc0da2e6354 319-323
+packages/i18n/src/admin/ja.ts
+  s_9ce31a7108a83e::t_852818d8b10fab 319-323
+packages/i18n/src/admin/ko.ts
+  s_9ce31a7108a83e::t_8a38a90acbb596 1048-1052
+packages/i18n/src/admin/mk.ts
+  s_9ce31a7108a83e::t_198e097b682296 1048-1052
+packages/i18n/src/admin/ms.ts
+  s_9ce31a7108a83e::t_171aa41808a078 1046-1050
+packages/i18n/src/admin/nl.ts
+  s_9ce31a7108a83e::t_4f0338d4bacc8c 319-323
+packages/i18n/src/admin/no.ts
+  s_9ce31a7108a83e::t_0d994587d4a896 319-323
+packages/i18n/src/admin/pl.ts
+  s_9ce31a7108a83e::t_5d2248a5e888ab 319-323
+packages/i18n/src/admin/pt.ts
+  s_9ce31a7108a83e::t_655d2d94ad439b 319-323
+packages/i18n/src/admin/ro.ts
+  s_9ce31a7108a83e::t_5bb39bf61c2b10 319-323
+packages/i18n/src/admin/ru.ts
+  s_9ce31a7108a83e::t_ef30a2bf09040e 319-323
+packages/i18n/src/admin/sl.ts
+  s_9ce31a7108a83e::t_7ca6677a40ba06 1046-1050
+packages/i18n/src/admin/sq.ts
+  s_9ce31a7108a83e::t_21caeef290aa37 1047-1051
+packages/i18n/src/admin/sr.ts
+  s_9ce31a7108a83e::t_c7a5a82717451d 1047-1051
+packages/i18n/src/admin/sv.ts
+  s_9ce31a7108a83e::t_f8ad47f00aa3e6 319-323
+packages/i18n/src/admin/th.ts
+  s_9ce31a7108a83e::t_0747f9a5d47fe7 1047-1051
+packages/i18n/src/admin/tr.ts
+  s_2bcfe090002697::t_fe64b46a7c87c4 319-323
+packages/i18n/src/admin/uk.ts
+  s_2bcfe090002697::t_6c9c7b9a8b035e 319-323
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "45d1418fe079403b991083c05e808eaa4730838e",
+  "prompts": {},
+  "sessions": {
+    "s_2bcfe090002697": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a30859a0-fa55-47c0-ac06-cfc95f4e184d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_9ce31a7108a83e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9600af56-1e2b-4509-83e2-83d46f7891ed",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
