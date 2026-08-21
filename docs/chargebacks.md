@@ -714,7 +714,7 @@ every field still present.
 | # | Item | Kind |
 | --- | --- | --- |
 | 1 | Confirm the VAMP and MMP figures in `NETWORK_PROGRAMMES` with Stripe | Business |
-| 2 | `shops.stripe_account_id` is indexed but not unique. One account belongs to one shop and nothing enforces it; a partial unique index would take today. Not applied because the scenario suites share one account id across fixtures | Eng, small |
+| ~~2~~ | **Closed 2026-08-21.** `shops.stripe_account_id` is now a partial unique index (`0064`, verified duplicate-free in production first). The scenario suites that shared one account id across fixtures now release it between shops, the way a real reconnect would | — |
 | 3 | The evidence assembly reads English. The same limitation as the restricted-business screen (`payments-compliance.md` §4.1) — a Polish shop's product description goes to the issuer in Polish, which is correct, but the narrative around it is English | Eng |
 | 4 | Sailo's platform fee is not returned on a lost chargeback (§2). Whether it should be is a business decision nobody has made | Business |
 | 5 | The combined evidence ceiling was measured to a 50 KB window (§10), not to the byte. Stripe's own message says 5 MB and the API refuses just under 4.8 MB, so something is counted that is not the file bytes — per-file overhead, most likely. `EVIDENCE_FILE_BUDGET_BYTES` clears it by 250 KB either way | Eng, small |
