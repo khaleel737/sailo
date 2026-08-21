@@ -12,7 +12,7 @@ import { deleteProduct, toggleProductPublished } from "@/lib/actions/products";
 import { PageHeader, TagsArt } from "@sailo/design-system/web";
 import { ExportButton } from "@/app/admin/_components/export-button";
 import { Table, Td, Th, Tr } from "@sailo/design-system/web";
-import { Badge, Button, EmptyState } from "@sailo/design-system/web";
+import { Alert, Badge, Button, EmptyState } from "@sailo/design-system/web";
 import { formatMoney } from "@sailo/core/currency";
 import { anySellable, priceRange, unitsLeft } from "@sailo/core/variants";
 
@@ -26,10 +26,22 @@ export const metadata: Metadata = { title: "Products" };
  * horizontal position so none of them line up. Columns do the comparing for
  * you, which is why every commerce admin worth using ends up here.
  */
-export default async function AdminProductsPage() {
+export default async function AdminProductsPage({
+  searchParams,
+}: PageProps<"/admin/products">) {
   const { shop } = await requireShop("products:read");
   const { a, locale } = await getAdminT();
   const products = await getAdminProducts(shop.id);
+  /*
+   * "Product added." — said here because this is where a seller lands.
+   *
+   * `saveProduct` redirects a *new* product to this page rather than leaving
+   * its maker on a filled-in wizard, and a redirect cannot carry a return
+   * value, so the sentence travels in the query string and the row underneath
+   * is the proof. Read as a flag rather than as text: what renders is this
+   * app's own translated string, never anything the URL says.
+   */
+  const added = (await searchParams).added === "1";
   /*
    * A catalogue at the ceiling is almost certainly larger than the ceiling, so
    * the badge says "1,000+" rather than naming a number that is not the truth.
@@ -74,6 +86,15 @@ export default async function AdminProductsPage() {
           </div>
         }
       />
+
+      {added ? (
+        /* `mb-6` because this page spaces itself: the container the layout
+           hands every admin screen has no rhythm of its own, and PageHeader
+           carries its own `mb-6`. Without it the sentence sits on the table. */
+        <Alert tone="success" className="mb-6">
+          {a.productForm.added}
+        </Alert>
+      ) : null}
 
       {products.length === 0 ? (
         <EmptyState

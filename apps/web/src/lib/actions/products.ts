@@ -33,7 +33,7 @@ import {
   type ProductInput,
   type SaveProductRefusal,
 } from "@sailo/commerce/products";
-import { redirect } from "next/navigation";
+import { redirect, RedirectType } from "next/navigation";
 import { interpolate } from "@sailo/i18n";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
@@ -566,20 +566,49 @@ export async function saveProduct(
   after(() => notifyBackInStock({ shop, productId: result.id }));
 
   /*
+   * A product that has just been created ends on the catalogue; one being
+   * edited stays where it is.
+   *
+   * Creation left the seller on the wizard's last step with every field still
+   * filled and a green "Product added." above them — a screen that says the
+   * work is done and looks exactly like the screen that says it has not
+   * started. The honest next thing is the list with the new row on it, which
+   * is also the one place a second press of the button cannot mint a duplicate
+   * product. Editing is different and stays put: the record is the page, and
+   * throwing a seller back to the catalogue after a typo fix would cost them
+   * their scroll position for nothing.
+   *
+   * The sentence travels in the query string rather than being lost, and
+   * `/admin/products` renders it. `duplicateProduct` below redirects the same
+   * way, and `createShop` sends a new seller to `/admin?welcome=1`.
+   *
+   * **`replace`, against the default.** A redirect out of a Server Action
+   * pushes, and this app runs with `cacheComponents`, which means Next 16 hides
+   * the route it navigates away from rather than unmounting it — so Back landed
+   * on the wizard exactly as it was left: every field filled, still on Finish,
+   * one press of "Add product" away from a second copy of the product just
+   * made. Replacing spends the wizard's history entry on the catalogue instead,
+   * which is what post/redirect/get has always been for. Reaching the form
+   * again through the button mounts it fresh, and nothing typed is lost on the
+   * way to a page that lists what was saved.
+   */
+  if (result.created) {
+    redirect("/admin/products?added=1", RedirectType.replace);
+  }
+
+  /*
    * The one message on this form that is not English.
    *
    * Every refusal above is a hardcoded sentence — that is this file's standing
-   * convention and it is recorded debt, not an oversight. These two are
-   * different only because the keys already exist, translated into all 35
-   * languages, and were sitting unread: a German seller was told "Product
-   * updated." by a screen that was German everywhere else. Reading them costs
+   * convention and it is recorded debt, not an oversight. This one is
+   * different only because the key already exists, translated into all 35
+   * languages, and was sitting unread: a German seller was told "Product
+   * updated." by a screen that was German everywhere else. Reading it costs
    * one cookie lookup on a path that has already written to the database.
+   * `productForm.added` is read by the catalogue the redirect above lands on.
    */
   const { a } = await getAdminT();
-  return {
-    ok: true,
-    message: result.created ? a.productForm.added : a.productForm.updated,
-  };
+  return { ok: true, message: a.productForm.updated };
 }
 
 export async function deleteProduct(formData: FormData) {

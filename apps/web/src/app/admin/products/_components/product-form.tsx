@@ -395,18 +395,27 @@ export function ProductForm({
 
       {/*
         Creation keeps its single guided column; editing reads as a record —
-        the thing on the left, the facts about it on the right. `contents`
-        keeps the flow's DOM flat so the form's own space-y still reaches the
-        visible step.
+        the thing on the left, the facts about it on the right.
+
+        Both wrappers used to be `display: contents` in the flow, on the theory
+        that a flattened DOM let the form's own `space-y-5` reach the visible
+        step. It never did — `>` walks the DOM, not the box tree, so the rule
+        always selected these wrappers rather than the steps inside them — and
+        under Tailwind v4 that stopped being merely useless. v4 spaces siblings
+        by putting `margin-block-end` on every child *but the last*, so the gap
+        above the footer belonged to a box-less element and was dropped: the
+        Continue button sat flush against the card above it. A real block box
+        carries the margin, and one column of full-width blocks looks the same
+        either way.
       */}
       <div
         className={
           flow
-            ? "contents"
+            ? undefined
             : "grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]"
         }
       >
-        <div className={flow ? "contents" : "min-w-0 space-y-5"}>
+        <div className={flow ? undefined : "min-w-0 space-y-5"}>
 
       {/* ---- What is being sold ------------------------------------------ */}
 
