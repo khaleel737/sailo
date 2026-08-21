@@ -201,6 +201,15 @@ async function fixture(over: { productKind?: string; shipped?: boolean } = {}) {
     createdAt: new Date(),
     updatedAt: new Date(),
   });
+  /*
+   * One live holder per connected account — the uniqueness 0064 gives
+   * production holds in scenarios too. Earlier tests' fixture shops release
+   * the account the way a real reconnect would.
+   */
+  await db
+    .update(shops)
+    .set({ stripeAccountId: null })
+    .where(eq(shops.stripeAccountId, ACCOUNT));
   const [shop] = await db
     .insert(shops)
     .values({
@@ -425,7 +434,8 @@ describe("the route the browser actually posts to", () => {
    */
 
   it("accepts a document far larger than a server action would", async () => {
-    const { dispute } = await fixture();
+    const { shop, dispute } = await fixture();
+    sessionUserId = shop.userId;
 
     const result = await postFile({
       disputeId: dispute.id,
@@ -434,7 +444,7 @@ describe("the route the browser actually posts to", () => {
       contentType: PDF,
       /* 3 MB: legal evidence, and triple what a server action would take. */
       size: 3_000_000,
-      as: "staff",
+      as: "seller",
     });
 
     expect(result.status).toBe(200);
@@ -485,17 +495,17 @@ describe("the route the browser actually posts to", () => {
     expect(await evidenceFilesFor(dispute.id)).toHaveLength(0);
   });
 
-  it("refuses a seller claiming to be staff on a dispute that is not theirs", async () => {
+  it("ignores an as=staff claim — this origin has no staff door", async () => {
     /*
-     * `as` chooses which check runs, never whether one does. Claiming `staff`
-     * has to face `requireStaff`, which in production is the /hq allowlist and
-     * a verified email.
+     * The old contract let `as` choose which check ran, and the staff branch
+     * sat behind this app's capability-less `requireStaff` — a door around
+     * the `money:move` gate /hq's own route asks. The branch is gone: staff
+     * attach evidence through apps/hq, and a stranger claiming staff here is
+     * refused exactly like a stranger claiming nothing.
      */
     const { dispute } = await fixture();
     sessionUserId = "a-different-person";
 
-    /* Staff genuinely may reach any dispute, so this one is allowed — the point
-     * is that the allowlist decided it, not the form. */
     const result = await postFile({
       disputeId: dispute.id,
       field: "receipt",
@@ -504,21 +514,20 @@ describe("the route the browser actually posts to", () => {
       size: 2_000,
       as: "staff",
     });
-    expect(result.status).toBe(200);
-    expect((await evidenceFilesFor(dispute.id))[0]?.uploadedBy).toBe(
-      "staff@sailo.test",
-    );
+    expect(result.status).toBe(403);
+    expect(uploads).toHaveLength(0);
   });
 
   it("refuses a file over the whole allowance with 413, before reading it", async () => {
-    const { dispute } = await fixture();
+    const { shop, dispute } = await fixture();
+    sessionUserId = shop.userId;
     const result = await postFile({
       disputeId: dispute.id,
       field: "receipt",
       filename: "huge.pdf",
       contentType: PDF,
       size: 5_000_000,
-      as: "staff",
+      as: "seller",
     });
 
     expect(result.status).toBe(413);
@@ -527,14 +536,15 @@ describe("the route the browser actually posts to", () => {
   });
 
   it("refuses a wrong type with 400 and no upload", async () => {
-    const { dispute } = await fixture();
+    const { shop, dispute } = await fixture();
+    sessionUserId = shop.userId;
     const result = await postFile({
       disputeId: dispute.id,
       field: "receipt",
       filename: "notes.txt",
       contentType: "text/plain",
       size: 2_000,
-      as: "staff",
+      as: "seller",
     });
 
     expect(result.status).toBe(400);
@@ -570,18 +580,20 @@ describe("looking at a document before it is sent", () => {
     return response;
   }
 
-  it("redirects staff to a short-lived Stripe link", async () => {
-    const { dispute } = await fixture();
+  it("redirects the owning seller to a short-lived Stripe link", async () => {
+    /* Staff preview lives on /hq's own route now, behind money:move. */
+    const { shop, dispute } = await fixture();
+    sessionUserId = shop.userId;
     await attachEvidenceFile({
       disputeId: dispute.id,
       field: "receipt",
       filename: "r.pdf",
       contentType: PDF,
       bytes: bytes(1_000),
-      uploadedBy: "staff@sailo.test",
+      uploadedBy: "seller@example.com",
     });
 
-    const response = await preview(dispute.id, "receipt", "staff");
+    const response = await preview(dispute.id, "receipt", "seller");
     expect(response.status).toBe(302);
     expect(response.headers.get("location")).toContain("files.stripe.com");
   });
@@ -603,8 +615,9 @@ describe("looking at a document before it is sent", () => {
   });
 
   it("404s for a field with nothing on it", async () => {
-    const { dispute } = await fixture();
-    const response = await preview(dispute.id, "receipt", "staff");
+    const { shop, dispute } = await fixture();
+    sessionUserId = shop.userId;
+    const response = await preview(dispute.id, "receipt", "seller");
     expect(response.status).toBe(404);
   });
 });

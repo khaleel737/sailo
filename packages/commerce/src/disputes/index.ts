@@ -27,6 +27,7 @@ export {
 export {
   evidenceCoverage,
   platformDisputeMonths,
+  chargebacksSince,
   shopDisputeStats,
   type PlatformMonth,
   type ShopDisputeStats,

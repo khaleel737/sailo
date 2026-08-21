@@ -126,6 +126,19 @@ async function sellerShop(over: Partial<typeof shops.$inferInsert> = {}) {
     createdAt: new Date(),
     updatedAt: new Date(),
   });
+  /*
+   * One live holder per connected account — the uniqueness 0064 gives
+   * production holds in scenarios too. Earlier tests' fixture shops release
+   * the account the way a real reconnect would.
+   */
+  const claimedAccount =
+    (over as { stripeAccountId?: string | null }).stripeAccountId ?? ACCOUNT;
+  if (claimedAccount) {
+    await db
+      .update(shops)
+      .set({ stripeAccountId: null })
+      .where(eq(shops.stripeAccountId, claimedAccount));
+  }
   const [shop] = await db
     .insert(shops)
     .values({

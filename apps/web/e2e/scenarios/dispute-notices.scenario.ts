@@ -96,6 +96,15 @@ async function fixture(
     createdAt: new Date(),
     updatedAt: new Date(),
   });
+  /*
+   * One live holder per connected account — the uniqueness 0064 gives
+   * production holds in scenarios too. Earlier tests' fixture shops release
+   * the account the way a real reconnect would.
+   */
+  await db
+    .update(shops)
+    .set({ stripeAccountId: null })
+    .where(eq(shops.stripeAccountId, ACCOUNT));
   const [shop] = await db
     .insert(shops)
     .values({
