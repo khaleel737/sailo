@@ -124,8 +124,8 @@ If you are building something other people's Sailo shops will connect to:
   that only reads is a risk you created.
 - **Say which events you subscribe to**, and why. Sellers tick these boxes
   themselves.
-- **Handle the plan gate.** A shop below the <ApiPlanName /> plan gets
-  `forbidden` on every call. Say so in your setup UI rather than showing a
-  generic failure.
+- **Handle feature gates.** API access is on every plan, but a feature endpoint
+  (`/flows`, `/coupons`) answers `forbidden` on a shop whose plan lacks it. Say
+  so in your setup UI rather than showing a generic failure.
 - **Test against a shop with no orders.** Every list is empty, every optional
   object is null, and that is the state most new sellers are in.

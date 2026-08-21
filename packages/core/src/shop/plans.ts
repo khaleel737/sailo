@@ -49,14 +49,34 @@ export type Features = {
    */
   memberships: boolean;
   /**
+   * The paid tier of the content-collections feature: more than one collection
+   * per shop, and releasing a collection's content over time rather than all at
+   * once. Every plan can build a single collection that unlocks at once — this
+   * is what a second collection and a drip schedule cost.
+   *
+   * Its own flag rather than the `integrations` one it used to borrow. That was
+   * only ever standing in for "the Business tier", and the day `integrations`
+   * moved off Business — it now settles on every plan, because the API is no
+   * longer sold by subscription — a shared flag would have handed course drip to
+   * everyone along with it. Reading one entitlement to infer another is the bug
+   * the `memberships`/`cardRails` split records; this keeps the two apart.
+   */
+  collections: boolean;
+  /**
    * Outbound webhooks, the REST API and the MCP endpoint — one flag, because
    * they are one feature.
    *
    * A key without events to trigger it and events with nothing to query are
    * each half an integration, and gating them separately would mean a seller
-   * on one tier discovering their Zap can fire but cannot look anything up.
-   * Business, alongside `affiliates` and `coupons`: this is the tier bought by
-   * somebody running a business on other tools as well as this one.
+   * on one tier discovering their Zap can fire but cannot look anything up — so
+   * webhooks, the API and MCP open together.
+   *
+   * On every plan. The API is not sold by subscription: a seller on any tier can
+   * mint a key and integrate their own shop. What a plan still changes is the
+   * *features* a key can reach — each carries its own entitlement, so a free
+   * shop's key works but `/coupons` and `/flows` answer with the same refusal
+   * the admin gives. The gate stays enforced everywhere; only the entitlement
+   * behind it moved.
    */
   integrations: boolean;
   /**
@@ -283,7 +303,8 @@ export const PLANS: Record<PlanId, Plan> = {
       calendarSync: false,
       broadcasts: false,
       memberships: false,
-      integrations: false,
+      collections: false,
+      integrations: true,
       testimonials: false,
       testimonialEmbed: false,
       teams: false,
@@ -330,7 +351,8 @@ export const PLANS: Record<PlanId, Plan> = {
       calendarSync: true,
       broadcasts: false,
       memberships: false,
-      integrations: false,
+      collections: false,
+      integrations: true,
       testimonials: true,
       testimonialEmbed: false,
       teams: true,
@@ -369,6 +391,7 @@ export const PLANS: Record<PlanId, Plan> = {
       calendarSync: true,
       broadcasts: true,
       memberships: true,
+      collections: true,
       integrations: true,
       testimonials: true,
       testimonialEmbed: true,

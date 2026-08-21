@@ -68,7 +68,7 @@ export default async function ProductContentPage({
          * refusal explains — a control that is simply absent teaches a seller
          * the feature does not exist rather than that it is on another plan.
          */
-        dripAllowed={can(shop, "integrations")}
+        dripAllowed={can(shop, "collections")}
       />
     </>
   );

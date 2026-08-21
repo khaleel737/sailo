@@ -1,5 +1,4 @@
 import { apiOrigin, appOrigin } from "@sailo/core/origin";
-import { cheapestPlanWith } from "@sailo/core/plans";
 
 /**
  * The primitives every generated reference section is built from.
@@ -300,17 +299,4 @@ export function KeyLink() {
       Settings → Integrations
     </a>
   );
-}
-
-/**
- * The plan the API is on, named from the plan table rather than typed out.
- *
- * `authenticateApi` refuses a key on a shop without the `integrations` feature
- * and puts this same plan's name in the refusal, so a page naming a different
- * one would contradict the error a reader is looking at. It moved once already
- * — several features came *down* from Business as the tiers were rebalanced —
- * and this is the sentence that would have been left behind.
- */
-export function ApiPlanName() {
-  return <>{cheapestPlanWith("integrations")?.name ?? "a paid plan"}</>;
 }

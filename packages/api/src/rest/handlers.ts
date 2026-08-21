@@ -807,14 +807,13 @@ export async function getList(
  * question from "does this shop have automations" — and the admin's own
  * `gate()` in `actions/flows.ts` asks the second one before every write.
  *
- * **It cannot fire today, and it is here anyway.** `integrations` and
- * `automations` are both Business-only, so a shop that fails this has already
- * failed the API gate one step earlier and been refused with a different
- * sentence. They are two separate flags in the plan table, though, and the day
- * one of them moves — the API opening up on Pro is the obvious direction —
- * this is the difference between a Pro shop reading a Business feature and
- * being told it cannot. A gate that costs one boolean and closes that is worth
- * keeping ahead of the change rather than after it.
+ * **It fires now, where it once could not.** `apiGuard` no longer refuses a
+ * non-Business shop — the API is not sold by subscription any more, so
+ * `integrations` settles on every plan — which is the exact change this gate was
+ * written ahead of. `automations` stayed on Business, so a free or Pro shop that
+ * can now reach the API and asks for `/flows` is told, here, that automations
+ * are a Business feature rather than handed a Business feature for free. The two
+ * are separate flags precisely so one could open without the other.
  *
  * Returned as a refusal rather than an empty page on purpose: a shop with no
  * automations and a shop that may not have them are different facts, and an

@@ -181,10 +181,17 @@ export async function authenticateApi(request: Request): Promise<AuthOutcome> {
   const { key, shop } = resolved;
 
   /*
-   * The plan gate, checked on every request rather than only when the key was
-   * minted. A seller who downgrades stops being able to use a key they already
-   * hold — which is the point of a gate, and would not be true of a check that
-   * ran once at creation.
+   * The entitlement gate, checked on every request rather than only when the
+   * key was minted — so a change of plan takes effect on the next call rather
+   * than needing the key reissued.
+   *
+   * The API is no longer sold by subscription: `integrations` now settles on
+   * every plan, so no current tier is refused here. The check stays regardless,
+   * as the one place that would enforce it again the day a plan turns the flag
+   * off — a gate is cheaper to keep than to reinstate after a leak. What a plan
+   * still changes is the *features* a key can reach: each carries its own
+   * entitlement downstream (`/coupons`, `/flows`), so a working key is not a
+   * key that can do everything.
    */
   if (!can(shop, "integrations")) {
     const plan = cheapestPlanWith("integrations");

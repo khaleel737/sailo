@@ -22,7 +22,7 @@ registration**. The key is the same one the [REST API](/api) takes, because they
 are one grant: *this program may act on my shop, within these scopes*.
 
 Which means everything on the [authentication page](/authentication) applies
-here unchanged — the same scopes, the same plan gate checked on every call, the
+here unchanged — the same scopes, the same entitlement checks on every call, the
 same [240 requests a minute](/rate-limits) shared between the two surfaces, and
 one revocation that closes both.
 
@@ -83,5 +83,5 @@ unless you specifically want an assistant writing to your list.
 
 ## Getting a key
 
-The MCP server is on the <ApiPlanName /> plan. Every key is read-only unless you
+The MCP server is on every plan. Every key is read-only unless you
 tick `write`, and is shown once at creation. Create one under <KeyLink />.

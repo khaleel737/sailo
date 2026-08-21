@@ -18,8 +18,8 @@ In an MCP client, the usual cause is an unexpanded `${VAR}` being sent as the
 literal bearer token.
 
 **A 403 on every call.** Either the key is read-only and you reached a write
-endpoint, or the shop is below the <ApiPlanName /> plan. The `message` says
-which.
+endpoint, or the endpoint's feature is not on the shop's plan — API access
+itself is on every plan. The `message` says which.
 
 **A 404 on an id you have.** Ids are per shop. An id from one shop is a
 `not_found` in another, never a `forbidden` — the two are answered identically

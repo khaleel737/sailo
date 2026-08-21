@@ -51,9 +51,10 @@ which:
 
 - **The scope.** A read-only key reached a write endpoint. Mint a key with
   `write`.
-- **The plan.** The shop is below the <ApiPlanName /> plan, or has dropped below
-  it since the key was minted. The plan is checked on every request, so a
-  downgrade takes effect immediately.
+- **The feature's plan.** API access is on every plan, but an endpoint's
+  underlying feature may not be — `/flows` needs automations, `/coupons` needs
+  discount codes. The `message` names the plan that unlocks it. Entitlements are
+  checked on every request, so a change of plan takes effect immediately.
 
 **Do not retry.** Both are configuration.
 

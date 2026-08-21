@@ -82,7 +82,7 @@ export async function saveCollection(
    * saving `none`. A seller who set an interval and found it ignored would have
    * no way to discover why.
    */
-  if (dripMode === "interval" && !can(shop, "integrations")) {
+  if (dripMode === "interval" && !can(shop, "collections")) {
     return {
       ok: false,
       error:
@@ -121,7 +121,7 @@ export async function saveCollection(
       .from(collections)
       .where(eq(collections.shopId, shop.id));
 
-    if (n >= 1 && !can(shop, "integrations")) {
+    if (n >= 1 && !can(shop, "collections")) {
       return {
         ok: false,
         error:

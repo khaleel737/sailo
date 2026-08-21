@@ -132,9 +132,11 @@ In the order a caller meets them:
 3. **The token resolves to a live key.** Revoked keys do not resolve at all;
    the check is in the query rather than after it, so no code path downstream
    can hold a shop it should not have.
-4. **The shop's plan includes the API.** Checked on every request, not once
-   when the key was minted — a seller who downgrades stops being able to use a
-   key they already hold, which is the point of a gate.
+4. **The shop's plan entitlement.** Checked on every request, not once when the
+   key was minted, so a change of plan takes effect on the next call. API access
+   is on every plan, so this refuses no key today — it stays as the check that
+   would enforce a plan that turned it off. What a plan *does* change is the
+   features a key can reach (see [Plan](#plan)).
 5. **The shop still exists.** A deleted shop keeps its rows through the
    retention window, and every one of them would otherwise be readable through a
    key the departed seller still has.
@@ -148,8 +150,11 @@ real.
 
 ## Plan
 
-The API, webhooks and the MCP server are on the <ApiPlanName /> plan. A key on a
-shop below it gets `forbidden` with a message naming the plan — not
+The API, webhooks and the MCP server are on **every plan** — API access is not
+sold by subscription, so a key on any shop authenticates. What a plan still
+changes is the *features* a key can reach: each carries its own entitlement, so
+a free shop's key works but endpoints like `/coupons` and `/flows` answer
+`forbidden` with a message naming the plan that unlocks them — not
 `unauthorized`, because the credential is genuine and the problem is not the
 credential.
 
