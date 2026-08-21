@@ -1,7 +1,7 @@
 import "server-only";
-import { eq } from "drizzle-orm";
+import { and, eq, exists, isNotNull, isNull, or, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { shops, type Shop } from "@sailo/db/schema";
+import { disputes, riskFlags, shops, type Shop } from "@sailo/db/schema";
 import {
   assessShop,
   isAutomatic,
@@ -16,7 +16,7 @@ import {
   releasePayouts,
   type PayoutInterval,
 } from "@sailo/payments/disputes";
-import { shopDisputeStats, type ShopDisputeStats } from "./stats";
+import { chargebacksSince, shopDisputeStats, type ShopDisputeStats } from "./stats";
 
 /**
  * Deciding what to do about a shop's disputes, and doing it.
@@ -71,6 +71,15 @@ export async function riskFor(
     ? await readBalance(shop.stripeAccountId, shop.currency ?? "USD")
     : null;
 
+  /*
+   * Counted by the disputes' own timestamps — see `chargebacksSince` for why
+   * the pooled-delta arithmetic this replaces could break a clearance on old
+   * news. Only asked at all when a clearance stands.
+   */
+  const sinceClearance = shop.disputeClearedAt
+    ? await chargebacksSince(shop.id, shop.disputeClearedAt)
+    : 0;
+
   return {
     stats,
     risk: {
@@ -90,7 +99,7 @@ export async function riskFor(
         negativeBalanceCents: balance?.negativeCents ?? 0,
       },
       clearedAt: shop.disputeClearedAt,
-      chargebacksAtClearance: shop.disputeChargebacksAtClearance ?? 0,
+      chargebacksSinceClearance: sinceClearance,
     },
   };
 }
@@ -303,3 +312,120 @@ export async function releaseHold(
   return { ok: true, interval: "daily" };
 }
 
+
+/* --------------------------------------------------------------------------
+   The hourly backstop
+-------------------------------------------------------------------------- */
+
+/**
+ * Re-assesses every shop the per-event path could have left wrong.
+ *
+ * `applyEscalation` runs on every dispute webhook, deliberately — but three
+ * things move the risk picture with no webhook to ride in on, and each of
+ * them used to wait for the *next* chargeback, which may be weeks away:
+ *
+ *   - a `holdPayouts` call Stripe refused ("hold FAILED — payouts still
+ *     running") was retried only on the next dispute event;
+ *   - the balance drains between events — payouts, refunds, Stripe's own
+ *     fees — so a shop can cross the exposure line silently;
+ *   - a seller who talks Stripe support into resuming payouts leaves our
+ *     column saying held while the money runs (the drift check inside
+ *     `applyEscalation` re-holds, but only when it is called).
+ *
+ * Candidates are shops with an undecided connected dispute or a standing
+ * hold — the same populations the assessment reads. Tombstoned shops are
+ * excluded: a deletion is blocked while a hold or open dispute stands
+ * (`openObligations`), so a tombstone here means the past settled, and it
+ * has no payouts to hold.
+ *
+ * When an assessment says suspension should be put in front of a human, the
+ * sweep writes a `risk_flags` row — the desk's inbox — instead of only a log
+ * line nobody is paged for. Deduplicated against the open flags so a shop
+ * over the line raises one flag, not one per hour.
+ */
+export async function reassessShopsAtRisk(now = new Date()): Promise<{
+  examined: number;
+  held: string[];
+  holdFailures: { shopId: string; error: string }[];
+  suspensionFlagged: string[];
+}> {
+  const db = getDb();
+
+  const candidates = await db
+    .select({ shop: shops })
+    .from(shops)
+    .where(
+      and(
+        isNull(shops.deletedAt),
+        or(
+          isNotNull(shops.payoutsPausedAt),
+          exists(
+            db
+              .select({ one: sql`1` })
+              .from(disputes)
+              .where(
+                and(
+                  eq(disputes.shopId, shops.id),
+                  eq(disputes.scope, "connected"),
+                  sql`${disputes.status} in ('needs_response', 'under_review')`,
+                ),
+              ),
+          ),
+        ),
+      ),
+    )
+    .limit(100);
+
+  const out = {
+    examined: candidates.length,
+    held: [] as string[],
+    holdFailures: [] as { shopId: string; error: string }[],
+    suspensionFlagged: [] as string[],
+  };
+
+  for (const { shop } of candidates) {
+    try {
+      const outcome = await applyEscalation(shop, now);
+      if (outcome.applied === "payouts_held") out.held.push(shop.id);
+      if (outcome.error) out.holdFailures.push({ shopId: shop.id, error: outcome.error });
+
+      if (outcome.suspensionWarranted) {
+        const flagged = await raiseSuspensionFlag(shop.id, outcome.decision.reason, now);
+        if (flagged) out.suspensionFlagged.push(shop.id);
+      }
+    } catch (error) {
+      console.error(`[sailo] reassessment for shop ${shop.id} failed`, error);
+    }
+  }
+
+  return out;
+}
+
+/** One open suspension flag per shop, however many sweeps agree. */
+async function raiseSuspensionFlag(
+  shopId: string,
+  reason: string,
+  now: Date,
+): Promise<boolean> {
+  const db = getDb();
+
+  const existing = await db.query.riskFlags.findFirst({
+    where: and(
+      eq(riskFlags.shopId, shopId),
+      eq(riskFlags.kind, "chargebacks"),
+      isNull(riskFlags.clearedAt),
+      eq(riskFlags.severity, "act"),
+    ),
+    columns: { id: true },
+  });
+  if (existing) return false;
+
+  await db.insert(riskFlags).values({
+    shopId,
+    kind: "chargebacks",
+    severity: "act",
+    summary: `Past the point where suspension should be considered: ${reason}`.slice(0, 500),
+    raisedAt: now,
+  });
+  return true;
+}

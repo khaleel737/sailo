@@ -1,7 +1,7 @@
 import "server-only";
 import { and, eq, gte, isNotNull, isNull, lt, or, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { disputes, orders } from "@sailo/db/schema";
+import { disputes, earlyFraudWarnings, orders } from "@sailo/db/schema";
 import {
   DISPUTE_LAG_DAYS,
   EMPTY_TALLY,
@@ -184,6 +184,8 @@ export type ShopDisputeStats = {
    * the rate says.
    */
   unattributedChargebacks: number;
+  /** Early fraud warnings with no dispute yet and no refund — live predictions. */
+  liveFraudWarnings: number;
   /** Amount plus fee for every dispute where the money is out and undecided. */
   openDisputeCents: number;
   /** How many still owe a response. */
@@ -207,7 +209,7 @@ export async function shopDisputeStats(
     Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - COHORT_MONTHS + 1, 1),
   );
 
-  const [rows, open, unattributed] = await Promise.all([
+  const [rows, open, unattributed, liveWarnings] = await Promise.all([
     cohortRows(shopId, since),
     /*
      * Open exposure, and it is deliberately *not* derived from the cohorts.
@@ -253,6 +255,28 @@ export async function shopDisputeStats(
           eq(disputes.scope, "connected"),
           isNull(disputes.orderId),
           sql`${disputes.status} not like 'warning\\_%'`,
+        ),
+      ),
+
+    /*
+     * Early fraud warnings that are still live: no dispute has arrived yet
+     * and the charge was not refunded in response. Each is the card
+     * network's own prediction of a chargeback — the only advance notice
+     * anybody gets — and a burst of them used to move nothing until the
+     * first real dispute landed. Ninety days, because a warning older than
+     * the dispute window either became a dispute (counted there) or never
+     * will. A warning that did become one is excluded by `disputeId`, so
+     * nothing is counted twice.
+     */
+    db
+      .select({ n: sql<string>`count(*)` })
+      .from(earlyFraudWarnings)
+      .where(
+        and(
+          eq(earlyFraudWarnings.shopId, shopId),
+          isNull(earlyFraudWarnings.disputeId),
+          isNull(earlyFraudWarnings.refundedAt),
+          gte(earlyFraudWarnings.stripeCreatedAt, new Date(now.getTime() - 90 * 86_400_000)),
         ),
       ),
   ]);
@@ -303,8 +327,11 @@ export async function shopDisputeStats(
      * worth a look" — so they are summed rather than reported apart.
      */
     emergingChargebacks:
-      emergingRisk(cohorts) + Number(unattributed[0]?.n ?? 0),
+      emergingRisk(cohorts) +
+      Number(unattributed[0]?.n ?? 0) +
+      Number(liveWarnings[0]?.n ?? 0),
     unattributedChargebacks: Number(unattributed[0]?.n ?? 0),
+    liveFraudWarnings: Number(liveWarnings[0]?.n ?? 0),
     openDisputeCents: Number(open[0]?.openCents ?? 0),
     awaitingResponse: Number(open[0]?.awaiting ?? 0),
   };
@@ -432,3 +459,27 @@ export async function evidenceCoverage(now = new Date()): Promise<{
 }
 
 export { EMPTY_TALLY };
+
+/**
+ * Chargebacks dated after a moment — the clearance-grace counter.
+ *
+ * By each dispute's own Stripe timestamp, never a delta of pooled tallies:
+ * the pooled count moves when cohorts mature in or age out with zero new
+ * disputes, which could break a staff clearance on old news or pin one open
+ * on a negative delta. The same connected-scope, not-an-inquiry predicate
+ * `cohortRows` uses, so "a chargeback" means one thing.
+ */
+export async function chargebacksSince(shopId: string, after: Date): Promise<number> {
+  const [row] = await getDb()
+    .select({ n: sql<string>`count(*)` })
+    .from(disputes)
+    .where(
+      and(
+        eq(disputes.shopId, shopId),
+        eq(disputes.scope, "connected"),
+        sql`${disputes.status} not like 'warning\\_%'`,
+        gte(disputes.stripeCreatedAt, after),
+      ),
+    );
+  return Number(row?.n ?? 0);
+}

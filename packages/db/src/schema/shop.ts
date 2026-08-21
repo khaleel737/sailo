@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { boolean, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import type { NotificationPrefs, ShopSocial } from "./json-types";
 import type { WeeklyHours } from "./hours";
@@ -725,6 +726,17 @@ export const shops = pgTable(
   (t) => [
     uniqueIndex("shops_handle_key").on(t.handle),
     uniqueIndex("shops_user_id_key").on(t.userId),
+    /*
+     * One shop per connected account, decided by Postgres — the open item
+     * docs/chargebacks.md §12 #2 records. Dispute attribution locates a shop
+     * by the account the event arrived for, and "oldest shop wins" was the
+     * tie-break for a tie that must not exist: a self-acting risk system may
+     * not file chargebacks against the wrong shop. Partial, because most
+     * shops have no Stripe account and NULLs are distinct anyway.
+     */
+    uniqueIndex("shops_stripe_account_key")
+      .on(t.stripeAccountId)
+      .where(sql`${t.stripeAccountId} is not null`),
     /*
      * Unique, and the lookup `/r/<code>` runs on every click of every
      * referral link anyone has ever posted. Postgres treats NULLs as

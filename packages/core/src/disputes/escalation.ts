@@ -161,8 +161,16 @@ export type ShopRisk = {
    * change — see `CLEARANCE_GRACE_CHARGEBACKS`.
    */
   clearedAt: Date | null;
-  /** Chargebacks the shop had when it was cleared. */
-  chargebacksAtClearance: number;
+  /**
+   * Chargebacks that *arrived after* the clearance, counted by their own
+   * Stripe timestamps — never a delta of two pooled tallies. The delta
+   * arithmetic this replaces compared today's mature-pooled count against
+   * the count at clearance, and both sides of that subtraction move without
+   * a single new dispute: an immature cohort maturing in raised it, a cohort
+   * aging out of the 12-month window lowered it — so a clearance could be
+   * broken by old news, or pinned open by a negative delta.
+   */
+  chargebacksSinceClearance: number;
 };
 
 /**
@@ -199,12 +207,9 @@ export type EscalationDecision = {
  */
 export function assessShop(risk: ShopRisk): EscalationDecision {
   const shortfall = unrecoverableCents(risk.exposure);
-  const newSinceClearance = risk.clearedAt
-    ? risk.tally.chargebacks - risk.chargebacksAtClearance
-    : risk.tally.chargebacks;
   const cleared =
     risk.clearedAt !== null &&
-    newSinceClearance < CLEARANCE_GRACE_CHARGEBACKS;
+    risk.chargebacksSinceClearance < CLEARANCE_GRACE_CHARGEBACKS;
 
   // Platform money is USD; the $ prefix is staff-facing house style.
   const money = (cents: number) => `$${centsToAmount(cents, "USD")}`;
@@ -233,7 +238,7 @@ export function assessShop(risk: ShopRisk): EscalationDecision {
   if (cleared) {
     return {
       level: "clear",
-      reason: `Reviewed and cleared by staff; ${newSinceClearance} new chargeback(s) since.`,
+      reason: `Reviewed and cleared by staff; ${risk.chargebacksSinceClearance} new chargeback(s) since.`,
       automatic: true,
       unrecoverableCents: shortfall,
     };

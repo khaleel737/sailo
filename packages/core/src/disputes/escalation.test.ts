@@ -32,7 +32,7 @@ const risk = (over: Partial<ShopRisk> = {}): ShopRisk => ({
   emergingChargebacks: 0,
   exposure: { openDisputeCents: 0, balanceCents: 0, negativeBalanceCents: 0 },
   clearedAt: null,
-  chargebacksAtClearance: 0,
+  chargebacksSinceClearance: 0,
   ...over,
 });
 
@@ -204,7 +204,7 @@ describe("exposure", () => {
     const decision = assessShop(
       risk({
         clearedAt: new Date("2026-08-01T00:00:00Z"),
-        chargebacksAtClearance: 5,
+        chargebacksSinceClearance: 0,
         tally: tally({ chargebacks: 5 }),
         exposure: { openDisputeCents: 90_000, balanceCents: 0, negativeBalanceCents: 0 },
       }),
@@ -274,27 +274,30 @@ describe("the growing fraudster", () => {
 });
 
 describe("staff clearance", () => {
-  const cleared = (chargebacks: number) =>
+  const cleared = (sinceClearance: number) =>
     risk({
       clearedAt: new Date("2026-08-01T00:00:00Z"),
-      chargebacksAtClearance: 4,
+      chargebacksSinceClearance: sinceClearance,
       chargebackBp: 900,
       settledOrders: 400,
-      tally: tally({ chargebacks }),
+      tally: tally({ chargebacks: 4 + sinceClearance }),
     });
 
   it("holds against the same arithmetic that flagged the shop", () => {
     /*
      * Without this, a cleared shop is re-flagged by the next run of the same
      * sum — which is how an automated check teaches everybody to ignore it.
+     * The count is of chargebacks *dated after* the clearance, never a delta
+     * of pooled tallies — a cohort maturing in must not break a clearance
+     * with zero new disputes.
      */
-    expect(assessShop(cleared(4)).level).toBe("clear");
-    expect(assessShop(cleared(5)).level).toBe("clear");
+    expect(assessShop(cleared(0)).level).toBe("clear");
+    expect(assessShop(cleared(1)).level).toBe("clear");
   });
 
   it("is overridden by new evidence rather than by time", () => {
     // Two new chargebacks since the clearance: the facts have changed.
-    expect(assessShop(cleared(4 + CLEARANCE_GRACE_CHARGEBACKS)).level).toBe(
+    expect(assessShop(cleared(CLEARANCE_GRACE_CHARGEBACKS)).level).toBe(
       "payout_hold",
     );
   });

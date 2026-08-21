@@ -620,6 +620,14 @@ export async function handleEarlyFraudWarning(
         `Refunding now avoids the chargeback and its fee; the fraud report stands either way.`,
       "warning",
     );
+    /*
+     * Warnings feed the same ladder disputes do. A live warning counts into
+     * `emergingChargebacks` (see `shopDisputeStats`), so a burst of fraud
+     * predictions can reach `review` — and re-check the exposure — before
+     * the first real chargeback lands, which is the whole value of advance
+     * notice. Without this, nothing moved until the dispute arrived.
+     */
+    await escalate(recorded.shopId);
   }
 
   return `early fraud warning ${warning.id} recorded${recorded.orderId ? ` on order ${recorded.orderId}` : ""}`;

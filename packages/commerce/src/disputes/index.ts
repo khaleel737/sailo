@@ -33,6 +33,7 @@ export {
 } from "./stats";
 export {
   applyEscalation,
+  reassessShopsAtRisk,
   releaseHold,
   riskFor,
   type EscalationOutcome,

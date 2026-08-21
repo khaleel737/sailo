@@ -4,6 +4,7 @@ import {
   claimDuePlatformDisputes,
   sendDueDisputeReminders,
 } from "@sailo/workflows/disputes";
+import { reassessShopsAtRisk } from "@sailo/commerce/disputes";
 import { captureMessage } from "@sailo/observability";
 
 /**
@@ -51,5 +52,34 @@ export async function GET(request: Request) {
     );
   }
 
-  return NextResponse.json({ ok: true, ...result, platformNoticed: platform.length });
+  /*
+   * The hourly re-assessment — the backstop for the three ways the per-event
+   * path misses (a hold Stripe refused, a balance that drained between
+   * events, a seller who talked Stripe support into resuming payouts). The
+   * per-event path stays primary: it runs the moment a chargeback lands,
+   * and this closes the window between events rather than replacing them.
+   */
+  const reassessed = await reassessShopsAtRisk();
+  for (const failure of reassessed.holdFailures) {
+    captureMessage(
+      `Payout hold for shop ${failure.shopId} still failing on reassessment: ${failure.error}`,
+      "error",
+    );
+  }
+  for (const shopId of reassessed.suspensionFlagged) {
+    captureMessage(
+      `Shop ${shopId} is past the point where suspension should be considered — flagged on the risk desk.`,
+      "error",
+    );
+  }
+
+  return NextResponse.json({
+    ok: true,
+    ...result,
+    platformNoticed: platform.length,
+    reassessed: reassessed.examined,
+    reassessedHeld: reassessed.held.length,
+    reassessedHoldFailures: reassessed.holdFailures.length,
+    suspensionFlagged: reassessed.suspensionFlagged.length,
+  });
 }
