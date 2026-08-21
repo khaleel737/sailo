@@ -1,0 +1,29 @@
+apps/web/src/app/[handle]/_components/visit-tracker.tsx
+  s_a7bbf59e767e8f::t_2b47c772b09a29 19-24
+apps/web/src/app/api/track/route.ts
+  s_a7bbf59e767e8f::t_5a5c4554e989bf 201-205
+  s_a7bbf59e767e8f::t_f3ceefd39bee65 60-73
+  s_a7bbf59e767e8f::t_ea8a7726ba48cc 9
+packages/analytics/src/traffic.test.ts
+  s_a7bbf59e767e8f::t_18492eb6bbb26a 5
+  s_a7bbf59e767e8f::t_86441e006b5a5c 192-236
+packages/analytics/src/traffic.ts
+  s_a7bbf59e767e8f::t_ad5232188c9fee 271-303
+  s_a7bbf59e767e8f::t_f64e864b468f8f 270
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "bcb131483739b88408e82cbb100e53139716bcbf",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
