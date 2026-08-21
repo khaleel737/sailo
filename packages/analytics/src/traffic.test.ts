@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   classifyVisit,
   hostLabel,
+  looksLikeBot,
   normalizeHost,
   outboundHost,
   parseUserAgent,
@@ -186,5 +187,50 @@ describe("country display", () => {
 
   it("falls back to the code itself for something it cannot name", () => {
     expect(countryName(null)).toBeTruthy();
+  });
+});
+
+describe("looksLikeBot", () => {
+  it("treats a missing user-agent as a bot — a browser's fetch always sends one", () => {
+    expect(looksLikeBot(null)).toBe(true);
+    expect(looksLikeBot(undefined)).toBe(true);
+    expect(looksLikeBot("")).toBe(true);
+  });
+
+  it("catches declared crawlers, headless engines, monitors and HTTP libraries", () => {
+    for (const ua of [
+      "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+      "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)",
+      "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
+      "Mozilla/5.0 (compatible; SemrushBot/7~bl)",
+      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/125.0.0.0 Safari/537.36",
+      "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)",
+      "python-requests/2.31.0",
+      "curl/8.4.0",
+      "Go-http-client/2.0",
+      "node-fetch/1.0",
+      "axios/1.6.0",
+      "Chrome-Lighthouse",
+    ]) {
+      expect(looksLikeBot(ua), ua).toBe(true);
+    }
+  });
+
+  it("does not mistake a real browser for a bot", () => {
+    for (const ua of [
+      // Desktop Chrome, Safari, Firefox, Edge.
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15",
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0",
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0",
+      // iPhone Safari, Android Chrome.
+      "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1",
+      "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36",
+      // The lookalikes the comment promises are safe: YaBrowser is not "yandex",
+      // and Safari's "Version/" token is not an HTTP library.
+      "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 YaBrowser/24.4 Safari/537.36",
+    ]) {
+      expect(looksLikeBot(ua), ua).toBe(false);
+    }
   });
 });

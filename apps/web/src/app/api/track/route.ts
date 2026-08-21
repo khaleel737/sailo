@@ -6,7 +6,7 @@ import { publishShopEvent } from "@sailo/events";
 import { headers } from "next/headers";
 import { getDb } from "@sailo/db";
 import { CLICK_KINDS, clicks, visits, type ClickKind } from "@sailo/db/schema";
-import { classifyVisit, outboundHost, parseUserAgent } from "@sailo/analytics/traffic";
+import { classifyVisit, looksLikeBot, outboundHost, parseUserAgent } from "@sailo/analytics/traffic";
 import { ensurePartition } from "@sailo/analytics/partitions";
 import { visitorId } from "@sailo/analytics/visitor";
 import { isUuid } from "@sailo/core/uuid";
@@ -56,6 +56,20 @@ export async function POST(request: Request) {
    * answer to "is this a shop"; this only stops a malformed id reaching it.
    */
   if (!isUuid(shopId)) return NextResponse.json({ ok: false }, { status: 400 });
+
+  /*
+   * A crawler, a link-preview fetcher, a headless monitor — screened here so its
+   * pageview never lands in a seller's numbers as a person who was never there.
+   * `visit-tracker` already skips an automation browser (`navigator.webdriver`)
+   * before it POSTs; this catches the ones that announce themselves in the UA
+   * and the scripts that send none. Answered `ok` all the same: a bot told it
+   * was filtered is a bot that comes back wearing a different user-agent, and
+   * this endpoint's whole contract is that a failed count is never a failed
+   * request.
+   */
+  if (looksLikeBot(request.headers.get("user-agent"))) {
+    return NextResponse.json({ ok: true });
+  }
 
   const db = getDb();
 
@@ -183,6 +197,11 @@ async function recordClick(
   const done = new Response(null, { status: 204 });
 
   if (!isUuid(payload.shopId)) return done;
+
+  // The same bot screen the visit path runs — a crawler that follows an outbound
+  // link is no more a click than it was a visit. Silent, like every other
+  // outcome here.
+  if (looksLikeBot(request.headers.get("user-agent"))) return done;
 
   const db = getDb();
   // The same bar a visit has to clear, from the same shop cache.

@@ -268,6 +268,40 @@ export function parseUserAgent(ua: string | null | undefined): DeviceInfo {
 }
 
 /*
+ * The user-agent tokens a bot carries and a browser never does.
+ *
+ * `bot` alone catches most of them — Googlebot, bingbot, Twitterbot, Slackbot —
+ * so the rest of the list is the crawlers, headless engines, preview fetchers,
+ * monitors and HTTP libraries that do not carry it. Every entry is a string no
+ * mainstream browser's UA contains, so this cannot mistake a real visitor for a
+ * bot (`YaBrowser` is not `yandex`, `Version/` is not a library) — deliberately,
+ * because the two errors are not equal here.
+ */
+const BOT_UA =
+  /bot|crawl|spider|slurp|mediapartners|headless|phantomjs|puppeteer|playwright|selenium|webdriver|lighthouse|pagespeed|gtmetrix|pingdom|uptimerobot|statuscake|facebookexternalhit|embedly|semrush|ahrefs|scrapy|python-requests|curl\/|wget\/|libwww|java\/|go-http|node-fetch|axios\/|okhttp|apache-httpclient|httpclient/i;
+
+/**
+ * Whether a user-agent belongs to a bot, so a crawler's pageview never lands in
+ * a seller's numbers as a person who was never there.
+ *
+ * A visit is only ever written by the `/api/track` beacon, which is client-side
+ * JavaScript — so the only bots that reach it run a whole browser, and the
+ * `navigator.webdriver` flag that beacon checks before it fires is the sharper
+ * half of the pair: it catches an automation browser even behind a spoofed
+ * user-agent. This is the net for the rest — the crawlers and preview fetchers
+ * that announce themselves in the UA, and the scripts that send none at all.
+ *
+ * Blank counts as a bot: a browser's `fetch` always attaches the browser's own
+ * user-agent and cannot strip it, so a beacon that arrives without one was not
+ * sent by a browser. Kept conservative on purpose — a missed bot is one stray
+ * count, while a filtered buyer is a seller told nobody came, which is worse.
+ */
+export function looksLikeBot(ua: string | null | undefined): boolean {
+  if (!ua) return true;
+  return BOT_UA.test(ua);
+}
+
+/*
  * `countryFlag` and `countryName` used to live here, because the traffic panel
  * was the only thing that had a country code to render. Shipping zones gave
  * the checkout and the delivery settings one too, and a second copy of "turn a
