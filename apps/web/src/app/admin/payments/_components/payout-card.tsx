@@ -1,7 +1,7 @@
 import { AlertTriangle, ArrowUpRight, Banknote } from "lucide-react";
 import type { Shop } from "@sailo/db/schema";
 import { getPayoutOverview } from "@/lib/connect-payouts";
-import { openStripeDashboard } from "@/lib/actions/connect";
+import { connectStripe } from "@/lib/actions/connect";
 import { refreshPayouts } from "@/lib/actions/payouts";
 import { Alert, Badge, Button, Card } from "@sailo/design-system/web";
 import { getAdminT, getLocale } from "@/i18n/server";
@@ -101,7 +101,18 @@ export async function PayoutCard({ shop }: { shop: Shop }) {
                   ? a.payouts.requirementsBody
                   : a.payouts.pausedBody}
               </p>
-              <form action={openStripeDashboard} className="mt-2">
+              {/*
+                `connectStripe`, not `openStripeDashboard`. This banner shows
+                exactly when Stripe still has outstanding requirements — which
+                includes an account that never finished onboarding — and Stripe
+                refuses a dashboard login link for such an account
+                ("Cannot create a login link for an account that has not
+                completed onboarding"), throwing into the admin error boundary.
+                An onboarding link is the one that works in that state and is
+                what actually resolves the requirements; for an already-onboarded
+                account with a new requirement it opens straight onto that step.
+              */}
+              <form action={connectStripe} className="mt-2">
                 <button
                   type="submit"
                   className="focus-ring press inline-flex h-9 items-center gap-1.5 rounded-xl bg-[#635bff] px-3 text-sm font-medium text-white shadow-xs transition hover:bg-[#5148e8] pointer-coarse:h-11"

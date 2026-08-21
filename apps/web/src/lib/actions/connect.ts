@@ -276,8 +276,28 @@ export async function refreshStripeAccount() {
 export async function openStripeDashboard() {
   const { shop } = await requireShop("settings:write");
   if (!shop.stripeAccountId) redirect("/admin/payments");
-  const url = await loginLink(shop.stripeAccountId);
-  redirect(url);
+
+  /*
+   * A dashboard login link exists only once onboarding is finished — Stripe
+   * refuses one for an account that has not ("Cannot create a login link for an
+   * account that has not completed onboarding"), and the throw would land the
+   * seller on the admin error boundary reading "this page didn't load". So if
+   * the login link fails, fall back to an onboarding link: a seller with no
+   * dashboard yet has steps left to finish, which is where this should take
+   * them. `redirect` stays outside the try — it signals by throwing.
+   */
+  let url: string | null = null;
+  try {
+    url = await loginLink(shop.stripeAccountId);
+  } catch {
+    try {
+      ({ url } = await startOnboarding(shop));
+    } catch (error) {
+      console.error("[sailo] Stripe dashboard and onboarding link both failed:", error);
+    }
+  }
+
+  redirect(url ?? "/admin/payments?stripe=error");
 }
 
 /**
