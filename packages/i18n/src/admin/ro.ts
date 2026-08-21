@@ -518,7 +518,9 @@ export const adminRo: PartialAdminDictionary = {
     seePlans: "Vezi planurile",
     cardOnPlan: "Plățile cu cardul fac parte din {plan}.",
     connectStripe: "Conectează Stripe",
-    connectHint: "Deschide Stripe. Îți vor trebui datele bancare și un act de identitate — Sailo nu le vede pe niciunul.",
+    connecting: "Se conectează la Stripe…",
+    connectHint:
+      "Deschide Stripe pentru a configura plățile. Ai deja un cont Stripe? Autentifică-te în timpul configurării și datele tale sunt reutilizate. Sailo nu îți vede niciodată datele bancare sau actul de identitate.",
     account: "Cont",
     country: "Țară",
     continueOnStripe: "Continuă pe Stripe",

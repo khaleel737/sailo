@@ -518,7 +518,9 @@ export const adminPt: PartialAdminDictionary = {
     seePlans: "Ver planos",
     cardOnPlan: "O pagamento com cartão faz parte do {plan}.",
     connectStripe: "Ligar o Stripe",
-    connectHint: "Abre o Stripe. Vais precisar dos teus dados bancários e de um documento — a Sailo não vê nenhum deles.",
+    connecting: "A ligar ao Stripe…",
+    connectHint:
+      "Abre o Stripe para configurar os pagamentos. Já tens uma conta Stripe? Inicia sessão durante a configuração e os teus dados são reutilizados. O Sailo nunca vê os teus dados bancários nem a tua identificação.",
     account: "Conta",
     country: "País",
     continueOnStripe: "Continuar no Stripe",

@@ -53,6 +53,7 @@ export {
   billingPortalSession,
   cancelSubscriptionAtPeriodEnd,
   connectOnboardingLink,
+  syncAccountCapabilities,
   MissingStripeCountryError,
   publicShopUrl,
   refundCharge,

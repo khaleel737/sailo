@@ -518,7 +518,9 @@ export const adminEl: PartialAdminDictionary = {
     seePlans: "Δείτε τα πακέτα",
     cardOnPlan: "Οι πληρωμές με κάρτα ανήκουν στο {plan}.",
     connectStripe: "Σύνδεση Stripe",
-    connectHint: "Ανοίγει το Stripe. Θα χρειαστείτε τα τραπεζικά σας στοιχεία και ταυτότητα — η Sailo δεν βλέπει κανένα από τα δύο.",
+    connecting: "Σύνδεση με το Stripe…",
+    connectHint:
+      "Ανοίγει το Stripe για τη ρύθμιση των πληρωμών. Έχετε ήδη λογαριασμό Stripe; Συνδεθείτε κατά τη ρύθμιση και τα στοιχεία σας θα χρησιμοποιηθούν ξανά. Το Sailo δεν βλέπει ποτέ τα τραπεζικά σας στοιχεία ή την ταυτότητά σας.",
     account: "Λογαριασμός",
     country: "Χώρα",
     continueOnStripe: "Συνέχεια στο Stripe",

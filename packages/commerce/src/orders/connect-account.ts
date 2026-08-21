@@ -63,14 +63,21 @@ export function shopUrl(handle: string): string | null {
  * sheet close itself instead of asking the seller to find a Close button.
  */
 export async function startOnboarding(shop: Shop) {
-  return connectOnboardingLink(shop, {
-    siteUrl: appUrl(),
-    returnUrl: `${appUrl()}/admin/payments?stripe=return`,
-    // Refresh is what Stripe calls when the link has expired — it must start
-    // the flow again, not dead-end on an error page. `/admin/payments` renders
-    // the Connect card, from which the seller presses Connect again.
-    refreshUrl: `${appUrl()}/admin/payments?stripe=refresh`,
-  });
+  return connectOnboardingLink(
+    shop,
+    {
+      siteUrl: appUrl(),
+      returnUrl: `${appUrl()}/admin/payments?stripe=return`,
+      // Refresh is what Stripe calls when the link has expired — it must start
+      // the flow again, not dead-end on an error page. `/admin/payments`
+      // renders the Connect card, from which the seller presses Connect again.
+      refreshUrl: `${appUrl()}/admin/payments?stripe=refresh`,
+    },
+    // The seller waits on this call before the browser can redirect, so the
+    // slow capability sync is deferred — the web action runs it in `after()`
+    // off the returned account id while the seller is already on Stripe.
+    { deferCapabilities: true },
+  );
 }
 
 /**

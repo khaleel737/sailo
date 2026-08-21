@@ -518,7 +518,9 @@ export const adminDa: PartialAdminDictionary = {
     seePlans: "Se abonnementer",
     cardOnPlan: "Kortbetaling er en del af {plan}.",
     connectStripe: "Forbind Stripe",
-    connectHint: "Åbner Stripe. Du skal bruge dine bankoplysninger og et ID — Sailo ser ingen af delene.",
+    connecting: "Opretter forbindelse til Stripe…",
+    connectHint:
+      "Åbner Stripe for at sætte udbetalinger op. Har du allerede en Stripe-konto? Log ind undervejs, så genbruges dine oplysninger. Sailo ser aldrig dine bankoplysninger eller dit ID.",
     account: "Konto",
     country: "Land",
     continueOnStripe: "Fortsæt på Stripe",

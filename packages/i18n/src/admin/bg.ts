@@ -715,7 +715,9 @@ export const adminBg: PartialAdminDictionary = {
     seePlans: "Виж плановете",
     cardOnPlan: "Плащането с карта е част от {plan}.",
     connectStripe: "Свържи Stripe",
-    connectHint: "Отваря Stripe. Ще ви трябват банковите данни и документ за самоличност — Sailo не вижда нито едното, нито другото.",
+    connecting: "Свързване със Stripe…",
+    connectHint:
+      "Отваря Stripe за настройка на плащанията. Вече имате акаунт в Stripe? Влезте по време на настройката и данните ви ще се използват повторно. Sailo никога не вижда банковите ви данни или самоличността ви.",
     account: "Сметка",
     country: "Държава",
     continueOnStripe: "Продължи в Stripe",

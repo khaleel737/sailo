@@ -258,15 +258,29 @@ export type OnboardingRedirects = {
  *
  * Account links are single-use and expire in minutes, so one is minted per
  * click rather than stored.
+ *
+ * **`deferCapabilities`** keeps the slow half off the click.
+ * `syncCapabilities` is four or five Stripe round trips — list, request,
+ * list again — and it does not gate the redirect: the account is created
+ * with `baseCapabilities()` (card and transfers), which is all onboarding
+ * needs to begin and all most sellers ever use. The extra regional rails
+ * (iDEAL, BLIK, …) can be requested in the background while the seller is on
+ * Stripe's form, so a caller with a request context runs `syncCapabilities`
+ * off the returned `accountId` inside `after()` instead of making the seller
+ * wait on it. When the flag is unset the sync runs inline, exactly as before,
+ * for callers with nowhere to defer it to.
  */
 export async function connectOnboardingLink(
   shop: Shop,
   redirects: OnboardingRedirects,
-): Promise<string> {
+  opts: { deferCapabilities?: boolean } = {},
+): Promise<{ url: string; accountId: string; created: boolean }> {
   const db = getDb();
   let accountId = shop.stripeAccountId;
+  let created = false;
 
   if (!accountId) {
+    created = true;
     const shopUrl = publicShopUrl(redirects.siteUrl, shop.handle);
 
     /*
@@ -310,13 +324,15 @@ export async function connectOnboardingLink(
     });
     accountId = account.id;
 
-    await syncCapabilities(account);
-
+    // The account row goes in before the redirect regardless — a failure
+    // after this leaves a recoverable account, not an orphan.
     await db
       .update(shops)
       .set({ ...accountFields(account), stripeConnectedAt: new Date(), updatedAt: new Date() })
       .where(eq(shops.id, shop.id));
-  } else {
+
+    if (!opts.deferCapabilities) await syncCapabilities(account);
+  } else if (!opts.deferCapabilities) {
     /*
      * The backfill, at the one moment it is free: a seller who already has an
      * account and has come back to the payments screen.
@@ -337,7 +353,20 @@ export async function connectOnboardingLink(
     type: "account_onboarding",
   });
 
-  return link.url;
+  return { url: link.url, accountId, created };
+}
+
+/**
+ * Retrieves an account and brings its capabilities up to date — the deferred
+ * half of `connectOnboardingLink`, run in the background off `accountId`.
+ *
+ * Its own function because the deferring caller holds only the id, and
+ * `syncCapabilities` needs the whole account. One extra retrieve, off the
+ * seller's critical path.
+ */
+export async function syncAccountCapabilities(accountId: string): Promise<void> {
+  const account = await stripe().accounts.retrieve(accountId);
+  await syncCapabilities(account);
 }
 
 /* --------------------------------------------------------------------------

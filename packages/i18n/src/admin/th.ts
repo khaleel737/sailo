@@ -716,7 +716,9 @@ export const adminTh: PartialAdminDictionary = {
     seePlans: "ดูแพ็กเกจ",
     cardOnPlan: "การชำระด้วยบัตรอยู่ในแพ็กเกจ {plan}",
     connectStripe: "เชื่อมต่อ Stripe",
-    connectHint: "จะเปิด Stripe คุณต้องใช้ข้อมูลบัญชีธนาคารและบัตรประจำตัว — Sailo ไม่เห็นทั้งสองอย่าง",
+    connecting: "กำลังเชื่อมต่อกับ Stripe…",
+    connectHint:
+      "เปิด Stripe เพื่อตั้งค่าการจ่ายเงิน มีบัญชี Stripe อยู่แล้ว? เข้าสู่ระบบระหว่างการตั้งค่าแล้วระบบจะใช้ข้อมูลเดิมของคุณ Sailo ไม่เคยเห็นข้อมูลธนาคารหรือบัตรประจำตัวของคุณ",
     account: "บัญชี",
     country: "ประเทศ",
     continueOnStripe: "ไปต่อที่ Stripe",

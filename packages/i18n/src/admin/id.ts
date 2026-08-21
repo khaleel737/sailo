@@ -717,7 +717,9 @@ export const adminId: PartialAdminDictionary = {
     seePlans: "Lihat paket",
     cardOnPlan: "Pembayaran kartu termasuk dalam {plan}.",
     connectStripe: "Hubungkan Stripe",
-    connectHint: "Membuka Stripe. Kamu butuh data rekening dan identitas — Sailo tidak melihat keduanya.",
+    connecting: "Menghubungkan ke Stripe…",
+    connectHint:
+      "Membuka Stripe untuk menyiapkan pembayaran. Sudah punya akun Stripe? Masuk saat penyiapan dan detail Anda digunakan kembali. Sailo tidak pernah melihat detail bank atau identitas Anda.",
     account: "Akun",
     country: "Negara",
     continueOnStripe: "Lanjutkan di Stripe",

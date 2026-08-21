@@ -20,6 +20,7 @@ import { getAdminT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
 import { cn } from "@sailo/design-system/web/cn";
 import { RailsPanel } from "@/app/admin/payments/_components/rails-panel";
+import { StripeConnectButton } from "@/app/admin/payments/_components/stripe-connect-button";
 
 /**
  * The Stripe rail is configured by connecting an account, not by filling in
@@ -193,13 +194,11 @@ export async function StripeCard({ shop }: { shop: Shop }) {
             {guessed ? ` ${a.payments.businessCountryGuess}` : ""}
           </p>
 
-          <button
-            type="submit"
-            className="focus-ring press mt-3 inline-flex h-10 items-center gap-2 rounded-xl pointer-coarse:h-11 bg-[#635bff] px-4 text-sm font-medium text-white shadow-xs transition hover:bg-[#5148e8]"
-          >
-            {a.payments.connectStripe}
-            <ArrowUpRight className="size-4 rtl:-scale-x-100" />
-          </button>
+          <StripeConnectButton
+            label={a.payments.connectStripe}
+            pendingLabel={a.payments.connecting}
+            className="focus-ring press mt-3 inline-flex h-10 items-center gap-2 rounded-xl pointer-coarse:h-11 bg-[#635bff] px-4 text-sm font-medium text-white shadow-xs transition hover:bg-[#5148e8] disabled:opacity-70"
+          />
           <p className="mt-2 text-xs text-ink-400">
             {a.payments.connectHint}
           </p>
@@ -255,13 +254,11 @@ export async function StripeCard({ shop }: { shop: Shop }) {
           <div className="flex flex-wrap gap-2">
             {state !== "active" ? (
               <form action={connectStripe}>
-                <button
-                  type="submit"
-                  className="focus-ring press inline-flex h-9 pointer-coarse:h-11 items-center gap-1.5 rounded-xl bg-[#635bff] px-3 text-sm font-medium text-white shadow-xs transition hover:bg-[#5148e8]"
-                >
-                  {a.payments.continueOnStripe}
-                  <ArrowUpRight className="size-3.5 rtl:-scale-x-100" />
-                </button>
+                <StripeConnectButton
+                  label={a.payments.continueOnStripe}
+                  pendingLabel={a.payments.connecting}
+                  className="focus-ring press inline-flex h-9 pointer-coarse:h-11 items-center gap-1.5 rounded-xl bg-[#635bff] px-3 text-sm font-medium text-white shadow-xs transition hover:bg-[#5148e8] disabled:opacity-70"
+                />
               </form>
             ) : (
               <form action={openStripeDashboard}>

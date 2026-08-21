@@ -518,7 +518,9 @@ export const adminCs: PartialAdminDictionary = {
     seePlans: "Zobrazit tarify",
     cardOnPlan: "Platby kartou jsou součástí tarifu {plan}.",
     connectStripe: "Připojit Stripe",
-    connectHint: "Otevře Stripe. Budete potřebovat bankovní údaje a doklad — Sailo nevidí ani jedno.",
+    connecting: "Připojování ke Stripe…",
+    connectHint:
+      "Otevře Stripe pro nastavení výplat. Už máte účet Stripe? Přihlaste se během nastavení a vaše údaje se znovu použijí. Sailo nikdy nevidí vaše bankovní údaje ani doklad totožnosti.",
     account: "Účet",
     country: "Země",
     continueOnStripe: "Pokračovat ve Stripe",

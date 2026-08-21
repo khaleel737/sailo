@@ -716,7 +716,9 @@ export const adminVi: PartialAdminDictionary = {
     seePlans: "Xem các gói",
     cardOnPlan: "Thanh toán thẻ thuộc gói {plan}.",
     connectStripe: "Kết nối Stripe",
-    connectHint: "Mở Stripe. Bạn sẽ cần thông tin ngân hàng và giấy tờ tùy thân — Sailo không thấy thứ nào cả.",
+    connecting: "Đang kết nối với Stripe…",
+    connectHint:
+      "Mở Stripe để thiết lập thanh toán. Bạn đã có tài khoản Stripe? Đăng nhập trong khi thiết lập và thông tin của bạn sẽ được dùng lại. Sailo không bao giờ thấy thông tin ngân hàng hay giấy tờ của bạn.",
     account: "Tài khoản",
     country: "Quốc gia",
     continueOnStripe: "Tiếp tục trên Stripe",

@@ -518,7 +518,9 @@ export const adminJa: PartialAdminDictionary = {
     seePlans: "プランを見る",
     cardOnPlan: "カード決済は{plan}に含まれています。",
     connectStripe: "Stripeを接続",
-    connectHint: "Stripeが開きます。銀行口座情報と本人確認書類が必要です — Sailoはどちらも見ません。",
+    connecting: "Stripe に接続しています…",
+    connectHint:
+      "入金を設定するために Stripe を開きます。すでに Stripe アカウントをお持ちですか？設定中にログインすると情報が再利用されます。Sailo が銀行情報や本人確認書類を見ることはありません。",
     account: "アカウント",
     country: "国",
     continueOnStripe: "Stripeで続ける",

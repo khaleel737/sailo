@@ -518,7 +518,9 @@ export const adminTr: PartialAdminDictionary = {
     seePlans: "Paketleri gör",
     cardOnPlan: "Kartla ödeme {plan} paketinde.",
     connectStripe: "Stripe’ı bağla",
-    connectHint: "Stripe’ı açar. Banka bilgileriniz ve bir kimlik gerekecek — Sailo ikisini de görmez.",
+    connecting: "Stripe'a bağlanılıyor…",
+    connectHint:
+      "Ödemeleri ayarlamak için Stripe'ı açar. Zaten bir Stripe hesabınız mı var? Kurulum sırasında giriş yapın, bilgileriniz yeniden kullanılır. Sailo banka bilgilerinizi veya kimliğinizi asla görmez.",
     account: "Hesap",
     country: "Ülke",
     continueOnStripe: "Stripe’da devam et",

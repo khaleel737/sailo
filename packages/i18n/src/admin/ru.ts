@@ -518,7 +518,9 @@ export const adminRu: PartialAdminDictionary = {
     seePlans: "Смотреть тарифы",
     cardOnPlan: "Оплата картой входит в тариф {plan}.",
     connectStripe: "Подключить Stripe",
-    connectHint: "Откроется Stripe. Понадобятся банковские реквизиты и документ — Sailo не видит ни того, ни другого.",
+    connecting: "Подключение к Stripe…",
+    connectHint:
+      "Откроет Stripe для настройки выплат. Уже есть аккаунт Stripe? Войдите во время настройки, и ваши данные будут использованы повторно. Sailo никогда не видит ваши банковские данные или удостоверение личности.",
     account: "Аккаунт",
     country: "Страна",
     continueOnStripe: "Продолжить в Stripe",

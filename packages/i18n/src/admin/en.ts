@@ -1670,7 +1670,11 @@ export const adminEn = {
     seePlans: "See plans",
     cardOnPlan: "Card payments are part of {plan}.",
     connectStripe: "Connect Stripe",
-    connectHint: "Opens Stripe. You'll need your bank details and an ID — Sailo never sees either.",
+    /* Shown while the button waits on Stripe — creating the account and the
+       secure link takes a couple of seconds, and silence reads as a dead
+       click. */
+    connecting: "Connecting to Stripe…",
+    connectHint: "Opens Stripe to set up payouts. Already have a Stripe account? Log in during setup and it reuses your details. Sailo never sees your bank details or ID.",
     // Asked before the account exists, because Stripe fixes it at creation and
     // offers no way to change it afterwards. The warning is not boilerplate:
     // getting this wrong means deleting the Stripe account and starting the

@@ -717,7 +717,9 @@ export const adminKo: PartialAdminDictionary = {
     seePlans: "요금제 보기",
     cardOnPlan: "카드 결제는 {plan} 요금제에 포함돼요.",
     connectStripe: "Stripe 연결",
-    connectHint: "Stripe가 열립니다. 계좌 정보와 신분증이 필요해요 — Sailo는 둘 다 보지 않습니다.",
+    connecting: "Stripe에 연결하는 중…",
+    connectHint:
+      "정산을 설정하기 위해 Stripe를 엽니다. 이미 Stripe 계정이 있으신가요? 설정 중에 로그인하면 기존 정보가 재사용됩니다. Sailo는 은행 정보나 신분증을 절대 보지 않습니다.",
     account: "계정",
     country: "국가",
     continueOnStripe: "Stripe에서 계속",

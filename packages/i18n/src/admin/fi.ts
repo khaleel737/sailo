@@ -518,7 +518,9 @@ export const adminFi: PartialAdminDictionary = {
     seePlans: "Katso paketit",
     cardOnPlan: "Korttimaksut kuuluvat pakettiin {plan}.",
     connectStripe: "Yhdistä Stripe",
-    connectHint: "Avaa Stripen. Tarvitset pankkitietosi ja henkilöllisyystodistuksen — Sailo ei näe kumpaakaan.",
+    connecting: "Yhdistetään Stripeen…",
+    connectHint:
+      "Avaa Stripen tilitysten määrittämistä varten. Onko sinulla jo Stripe-tili? Kirjaudu sisään määrityksen aikana, niin tietosi otetaan uudelleen käyttöön. Sailo ei koskaan näe pankkitietojasi tai henkilöllisyystodistustasi.",
     account: "Tili",
     country: "Maa",
     continueOnStripe: "Jatka Stripessä",

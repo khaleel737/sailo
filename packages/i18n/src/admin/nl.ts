@@ -518,7 +518,9 @@ export const adminNl: PartialAdminDictionary = {
     seePlans: "Bekijk pakketten",
     cardOnPlan: "Kaartbetalingen horen bij {plan}.",
     connectStripe: "Stripe verbinden",
-    connectHint: "Opent Stripe. Je hebt je bankgegevens en een identiteitsbewijs nodig — Sailo ziet geen van beide.",
+    connecting: "Verbinden met Stripe…",
+    connectHint:
+      "Opent Stripe om uitbetalingen in te stellen. Heb je al een Stripe-account? Log in tijdens het instellen en je gegevens worden hergebruikt. Sailo ziet je bankgegevens en ID nooit.",
     account: "Account",
     country: "Land",
     continueOnStripe: "Doorgaan op Stripe",

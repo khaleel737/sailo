@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 import { revalidatePath } from "next/cache";
 import { revalidateShop } from "@/lib/cache";
 import { eq } from "drizzle-orm";
@@ -10,7 +11,7 @@ import { and } from "drizzle-orm";
 import { requireShop } from "@/lib/session";
 import { can } from "@sailo/core/plans";
 import { disconnectedFields, loginLink, startOnboarding, syncAccount } from "@sailo/commerce/orders/server";
-import { MissingStripeCountryError } from "@sailo/payments";
+import { MissingStripeCountryError, syncAccountCapabilities } from "@sailo/payments";
 import { isStripeAccountCountry } from "@sailo/core/countries";
 import { screenBusiness } from "@sailo/security/restricted-businesses";
 import { captureMessage } from "@sailo/observability";
@@ -179,8 +180,9 @@ export async function connectStripe(formData?: FormData) {
   if (!shop.stripeAccountId) await screenBeforeConnect(shop);
 
   let url: string;
+  let accountId: string;
   try {
-    url = await startOnboarding(shop);
+    ({ url, accountId } = await startOnboarding(shop));
   } catch (error) {
     /*
      * The one failure the seller can actually fix, so it gets its own branch
@@ -201,6 +203,24 @@ export async function connectStripe(formData?: FormData) {
       `/admin/payments?stripe=error&reason=${encodeURIComponent(reason.slice(0, 300))}`,
     );
   }
+
+  /*
+   * The regional-capability sync, off the seller's critical path.
+   *
+   * `startOnboarding` deferred it so the redirect below is not held up by four
+   * or five Stripe round trips the account can begin onboarding without. This
+   * runs it while the seller is already on Stripe's form — by the time they
+   * finish and return, iDEAL, BLIK and the rest have been requested. Best
+   * effort: a failure here costs a regional rail the payments-screen sync
+   * will pick up anyway, never the connection itself.
+   */
+  after(async () => {
+    try {
+      await syncAccountCapabilities(accountId);
+    } catch (error) {
+      console.error("[sailo] deferred capability sync failed:", error);
+    }
+  });
 
   redirect(url);
 }

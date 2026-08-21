@@ -518,7 +518,9 @@ export const adminZh: PartialAdminDictionary = {
     seePlans: "查看套餐",
     cardOnPlan: "刷卡支付属于 {plan} 套餐。",
     connectStripe: "连接 Stripe",
-    connectHint: "会打开 Stripe。你需要银行信息和身份证件 — Sailo 两者都看不到。",
+    connecting: "正在连接 Stripe…",
+    connectHint:
+      "打开 Stripe 以设置收款。已经有 Stripe 账户？在设置时登录即可复用你的信息。Sailo 绝不会看到你的银行信息或证件。",
     account: "账户",
     country: "国家/地区",
     continueOnStripe: "在 Stripe 上继续",

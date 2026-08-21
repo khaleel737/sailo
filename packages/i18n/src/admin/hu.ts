@@ -518,7 +518,9 @@ export const adminHu: PartialAdminDictionary = {
     seePlans: "Csomagok megtekintése",
     cardOnPlan: "A kártyás fizetés a(z) {plan} csomag része.",
     connectStripe: "Stripe csatlakoztatása",
-    connectHint: "Megnyitja a Stripe-ot. Szükséged lesz a bankszámlaadataidra és egy igazolványra — a Sailo egyiket sem látja.",
+    connecting: "Csatlakozás a Stripe-hoz…",
+    connectHint:
+      "Megnyitja a Stripe-ot a kifizetések beállításához. Már van Stripe-fiókod? Jelentkezz be a beállítás közben, és az adataid újra felhasználódnak. A Sailo soha nem látja a bankadataidat vagy az igazolványodat.",
     account: "Fiók",
     country: "Ország",
     continueOnStripe: "Folytatás a Stripe-on",

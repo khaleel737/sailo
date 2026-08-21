@@ -716,7 +716,9 @@ export const adminSq: PartialAdminDictionary = {
     seePlans: "Shih planet",
     cardOnPlan: "Pagesat me kartë janë pjesë e {plan}.",
     connectStripe: "Lidh Stripe",
-    connectHint: "Hap Stripe. Do t’ju duhen të dhënat bankare dhe një dokument identiteti — Sailo nuk sheh asnjërën.",
+    connecting: "Po lidhet me Stripe…",
+    connectHint:
+      "Hap Stripe për të konfiguruar pagesat. Keni tashmë një llogari Stripe? Identifikohuni gjatë konfigurimit dhe të dhënat tuaja ripërdoren. Sailo nuk i sheh kurrë të dhënat tuaja bankare ose dokumentin e identitetit.",
     account: "Llogaria",
     country: "Shteti",
     continueOnStripe: "Vazhdo në Stripe",

@@ -111,11 +111,14 @@ export const paymentsRouter = router({
 
       let url: string;
       try {
-        url = await connectOnboardingLink(shop, {
+        // The phone has no `after()` to defer the capability sync into, so it
+        // runs inline (the default) exactly as before — the web action is the
+        // one that moves it off the critical path.
+        ({ url } = await connectOnboardingLink(shop, {
           siteUrl: siteUrl(),
           returnUrl: CONNECT_RETURN_URL,
           refreshUrl: CONNECT_REFRESH_URL,
-        });
+        }));
       } catch (error) {
         /*
          * The one failure the seller can act on, so it says what to do rather

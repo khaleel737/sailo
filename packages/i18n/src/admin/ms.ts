@@ -715,7 +715,9 @@ export const adminMs: PartialAdminDictionary = {
     seePlans: "Lihat pelan",
     cardOnPlan: "Pembayaran kad sebahagian daripada {plan}.",
     connectStripe: "Sambung Stripe",
-    connectHint: "Membuka Stripe. Anda perlukan maklumat bank dan kad pengenalan — Sailo tidak melihat kedua-duanya.",
+    connecting: "Menyambung ke Stripe…",
+    connectHint:
+      "Membuka Stripe untuk menyediakan pembayaran. Sudah ada akaun Stripe? Log masuk semasa penyediaan dan butiran anda digunakan semula. Sailo tidak pernah melihat butiran bank atau ID anda.",
     account: "Akaun",
     country: "Negara",
     continueOnStripe: "Teruskan di Stripe",
