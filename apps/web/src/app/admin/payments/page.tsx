@@ -8,6 +8,7 @@ import {
   MessageCircle,
   Wallet,
 } from "lucide-react";
+import { redirect } from "next/navigation";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { getShopPaymentMethods } from "@/lib/queries";
@@ -25,7 +26,7 @@ import { DisputesCard } from "@/app/admin/payments/_components/disputes-card";
 import { getSellerDisputes } from "@/lib/seller-disputes";
 import { Alert, Badge } from "@sailo/design-system/web";
 import { interpolate } from "@sailo/i18n";
-import { syncAccount } from "@sailo/commerce/orders/server";
+import { startOnboarding, syncAccount } from "@sailo/commerce/orders/server";
 
 export const metadata: Metadata = { title: "Payments" };
 
@@ -116,6 +117,36 @@ export default async function AdminPaymentsPage({
   if (params.stripe === "return" && shop.stripeAccountId) {
     await syncAccount(shop);
     ({ shop } = await requireShop("settings:read"));
+  }
+
+  /*
+   * Stripe bounced the seller back because their onboarding link expired or was
+   * already spent — account links are single-use and die within minutes. Its
+   * whole contract (see `OnboardingRedirects.refreshUrl`) is to *restart* the
+   * flow, not to render a page: left to fall through, a seller who left
+   * onboarding half-finished dead-ends on Stripe's "this page didn't load"
+   * error with a `?stripe=refresh` URL and no way forward. So mint a fresh link
+   * here and send them straight back into onboarding, no second click.
+   *
+   * Only when an account already exists. A refresh without one would have
+   * `connectOnboardingLink` *create* an account at this GET, skipping the
+   * country dropdown and the restricted-business screen the Connect button runs
+   * first; Stripe has no account to refresh in that state anyway, so the
+   * fall-through renders the Connect card for a clean start instead.
+   *
+   * `redirect` is deliberately outside the try — it signals by throwing, so
+   * catching it would swallow the redirect. A genuine Stripe failure is caught
+   * and the page renders the Connect card for a manual retry rather than a Next
+   * error screen.
+   */
+  if (params.stripe === "refresh" && shop.stripeAccountId) {
+    let link: string | null = null;
+    try {
+      ({ url: link } = await startOnboarding(shop));
+    } catch (error) {
+      console.error("[sailo] Stripe onboarding refresh failed:", error);
+    }
+    if (link) redirect(link);
   }
 
   const [methods, disputes] = await Promise.all([
@@ -275,7 +306,7 @@ export default async function AdminPaymentsPage({
         a={a}
       />
 
-      <LearnMore topic={a.payments.title} href={`${docsUrl()}/guides/payments`} />
+      <LearnMore topic={a.payments.title} href={docsUrl("/guides/payments")} />
     </>
   );
 }
