@@ -1,0 +1,44 @@
+packages/commerce/src/disputes/index.ts
+  s_a7bbf59e767e8f::t_2aee3f2bebe2ec 36
+packages/core/src/disputes/escalation.ts
+  s_a7bbf59e767e8f::t_d83fb7eeaeac2b 164-173,212,241
+apps/web/src/app/api/cron/disputes/route.ts
+  s_a7bbf59e767e8f::t_6596fb5bc11858 7
+  s_a7bbf59e767e8f::t_609256dc36ad42 55-84
+packages/commerce/src/disputes/guard.ts
+  s_a7bbf59e767e8f::t_daa19ab3ba34d5 19,74-82,102
+  s_a7bbf59e767e8f::t_c6e7ceaa0488c0 2,4,315-431
+apps/web/tsconfig.json
+  s_a7bbf59e767e8f::t_286017072b2e74 51
+packages/commerce/src/disputes/stats.ts
+  s_a7bbf59e767e8f::t_daa19ab3ba34d5 462-485
+  s_a7bbf59e767e8f::t_64e0433e26f707 4
+  s_a7bbf59e767e8f::t_71b1633fe1a2c7 187-188
+  s_a7bbf59e767e8f::t_060923162db7a0 212,260-281,330-332,334
+apps/web/src/lib/stripe-webhooks/disputes.ts
+  s_a7bbf59e767e8f::t_acb88a3a3bec25 623-630
+packages/db/src/schema/shop.ts
+  s_a7bbf59e767e8f::t_e5f5e5c54df332 730-739
+  s_a7bbf59e767e8f::t_71524907997105 1
+  s_a7bbf59e767e8f::t_f925dfdd92e5fd 729
+packages/core/src/disputes/escalation.test.ts
+  s_a7bbf59e767e8f::t_ff7a14bb92a069 35,207,277,280,283,290-292,294-295,300
+apps/web/drizzle/0064_dispute_risk.sql
+  s_a7bbf59e767e8f::t_e642185e2aea70 1-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "c6186ab99b0d3052c3eacb52cf7d78ab432ab7b1",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
