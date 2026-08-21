@@ -8,6 +8,7 @@ import { interpolate } from "@sailo/i18n";
 import { Alert, Button, Card, Field, Select } from "@sailo/design-system/web";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { useSaveBar } from "@/app/admin/_components/save-bar";
+import { SHOP_ACCENT_PRESETS } from "@/lib/shop-accents";
 import type { Shop } from "@sailo/db/schema";
 
 /**
@@ -19,10 +20,6 @@ import type { Shop } from "@sailo/db/schema";
  * alone"), so it gets its own room, its own Save, and an UPDATE that names
  * only these three columns.
  */
-const PRESET_COLORS = [
-  "#111111", "#4f46e5", "#0ea5e9", "#059669",
-  "#d97706", "#dc2626", "#db2777", "#7c3aed",
-];
 
 function Submit({ label }: { label: string }) {
   const { pending } = useFormStatus();
@@ -75,7 +72,7 @@ export function AppearanceForm({ shop }: { shop: Shop }) {
       <Card className="space-y-4 p-5">
         <Field label={a.settings.accentColour}>
           <div className="flex flex-wrap items-center gap-2">
-            {PRESET_COLORS.map((color) => (
+            {SHOP_ACCENT_PRESETS.map((color) => (
               <button
                 key={color}
                 type="button"

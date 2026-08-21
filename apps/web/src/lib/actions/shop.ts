@@ -12,12 +12,12 @@ import { publishHqEvent, publishShopEvent } from "@sailo/events";
 import { redirect } from "next/navigation";
 import { eq, } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { paymentMethods, shops, type Shop } from "@sailo/db/schema";
+import { shops, type Shop } from "@sailo/db/schema";
 import { fetchExternalBusy, forgetExternalBusy, isCalendarFeedUrl, normalizeFeedUrl } from "@sailo/commerce/booking/server";
 import { setMarketingOptIn } from "@sailo/marketing/lifecycle/server";
 import { isStaff, requireShop, requireUser } from "@/lib/session";
-import { normalizePhone } from "@sailo/core/phone";
 import { isPublicLinkUrl } from "@sailo/storage/urls";
+import { storeUpload } from "@sailo/storage/blob";
 import { rateLimit } from "@sailo/rate-limit";
 import { checkDescriptor, type DescriptorProblem } from "@sailo/core/disputes";
 import { callerIp } from "@sailo/rate-limit/client-ip";
@@ -284,6 +284,13 @@ export async function createShop(
         description: String(formData.get("description") ?? "").trim() || null,
         location: String(formData.get("location") ?? "").trim() || null,
         currency: toCurrencyCode(formData.get("currency")),
+        // Checked like the appearance form checks it: this arrives from a
+        // request body, and an arbitrary string here lands inside a style
+        // attribute on the public storefront. Anything malformed keeps the
+        // column's own default.
+        ...(/^#[0-9a-f]{6}$/i.test(String(formData.get("accentColor") ?? ""))
+          ? { accentColor: String(formData.get("accentColor")) }
+          : {}),
       })
       .returning({ id: shops.id });
   } catch (error) {
@@ -342,16 +349,28 @@ export async function createShop(
     });
   }
 
-  // A shop with no way to order is useless, so seed WhatsApp if given.
-  const whatsapp = normalizePhone(String(formData.get("whatsapp") ?? ""));
-  if (whatsapp) {
-    await db.insert(paymentMethods).values({
-      shopId: shop.id,
-      type: "whatsapp",
-      config: { phone: whatsapp },
-      isEnabled: true,
-      position: 1,
-    });
+  /*
+   * The photo from the customize step, stored only now — the upload endpoint
+   * needs a shop id to write under and one did not exist until the insert
+   * above. `storeUpload` still applies the same media-type allowlist and size
+   * cap as every other upload, so the form being a different door changes
+   * nothing about what may come through it. A failure here is swallowed on
+   * purpose: a missing avatar is visible on the seller's own storefront and
+   * fixable in settings, and it must not cost them the signup.
+   */
+  const avatar = formData.get("avatar");
+  if (avatar instanceof File && avatar.size > 0) {
+    try {
+      const stored = await storeUpload(shop.id, "image", avatar);
+      if (stored.ok) {
+        await db
+          .update(shops)
+          .set({ avatarUrl: stored.url })
+          .where(eq(shops.id, shop.id));
+      }
+    } catch {
+      // The blob store being down is not a reason a shop fails to exist.
+    }
   }
 
   /*

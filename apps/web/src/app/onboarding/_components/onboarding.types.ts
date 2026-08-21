@@ -7,7 +7,7 @@ export type Values = {
   description: string;
   location: string;
   currency: string;
-  whatsapp: string;
+  accentColor: string;
 };
 
 /**
