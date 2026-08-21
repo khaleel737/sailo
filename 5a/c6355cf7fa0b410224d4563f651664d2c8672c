@@ -1,0 +1,60 @@
+apps/web/src/app/admin/products/[id]/content/page.tsx
+  s_a7bbf59e767e8f::t_40f1962d580dc3 71
+packages/api/src/rest/handlers.ts
+  s_a7bbf59e767e8f::t_d72f495d521cb2 810-816
+packages/core/src/shop/plans.ts
+  s_a7bbf59e767e8f::t_afe43e41ae5160 306-307
+  s_a7bbf59e767e8f::t_8fb1a1ceffb90a 354-355
+  s_a7bbf59e767e8f::t_f5e688ef0b83e6 394
+  s_a7bbf59e767e8f::t_8b61af43f5e012 52-64,71-79
+  s_a7bbf59e767e8f::t_9633a01a82d700 51
+apps/web/src/lib/actions/collections.ts
+  s_a7bbf59e767e8f::t_0c9fd007f66faf 85
+  s_a7bbf59e767e8f::t_c1ec90e3e36455 124
+packages/api/src/rest/auth.ts
+  s_a7bbf59e767e8f::t_bbf3e11874f20b 184-194
+apps/docs/content/api/lists.mdx
+  s_a7bbf59e767e8f::t_d175609b1b62f3 111
+apps/docs/content/authentication.mdx
+  s_a7bbf59e767e8f::t_f3f6332f71403e 153-157
+  s_a7bbf59e767e8f::t_bbe7d812ffac57 135-139
+apps/docs/content/api/index.mdx
+  s_a7bbf59e767e8f::t_d175609b1b62f3 79
+apps/docs/content/api/subscriptions.mdx
+  s_a7bbf59e767e8f::t_d175609b1b62f3 91
+apps/docs/content/api/bookings.mdx
+  s_a7bbf59e767e8f::t_d175609b1b62f3 103
+apps/docs/content/errors.mdx
+  s_a7bbf59e767e8f::t_9cc8fdb7ab6ac9 54-57
+apps/docs/content/support.mdx
+  s_a7bbf59e767e8f::t_e5cb92471ceb43 21-22
+apps/docs/content/api/staff.mdx
+  s_a7bbf59e767e8f::t_d175609b1b62f3 81
+apps/docs/content/mcp/index.mdx
+  s_a7bbf59e767e8f::t_302d13fbf1f4cb 25
+  s_a7bbf59e767e8f::t_d175609b1b62f3 86
+apps/docs/content/api/disputes.mdx
+  s_a7bbf59e767e8f::t_d175609b1b62f3 94
+apps/docs/content/index.mdx
+  s_a7bbf59e767e8f::t_d175609b1b62f3 89
+apps/docs/content/guides/going-live.mdx
+  s_a7bbf59e767e8f::t_4b122efc01f9b2 127-129
+apps/docs/content/api/flows.mdx
+  s_a7bbf59e767e8f::t_d175609b1b62f3 124
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "5ac6355cf7fa0b410224d4563f651664d2c8672c",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
