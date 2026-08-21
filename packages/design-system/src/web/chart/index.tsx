@@ -124,6 +124,26 @@ export function Chart({
       ? formatMoney(value, currency, locale)
       : value.toLocaleString(locale);
 
+  /*
+   * The value axis wants a figure that fits a 34px gutter, not a full one:
+   * "$4.2M", "12.9K". `Intl`'s compact notation does the abbreviation in the
+   * reader's own locale, and money keeps its symbol so the axis says what
+   * kind of number it is. The full figure still lives in the readout and the
+   * tooltip; this is only the scale.
+   */
+  const valueLabel = (value: number): string =>
+    unit === "money"
+      ? new Intl.NumberFormat(locale, {
+          style: "currency",
+          currency,
+          notation: "compact",
+          maximumFractionDigits: 1,
+        }).format(value)
+      : new Intl.NumberFormat(locale, {
+          notation: "compact",
+          maximumFractionDigits: 1,
+        }).format(value);
+
   const drawn = useMemo(() => plotted(series), [series]);
   const domain = useMemo(() => chartDomain(series), [series]);
   const populated = hasData(series);
@@ -192,6 +212,7 @@ export function Chart({
                 cursor={cursor}
                 onCursor={setCursor}
                 dayLabel={(day) => formatDay(day, locale)}
+                valueLabel={valueLabel}
               />
             )
           }

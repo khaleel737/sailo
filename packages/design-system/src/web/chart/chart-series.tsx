@@ -1,6 +1,6 @@
 import { curveMonotoneX } from "@visx/curve";
 import { Group } from "@visx/group";
-import { Bar, LinePath } from "@visx/shape";
+import { AreaClosed, Bar, LinePath } from "@visx/shape";
 import { chartColour } from "../../chart/palette";
 import { barOffset, barWidth } from "../../chart";
 import type { ChartShape, ChartTone, Series } from "../../chart";
@@ -83,11 +83,36 @@ export function ChartSeries({
         }
 
         switch (shape) {
-          case "line":
+          case "line": {
+            const fillId = `chart-fill-${tone}-${s.key}`;
+            const indices = days.map((_, i) => i);
             return (
               <Group key={s.key}>
+                {/*
+                 * A wash of the series' own hue under the line, fading to
+                 * nothing at the baseline. The line still carries the value;
+                 * the fill gives the eye the shape of the trend without a
+                 * second colour — the palette forbids one, so magnitude is
+                 * drawn as area, not hue. Inline defs rather than a visx
+                 * gradient component, to add no dependency for one rectangle.
+                 */}
+                <defs>
+                  <linearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={colour} stopOpacity={0.16} />
+                    <stop offset="100%" stopColor={colour} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <AreaClosed
+                  data={indices}
+                  x={centre}
+                  y={(i) => yScale(valueAt(s, i))}
+                  yScale={yScale}
+                  curve={curveMonotoneX}
+                  fill={`url(#${fillId})`}
+                  stroke="none"
+                />
                 <LinePath
-                  data={days.map((_, i) => i)}
+                  data={indices}
                   x={centre}
                   y={(i) => yScale(valueAt(s, i))}
                   stroke={colour}
@@ -108,6 +133,7 @@ export function ChartSeries({
                 )}
               </Group>
             );
+          }
 
           case "bar": {
             const lane = s.negative ? barScales.below : barScales.above;

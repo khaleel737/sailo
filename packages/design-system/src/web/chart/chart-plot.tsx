@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { AxisBottom } from "@visx/axis";
+import { AxisBottom, AxisLeft } from "@visx/axis";
 import { GridRows } from "@visx/grid";
 import { localPoint } from "@visx/event";
 import { scaleBand, scaleLinear } from "@visx/scale";
@@ -9,12 +9,18 @@ import { indexAtPointer } from "../../chart";
 import type { ChartShape, ChartTone, Domain, Series } from "../../chart";
 import { ChartSeries } from "./chart-series";
 
-export const PLOT_HEIGHT = 132;
+export const PLOT_HEIGHT = 168;
 /**
  * Room under the plot for the day axis, descenders included — at 18 the tail of
  * the g in "Aug" was sliced off.
  */
 const AXIS_HEIGHT = 22;
+/**
+ * The left gutter the value axis lives in. Wide enough for the longest
+ * compact figure a tick can hold — "$100K", "$4.2M" — without clipping the
+ * dollar sign; the plot starts to its right so a bar at x-zero is not sliced.
+ */
+const AXIS_WIDTH = 46;
 
 /**
  * The drawing surface: grid, baseline, marks, axis, and the cursor.
@@ -38,6 +44,7 @@ export function ChartPlot({
   cursor,
   onCursor,
   dayLabel,
+  valueLabel,
 }: {
   width: number;
   days: readonly string[];
@@ -49,12 +56,15 @@ export function ChartPlot({
   cursor: number | null;
   onCursor: (index: number | null) => void;
   dayLabel: (day: string) => string;
+  /** A compact figure for the value axis — "$4.2M", "12.9K". */
+  valueLabel: (value: number) => string;
 }): React.ReactElement {
   const innerHeight = PLOT_HEIGHT - AXIS_HEIGHT;
+  const innerWidth = Math.max(width - AXIS_WIDTH, 0);
 
   const xScale = useMemo(
-    () => scaleBand({ domain: [...days], range: [0, width], padding: 0.28 }),
-    [days, width],
+    () => scaleBand({ domain: [...days], range: [0, innerWidth], padding: 0.28 }),
+    [days, innerWidth],
   );
   const yScale = useMemo(
     () =>
@@ -111,6 +121,9 @@ export function ChartPlot({
     onCursor(null);
   }
 
+  const cursorX =
+    cursor === null ? null : (xScale(days[cursor] ?? "") ?? 0) + xScale.bandwidth() / 2;
+
   return (
     <svg
       width={width}
@@ -120,43 +133,57 @@ export function ChartPlot({
       // scrubbing the chart, and pointermove stops arriving mid-gesture.
       style={{ touchAction: "pan-y" }}
     >
-      {populated ? (
-        <GridRows
-          scale={yScale}
-          width={width}
-          numTicks={3}
+      {/* Everything but the value axis sits to the right of the left gutter. */}
+      <g transform={`translate(${AXIS_WIDTH}, 0)`}>
+        {populated ? (
+          <GridRows
+            scale={yScale}
+            width={innerWidth}
+            numTicks={3}
+            stroke="currentColor"
+            className="text-ink-100"
+          />
+        ) : null}
+
+        {/* The zero line: solid once something hangs below it, otherwise a hint. */}
+        <line
+          x1={0}
+          x2={innerWidth}
+          y1={zeroY}
+          y2={zeroY}
+          className="text-ink-300"
           stroke="currentColor"
-          className="text-ink-100"
+          strokeWidth={1}
+          strokeDasharray={domain.min < 0 ? undefined : "2 3"}
         />
-      ) : null}
 
-      {/* The zero line: solid once something hangs below it, otherwise a hint. */}
-      <line
-        x1={0}
-        x2={width}
-        y1={zeroY}
-        y2={zeroY}
-        className="text-ink-300"
-        stroke="currentColor"
-        strokeWidth={1}
-        strokeDasharray={domain.min < 0 ? undefined : "2 3"}
-      />
-
-      {/* The day under the cursor, marked behind everything it explains. */}
-      {cursor !== null ? (
-        <rect
-          x={
-            (xScale(days[cursor] ?? "") ?? 0) -
-            (xScale.step() - xScale.bandwidth()) / 2
-          }
-          y={0}
-          width={xScale.step()}
-          height={innerHeight}
-          className="text-ink-200"
-          fill="currentColor"
-          rx={3}
-        />
-      ) : null}
+        {/* The day under the cursor: a soft band for width, a hairline for the
+            exact X the reader is aiming at — the crosshair the readout reads. */}
+        {cursor !== null && cursorX !== null ? (
+          <>
+            <rect
+              x={
+                (xScale(days[cursor] ?? "") ?? 0) -
+                (xScale.step() - xScale.bandwidth()) / 2
+              }
+              y={0}
+              width={xScale.step()}
+              height={innerHeight}
+              className="text-ink-100"
+              fill="currentColor"
+              rx={3}
+            />
+            <line
+              x1={cursorX}
+              x2={cursorX}
+              y1={0}
+              y2={innerHeight}
+              className="text-ink-300"
+              stroke="currentColor"
+              strokeWidth={1}
+            />
+          </>
+        ) : null}
 
       {/*
         With no data there is nothing to plot. Drawing the series anyway put a
@@ -180,7 +207,7 @@ export function ChartPlot({
         <rect
           x={0}
           y={0}
-          width={width}
+          width={innerWidth}
           height={innerHeight}
           fill="transparent"
           onPointerMove={track}
@@ -190,29 +217,51 @@ export function ChartPlot({
         />
       ) : null}
 
+        {populated ? (
+          <AxisBottom
+            top={innerHeight}
+            scale={xScale}
+            numTicks={Math.min(5, days.length)}
+            tickFormat={(d) => dayLabel(String(d))}
+            stroke="transparent"
+            tickStroke="transparent"
+            /*
+              The first and last labels are centred on columns against the edges,
+              so half of each fell outside the card — "Jul 8" rendered as "ul 8".
+              Anchor the ends inward and leave the rest centred.
+            */
+            tickLabelProps={(_, index, ticks) => ({
+              fill: "currentColor",
+              fontSize: 10,
+              textAnchor:
+                index === 0
+                  ? "start"
+                  : index === ticks.length - 1
+                    ? "end"
+                    : "middle",
+              className: "text-ink-400",
+            })}
+          />
+        ) : null}
+      </g>
+
+      {/* The value axis, in the left gutter. Three compact figures — the
+          magnitude the plot used to make the reader guess from the readout. */}
       {populated ? (
-        <AxisBottom
-          top={innerHeight}
-          scale={xScale}
-          numTicks={Math.min(5, days.length)}
-          tickFormat={(d) => dayLabel(String(d))}
-          stroke="transparent"
-          tickStroke="transparent"
-          /*
-            The first and last labels are centred on columns against the edges,
-            so half of each fell outside the card — "Jul 8" rendered as "ul 8".
-            Anchor the ends inward and leave the rest centred.
-          */
-          tickLabelProps={(_, index, ticks) => ({
+        <AxisLeft
+          left={AXIS_WIDTH}
+          scale={yScale}
+          numTicks={3}
+          tickFormat={(v) => valueLabel(Number(v))}
+          hideAxisLine
+          hideTicks
+          tickLabelProps={() => ({
             fill: "currentColor",
             fontSize: 10,
-            textAnchor:
-              index === 0
-                ? "start"
-                : index === ticks.length - 1
-                  ? "end"
-                  : "middle",
-            className: "text-ink-400",
+            textAnchor: "end",
+            dx: -6,
+            dy: 3,
+            className: "text-ink-400 tabular-nums",
           })}
         />
       ) : null}
