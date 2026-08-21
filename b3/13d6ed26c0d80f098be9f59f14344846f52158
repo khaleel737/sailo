@@ -1,0 +1,43 @@
+apps/web/e2e/scenarios/memberships-live.scenario.ts
+  s_a7bbf59e767e8f::t_84e88f34ec62c7 96-100
+  s_a7bbf59e767e8f::t_e663c38dba8aca 101-106
+apps/web/e2e/scenarios/dispute-files.scenario.ts
+  s_a7bbf59e767e8f::t_84e88f34ec62c7 204-212
+  s_a7bbf59e767e8f::t_3b2f4d6c87ec10 437-438,447,498,500-504,517-518,522-523,530,539-540,547,583-586,593,596,618-620
+apps/web/e2e/scenarios/settlement.scenario.ts
+  s_a7bbf59e767e8f::t_84e88f34ec62c7 121-129
+apps/web/e2e/scenarios/escalation-sweep.scenario.ts
+  s_a7bbf59e767e8f::t_4e3588ea6eaedf 3,73-89
+  s_a7bbf59e767e8f::t_b27ad3c1fd7437 60
+  s_a7bbf59e767e8f::t_baef342d130075 1-2,4-59,61-72,90-313
+apps/web/e2e/scenarios/dispute-notices.scenario.ts
+  s_a7bbf59e767e8f::t_84e88f34ec62c7 99-107
+apps/web/e2e/scenarios/disputes.scenario.ts
+  s_a7bbf59e767e8f::t_84e88f34ec62c7 129-141
+apps/web/e2e/scenarios/reputation.scenario.ts
+  s_a7bbf59e767e8f::t_b787aac908de74 1-300
+apps/web/e2e/scenarios/seller-notifications.scenario.ts
+  s_a7bbf59e767e8f::t_eb953875222bde 103-115
+apps/hq/e2e/scenarios/dispute-desk.scenario.ts
+  s_a7bbf59e767e8f::t_84e88f34ec62c7 102-114
+packages/commerce/src/disputes/index.ts
+  s_a7bbf59e767e8f::t_b27ad3c1fd7437 30
+apps/web/e2e/scenarios/memberships.scenario.ts
+  s_a7bbf59e767e8f::t_84e88f34ec62c7 70-82
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "b313d6ed26c0d80f098be9f59f14344846f52158",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
