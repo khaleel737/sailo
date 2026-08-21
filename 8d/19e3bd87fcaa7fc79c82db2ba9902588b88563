@@ -1,0 +1,43 @@
+apps/docs/src/app/layout.tsx
+  s_2bcfe090002697::t_3841d1c3ef6b7c 41-53
+  s_2bcfe090002697::t_abfb8ff481f5d0 7
+  s_2bcfe090002697::t_2b4926c8356806 71-76,78
+  s_2bcfe090002697::t_206564358856d3 137-142,150-153
+apps/docs/content/guides/customers.mdx
+  s_2bcfe090002697::t_d3c2dc86a9088e 1-98
+apps/docs/content/guides/orders.mdx
+  s_2bcfe090002697::t_c960e5e8c29191 1-110
+apps/docs/content/guides/products.mdx
+  s_2bcfe090002697::t_e4eeda0ce90333 35-36
+  s_2bcfe090002697::t_ecaa7dac3c19b6 1-34,37-93
+apps/docs/content/guides/_meta.ts
+  s_2bcfe090002697::t_a0cfef5c0deaa9 3-9,11-14
+apps/docs/content/guides/going-live.mdx
+  s_2bcfe090002697::t_941a4032df610a 34
+apps/docs/src/components/wordmark.tsx
+  s_2bcfe090002697::t_cd0f88558a63eb 1-35
+apps/docs/content/guides/payments.mdx
+  s_2bcfe090002697::t_e4696300978ff8 1-95
+apps/docs/public/brand/sailo-mark.svg
+  s_2bcfe090002697::t_62e62c7f6e4654 1
+apps/docs/content/mcp/protocol.mdx
+  s_2bcfe090002697::t_d0205ce68636f3 55
+apps/docs/src/app/reference.css
+  s_2bcfe090002697::t_8cab9bda082700 40-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "8d19e3bd87fcaa7fc79c82db2ba9902588b88563",
+  "prompts": {},
+  "sessions": {
+    "s_2bcfe090002697": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a30859a0-fa55-47c0-ac06-cfc95f4e184d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
