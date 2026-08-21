@@ -1,0 +1,98 @@
+---
+title: Customers and consent
+description: The contact list is where the API writes, consent is something only the person themselves can grant, and tags merge rather than replace. The rules, and why each one exists.
+---
+
+import { Callout } from "nextra/components";
+
+# Customers and consent
+
+The people on a shop's list — everyone who has bought something, signed up, or
+been added by an automation — are [contacts](/objects/contact), and they are
+where the API's write surface is: create-or-update a person, change their tags,
+change their list memberships. All three writes are shaped by one principle:
+**an automation must not be able to do, at scale, what a seller would not do by
+hand.**
+
+## The field that decides everything
+
+<Callout type="error">
+**`marketingConsentAt` is whether you may email this person.** A timestamp
+means they went through a double opt-in and clicked the link. `null` means
+they did not — usually a customer who bought something and was never asked.
+`null` is not "unknown"; it is "no".
+</Callout>
+
+Nothing an API key sends can set it. A contact created through the API always
+has `null` there, whatever the request body says; passing `"sendOptIn": true`
+makes Sailo email that person the same double opt-in link the public signup
+form uses, and the timestamp is written **when they click** — not when you
+asked. The mechanics, including the `optInSent` flag and why it can be `false`
+without anything having failed, are on the
+[contacts endpoint](/api/contacts#consent).
+
+Syncing into a newsletter tool, filter server-side:
+
+<CurlExample path="/contacts?consented=true&limit=100" />
+
+Everybody the unfiltered list returns who is not in that set is somebody you
+may not email. And because consent can arrive *after* the sync that first saw
+the person, a nightly re-read of `?consented=true` is part of the job — the
+[CRM guide](/guides/sync-a-crm#handle-the-consent-gap) walks through the gap.
+
+## Creating is idempotent by person
+
+`POST /contacts` is create-or-update, matched on email or phone. Sending
+somebody twice updates them and merges their tags rather than duplicating or
+failing — which is what makes it safe behind a form, a Typeform, or a Zapier
+action that may fire twice. There is no separate update endpoint, because there
+is nothing for one to do.
+
+Two merge rules that are easy to get backwards:
+
+- **Tags are merged, never replaced.** Sending `["webinar"]` adds it and
+  leaves whatever else they carry.
+- **A name only ever fills a gap.** If the contact already has a name — from
+  the seller, or from an order — yours is ignored. A form field's guess should
+  not overwrite what a human knows.
+
+## Tags and lists are different sentences
+
+A tag says what somebody *is*; a list says what they get *sent*. Both
+operations are add-and-remove, never replace-the-set — a tag the seller put on
+somebody by hand is not something an automation should delete by omitting it.
+Both are no-ops when there is nothing to do, so both are safe to retry. The
+tag endpoint is [its own route](/api/contacts#tagging-is-its-own-endpoint) for
+a practical reason: *tag everyone who turned up* should not require sending a
+name and an email you may not have.
+
+Joining a list cannot make somebody a subscriber: on a double opt-in list —
+the default — the membership lands `pending` until that person's own click
+confirms it. Read the state the response reports rather than assuming the one
+you asked for. Counts and the `doubleOptIn` rule are on the
+[lists page](/api/lists).
+
+## From a customer's orders to the customer
+
+An order's `customer.clientId` joins to this list, and is `null` on a guest
+checkout that matched nobody. `contact.created` fires when somebody new
+appears — from an order, a signup or the API alike — and carries the
+[same object](/objects/contact) the read endpoints return, `source` saying how
+they arrived.
+
+## What is deliberately missing
+
+**Deletion.** There is no `DELETE /contacts/{id}` — a person removed by an
+automation is not a mistake the seller can undo, and the one legitimate case
+belongs in the admin with a human attached.
+
+**`notes`.** The seller's private scratchpad about a customer is not on the
+object in either transport. It is the last thing that should sync into a
+third-party CRM through an integration nobody re-read.
+
+## Where the details are
+
+The full field list is on the [contact object reference](/objects/contact),
+every parameter on the [contacts endpoint page](/api/contacts) — and if the
+goal is a two-way CRM sync, [that guide](/guides/sync-a-crm) is the whole
+recipe.

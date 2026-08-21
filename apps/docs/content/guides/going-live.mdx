@@ -31,7 +31,7 @@ one of them is invisible until the day it is not.
       [retry helper](/errors#a-retry-helper).
 - [ ] **Backoff is exponential with jitter.** A fleet of workers that all retry
       at exactly two seconds is a fleet that stays synchronised.
-- [ ] **`limit=<MaxLimit />` on any full scan.** The default is
+- [ ] **A `limit` of <MaxLimit /> on any full scan.** The default is
       <DefaultLimit />, which is four times the calls.
 - [ ] **Loop on `has_more`**, not on whether `next_cursor` is null. They
       [answer different questions](/pagination#the-loop).

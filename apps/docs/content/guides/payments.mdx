@@ -1,0 +1,95 @@
+---
+title: Payments and refunds
+description: There is no /payments resource — the money lives on orders and disputes. Where each payment state shows up, what a refund moves, and what a chargeback takes.
+---
+
+import { Callout } from "nextra/components";
+
+# Payments and refunds
+
+There is deliberately no `/payments` resource. Money in Sailo is a fact *about*
+something — an [order](/objects/order), a
+[subscription](/objects/subscription), a [dispute](/objects/dispute) — and the
+API reports it where it lives. This page is the map: which field answers which
+question about money, and which event tells you it moved.
+
+## Where a payment shows up
+
+Card payments run through Stripe, in the seller's own Stripe account; manual
+rails — cash at pickup, a bank transfer — are recorded by the seller. Either
+way, what the API shows is the same field: the order's `paymentStatus` —
+`unpaid`, `pending`, `paid`, `refunded`, `disputed` — with `paymentMethod`
+naming the rail.
+
+<Callout type="warning">
+**`paymentStatus` answers the money question and no other.** A card order
+lands `paid` while `status` is still `new`; a bank-transfer order can sit
+`confirmed` and `unpaid` for days. The [orders guide](/guides/orders) is about
+keeping the two questions apart.
+</Callout>
+
+The event that means the money has arrived is **`order.paid`** — not
+`order.created`, which fires for unpaid orders too. It carries the complete
+order, so a bookkeeping integration can post the sale from the payload alone.
+
+<CurlExample path="/orders?payment_status=paid" />
+
+## Refunds
+
+A refund is something the seller does in the admin. The API has no refund
+endpoint — the write surface is [contacts](/api/contacts), on purpose — so an
+integration's job is to *notice* refunds, and there are two instruments:
+
+- **`order.refunded`** fires when one happens, full or partial, carrying the
+  whole order.
+- **`refunded`**, a [money object](/objects/money) on every order, is how much
+  has gone back so far.
+
+<Callout type="info">
+**A partial refund leaves `paymentStatus: "paid"`.** Only refunding the whole
+order moves the status. The reliable reading is arithmetic:
+`total.cents - refunded.cents` is what the seller has kept, and a non-zero
+`refunded` on a `paid` order is a partial refund, not an inconsistency.
+</Callout>
+
+## Do the arithmetic in `cents`
+
+Every amount is `{ cents, amount, currency }`, and `amount` is **not**
+`cents / 100` — JPY has no minor unit and JOD has three, so a fixed hundred is
+wrong for a fifth of the currencies Sailo supports. Sum and compare in
+`cents`, only between amounts sharing a `currency`, and use `amount` for
+display. [The money page](/objects/money) is short and worth reading whole.
+
+A shop prices in one currency, so every money object from one shop carries the
+same code — readable once from [`GET /shop`](/api/shop).
+
+## Chargebacks
+
+A chargeback sets the order's `paymentStatus` to `disputed` and opens a
+[dispute](/objects/dispute) — its own object, because a case has things an
+order does not: a deadline, a reason, and three money objects of which
+`deducted` — the sale *plus* the dispute fee — is what actually left the
+seller's balance.
+
+`dispute.opened` gives you roughly twenty days, and the evidence that wins
+usually lives in a system that is not Sailo. Turning the event into a task
+with a deadline is its own guide — [reacting to a
+chargeback](/guides/chargebacks) — and [`GET /disputes`](/api/disputes) finds
+the cases already open when you wire it up.
+
+## Subscription money
+
+A renewal that goes through fires `subscription.renewed`; a card that does not
+fires `subscription.payment_failed`, and the single most expensive mistake in
+that neighbourhood is revoking access on it — Stripe retries for days and most
+of them recover. The [access guide](/guides/membership-access) has the full
+event table, including the manual memberships that never touch a card.
+
+## What the API will not tell you
+
+**Stripe identifiers.** No charge id, payment intent or account id appears in
+any payload — they address the seller's own Stripe account, and the balance,
+payout schedule and bank details that go with it live there, not on this API.
+An integration that needs payout-level accounting reads the seller's Stripe
+account with the seller's authorisation; this API tells it what was sold,
+refunded and disputed, per order, which is the half Stripe cannot.

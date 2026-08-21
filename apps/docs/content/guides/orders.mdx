@@ -1,0 +1,110 @@
+---
+title: Working with orders
+description: Fulfilment and money are two separate questions, the five order.* events carry the whole order, and the one field that says whether anything has been refunded.
+---
+
+import { Callout } from "nextra/components";
+
+# Working with orders
+
+An order is the record of a sale — what was bought, by whom, for how much, and
+where both the parcel and the money stand. It is the object most integrations
+are really about, and the mistakes on this page are the ones that reach
+customers.
+
+## Two statuses, two questions
+
+<Callout type="warning">
+`status` is **fulfilment** — `new`, `confirmed`, `shipped`, `completed`,
+`cancelled`, `refunded`. `paymentStatus` is **money** — `unpaid`, `pending`,
+`paid`, `refunded`, `disputed`. **Neither answers the other's question.**
+</Callout>
+
+A card order lands `status: "new"` and `paymentStatus: "paid"` in the same
+instant, so reading `new` as "not paid" holds back fulfilment on every card
+sale. A bank-transfer order can sit `confirmed` and `unpaid` for days, so
+reading `confirmed` as "money arrived" ships goods nobody has paid for. The
+[orders endpoint](/api/orders) filters on the two separately, and they combine:
+
+<CurlExample path="/orders?status=confirmed&payment_status=paid" />
+
+## React to events, backfill from the list
+
+Five `order.*` events — `order.created`, `order.paid`, `order.shipped`,
+`order.cancelled`, `order.refunded` — cover the lifecycle, and every one
+carries the **complete order** in `data`: the same body `GET /orders/{id}`
+returns, built by the same code. A consumer that receives an event and then
+immediately fetches the order is making a call it already had the answer to.
+
+Two things events do not do:
+
+- **The past.** Orders that predate the integration never fired an event you
+  received. Page [`GET /orders`](/api/orders) once at setup.
+- **Guarantees.** Delivery is at-least-once, [not
+  ordered](/webhooks/delivery#ordering), and an endpoint that was down long
+  enough has permanently missed deliveries. Upsert whole payloads, deduplicate
+  on `webhook-id`, and re-read the list on a schedule if staleness costs you
+  money. The [going-live checklist](/guides/going-live) has the full set.
+
+**Fulfil on `order.paid`, not `order.created`.** The created event fires for
+unpaid orders too — that is what it is for.
+
+## Money on an order
+
+Six [money objects](/objects/money), and five of them compose:
+
+```
+subtotal − discount + deliveryFee + tax = total
+```
+
+`refunded` sits outside that sum: it is how much has gone back so far.
+
+<Callout type="info">
+**A partial refund leaves `paymentStatus: "paid"`.** Only refunding the whole
+order moves it to `refunded`. The reliable reading is arithmetic, not the
+status: `total.cents - refunded.cents` is what the seller has kept, and a
+non-zero `refunded` on a `paid` order is normal. In `cents` — `amount` is for
+display, and [not `cents / 100`](/objects/money).
+</Callout>
+
+## The customer on an order is not a contact
+
+`customer` carries what the buyer typed at checkout, and `customer.clientId`
+is the join to the shop's list — readable with
+[`GET /contacts/{id}`](/api/contacts). It is `null` on a guest checkout that
+matched nobody, which is normal rather than an error.
+
+<Callout type="error">
+**An order's `customer.email` is not consent to email that person.** It is an
+address somebody typed to receive a receipt. Consent lives on the
+[contact](/objects/contact#marketingconsentat), and the
+[customers guide](/guides/customers) is about exactly this line.
+</Callout>
+
+`?email=` finds one person's orders by what they typed at checkout; a customer
+who used two addresses is two answers. For everything tied to one person on
+the seller's list, match on `customer.clientId` instead.
+
+## Lines survive the catalogue
+
+`items` is populated on both endpoints and on every webhook — there is no
+`?expand=`. Each line keeps its own `title`, `sku` and prices, and its
+`productId` is `null` once the seller has deleted the product. An order is a
+record of what was sold, not a join to a catalogue that has moved on; handle
+the null. `itemCount` is total **units**, not lines.
+
+## Shipping
+
+`order.shipped` fires when the seller marks the order shipped, and
+`delivery.shippedAt` is set at the same moment — so a consumer that missed the
+event can still tell by reading. `trackingCarrier` is free text, because
+sellers ship with local couriers Sailo has never heard of: show it, do not
+switch on it.
+
+## Where the details are
+
+The full field list — customer, address, delivery, booking and lines — is on
+the [order object reference](/objects/order); parameters and filters are on the
+[orders endpoint page](/api/orders). When the money on an order stops being
+simple — refunds, chargebacks — the [payments guide](/guides/payments)
+continues from here.

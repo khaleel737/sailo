@@ -1,0 +1,93 @@
+---
+title: Working with products
+description: Mirroring a catalogue without delisting what the seller sells — the stock field that is null rather than zero, drafts, variants and the reconcile no webhook replaces.
+---
+
+import { Callout } from "nextra/components";
+
+# Working with products
+
+The catalogue is the read-only half of the API: two endpoints, no writes, and —
+alone among the resources here — **no webhook**. Products are edited by a person
+in the admin, at human speed, and read by integrations. That shape decides
+everything on this page.
+
+## The mistake that delists a shop
+
+<Callout type="warning">
+**`stock: null` means not counted, not sold out.** A product with
+`trackInventory: false` reports `stock: null` because Sailo is not counting
+units — a service, a digital download, a made-to-order item. On many shops that
+is *most of the catalogue*, and a sync that reads null as zero delists all of
+it in one run.
+</Callout>
+
+The field to gate a listing on is **`inStock`**, a boolean that already
+accounts for `trackInventory`. Use `stock` only for a number you display, and
+only where `trackInventory` is true. The three fields and the question each
+answers are on the [product object reference](/objects/product).
+
+## Mirroring the catalogue
+
+The pattern, for a marketplace listing, a POS, or anything else that holds a
+copy:
+
+1. **Page the list.** `GET /products` returns the catalogue newest first; a
+   `limit` of <MaxLimit /> quarters the number of calls a full scan makes.
+2. **Fetch detail where variants matter.** The list returns `variants: []` on
+   every row, deliberately — `GET /products/{id}` returns them in full. Page
+   the list, then fetch detail for the products you actually mirror.
+3. **Re-run it on a schedule.** There is no `product.updated` event to wait
+   for, so a mirror converges by re-reading. A nightly pass over a
+   page or two of catalogue is cheap; a price that is wrong until the next
+   manual sync is not.
+
+<CurlExample path="/products?published=true&limit=100" />
+
+## Drafts are readable, and that matters
+
+`isPublished: false` is a draft: invisible on the storefront, readable through
+the API. That is correct behaviour for a key the seller minted themselves — and
+it means **an unfiltered mirror will publish things the seller has not**.
+Filter with `?published=true` unless a draft is specifically what you want,
+which a catalogue audit might.
+
+## `kind` decides the rest of the object
+
+One of `physical`, `digital`, `service`, `event`, `membership` — and it decides
+which of three optional objects is present: a `service` carries `booking`, an
+`event` carries `event`, a `membership` carries `membership`. If your
+integration only handles one kind, filter on it:
+
+<CurlExample path="/products?kind=physical&published=true" />
+
+A membership product is what a [subscription](/objects/subscription) is a
+subscription *to*, and selling one is where the `subscription.*` events begin —
+the [access guide](/guides/membership-access) picks up from there.
+
+## Prices
+
+Products carry no currency of their own — a shop prices in one, and every
+[money object](/objects/money) on every product carries the shop's code.
+`compareAt` is the struck-through "was" price where the seller set one and
+`null` where they did not, not a copy of `price`.
+
+A variant's `price` is **always populated** — one with no price of its own
+inherits the product's, so there is no null to handle.
+
+## Store the `id`, display the `slug`
+
+`slug` is the product's URL segment on the storefront, and a seller can change
+it. A mirror keyed on it loses the product at the first rename. Store `id`;
+treat `slug` as display.
+
+The same rule from the other side: an [order line](/objects/order) keeps its
+own `title` and `sku`, and its `productId` is `null` once the seller has
+deleted the product. A join back to the catalogue must handle that null rather
+than treating it as corrupt data.
+
+## Where the endpoints are
+
+Both operations, with parameters and responses, are on the
+[products endpoint page](/api/products); the full field list is on the
+[product object reference](/objects/product).

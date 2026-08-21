@@ -4,6 +4,7 @@ import { Head } from "nextra/components";
 import { getPageMap } from "nextra/page-map";
 import { appOrigin } from "@sailo/core/origin";
 import { docsOrigin } from "@/lib/origins";
+import { Wordmark } from "@/components/wordmark";
 import "nextra-theme-docs/style.css";
 import "./reference.css";
 
@@ -37,6 +38,19 @@ export const metadata: Metadata = {
     url: docsOrigin(),
   },
   twitter: { card: "summary" },
+  /*
+   * The same mark the product's tab shows, copied from apps/web's brand
+   * directory rather than referenced across origins — a favicon fetched from
+   * another host is a request some browsers refuse. The SVG is the icon; the
+   * PNG is the fallback for the contexts that still rasterise one.
+   */
+  icons: {
+    icon: [
+      { url: "/brand/sailo-mark.svg", type: "image/svg+xml" },
+      { url: "/brand/sailo-mark-512.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: "/brand/sailo-mark-512.png",
+  },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -54,10 +68,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <Head
         /*
          * The accent, used for links, the active sidebar item and the focus
-         * ring. Set here rather than left at Nextra's default so the docs read
-         * as the same product as the app they document.
+         * ring. Sailo's brand green — `#037740` is hsl(152, 95%, 24%) — with
+         * the lightness split per scheme: the brand value is link-legible on
+         * white but vanishes on near-black, so dark mode gets the same hue
+         * lifted rather than a different colour. Set here rather than left at
+         * Nextra's blue default so the docs read as the same product as the
+         * app they document.
          */
-        color={{ hue: 212, saturation: 90, lightness: { light: 45, dark: 65 } }}
+        color={{ hue: 152, saturation: 90, lightness: { light: 30, dark: 62 } }}
         /*
          * Pure white and near-black rather than the theme's default off-white
          * and charcoal. This site is almost entirely text and tables, and the
@@ -65,7 +83,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
          * under those reads as a slightly dirty screen rather than as warmth.
          */
         backgroundColor={{ light: "rgb(255,255,255)", dark: "rgb(10,10,10)" }}
-        faviconGlyph="⚓"
       />
       <body>
         <Layout
@@ -117,6 +134,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 /**
  * Wordmark plus the audience.
  *
+ * The real wordmark now rather than the name set in the theme's font — the one
+ * asset a reader has already seen on the storefront and the admin, which is
+ * what makes the two sites read as one product. Its colour is
+ * `reference.css`'s job: brand green in light, white in dark, matching the two
+ * files apps/web ships.
+ *
  * "Developers" rather than "Docs" because this site is not the only
  * documentation Sailo has — sellers have help articles in the product — and the
  * distinction is what tells a reader within a second whether they are in the
@@ -124,8 +147,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
  */
 function Logo() {
   return (
-    <span style={{ display: "flex", alignItems: "baseline", gap: "0.4rem" }}>
-      <strong style={{ fontSize: "1.0625rem", letterSpacing: "-0.01em" }}>Sailo</strong>
+    <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+      <span className="sailo-wordmark" style={{ display: "flex" }}>
+        <Wordmark height={20} />
+      </span>
       <span style={{ fontSize: "0.8125rem", opacity: 0.6 }}>Developers</span>
     </span>
   );

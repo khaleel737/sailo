@@ -38,6 +38,25 @@ html.dark {
 }
 
 /* -------------------------------------------------------------------------- */
+/*  The wordmark in the navbar                                                 */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * The inline SVG in `components/wordmark.tsx` is filled `currentColor`, and
+ * this is where the colour comes from: the brand green of
+ * `public/brand/sailo-logo.svg` in light, and white in dark — the same pair of
+ * values apps/web ships as two separate files. Green on near-black fails
+ * contrast, which is why the dark half is not the brand colour dimmed.
+ */
+.sailo-wordmark {
+  color: #037740;
+}
+
+html.dark .sailo-wordmark {
+  color: #ffffff;
+}
+
+/* -------------------------------------------------------------------------- */
 /*  Inline pieces                                                              */
 /* -------------------------------------------------------------------------- */
 
