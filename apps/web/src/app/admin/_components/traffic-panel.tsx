@@ -30,7 +30,9 @@ export async function TrafficPanel({
 
   if (data.total === 0) {
     return (
-      <Card className="flex flex-col items-center px-6 py-10 text-center">
+      // `mb-6` to match the populated branch's own <section> — without it the
+      // empty card sits flush against Product performance below.
+      <Card className="mb-6 flex flex-col items-center px-6 py-10 text-center">
         <Globe className="mb-2 size-6 text-ink-300" />
         <p className="text-sm font-medium text-ink-700">{a.traffic.noVisits}</p>
         <p className="mt-0.5 text-xs text-ink-400">

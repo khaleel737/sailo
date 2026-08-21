@@ -316,6 +316,11 @@ export const adminFi: PartialAdminDictionary = {
     nextProduct: "Seuraava tuote",
     deleteTitle: "Poistetaanko tämä tuote?",
     deleteBody: "Se poistuu kaupastasi ja katalogista. Jo tehdyt tilaukset säilyttävät merkintänsä — historia on niiden, ei tuotteen.",
+    selectProduct: "Valitse tuote",
+    publish: "Julkaise",
+    hide: "Piilota",
+    bulkDeleteTitle: "Poistetaanko {count} tuotetta?",
+    bulkDeleteBody: "Ne katoavat kaupastasi ja katalogista. Jo tehdyt tilaukset säilyttävät merkintänsä — historia kuuluu niille, ei tuotteille.",
   },
   orders: {
     carrier: "Kuljetusliike",

@@ -316,6 +316,11 @@ export const adminRo: PartialAdminDictionary = {
     nextProduct: "Produsul următor",
     deleteTitle: "Ștergi acest produs?",
     deleteBody: "Dispare din magazinul și catalogul tău. Comenzile deja plasate își păstrează evidența — istoria e a lor, nu a produsului.",
+    selectProduct: "Selectează produsul",
+    publish: "Publică",
+    hide: "Ascunde",
+    bulkDeleteTitle: "Ștergi {count} produse?",
+    bulkDeleteBody: "Dispar din magazinul și catalogul tău. Comenzile deja plasate își păstrează înregistrările — istoricul e al lor, nu al produselor.",
   },
   orders: {
     carrier: "Curier",

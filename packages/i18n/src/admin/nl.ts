@@ -316,6 +316,11 @@ export const adminNl: PartialAdminDictionary = {
     nextProduct: "Volgend product",
     deleteTitle: "Dit product verwijderen?",
     deleteBody: "Het verdwijnt uit je shop en catalogus. Al geplaatste bestellingen behouden hun registratie — de geschiedenis is van hen, niet van het product.",
+    selectProduct: "Product selecteren",
+    publish: "Publiceren",
+    hide: "Verbergen",
+    bulkDeleteTitle: "{count} producten verwijderen?",
+    bulkDeleteBody: "Ze verdwijnen uit je winkel en catalogus. Al geplaatste bestellingen behouden hun registratie — de geschiedenis is van hen, niet van de producten.",
   },
   orders: {
     carrier: "Vervoerder",

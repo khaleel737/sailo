@@ -9,6 +9,14 @@ import type { Dictionary } from "@sailo/i18n";
 import type { SetField, Values } from "./onboarding.types";
 
 /*
+ * The photo circle takes a dropped file, deliberately without any drag
+ * styling — the affordance is the circle itself, and this screen's look is
+ * settled. `preventDefault` on dragover is what makes the drop land on the
+ * circle instead of the browser navigating to the image.
+ */
+const allowDrop = (e: React.DragEvent) => e.preventDefault();
+
+/*
  * The last step is decorating, not data entry. By now the seller has given us
  * a link and a name; this screen hands something back — their colour and photo
  * landing on the preview as they pick them. The one remaining question with a
@@ -23,6 +31,7 @@ export function CustomizeStep({
   photoUrl,
   photoError,
   onPickPhoto,
+  onDropPhoto,
   onRemovePhoto,
 }: {
   values: Values;
@@ -35,9 +44,19 @@ export function CustomizeStep({
   photoUrl: string | null;
   photoError: string | null;
   onPickPhoto: () => void;
+  /** A file dragged onto the circle — same intake as the picker. */
+  onDropPhoto: (file: File) => void;
   onRemovePhoto: () => void;
 }) {
   const accent = values.accentColor.toLowerCase();
+
+  const takeDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const file = Array.from(e.dataTransfer.files).find((f) =>
+      /^image\/(jpeg|png|webp|gif|avif)$/.test(f.type),
+    );
+    if (file) onDropPhoto(file);
+  };
 
   return (
     <>
@@ -74,7 +93,7 @@ export function CustomizeStep({
       <div className="flex items-end gap-4">
         <div className="shrink-0">
           {photoUrl ? (
-            <div className="group relative">
+            <div className="group relative" onDragOver={allowDrop} onDrop={takeDrop}>
               {/* Plain <img>: the source is an object URL of a file that never
                   left the browser, which next/image cannot optimise. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -96,6 +115,8 @@ export function CustomizeStep({
             <button
               type="button"
               onClick={onPickPhoto}
+              onDragOver={allowDrop}
+              onDrop={takeDrop}
               className="flex size-20 flex-col items-center justify-center gap-1 rounded-full border border-dashed border-ink-300 text-ink-400 transition hover:border-ink-900 hover:text-ink-900"
             >
               <Camera className="size-5" />

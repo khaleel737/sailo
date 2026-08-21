@@ -316,6 +316,11 @@ export const adminJa: PartialAdminDictionary = {
     nextProduct: "次の商品",
     deleteTitle: "この商品を削除しますか？",
     deleteBody: "ショップとカタログから消えます。すでに入った注文は記録を保持します。履歴は注文のものであり、商品のものではありません。",
+    selectProduct: "商品を選択",
+    publish: "公開する",
+    hide: "非表示にする",
+    bulkDeleteTitle: "{count}件の商品を削除しますか？",
+    bulkDeleteBody: "ショップとカタログから消えます。すでに入った注文は記録を保持します。履歴は注文のものであり、商品のものではありません。",
   },
   orders: {
     carrier: "配送業者",

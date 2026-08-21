@@ -132,10 +132,17 @@ describe("requireShop, audited", () => {
      * others lean through. Refund and delete are deliberately absent from
      * that file: money-out and destruction stay one order at a time.
      *
+     * 170 → 172 is the catalogue's selection bar — the orders bar's sibling:
+     * `bulkSetPublished` (one door behind both Publish and Hide) and
+     * `bulkDeleteProducts` in `actions/products.ts`, each claiming
+     * `products:write`. Delete rides in the bar here, unlike orders, because
+     * deleting a product moves no money and orders keep their records — but
+     * it keeps the said-out-loud confirm.
+     *
      * Update this deliberately when a screen is added or removed. A number that
      * moves on its own is exactly the thing this exists to notice.
      */
-    expect(sites).toHaveLength(170);
+    expect(sites).toHaveLength(172);
 
     const unknown = sites.filter(
       (s) => !(SHOP_PERMISSIONS as readonly string[]).includes(s.permission),
@@ -152,7 +159,7 @@ describe("requireShop, audited", () => {
         s.file.startsWith("src/app/") &&
         (s.file.endsWith("page.tsx") || s.file.endsWith("layout.tsx")),
     );
-    expect(inActions).toHaveLength(111);
+    expect(inActions).toHaveLength(113);
     expect(inRoutes).toHaveLength(7);
     expect(inPages).toHaveLength(52);
     expect(inActions.length + inRoutes.length + inPages.length).toBe(sites.length);

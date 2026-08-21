@@ -316,6 +316,11 @@ export const adminDa: PartialAdminDictionary = {
     nextProduct: "Næste produkt",
     deleteTitle: "Slet dette produkt?",
     deleteBody: "Den forsvinder fra din butik og dit katalog. Allerede afgivne ordrer beholder deres optegnelse — historikken er deres, ikke produktets.",
+    selectProduct: "Vælg produkt",
+    publish: "Udgiv",
+    hide: "Skjul",
+    bulkDeleteTitle: "Slet {count} produkter?",
+    bulkDeleteBody: "De forsvinder fra din butik og dit katalog. Allerede afgivne ordrer beholder deres registrering — historikken er deres, ikke produkternes.",
   },
   orders: {
     carrier: "Fragtfirma",

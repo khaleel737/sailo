@@ -316,6 +316,11 @@ export const adminSv: PartialAdminDictionary = {
     nextProduct: "Nästa produkt",
     deleteTitle: "Ta bort den här produkten?",
     deleteBody: "Den försvinner från din butik och katalog. Redan lagda ordrar behåller sin post — historiken är deras, inte produktens.",
+    selectProduct: "Välj produkt",
+    publish: "Publicera",
+    hide: "Dölj",
+    bulkDeleteTitle: "Ta bort {count} produkter?",
+    bulkDeleteBody: "De försvinner från din butik och katalog. Redan lagda ordrar behåller sina poster — historiken är deras, inte produkternas.",
   },
   orders: {
     carrier: "Fraktbolag",

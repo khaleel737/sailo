@@ -1045,6 +1045,11 @@ export const adminId: PartialAdminDictionary = {
     nextProduct: "Produk berikutnya",
     deleteTitle: "Hapus produk ini?",
     deleteBody: "Produk hilang dari toko dan katalogmu. Pesanan yang sudah dibuat tetap menyimpan catatannya — riwayat milik mereka, bukan milik produk.",
+    selectProduct: "Pilih produk",
+    publish: "Terbitkan",
+    hide: "Sembunyikan",
+    bulkDeleteTitle: "Hapus {count} produk?",
+    bulkDeleteBody: "Semuanya hilang dari toko dan katalog Anda. Pesanan yang sudah masuk tetap menyimpan catatannya — riwayat milik pesanan, bukan produk.",
   },
 
   dashboard: {

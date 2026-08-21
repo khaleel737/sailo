@@ -1045,6 +1045,11 @@ export const adminFil: PartialAdminDictionary = {
     nextProduct: "Susunod na produkto",
     deleteTitle: "Burahin ang produktong ito?",
     deleteBody: "Mawawala ito sa tindahan at katalogo mo. Ang mga nagawa nang order ay mananatili ang tala — sa kanila ang kasaysayan, hindi sa produkto.",
+    selectProduct: "Piliin ang produkto",
+    publish: "Ilathala",
+    hide: "Itago",
+    bulkDeleteTitle: "Burahin ang {count} produkto?",
+    bulkDeleteBody: "Mawawala ang mga ito sa tindahan at katalogo mo. Ang mga naunang order ay mananatili ang tala — sa kanila ang kasaysayan, hindi sa mga produkto.",
   },
 
   dashboard: {

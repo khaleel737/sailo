@@ -288,7 +288,7 @@ export default async function AdminOrdersPage({
         />
       )}
 
-      <LearnMore topic={a.orders.title} href={`${docsUrl()}/guides/orders`} />
+      <LearnMore topic={a.orders.title} href={docsUrl("/guides/orders")} />
     </>
   );
 }

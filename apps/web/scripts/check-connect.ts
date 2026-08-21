@@ -144,44 +144,36 @@ async function main() {
   /* ------------------------------------------------------ the country list */
   /*
    * `STRIPE_ACCOUNT_COUNTRIES` is the dropdown a seller picks their business
-   * location from, and a country missing from it is a seller who cannot take
-   * card payments at all. It is a hardcoded copy of something Stripe owns, so
-   * it drifts silently — and the only symptom is a country quietly absent from
-   * a list nobody reads.
+   * location from. Its source is https://stripe.com/global — merchant
+   * availability — which no API endpoint reproduces. The first version of
+   * this check compared against `GET /v1/country_specs` and demanded every
+   * spec appear in the dropdown, which is exactly how Jordan got offered:
+   * that endpoint also lists countries Stripe can only *send payouts to*,
+   * and account creation refuses them.
    *
-   * `GET /v1/country_specs` is what the list was built from, so this asks the
-   * same endpoint and reports the difference. Extra entries here matter less
-   * than missing ones — Stripe rejects an unsupported country at creation with
-   * a clear message — so only a shortfall fails.
+   * So the invariant now runs the other way — every country we offer must at
+   * least be one Stripe recognises. The list being a strict subset of
+   * country_specs is expected and correct. What this cannot catch is Stripe
+   * launching a new merchant country; those arrive by reading the page above.
    */
-  console.log("\nThe business-location dropdown still matches Stripe");
+  console.log("\nEvery offered business location is one Stripe recognises");
   const live = new Set<string>();
   for await (const spec of stripe.countrySpecs.list({ limit: 100 })) {
     live.add(spec.id);
   }
 
-  const missing = [...live]
-    .filter((c) => !STRIPE_ACCOUNT_COUNTRIES.includes(c as never))
-    .toSorted();
-  const extra = STRIPE_ACCOUNT_COUNTRIES.filter((c) => !live.has(c)).toSorted();
+  const unknown = STRIPE_ACCOUNT_COUNTRIES.filter((c) => !live.has(c)).toSorted();
 
   await step(
-    `every country Stripe supports is offered (${live.size} live)`,
+    `all ${STRIPE_ACCOUNT_COUNTRIES.length} offered countries have a country spec (${live.size} specs live)`,
     async () => {
-      if (missing.length) {
+      if (unknown.length) {
         throw new Error(
-          `missing from STRIPE_ACCOUNT_COUNTRIES in packages/core/src/countries.ts: ${missing.join(", ")}`,
+          `offered but unknown to Stripe — remove from STRIPE_ACCOUNT_COUNTRIES in packages/core/src/place/countries.ts: ${unknown.join(", ")}`,
         );
       }
     },
   );
-
-  if (extra.length) {
-    console.log(
-      `  note: offered but no longer in country_specs: ${extra.join(", ")} — ` +
-        "harmless, Stripe refuses them at creation, but worth pruning",
-    );
-  }
 
   /* ------------------------------------------------------------- teardown */
   if (created.length) console.log("\nCleanup");

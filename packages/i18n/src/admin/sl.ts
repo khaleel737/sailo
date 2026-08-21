@@ -1043,6 +1043,11 @@ export const adminSl: PartialAdminDictionary = {
     nextProduct: "Naslednji izdelek",
     deleteTitle: "Izbrišem ta izdelek?",
     deleteBody: "Izgine iz tvoje trgovine in kataloga. Že oddana naročila obdržijo svoj zapis — zgodovina je njihova, ne izdelkova.",
+    selectProduct: "Izberi izdelek",
+    publish: "Objavi",
+    hide: "Skrij",
+    bulkDeleteTitle: "Izbrišem {count} izdelkov?",
+    bulkDeleteBody: "Izginejo iz vaše trgovine in kataloga. Že oddana naročila obdržijo svoje zapise — zgodovina pripada njim, ne izdelkom.",
   },
 
   dashboard: {

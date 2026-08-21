@@ -316,6 +316,11 @@ export const adminCs: PartialAdminDictionary = {
     nextProduct: "Další produkt",
     deleteTitle: "Smazat tento produkt?",
     deleteBody: "Zmizí z obchodu i katalogu. Už vytvořené objednávky si svůj záznam nechají — historie patří jim, ne produktu.",
+    selectProduct: "Vybrat produkt",
+    publish: "Publikovat",
+    hide: "Skrýt",
+    bulkDeleteTitle: "Smazat {count} produktů?",
+    bulkDeleteBody: "Zmizí z vašeho obchodu i katalogu. Už zadané objednávky si záznamy nechají — historie patří jim, ne produktům.",
   },
   orders: {
     carrier: "Dopravce",

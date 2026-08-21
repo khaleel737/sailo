@@ -316,6 +316,11 @@ export const adminDe: PartialAdminDictionary = {
     nextProduct: "Nächstes Produkt",
     deleteTitle: "Dieses Produkt löschen?",
     deleteBody: "Es verschwindet aus deinem Shop und Katalog. Bereits aufgegebene Bestellungen behalten ihren Eintrag — die Historie gehört ihnen, nicht dem Produkt.",
+    selectProduct: "Produkt auswählen",
+    publish: "Veröffentlichen",
+    hide: "Ausblenden",
+    bulkDeleteTitle: "{count} Produkte löschen?",
+    bulkDeleteBody: "Sie verschwinden aus deinem Shop und Katalog. Bereits aufgegebene Bestellungen behalten ihren Eintrag — die Historie gehört ihnen, nicht den Produkten.",
   },
   orders: {
     carrier: "Versanddienst",

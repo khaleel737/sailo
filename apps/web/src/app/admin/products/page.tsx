@@ -9,6 +9,12 @@ import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { ADMIN_PRODUCT_LIMIT, getAdminProducts } from "@/lib/queries";
 import { deleteProduct, toggleProductPublished } from "@/lib/actions/products";
+import {
+  BulkProductsProvider,
+  PageSelect,
+  RowSelect,
+  SelectionArea,
+} from "./_components/bulk-select";
 import { PageHeader, TagsArt } from "@sailo/design-system/web";
 import { ExportButton } from "@/app/admin/_components/export-button";
 import { Table, Td, Th, Tr } from "@sailo/design-system/web";
@@ -111,20 +117,28 @@ export default async function AdminProductsPage({
           }
         />
       ) : (
-        <Table
-          minWidth="46rem"
-          head={
-            <>
-              <Th>{a.columns.product}</Th>
-              <Th>{a.columns.status}</Th>
-              <Th align="end">{a.columns.price}</Th>
-              <Th align="end">{a.columns.stock}</Th>
-              <Th className="w-24">
-                <span className="sr-only">{a.columns.actions}</span>
-              </Th>
-            </>
-          }
-        >
+        <BulkProductsProvider>
+          {/* The selection bar appears in place of nothing — this page has no
+              tabs row — and the after-action tally renders here too. */}
+          <SelectionArea />
+
+          <Table
+            minWidth="48rem"
+            head={
+              <>
+                <Th className="w-10">
+                  <PageSelect pageIds={products.map((p) => p.id)} />
+                </Th>
+                <Th>{a.columns.product}</Th>
+                <Th>{a.columns.status}</Th>
+                <Th align="end">{a.columns.price}</Th>
+                <Th align="end">{a.columns.stock}</Th>
+                <Th className="w-24">
+                  <span className="sr-only">{a.columns.actions}</span>
+                </Th>
+              </>
+            }
+          >
           {products.map((product) => {
             const range = priceRange(product, product.variants);
             const sellable =
@@ -143,6 +157,9 @@ export default async function AdminProductsPage({
 
             return (
               <Tr key={product.id}>
+                <Td className="w-10">
+                  <RowSelect id={product.id} />
+                </Td>
                 <Td>
                   <Link
                     href={href}
@@ -241,9 +258,9 @@ export default async function AdminProductsPage({
                         variant="ghost"
                         size="icon-sm"
                         type="submit"
-                        title={product.isPublished ? "Hide" : "Publish"}
+                        title={product.isPublished ? a.products.hide : a.products.publish}
                         aria-label={
-                          product.isPublished ? "Hide product" : "Publish product"
+                          product.isPublished ? a.products.hide : a.products.publish
                         }
                       >
                         {product.isPublished ? (
@@ -272,10 +289,11 @@ export default async function AdminProductsPage({
               </Tr>
             );
           })}
-        </Table>
+          </Table>
+        </BulkProductsProvider>
       )}
 
-      <LearnMore topic={a.products.title} href={`${docsUrl()}/guides/products`} />
+      <LearnMore topic={a.products.title} href={docsUrl("/guides/products")} />
     </>
   );
 }

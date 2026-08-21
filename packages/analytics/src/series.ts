@@ -93,6 +93,9 @@ export async function getRevenueSeries(shopId: string, window: Window = 14) {
       .select({
         day: sql<string>`to_char(${orders.createdAt}::date, 'YYYY-MM-DD')`,
         cents: sql<string>`coalesce(sum(${orders.totalCents}) filter (where ${orders.status} <> 'cancelled'), 0)`,
+        // Counted here rather than in a query of its own — the dashboard's
+        // orders tile draws a day-by-day line, and it is this exact grouping.
+        orders: sql<string>`count(*) filter (where ${orders.status} <> 'cancelled')`,
       })
       .from(orders)
       .where(
@@ -115,11 +118,14 @@ export async function getRevenueSeries(shopId: string, window: Window = 14) {
       .groupBy(sql`${orders.refundedAt}::date`),
   ]);
 
-  const salesByDay = new Map(sales.map((r) => [r.day, Number(r.cents)]));
+  const salesByDay = new Map(
+    sales.map((r) => [r.day, { cents: Number(r.cents), orders: Number(r.orders) }]),
+  );
   const refundsByDay = new Map(refunds.map((r) => [r.day, Number(r.cents)]));
 
   return keys.map((day) => {
-    const gross = salesByDay.get(day) ?? 0;
+    const sold = salesByDay.get(day);
+    const gross = sold?.cents ?? 0;
     // Held positive — it is an amount refunded, not a negative sale. The chart
     // decides which side of the axis it belongs on.
     const refunded = refundsByDay.get(day) ?? 0;
@@ -128,6 +134,7 @@ export async function getRevenueSeries(shopId: string, window: Window = 14) {
       cents: gross - refunded,
       grossCents: gross,
       refundedCents: refunded,
+      orders: sold?.orders ?? 0,
     };
   });
 }

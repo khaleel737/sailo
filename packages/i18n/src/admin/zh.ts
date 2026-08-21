@@ -316,6 +316,11 @@ export const adminZh: PartialAdminDictionary = {
     nextProduct: "下一个商品",
     deleteTitle: "删除此商品？",
     deleteBody: "它会从你的商店和目录中移除。已下的订单保留其记录——历史属于订单，而非商品。",
+    selectProduct: "选择商品",
+    publish: "发布",
+    hide: "隐藏",
+    bulkDeleteTitle: "删除 {count} 件商品？",
+    bulkDeleteBody: "它们会从你的商店和目录中移除。已下的订单保留其记录——历史属于订单，而非商品。",
   },
   orders: {
     carrier: "承运商",

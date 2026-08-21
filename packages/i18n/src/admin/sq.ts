@@ -1044,6 +1044,11 @@ export const adminSq: PartialAdminDictionary = {
     nextProduct: "Produkti tjetër",
     deleteTitle: "Ta fshij këtë produkt?",
     deleteBody: "Zhduket nga dyqani dhe katalogu yt. Porositë e bëra tashmë e ruajnë regjistrin — historia është e tyre, jo e produktit.",
+    selectProduct: "Zgjidh produktin",
+    publish: "Publiko",
+    hide: "Fshih",
+    bulkDeleteTitle: "Të fshij {count} produkte?",
+    bulkDeleteBody: "Zhduken nga dyqani dhe katalogu juaj. Porositë e bëra tashmë i ruajnë shënimet — historia u përket atyre, jo produkteve.",
   },
 
   dashboard: {

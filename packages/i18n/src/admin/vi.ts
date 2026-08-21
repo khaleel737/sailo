@@ -1044,6 +1044,11 @@ export const adminVi: PartialAdminDictionary = {
     nextProduct: "Sản phẩm sau",
     deleteTitle: "Xóa sản phẩm này?",
     deleteBody: "Sản phẩm biến mất khỏi cửa hàng và danh mục. Các đơn đã đặt vẫn giữ hồ sơ — lịch sử thuộc về đơn hàng, không thuộc về sản phẩm.",
+    selectProduct: "Chọn sản phẩm",
+    publish: "Đăng",
+    hide: "Ẩn",
+    bulkDeleteTitle: "Xóa {count} sản phẩm?",
+    bulkDeleteBody: "Chúng sẽ biến mất khỏi cửa hàng và danh mục của bạn. Các đơn hàng đã đặt vẫn giữ hồ sơ — lịch sử thuộc về đơn hàng, không thuộc về sản phẩm.",
   },
 
   dashboard: {

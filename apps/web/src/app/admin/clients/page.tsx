@@ -184,7 +184,7 @@ export default async function AdminClientsPage({
         </Table>
       )}
 
-      <LearnMore topic={a.clients.title} href={`${docsUrl()}/guides/customers`} />
+      <LearnMore topic={a.clients.title} href={docsUrl("/guides/customers")} />
     </>
   );
 }

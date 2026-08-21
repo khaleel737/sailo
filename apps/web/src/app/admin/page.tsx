@@ -23,6 +23,7 @@ import { formatMoney } from "@sailo/core/currency";
 import { getAdminT, getLocale } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
 import { appOrigin } from "@sailo/core/origin";
+import { CHART, CHART_STEPS } from "@sailo/design-system/chart/palette";
 
 export const metadata: Metadata = { title: "Overview" };
 
@@ -169,11 +170,11 @@ export default async function AdminOverviewPage() {
 
       <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
         {/*
-          The two tiles with a day-by-day series carry a sparkline — the
-          Analytics grammar: the figure says where you are, the line says
-          which way you've been going. Traffic draws in ink, money in brand
-          green; the other two tiles keep their written hints instead of a
-          chart they'd have to fake.
+          Every tile carries a day-by-day sparkline — the Analytics grammar:
+          the figure says where you are, the line says which way you've been
+          going. Colour follows the chart palette's one distinction — traffic
+          in the activity blue, orders and revenue in the money green — with
+          the second series of each class a step lighter.
         */}
         <Stat
           icon={<Eye className="size-4" />}
@@ -182,7 +183,7 @@ export default async function AdminOverviewPage() {
           chart={
             <Sparkline
               values={visitSeries.map((d) => d.count)}
-              className="text-ink-400"
+              color={CHART.activity}
             />
           }
         />
@@ -193,7 +194,7 @@ export default async function AdminOverviewPage() {
           chart={
             <Sparkline
               values={visitSeries.map((d) => d.unique)}
-              className="text-ink-300"
+              color={CHART_STEPS.activity[1]}
             />
           }
         />
@@ -201,6 +202,12 @@ export default async function AdminOverviewPage() {
           icon={<ShoppingBag className="size-4" />}
           label={a.dashboard.orders}
           value={stats.totalOrders.toLocaleString()}
+          chart={
+            <Sparkline
+              values={revenueSeries.map((d) => d.orders)}
+              color={CHART_STEPS.money[1]}
+            />
+          }
           hint={
             [
               stats.newOrders > 0 ? `${stats.newOrders} new` : null,
@@ -229,7 +236,7 @@ export default async function AdminOverviewPage() {
           chart={
             <Sparkline
               values={revenueSeries.map((d) => d.cents)}
-              className="text-brand-600"
+              color={CHART.money}
             />
           }
           hint={

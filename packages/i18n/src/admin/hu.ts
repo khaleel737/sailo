@@ -316,6 +316,11 @@ export const adminHu: PartialAdminDictionary = {
     nextProduct: "Következő termék",
     deleteTitle: "Törlöd ezt a terméket?",
     deleteBody: "Eltűnik a boltodból és a katalógusból. A már leadott rendelések megtartják a bejegyzésüket — a történet az övék, nem a terméké.",
+    selectProduct: "Termék kijelölése",
+    publish: "Közzététel",
+    hide: "Elrejtés",
+    bulkDeleteTitle: "Törölsz {count} terméket?",
+    bulkDeleteBody: "Eltűnnek a boltodból és a katalógusból. A már leadott rendelések megtartják a bejegyzésüket — a történet az övék, nem a termékeké.",
   },
   orders: {
     carrier: "Futárszolgálat",

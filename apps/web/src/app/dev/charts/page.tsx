@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { Chart } from "@sailo/design-system/web/chart";
-import { Card } from "@sailo/design-system/web";
+import { Card, Sparkline, Stat } from "@sailo/design-system/web";
+import { CHART, CHART_STEPS } from "@sailo/design-system/chart/palette";
 import type { Series } from "@sailo/design-system/chart";
 
 /* Not yet converted — see the note in `next.config.ts`. */
@@ -225,13 +226,68 @@ const CASES: { id: string; title: string; node: React.ReactNode }[] = [
       />
     ),
   },
+  {
+    /*
+     * The tile strip's sparklines, in the four states a real shop produces:
+     * a busy series, a sparse one that is mostly zeros, a dead-flat zero
+     * line, and a net-revenue line a refund pushes below nothing. Built from
+     * the arrays above, so no new randomness moves the other baselines.
+     */
+    id: "sparklines",
+    title: "Stat tiles · sparklines",
+    node: (
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <Stat
+          label="Visits"
+          value="1,284"
+          chart={<Sparkline values={VIEWS} color={CHART.activity} />}
+        />
+        <Stat
+          label="Unique visitors"
+          value="9"
+          chart={
+            <Sparkline
+              values={Array.from({ length: 30 }, (_, i) =>
+                i % 7 === 0 ? 2 : i % 11 === 0 ? 1 : 0,
+              )}
+              color={CHART_STEPS.activity[1]}
+            />
+          }
+        />
+        <Stat
+          label="Orders"
+          value="0"
+          chart={
+            <Sparkline
+              values={Array.from({ length: 30 }, () => 0)}
+              color={CHART_STEPS.money[1]}
+            />
+          }
+        />
+        <Stat
+          label="Net revenue"
+          value="$8,241.90"
+          chart={
+            <Sparkline
+              values={STEADY.map((s, i) => s - (REFUNDS[i] ?? 0))}
+              color={CHART.money}
+            />
+          }
+        />
+      </div>
+    ),
+  },
 ];
 
 export default function ChartFixtures(): React.ReactElement {
   if (process.env.NODE_ENV === "production") notFound();
 
   return (
-    <main className="mx-auto max-w-3xl space-y-4 p-8">
+    // A fixed width, not a max — the cards are photographed by
+    // `e2e/charts.spec.ts`, and a fluid container makes every baseline a
+    // function of the viewport the runner happened to use. 564 puts the
+    // card at exactly the 500px the committed baselines hold.
+    <main className="mx-auto w-[564px] space-y-4 p-8">
       <h1 className="text-lg font-semibold">Chart fixtures</h1>
       {CASES.map((c) => (
         <Card key={c.id} className="p-5" data-case={c.id}>

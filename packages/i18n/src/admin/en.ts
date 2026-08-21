@@ -671,6 +671,13 @@ export const adminEn = {
     variantCount: "{count} variants",
     variantCountOne: "1 variant",
     inStockCount: "{count} in stock",
+    /* ---- The selection bar — bulk actions over the catalogue ------------ */
+    selectProduct: "Select product",
+    publish: "Publish",
+    hide: "Hide",
+    bulkDeleteTitle: "Delete {count} products?",
+    bulkDeleteBody:
+      "They come off your shop and out of your catalogue. Orders already placed keep their records — history is theirs, not the products'.",
   },
 
   productForm: {

@@ -20,6 +20,7 @@ import { analyticsLimit, planFor } from "@sailo/core/plans";
 import { resolveAnalyticsWindow, type DateWindow } from "@sailo/analytics/window";
 import { deltaPercent } from "@sailo/analytics/delta";
 import { Card, PageHeader, Sparkline, Stat } from "@sailo/design-system/web";
+import { CHART, CHART_STEPS } from "@sailo/design-system/chart/palette";
 import { formatMoney } from "@sailo/core/currency";
 import { getAdminT, getLocale, getT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
@@ -199,7 +200,7 @@ export default async function AdminAnalyticsPage({
           chart={
             <Sparkline
               values={visitSeries.map((d) => d.count)}
-              className="text-ink-400"
+              color={CHART.activity}
             />
           }
         />
@@ -215,7 +216,7 @@ export default async function AdminAnalyticsPage({
           chart={
             <Sparkline
               values={visitSeries.map((d) => d.unique)}
-              className="text-ink-300"
+              color={CHART_STEPS.activity[1]}
             />
           }
         />
@@ -224,6 +225,12 @@ export default async function AdminAnalyticsPage({
           label={<DefTitle def={a.dashboard.defOrders}>{a.dashboard.orders}</DefTitle>}
           value={stats.totalOrders.toLocaleString()}
           hint={vs(stats.totalOrders, prevStats.totalOrders)}
+          chart={
+            <Sparkline
+              values={revenueSeries.map((d) => d.orders)}
+              color={CHART_STEPS.money[1]}
+            />
+          }
         />
         <Stat
           icon={<Wallet className="size-4" />}
@@ -237,7 +244,7 @@ export default async function AdminAnalyticsPage({
           chart={
             <Sparkline
               values={revenueSeries.map((d) => d.cents)}
-              className="text-brand-600"
+              color={CHART.money}
             />
           }
         />

@@ -9,7 +9,7 @@
  */
 
 import "server-only";
-import { and, asc, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, ne, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { normalizeQuestions } from "@sailo/core/lead-questions";
 import {
@@ -1262,6 +1262,36 @@ export async function toggleProductPublished(
     .where(and(eq(products.id, productId), eq(products.shopId, shopId)))
     .returning({ isPublished: products.isPublished });
   return row ? row.isPublished : null;
+}
+
+/**
+ * Setting published across a selection — a *set*, never the toggle above.
+ *
+ * A bulk toggle over a mixed selection would flip its rows in both directions
+ * at once, which no seller means by "Publish". The `ne` keeps the returned
+ * count honest: it is the rows that actually changed, so the selection bar
+ * can say "3 updated · 2 skipped" instead of counting rows that were already
+ * there. Scoped in the WHERE like every write in this file — ids from a POST
+ * body are a claim, not a fact.
+ */
+export async function setProductsPublished(
+  shopId: string,
+  productIds: string[],
+  isPublished: boolean,
+): Promise<number> {
+  if (productIds.length === 0) return 0;
+  const rows = await getDb()
+    .update(products)
+    .set({ isPublished, updatedAt: new Date() })
+    .where(
+      and(
+        eq(products.shopId, shopId),
+        inArray(products.id, productIds),
+        ne(products.isPublished, isPublished),
+      ),
+    )
+    .returning({ id: products.id });
+  return rows.length;
 }
 
 /** What `duplicateProduct` can come back with. The cap refusal mirrors

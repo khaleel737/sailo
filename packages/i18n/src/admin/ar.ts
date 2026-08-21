@@ -316,6 +316,11 @@ export const adminAr: PartialAdminDictionary = {
     nextProduct: "المنتج التالي",
     deleteTitle: "حذف هذا المنتج؟",
     deleteBody: "سيُزال من متجرك ومن الكتالوج. الطلبات المقدمة سابقًا تحتفظ بسجلها — التاريخ ملكها لا ملك المنتج.",
+    selectProduct: "تحديد المنتج",
+    publish: "انشر",
+    hide: "إخفاء",
+    bulkDeleteTitle: "حذف {count} منتجات؟",
+    bulkDeleteBody: "تُحذف من متجرك ومن الكتالوج. الطلبات التي سبق تقديمها تحتفظ بسجلاتها — فالسجل يخصها لا المنتجات.",
   },
   orders: {
     carrier: "شركة الشحن",

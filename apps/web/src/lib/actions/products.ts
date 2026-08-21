@@ -29,10 +29,12 @@ import {
   deleteProduct as deleteProductRow,
   duplicateProduct as duplicateProductRow,
   saveProduct as saveProductRow,
+  setProductsPublished,
   toggleProductPublished as togglePublishedRow,
   type ProductInput,
   type SaveProductRefusal,
 } from "@sailo/commerce/products";
+import { readIds, tally } from "@/lib/bulk-selection";
 import { redirect, RedirectType } from "next/navigation";
 import { interpolate } from "@sailo/i18n";
 import { requireShop } from "@/lib/session";
@@ -655,6 +657,80 @@ export async function toggleProductPublished(formData: FormData) {
 
   await togglePublishedRow(shop.id, id);
   dropCatalogueCaches(shop);
+}
+
+/*
+ * The selection bar's writers — same doctrine as `bulk-orders.ts`: each one
+ * runs the commerce layer's own function over re-checked ids, and ineligible
+ * rows are counted, never silently dropped. They live in this file rather
+ * than one of their own because `dropCatalogueCaches` cannot leave a
+ * `"use server"` module, and a bulk write that forgot to drop the catalogue
+ * would leave the storefront selling the old truth.
+ */
+
+async function bulkSetPublished(
+  formData: FormData,
+  isPublished: boolean,
+): Promise<ActionState> {
+  const { shop } = await requireShop("products:write");
+  const { a } = await getAdminT();
+  const ids = readIds(formData);
+
+  // `done` is rows that actually changed — see `setProductsPublished` — so a
+  // selection already in the target state honestly reports as skipped.
+  const done = await setProductsPublished(shop.id, ids, isPublished);
+  dropCatalogueCaches(shop);
+
+  return {
+    ok: true,
+    message: tally(
+      done,
+      ids.length - done,
+      a.orderList.bulkDone,
+      a.orderList.bulkSkipped,
+    ),
+  };
+}
+
+export async function bulkPublishProducts(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  return bulkSetPublished(formData, true);
+}
+
+export async function bulkHideProducts(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  return bulkSetPublished(formData, false);
+}
+
+export async function bulkDeleteProducts(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const { shop } = await requireShop("products:write");
+  const { a } = await getAdminT();
+  const ids = readIds(formData);
+
+  // The single delete, per row — its WHERE re-checks ownership, and the
+  // boolean it answers with is what keeps this count honest.
+  let done = 0;
+  for (const id of ids) {
+    if (await deleteProductRow(shop.id, id)) done += 1;
+  }
+  dropCatalogueCaches(shop);
+
+  return {
+    ok: true,
+    message: tally(
+      done,
+      ids.length - done,
+      a.orderList.bulkDone,
+      a.orderList.bulkSkipped,
+    ),
+  };
 }
 
 /* -------------------------------------------------------------------------- */

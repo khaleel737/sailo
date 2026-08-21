@@ -8,8 +8,7 @@ import { orders } from "@sailo/db/schema";
 import { publishShopEvent } from "@sailo/events";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
-import { interpolate } from "@sailo/i18n";
-import { isUuid } from "@sailo/core/uuid";
+import { readIds, tally } from "@/lib/bulk-selection";
 import { awaitsTransfer } from "@sailo/core/payment-status";
 import {
   changeOrderStatus,
@@ -36,32 +35,6 @@ import type { ActionState } from "./shop";
  * reports "3 updated · 2 skipped" because a number that quietly shrank reads
  * as "done" when it wasn't.
  */
-
-/** The ids, deduped, uuid-checked, and capped at the list page's own size. */
-function readIds(formData: FormData): string[] {
-  const ids = [...new Set(formData.getAll("ids").map(String))].filter(isUuid);
-  return ids.slice(0, 100);
-}
-
-/**
- * "{done} updated · {skipped} skipped" — or the plain half when one is 0.
- * Takes the two resolved strings rather than the section, so every call site
- * names its keys where the usage scan can see them.
- */
-function tally(
-  done: number,
-  skipped: number,
-  doneTemplate: string,
-  skippedTemplate: string,
-): string {
-  const parts = [
-    interpolate(doneTemplate, { done: done.toLocaleString() }),
-    skipped > 0
-      ? interpolate(skippedTemplate, { skipped: skipped.toLocaleString() })
-      : null,
-  ].filter(Boolean);
-  return parts.join(" · ");
-}
 
 /** The selected rows that actually belong to this shop, whole. */
 async function ownRows(shopId: string, ids: string[]) {

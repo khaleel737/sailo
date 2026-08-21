@@ -316,6 +316,11 @@ export const adminTr: PartialAdminDictionary = {
     nextProduct: "Sonraki ürün",
     deleteTitle: "Bu ürün silinsin mi?",
     deleteBody: "Mağazandan ve katalogdan kalkar. Verilmiş siparişler kaydını korur — geçmiş onların, ürünün değil.",
+    selectProduct: "Ürünü seç",
+    publish: "Yayınla",
+    hide: "Gizle",
+    bulkDeleteTitle: "{count} ürün silinsin mi?",
+    bulkDeleteBody: "Mağazandan ve katalogdan kalkarlar. Verilmiş siparişler kaydını korur — geçmiş onların, ürünlerin değil.",
   },
   orders: {
     carrier: "Kargo firması",

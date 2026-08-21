@@ -61,8 +61,16 @@ export async function StripeCard({ shop }: { shop: Shop }) {
    */
   const countries = stripeAccountCountriesByName(locale);
   const guess = normalizeCountry((await headers()).get("x-vercel-ip-country"));
-  const defaultCountry = shop.stripeCountry ?? (isStripeAccountCountry(guess) ? guess : null);
-  const guessed = !shop.stripeCountry && Boolean(defaultCountry);
+  /*
+   * Re-checked against today's list, not trusted from the column. The list
+   * once carried countries Stripe cannot actually onboard (it was built from
+   * country_specs — see `STRIPE_ACCOUNT_COUNTRIES`), so a seller may have a
+   * stored choice the dropdown no longer offers; defaulting the select to it
+   * would quietly land on the placeholder while looking answered.
+   */
+  const stored = isStripeAccountCountry(shop.stripeCountry) ? shop.stripeCountry : null;
+  const defaultCountry = stored ?? (isStripeAccountCountry(guess) ? guess : null);
+  const guessed = !stored && Boolean(defaultCountry);
 
   return (
     // Tinted the same way a live chat rail is, so "working" looks identical

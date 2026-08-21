@@ -303,22 +303,27 @@ export function deviceTimeZone(): string | null {
  * done. That is why `stripeCountry` is asked before the account exists rather
  * than inferred after it, and why the picker offers only this list.
  *
- * Read from `GET /v1/country_specs` (121 entries, paginated) rather than from
- * a docs page, because the API is what actually decides. `check:connect`
- * re-reads it and fails when this drifts, so adding a country is a one-line
- * change nobody has to remember to make.
+ * The source is https://stripe.com/global — the merchant-availability page —
+ * and deliberately **not** `GET /v1/country_specs`, which is where the first
+ * version of this list came from. That endpoint answers a different question:
+ * it also carries every country Stripe can merely *send a payout to*
+ * (cross-border recipients), so it offered a seller in Jordan a country that
+ * account creation then refused. A country spec existing is not the same as
+ * Stripe opening accounts there.
+ *
+ * Two tiers inside the list are worth knowing when an onboarding fails
+ * anyway: CI, GH, KE, NG and ZA are "extended network" countries, and IN and
+ * ID are listed as preview. They are offered because Stripe offers them, and
+ * they are the first suspects when a seller from one of them gets a refusal.
+ * `check:connect` verifies every code here is one Stripe recognises; new
+ * countries arrive by reading the page above, not the API.
  */
 export const STRIPE_ACCOUNT_COUNTRIES = [
-  "AE", "AG", "AL", "AM", "AO", "AR", "AT", "AU", "AZ", "BA", "BD", "BE", "BG",
-  "BH", "BJ", "BN", "BO", "BR", "BS", "BT", "BW", "CA", "CH", "CI", "CL", "CO",
-  "CR", "CY", "CZ", "DE", "DK", "DO", "DZ", "EC", "EE", "EG", "ES", "ET", "FI",
-  "FR", "GA", "GB", "GH", "GI", "GM", "GR", "GT", "GY", "HK", "HR", "HU", "ID",
-  "IE", "IL", "IN", "IS", "IT", "JM", "JO", "JP", "KE", "KH", "KR", "KW", "KZ",
-  "LA", "LC", "LI", "LK", "LT", "LU", "LV", "MA", "MC", "MD", "MG", "MK", "MN",
-  "MO", "MT", "MU", "MX", "MY", "MZ", "NA", "NE", "NG", "NL", "NO", "NZ", "OM",
-  "PA", "PE", "PH", "PK", "PL", "PT", "PY", "QA", "RO", "RS", "RW", "SA", "SE",
-  "SG", "SI", "SK", "SM", "SN", "SV", "TH", "TN", "TR", "TT", "TW", "TZ", "US",
-  "UY", "UZ", "VN", "ZA",
+  "AE", "AT", "AU", "BE", "BG", "BR", "CA", "CH", "CI", "CY", "CZ", "DE",
+  "DK", "EE", "ES", "FI", "FR", "GB", "GH", "GI", "GR", "HK", "HR", "HU",
+  "ID", "IE", "IN", "IT", "JP", "KE", "LI", "LT", "LU", "LV", "MT", "MX",
+  "MY", "NG", "NL", "NO", "NZ", "PL", "PT", "RO", "SE", "SG", "SI", "SK",
+  "TH", "US", "ZA",
 ] as const satisfies readonly CountryCode[];
 
 export type StripeAccountCountry = (typeof STRIPE_ACCOUNT_COUNTRIES)[number];

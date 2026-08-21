@@ -1045,6 +1045,11 @@ export const adminKo: PartialAdminDictionary = {
     nextProduct: "다음 상품",
     deleteTitle: "이 상품을 삭제할까요?",
     deleteBody: "상점과 카탈로그에서 사라집니다. 이미 접수된 주문은 기록을 유지합니다. 이력은 주문의 것이지 상품의 것이 아닙니다.",
+    selectProduct: "상품 선택",
+    publish: "게시",
+    hide: "숨기기",
+    bulkDeleteTitle: "상품 {count}개를 삭제할까요?",
+    bulkDeleteBody: "가게와 카탈로그에서 사라집니다. 이미 들어온 주문은 기록을 유지합니다 — 이력은 주문의 것이지 상품의 것이 아닙니다.",
   },
 
   dashboard: {

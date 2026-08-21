@@ -138,10 +138,12 @@ export function OnboardingForm({
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [photoError, setPhotoError] = useState<string | null>(null);
 
-  async function onPhotoChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const input = event.target;
-    const file = input.files?.[0];
-    if (!file) return;
+  // One intake for both doors — the file picker and a drop on the photo
+  // circle land here, so a dragged photo is scaled and carried in the input
+  // exactly like a picked one.
+  async function acceptPhoto(file: File) {
+    const input = photoInput.current;
+    if (!input) return;
 
     setPhotoError(null);
     const scaled = await scaleToAvatar(file);
@@ -157,6 +159,11 @@ export function OnboardingForm({
 
     if (photoUrl) URL.revokeObjectURL(photoUrl);
     setPhotoUrl(URL.createObjectURL(scaled));
+  }
+
+  function onPhotoChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (file) void acceptPhoto(file);
   }
 
   function removePhoto() {
@@ -246,6 +253,7 @@ export function OnboardingForm({
                 photoUrl={photoUrl}
                 photoError={photoError}
                 onPickPhoto={() => photoInput.current?.click()}
+                onDropPhoto={(file) => void acceptPhoto(file)}
                 onRemovePhoto={removePhoto}
               />
             ) : null}

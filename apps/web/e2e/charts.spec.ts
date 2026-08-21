@@ -27,6 +27,7 @@ const CASES = [
   "single-day",
   "flat-week",
   "year",
+  "sparklines",
 ] as const;
 
 /*
