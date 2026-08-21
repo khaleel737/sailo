@@ -1,0 +1,22 @@
+apps/web/src/app/admin/payments/_components/payout-card.tsx
+  s_a7bbf59e767e8f::t_c3a82b2f5f1ea0 104-115
+  s_a7bbf59e767e8f::t_3b5675299b47e9 4
+apps/web/src/lib/actions/connect.ts
+  s_a7bbf59e767e8f::t_b36a8901f61238 279-300
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "2c00cf6757b59636a43c0751415f021185f2eaa2",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
