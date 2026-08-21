@@ -1,0 +1,32 @@
+apps/web/src/app/admin/payments/page.tsx
+  s_a7bbf59e767e8f::t_6107e5160f17e2 11
+  s_a7bbf59e767e8f::t_cba31037142785 29
+  s_a7bbf59e767e8f::t_49c9c7b98176e6 122-151
+  s_2bcfe090002697::t_d04bc6ee054495 309
+packages/commerce/src/orders/connect-account.ts
+  s_a7bbf59e767e8f::t_11a5da7a963eb6 71-75
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "34539f22d82ed1254a88c52d32e207c2f2bee1d4",
+  "prompts": {},
+  "sessions": {
+    "s_2bcfe090002697": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a30859a0-fa55-47c0-ac06-cfc95f4e184d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
