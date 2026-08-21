@@ -1,0 +1,32 @@
+packages/design-system/src/web/chart/chart-series.tsx
+  s_a7bbf59e767e8f::t_bcbfd95b6ee3bb 96-97,99-104
+  s_a7bbf59e767e8f::t_0c07e9f3ef7600 3
+  s_a7bbf59e767e8f::t_032a7f8180feaf 86-88,91-95,98,105-113,115,136
+packages/design-system/src/web/chart/index.tsx
+  s_a7bbf59e767e8f::t_28e1188d7dec63 215
+  s_a7bbf59e767e8f::t_8ce351e0c15e49 127-146
+packages/design-system/src/web/chart/chart-plot.tsx
+  s_a7bbf59e767e8f::t_c3dcc6e9e249c3 19-21,23
+  s_a7bbf59e767e8f::t_c9114a50595021 59-60,63,66-67
+  s_a7bbf59e767e8f::t_c0055ccdf99351 124-126,136-154,156-157,160-186
+  s_a7bbf59e767e8f::t_3adfaf78d12e6d 4,12,18,22
+  s_a7bbf59e767e8f::t_1b9431f5a2d9fe 47
+  s_a7bbf59e767e8f::t_8b5bbc264c6948 220-249,251-258,261-264
+  s_a7bbf59e767e8f::t_dddc1015b707ed 210
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "db421d754cbef0f2faf0df5fb2655871b6d97ebf",
+  "prompts": {},
+  "sessions": {
+    "s_a7bbf59e767e8f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97f84f33-a726-47e1-b4a1-1f0903d78db4",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
